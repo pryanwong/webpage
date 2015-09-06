@@ -41,3 +41,8 @@ gem 'puma'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+gem 'omniauth'
+gem 'omniauth-google'
+gem "omniauth-google-oauth2"
+gem 'cancancan', '~> 1.10'
