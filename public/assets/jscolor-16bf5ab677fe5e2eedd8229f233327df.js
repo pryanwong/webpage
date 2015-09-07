@@ -10,6 +10,7 @@
  */
 
 
+
 var jscolor = {
 
 
@@ -787,12 +788,12 @@ var jscolor = {
 			// load images in optimal order
 			//var padImg = '';
 			switch(modeID) {
-				case 0: var padImg =  "<%= asset_path('hs.png') %>"; break;
-				case 1: var padImg =  "<%= asset_path('hv.png') %>"; break;
+				case 0: var padImg =  "/assets/hs.png"; break;
+				case 1: var padImg =  "/assets/hv.png"; break;
 			}
-			p.padM.style.backgroundImage = "<%= asset_path('cross.gif') %>";
+			p.padM.style.backgroundImage = "/assets/cross.gif";
 			p.padM.style.backgroundRepeat = "no-repeat";
-			p.sldM.style.backgroundImage = "<%= asset_path('arrow.gif') %>";
+			p.sldM.style.backgroundImage = "/assets/arrow.gif";
 			p.sldM.style.backgroundRepeat = "no-repeat";
 			p.pad.style.backgroundImage = padImg;
 			p.pad.style.backgroundRepeat = "no-repeat";
@@ -999,11 +1000,11 @@ var jscolor = {
 
 		// require images
 		switch(modeID) {
-			case 0: jscolor.requireImage("<%= asset_path('hs.png') %>"); break;
-			case 1: jscolor.requireImage("<%= asset_path('hv.png') %>"); break;
+			case 0: jscolor.requireImage("/assets/hs.png"); break;
+			case 1: jscolor.requireImage("/assets/hv.png"); break;
 		}
-		jscolor.requireImage("<%= asset_path('cross.gif') %>");
-		jscolor.requireImage("<%= asset_path('arrow.gif') %>");
+		jscolor.requireImage("/assets/cross.gif");
+		jscolor.requireImage("/assets/arrow.gif");
 
 		this.importColor();
 	}
