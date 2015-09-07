@@ -794,7 +794,7 @@ var jscolor = {
 			p.padM.style.backgroundRepeat = "no-repeat";
 			p.sldM.style.backgroundImage = '<%= asset_path 'arrow.gif' %>';
 			p.sldM.style.backgroundRepeat = "no-repeat";
-			p.pad.style.backgroundImage = 'padImg';
+			p.pad.style.backgroundImage = padImg;
 			p.pad.style.backgroundRepeat = "no-repeat";
 			p.pad.style.backgroundPosition = "0 0";
 
@@ -999,11 +999,11 @@ var jscolor = {
 
 		// require images
 		switch(modeID) {
-			case 0: jscolor.requireImage('hs.png'); break;
-			case 1: jscolor.requireImage('hv.png'); break;
+			case 0: jscolor.requireImage("<%= asset_path 'hs.png' %>"); break;
+			case 1: jscolor.requireImage("<%= asset_path 'hv.png' %>"); break;
 		}
-		jscolor.requireImage('cross.gif');
-		jscolor.requireImage('arrow.gif');
+		jscolor.requireImage("<%= asset_path 'cross.gif' %>");
+		jscolor.requireImage("<%= asset_path 'arrow.gif' %>");
 
 		this.importColor();
 	}
