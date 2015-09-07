@@ -10,6 +10,7 @@
  */
 
 
+
 var jscolor = {
 
 
@@ -37,7 +38,7 @@ var jscolor = {
 	getDir : function() {
 		if(!jscolor.dir) {
 			var detected = jscolor.detectDir();
-			jscolor.dir = detected!==false ? detected : '';
+			jscolor.dir = detected!==false ? detected : 'jscolor/';
 		}
 		return jscolor.dir;
 	},
@@ -785,16 +786,15 @@ var jscolor = {
 			p.btnS.style.lineHeight = p.btn.style.height;
 
 			// load images in optimal order
-			//var padImg = '';
 			switch(modeID) {
-				case 0: var padImg =  "<%= asset_path('hs.png') %>"; break;
-				case 1: var padImg =  "<%= asset_path('hv.png') %>"; break;
+				case 0: var padImg = 'hs.png'; break;
+				case 1: var padImg = 'hv.png'; break;
 			}
-			p.padM.style.backgroundImage = "<%= asset_path('cross.gif') %>";
+			p.padM.style.backgroundImage = "url('"+jscolor.getDir()+"cross.gif')";
 			p.padM.style.backgroundRepeat = "no-repeat";
-			p.sldM.style.backgroundImage = "<%= asset_path('arrow.gif') %>";
+			p.sldM.style.backgroundImage = "url('"+jscolor.getDir()+"arrow.gif')";
 			p.sldM.style.backgroundRepeat = "no-repeat";
-			p.pad.style.backgroundImage = padImg;
+			p.pad.style.backgroundImage = "url('"+jscolor.getDir()+padImg+"')";
 			p.pad.style.backgroundRepeat = "no-repeat";
 			p.pad.style.backgroundPosition = "0 0";
 
@@ -999,11 +999,11 @@ var jscolor = {
 
 		// require images
 		switch(modeID) {
-			case 0: jscolor.requireImage("<%= asset_path('hs.png') %>"); break;
-			case 1: jscolor.requireImage("<%= asset_path('hv.png') %>"); break;
+			case 0: jscolor.requireImage('hs.png'); break;
+			case 1: jscolor.requireImage('hv.png'); break;
 		}
-		jscolor.requireImage("<%= asset_path('cross.gif') %>");
-		jscolor.requireImage("<%= asset_path('arrow.gif') %>");
+		jscolor.requireImage('cross.gif');
+		jscolor.requireImage('arrow.gif');
 
 		this.importColor();
 	}
@@ -1012,3 +1012,6 @@ var jscolor = {
 
 
 jscolor.install();
+
+jscolor.dir = '/assets/';
+jscolor.addEvent(document, 'page:load', jscolor.init);
