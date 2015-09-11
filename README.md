@@ -1,8 +1,9 @@
-# ruby-getting-started (Microsoft Windows)
+#Sales Sketch
 
-A barebones Rails app, which can easily be deployed to Heroku - on Microsoft Windows.
+A barebones Sales Engineering Tool put together by Sean and Ian Ferenci
+Ian's still learning this stuff... (Hee, Hee, Hee)
 
-This application support the [Getting Started with Ruby on Heroku (Microsoft Windows)](https://devcenter.heroku.com/articles/getting-started-with-jruby) article - check it out.
+This application is in Progress but will look awesome when it's finished
 
 ## Deploying to Heroku
 
@@ -15,7 +16,9 @@ $ heroku open
 
 ## Documentation
 
-For more information about using Ruby on Heroku, see these Dev Center articles:
+Give me time and I'll get the documentation done
 
 - [Ruby on Heroku](https://devcenter.heroku.com/categories/ruby)
 
+-Sean Ferenci, P.Eng.
+September 10, 2015
