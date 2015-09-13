@@ -17,8 +17,11 @@ Rails.application.routes.draw do
     resources :sessions, only: [:create, :destroy]
     resource :home, only: [:show]
     resource :pages
-
-    match '/drawing' => 'welcomes#index', via: [:get, :post]
+    resources :companies do
+      resources :divisions
+      resources :users
+    end
+    resources :drawings
     match '/home' => 'pages#home', via: [:get]
     match '/about' => 'pages#about', via: [:get]
     match '/failed' => 'pages#failed', via: [:get]

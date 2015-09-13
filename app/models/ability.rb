@@ -6,10 +6,17 @@ class Ability
     #
        user ||= User.new # guest user (not logged in)
        if (!user.role_id.nil?)
-           user.setrole(user.role_id)
+            user.setrole(user.role_id)
        end
-       if user.role? :admin
+
+       if user.role? :moderator
+         can :read, Company, :id => user.company_id
+         can [:create, :read, :update, :destroy], User, :company_id => user.company_id
+         #can :manage, :all
+       elsif user.role? :admin
          can :manage, :all
+       elsif user.role? :user
+         can [:index], :drawing
        end
     #
     # The first argument to `can` is the action you are giving the user

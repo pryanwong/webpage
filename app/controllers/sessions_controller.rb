@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
    user = User.from_omniauth(env["omniauth.auth"])
    if !user.nil?
      session[:user_id] = user.id
-     redirect_to drawing_path
+     redirect_to drawings_path
    else
      redirect_to failed_path
    end

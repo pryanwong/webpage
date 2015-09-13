@@ -11,10 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150906042740) do
+ActiveRecord::Schema.define(version: 20150913022816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "companies", force: true do |t|
+    t.string  "name"
+    t.integer "licenses"
+  end
+
+  create_table "divisions", force: true do |t|
+    t.string  "name"
+    t.boolean "share"
+    t.integer "company_id"
+  end
+
+  create_table "user_memberships", force: true do |t|
+    t.integer "user_id"
+    t.integer "division_id"
+  end
+
+  add_index "user_memberships", ["division_id"], name: "index_user_memberships_on_division_id", using: :btree
+  add_index "user_memberships", ["user_id"], name: "index_user_memberships_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -32,7 +51,8 @@ ActiveRecord::Schema.define(version: 20150906042740) do
     t.string   "provider"
     t.string   "uid"
     t.integer  "role_id"
-    t.string   "company"
+    t.boolean  "isadmin"
+    t.integer  "company_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

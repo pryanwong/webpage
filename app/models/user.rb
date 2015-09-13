@@ -4,8 +4,16 @@ class User < ActiveRecord::Base
   ROLES = {0 => :guest, 1 => :user, 2 => :moderator, 3 => :admin}
 
   attr_reader :role
+  validates :email, presence: true
+  has_many :user_memberships, :class_name => 'UserMembership'
+  has_many :divisions, :through => :user_memberships
+  belongs_to :company
 
-  def initialize(role_id = 0)
+  def new
+
+  end
+
+  def after_initialize(role_id = 0)
     @role = ROLES.has_key?(role_id.to_i) ? ROLES[role_id.to_i] : ROLES[0]
   end
 

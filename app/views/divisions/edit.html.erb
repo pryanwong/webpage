@@ -1,0 +1,21 @@
+<h1>Update Division</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for([@company, @division]) do |f| %>
+      <%= render 'shared/error_messages' %>
+
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
+
+      <%= f.label :share %>
+      <%= f.check_box :share %>
+
+      <%= f.submit "Save changes", class: "btn btn-primary" %>
+    <% end %>
+
+    <div class="gravatar_edit">
+      <%= link_to 'Back', company_path(@company), :action => :show %>
+    </div>
+  </div>
+</div>
