@@ -1,0 +1,37 @@
+<h2><%= @company.name %></h2>
+<h3><%= @division.name %></h3>
+<p>Current Users</p>
+<table>
+  <tr>
+    <th>Email</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+<% if @division.users.size == 0 %>
+<tr>
+  <td>None</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<% else %>
+  <% @division.users.each do |user| %>
+    <tr>
+      <td><%= user.email %></td>
+      <td><% if can? :update, user %><%= link_to "Remove From Division", removeuserdiv_company_division_user_path(@company, @division, user) %><% end %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>
+<%= form_for [@company,@division], :url => {:action => 'adduserdiv'}, method: "post" do |f| %>
+    <% divids = @division.users.pluck(:id) %>
+    <% compids = @company.users.pluck(:id) %>
+    <%= f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false %>
+    <%= f.submit "Add User" %>
+<% end %>

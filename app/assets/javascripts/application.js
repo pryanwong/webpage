@@ -10,22 +10,12 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require preloadjs-0.6.1.min
-//= require easeljs-0.8.1.min
 //= require jquery-1.11.3.min
 //= require jquery-ui
-//= require easl_experiments
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
 //= require jscolor
-//= require dynamic_menus
-//= require dragger
-//= require lineObject
-//= require circleObject
-//= require textObject
-//= require buttonClass
-//= require pointObject
-//= require objectSizer
-//= require wordWrap
+//= require fabric
+//= require fabric.canvasex

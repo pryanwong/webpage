@@ -13,6 +13,14 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def removeuserdiv
+    @company = Company.find(params[:company_id])
+    @division = Division.find(params[:division_id])
+    @user = User.find(params[:id])
+    @division.users.delete(@user)
+    redirect_to company_path(@company)
+  end
+
   def update
     @user = User.find(params[:id])
     #assign role_id
@@ -54,7 +62,7 @@ class UsersController < ApplicationController
 
     logger.fatal "Number of Users at Company: #{@company.users.size}"
     logger.fatal "Number of Licenses: #{@company.licenses}"
-    if (@company.users.size < @company.licenses)
+    if (@company.users.size < @company.licenses && !User.exists?(email: params[:user][:email]))
       if (@user = User.create(email: params[:user][:email], role_id: val, isadmin: params[:user][:isadmin]))
         # Handle a successful update.
         flash[:notice] = "New User Saved"
@@ -66,7 +74,11 @@ class UsersController < ApplicationController
         redirect_to company_path(params[:company_id]), :method => :show
       end
     else
-      flash[:notice] = "User Could Not Be Added, Number of Licenses Exceeded"
+      if User.exists?(email: params[:user][:email])
+        flash[:notice] = "User already exists, cannot be added twice"
+      else
+        flash[:notice] = "User Could Not Be Added, Number of Licenses Exceeded"
+      end
       redirect_to company_path(params[:company_id]), :method => :show
     end
   end

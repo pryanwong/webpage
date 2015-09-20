@@ -18,8 +18,18 @@ Rails.application.routes.draw do
     resource :home, only: [:show]
     resource :pages
     resources :companies do
-      resources :divisions
       resources :users
+      resources :divisions  do
+        member do
+          get 'adduser'
+          post 'adduserdiv'
+        end
+        resources :users do
+          member do
+            get 'removeuserdiv'
+          end
+        end
+      end
     end
     resources :drawings
     match '/home' => 'pages#home', via: [:get]

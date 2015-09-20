@@ -1,31 +1,3 @@
-/* Prevent the text contents of draggable elements from being selectable. */
-[draggable] {
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    /* Required to make elements draggable in old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
-    cursor: move;
-}
-
-#canvas-container {
-    position: relative;
-    width: 1000px;
-    height: 800px;
-    box-shadow: 0 0 5px 1px black;
-    margin: 10px auto;
-    border: 5px solid transparent;
-}
-#canvas-container.over {
-    border: 5px dashed cyan;
-}
-#images img.img_dragging {
-    opacity: 0.4;
-}
-
-
 .hide {
     display: none;
 }
@@ -56,7 +28,7 @@ position: absolute;
 list-style-type: none;
 margin: 5px 0;
 padding: 0;
-width: 250px;
+width: 170px;
 border: 1px solid #9A9A9A;
 border-bottom-width: 0;
 list-style-type: none;
@@ -64,7 +36,7 @@ list-style: none;
 }
 
 .glossymenu li a{
-background: white url(media/glossyback.gif) repeat-x bottom left;
+background: white url(image_path("glossyback.gif")) repeat-x bottom left;
 font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
 color: white;
 display: block;
@@ -119,7 +91,7 @@ html, body, div, canvas {
 }
 
 #accordian {
-    width:250;
+    width:165;
 }
 
 #accordion .ui-accordion-content {

@@ -9,6 +9,25 @@ class DivisionsController < ApplicationController
     @division = Division.find(params[:id])
   end
 
+  def adduser
+    @company = Company.find(params[:company_id])
+    @division = Division.find(params[:id])
+    render 'adduser'
+  end
+
+  def adduserdiv
+    @company = Company.find(params[:company_id])
+    @division = Division.find(params[:id])
+    @user = User.find(params[:division][:id])
+    @division.users << @user
+    redirect_to company_path(params[:company_id]), :method => :show
+  end
+
+  def update_user
+    logger.fatal "Params all: #{params.inspect}"
+    redirect_to company_path(params[:company_id]), :method => :show
+  end
+
   def update
     @division = Division.find(params[:id])
     @division.company_id = params[:company_id]

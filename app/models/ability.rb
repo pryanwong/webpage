@@ -11,7 +11,7 @@ class Ability
 
        if user.role? :moderator
          can :read, Company, :id => user.company_id
-         can [:create, :read, :update, :destroy], User, :company_id => user.company_id
+         can [:create, :read, :update, :destroy, :removeuserdiv], User, :company_id => user.company_id
          can [:index,:show], :drawing
          #can :manage, :all
        elsif user.role? :admin

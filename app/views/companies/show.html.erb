@@ -24,6 +24,7 @@
 
 <br>
 
+<% @company.divisions.each do |division| %>
 <table>
   <tr>
     <th>Division</th>
@@ -32,16 +33,31 @@
     <th></th>
     <th></th>
   </tr>
-
-<% @company.divisions.each do |division| %>
   <tr>
     <td><%= division.name %></td>
     <td><%= division.share %></td>
     <td><%= link_to "Edit", edit_company_division_path(@company, division) %></td>
     <td><%= link_to "Remove", company_division_path(@company, division), method: :delete, data: { confirm: "Are you sure?" } %></td>
   </tr>
+  <% division.users.each do |user| %>
+  <tr>
+    <td></td>
+    <td><%= user.email %></td>
+    <td></td>
+    <td><% if can? :removeuserdiv, User %><%= link_to "Remove From Division", removeuserdiv_company_division_user_path(@company, division, user) %><% end %></td>
+  </tr>
+  <% end %>
+  </table>
+  <% divids = division.users.pluck(:id) %>
+  <% compids = @company.users.pluck(:id) %>
+  <% if User.where(id: compids).where.not(id: divids).size > 0 %>
+    <%= form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), method: "post" do |f| %>
+      <%= f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false %>
+      <%= f.submit "Add User" %>
+    <% end %>
+  <% end %>
+
 <% end %>
-</table>
 
 <br>
 
