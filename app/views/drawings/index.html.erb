@@ -377,7 +377,7 @@ function handleDrop(e) {
     if (!(img == null)) {
       console.log('event: ', e);
       console.log("Image Variable")
-      var imgsrc_val = img.getAttribute("img_val");
+      var imgsrc_val = img.src.split("/").pop();
       console.log(imgsrc_val)
       console.log(img);
       if (imgsrc_val == "line.png")
@@ -396,8 +396,8 @@ function handleDrop(e) {
         canvas.add(c[0],c[1]);
         line.on("mousedown", function(data, index) {
           if (handler != "") {
-    	       document.removeEventListener('contextmenu', handler);
-    	    }
+             document.removeEventListener('contextmenu', handler);
+          }
 
           if (data.e.which == 3) {
             console.log("In mouse down Image")
@@ -407,7 +407,7 @@ function handleDrop(e) {
             console.log(activeObjectVal)
             if (contextmenuon == false &&  activeObject == true) {
                       e.preventDefault();
-               var items = ["Delete", "Change Color", "Copy"];
+               var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
                menus(items, e);
                $('a:contains("Delete")').click(  function() {console.log("In Delete");
                                                              var activeObject = canvas.getActiveObject();
@@ -419,7 +419,10 @@ function handleDrop(e) {
                                                              contextmenuon = false;
                                                              activeObject = false;}   );
                $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
-               $('a:contains("Copy")').click(function() {p.copyObject(e);});
+               $('a:contains("Send Backward")').click(function() {sendBackward();});
+               $('a:contains("Send To Back")').click(function() {sendToBack();});
+               $('a:contains("Bring Forward")').click(function() {bringFoward();});
+               $('a:contains("Bring To Front")').click(function() {bringToFront();});
                contextmenuon = true;
             };
           }
@@ -442,8 +445,8 @@ function handleDrop(e) {
         console.log(textbox);
         canvas.on("mousedown", function(data, index) {
           if (handler != "") {
-    	       document.removeEventListener('contextmenu', handler);
-    	    }
+             document.removeEventListener('contextmenu', handler);
+          }
 
           if (data.e.which == 3) {
             console.log("In mouse down Image")
@@ -453,7 +456,7 @@ function handleDrop(e) {
             console.log(activeObjectVal)
             if (contextmenuon == false &&  activeObject == true) {
                       e.preventDefault();
-               var items = ["Delete", "Change Label", "Copy"];
+               var items = ["Delete", "Change Label", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
                menus(items, e);
                $('a:contains("Delete")').click(  function() {console.log("In Delete");
                                                              var activeObject = canvas.getActiveObject();
@@ -462,8 +465,11 @@ function handleDrop(e) {
                                                              $('#glossymenu').remove();
                                                              contextmenuon = false;
                                                              activeObject = false;}   );
-               $('a:contains("Change Label")').click(function() {p.changeLabel(e);});
-               $('a:contains("Copy")').click(function() {p.copyObject(e);});
+               $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+               $('a:contains("Send Backward")').click(function() {sendBackward();});
+               $('a:contains("Send To Back")').click(function() {sendToBack();});
+               $('a:contains("Bring Forward")').click(function() {bringFoward();});
+               $('a:contains("Bring To Front")').click(function() {bringToFront();});
                contextmenuon = true;
             };
           }
@@ -493,8 +499,8 @@ function handleDrop(e) {
         console.log(data);
         console.log(this);
         if (handler != "") {
-    	       document.removeEventListener('contextmenu', handler);
-    	  }
+             document.removeEventListener('contextmenu', handler);
+        }
 
         if (data.e.which == 3) {
             console.log("In mouse down Image")
@@ -503,7 +509,7 @@ function handleDrop(e) {
             console.log("contextmenuon =" + contextmenuon);
             if (contextmenuon == false &&  activeObject == true) {
                       e.preventDefault();
-               var items = ["Delete", "Change Label", "Copy"];
+               var items = ["Delete", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
                menus(items, e);
                $('a:contains("Delete")').click(  function() {console.log("In Delete");
                                                              var activeObject = canvas.getActiveObject();
@@ -512,8 +518,11 @@ function handleDrop(e) {
                                                              $('#glossymenu').remove();
                                                              contextmenuon = false;
                                                              activeObject = false;}   );
-               $('a:contains("Change Label")').click(function() {p.changeLabel(e);});
-               $('a:contains("Copy")').click(function() {p.copyObject(e);});
+              $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+              $('a:contains("Send Backward")').click(function() {sendBackward();});
+              $('a:contains("Send To Back")').click(function() {sendToBack();});
+              $('a:contains("Bring Forward")').click(function() {bringFoward();});
+              $('a:contains("Bring To Front")').click(function() {bringToFront();});
                contextmenuon = true;
             };
           }
@@ -526,7 +535,6 @@ function handleDrop(e) {
     }
     this.classList.remove('over');
     return false;
-
   }
 }
 
