@@ -377,7 +377,7 @@ function handleDrop(e) {
     if (!(img == null)) {
       console.log('event: ', e);
       console.log("Image Variable")
-      var imgsrc_val = img.img_val
+      var imgsrc_val = img.getAttribute("img_val");
       console.log(imgsrc_val)
       console.log(img);
       if (imgsrc_val == "line.png")
