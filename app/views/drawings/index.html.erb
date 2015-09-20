@@ -362,6 +362,34 @@ function handleDragLeave(e) {
     this.classList.remove('over'); // this / e.target is previous target element.
 }
 
+function sendBackward() {
+  var activeObject = canvas.getActiveObject();
+  if (activeObject) {
+      canvas.sendBackwards(activeObject);
+  }
+}
+
+function sendToBack() {
+  var activeObject = canvas.getActiveObject();
+  if (activeObject) {
+      canvas.sendToBack(activeObject);
+  }
+}
+
+function bringFoward() {
+  var activeObject = canvas.getActiveObject();
+  if (activeObject) {
+      canvas.bringForward(activeObject);
+  }
+}
+
+function bringToFront() {
+  var activeObject = canvas.getActiveObject();
+  if (activeObject) {
+      canvas.bringToFront(activeObject);
+  }
+}
+
 function handleDrop(e) {
    var img = document.querySelector('#images img.img_dragging');
    console.log("Draggable Stage:")
