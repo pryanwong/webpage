@@ -17,8 +17,19 @@ Rails.application.routes.draw do
     resources :sessions, only: [:create, :destroy]
     resource :home, only: [:show]
     resource :pages
+    resources :users, only: [:show]
     resources :companies do
-      resources :users
+      resources :users do
+        resources :drawings do
+          member do
+            get 'create'
+          end
+        end
+        member do
+            get 'newdrawing'
+            post 'newdrawingproc'
+        end
+      end
       resources :divisions  do
         member do
           get 'adduser'
@@ -31,7 +42,7 @@ Rails.application.routes.draw do
         end
       end
     end
-    resources :drawings
+
     match '/home' => 'pages#home', via: [:get]
     match '/about' => 'pages#about', via: [:get]
     match '/failed' => 'pages#failed', via: [:get]

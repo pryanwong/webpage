@@ -1,0 +1,24 @@
+<h1>New Sketch</h1>
+<%= render 'shared/error_messages' %>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@drawing, url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f| %>
+      <%= render 'shared/error_messages' %>
+
+      <%= f.label :customer %>
+      <%= f.text_field :customer %><br>
+
+      <%= f.label :opportunity %>
+      <%= f.text_field :opportunity %><br>
+
+      <%= f.label :description %>
+      <%= f.text_field :description %><br>
+
+      <%= f.submit "Save changes" %>
+    <% end %>
+
+    <div class="gravatar_edit">
+      <%= link_to 'Back', user_path %>
+    </div>
+  </div>
+</div>

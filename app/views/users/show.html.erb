@@ -1,0 +1,27 @@
+<h1>Users</h1>
+<h2><%= @user.email %></h2>
+<%= render 'shared/error_messages' %>
+<% if @listdawings %>
+<table>
+  <tr>
+    <th>Drawing</th>
+    <th>Customer</th>
+    <th>Description</th>
+    <th>Created</th>
+    <th>Last Updated</th>
+  </tr>
+ <% @user.drawings.each do |drawing| %>
+  <tr>
+    <td><%= link_to drawing.opportunity, edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id) %></td>
+    <td><%= drawing.description %></td>
+    <td><%= drawing.customer %></td>
+    <td><%= drawing.created_at %></td>
+    <td><%= drawing.updated_at %></td>
+  </tr>
+ <% end %>
+ </table>
+<% else %>
+   <p>No Saved Drawings</p>
+<% end %>
+<br>
+<td><%= link_to "New Drawing", newdrawing_company_user_path(@user.company.id, @user.id) %></td>

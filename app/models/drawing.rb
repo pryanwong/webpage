@@ -1,7 +1,5 @@
 class Drawing < ActiveRecord::Base
 
-  def new
-
-  end
+  belongs_to :user
 
 end

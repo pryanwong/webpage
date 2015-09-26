@@ -8,16 +8,19 @@ class Ability
        if (!user.role_id.nil?)
             user.setrole(user.role_id)
        end
-
+       #logger.fatal "User Role #{user.role}"
+       #logger.fatal "User Role ID #{user.role_id}"
        if user.role? :moderator
          can :read, Company, :id => user.company_id
-         can [:create, :read, :update, :destroy, :removeuserdiv], User, :company_id => user.company_id
-         can [:index,:show], :drawing
+         can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
+         can [:read, :create, :update, :new], Drawing
+         can [:index,:show,:newdrawing,:newdrawingproc], :user
          #can :manage, :all
        elsif user.role? :admin
          can :manage, :all
        elsif user.role? :user
-         can [:index,:show], :drawing
+         can [:read, :create, :update, :new], Drawing
+         can [:index,:show,:newdrawing,:newdrawingproc], User
        end
     #
     # The first argument to `can` is the action you are giving the user

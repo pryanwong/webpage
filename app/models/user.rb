@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   validates :email, presence: true
   has_many :user_memberships, :class_name => 'UserMembership'
   has_many :divisions, :through => :user_memberships
+  has_many :drawings
   belongs_to :company
 
   def new
