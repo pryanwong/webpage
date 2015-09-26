@@ -19,3 +19,4 @@
 //= require jscolor
 //= require fabric
 //= require fabric.canvasex
+//= require jquery.turbolinks

@@ -1,21 +1,4 @@
-
-<html>
-   <head>
-     <meta charset="utf-8">
-   <%= javascript_include_tag 'jquery-2.1.3.min' %>
-   <%= javascript_include_tag 'jscolor' %>
-   <%= stylesheet_link_tag "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" %>
-   <%= stylesheet_link_tag 'contextmenu_orig' %>
-   <%= javascript_include_tag 'jquery-ui' %>
-   <%= javascript_include_tag 'fabric' %>
-   <%= javascript_include_tag 'fabric.canvasex' %>
-   <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js" %>
-
-     <title>Title of the document</title>
-   </head>
-   <body  id="body" oncontextmenu="return false;">
-
-      <div class="hide" id="info">
+    <div class="hide" id="info">
       </div>
 	  <div class="hide" id="TextFormDiv">
 	     <form id="TextForm" autocomplete="off"><TEXTAREA id="textBoxMultiline" COLS=40 ROWS=2></TEXTAREA>
@@ -650,11 +633,6 @@ function handleDragEnd(e) {
     });
 }
 
-$(function() {
-   $( "#accordion" ).accordion();
-//$("#accordion").accordion({ event: "mouseover" });
-});
-
 function loadDrawing() {
     var data_drawing = "";
     <% if @drawing.drawing != nil %>
@@ -687,13 +665,22 @@ if (Modernizr.draganddrop) {
     alert("This browser doesn't support the HTML5 Drag and Drop API.");
 }
 
-$( document ).ready(function() {
+if(!window.location.hash) {
+    window.location = window.location + '#loaded';
+    window.location.reload();
+}else{
+    $( "#accordion" ).accordion();
     console.log( "ready!" );
-    loadDrawing();
+    var data_drawing = "";
+    <% if @drawing.drawing != nil %>
+       data_drawing = <%= raw(@drawing.drawing) %>
+       console.log( data_drawing )
+    <% end %>
+    if (data_drawing != "") {
+      canvas.clear();
+      canvas.loadFromJSON(data_drawing, canvas.renderAll.bind(canvas));
+    }
     console.log( "Drawing should be loaded :)")
-});
-
+}
 
      </script>
-   </body>
-</html>

@@ -57,6 +57,9 @@ GEM
     jquery-rails (3.1.2)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
+    jquery-turbolinks (2.1.0)
+      railties (>= 3.1.0)
+      turbolinks
     jscolor-rails (1.4.4)
     json (1.8.1)
     json (1.8.1-java)
@@ -165,6 +168,7 @@ DEPENDENCIES
   cowsay
   jbuilder (~> 2.0)
   jquery-rails
+  jquery-turbolinks
   jscolor-rails
   omniauth
   omniauth-google
