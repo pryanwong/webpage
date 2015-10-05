@@ -1,0 +1,29 @@
+%h1 Users
+%h2= @user.email
+%p
+   -if current_user.role? :admin
+      =link_to "Companies", companies_path
+   -if current_user.role? :moderator
+      = link_to "Company", company_path(@user.company_id)
+
+= render 'shared/error_messages'
+-if @listdawings == true
+   %table
+      %tr
+         %th Drawing
+         %th Customer
+         %th Description
+         %th Created
+         %th Last Updated
+      -@user.drawings.each do |drawing|
+         %tr
+            %td= link_to drawing.opportunity, edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
+            %td= drawing.description
+            %td= drawing.customer
+            %td= drawing.created_at
+            %td= drawing.updated_at
+-else
+   %p No Saved Drawings
+
+%br
+= link_to "New Drawing", newdrawing_company_user_path(@user.company.id, @user.id)

@@ -1,0 +1,27 @@
+%h1 Listing Companies
+
+%table
+   %tr
+      %th Name
+      %th Licenses
+      %th
+      %th
+      %th
+
+   -@companies.each do |company|
+      %tr
+         %td= company.name
+         %td= company.licenses
+         %td
+            -if can? :read, company
+               = link_to "Show", company
+         %td
+            -if can? :update, company
+               = link_to "Edit", edit_company_path(company)
+         %td
+            -if can? :destroy, company
+               = link_to "Remove", company, method: :delete, data: { confirm: "Are you sure?" }
+%br
+
+-if can? :create, :company
+   = link_to "New Company", new_company_path

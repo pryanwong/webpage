@@ -1,0 +1,19 @@
+%h1 New Division
+= @company.name
+%div.row
+   %div.col-md-6.col-md-offset-3
+      = form_for([@company, @division]) do |f|
+
+         = f.label :name
+         = f.text_field :name
+         %br
+
+         = f.label :share
+         = f.check_box :share
+         %br
+
+         = f.submit "Save changes"
+         %br
+
+   %div.gravatar_edit
+      = link_to 'Back', companies_path(params[:company_id]), :method => :show

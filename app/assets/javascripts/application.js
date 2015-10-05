@@ -20,3 +20,4 @@
 //= require fabric
 //= require fabric.canvasex
 //= require jquery.turbolinks
+//= require drawing_scripts

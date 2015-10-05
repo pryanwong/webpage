@@ -1,0 +1,18 @@
+%h1 Update User
+
+%div.row
+   %div.col-md-6.col-md-offset-3
+      = form_for([@company, @user]) do |f|
+
+         = f.label :email
+         = f.email_field :email, :required => true
+         %br
+
+         = f.label :isadmin
+         = f.check_box :isadmin
+         %br
+         
+         = f.submit "Save changes", class: "btn btn-primary"
+
+   %div.gravatar_edit
+      = link_to 'Back', company_path(@company), :action => :show
