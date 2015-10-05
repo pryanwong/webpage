@@ -13,6 +13,9 @@ class DrawingsController < ApplicationController
 
   def edit
        @drawing = Drawing.find(params[:id])
+       if @drawing.drawing == nil || @drawing.drawing.length == 0
+          @drawing.drawing = "{}"
+       end
   end
 
   def create

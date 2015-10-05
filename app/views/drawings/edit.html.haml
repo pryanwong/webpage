@@ -78,6 +78,8 @@
          var data_drawing = "";
          if (parseInt("#{@drawing.drawing.length}") > 0) {
               data_drawing = #{ raw(@drawing.drawing) }
+         } else {
+              data_drawing = ""
          }
 
          if (data_drawing != "") {
