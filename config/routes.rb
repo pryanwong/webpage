@@ -46,8 +46,9 @@ Rails.application.routes.draw do
     match '/home' => 'pages#home', via: [:get]
     match '/about' => 'pages#about', via: [:get]
     match '/failed' => 'pages#failed', via: [:get]
-    match '/contact' => 'pages#contact', via: [:get]
 
+    get 'contact', to: 'messages#new', as: 'contact'
+    post 'contact', to: 'messages#create'
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 

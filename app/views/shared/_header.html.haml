@@ -1,0 +1,23 @@
+%div{:id=>'cssmenu'}
+   %ul
+      - if (params[:company_id]!= nil || params[:id] !=nil) & (session[:user_id] != nil)
+         %li
+            = link_to company_user_path(params[:company_id] || params[:id],session[:user_id]) do
+               %span Home
+      - if (params[:id] != nil) & (params[:company_id]!= nil) & (params[:user_id] != nil)
+         %li
+            %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
+               %span Save
+      %li
+         %a{:href=>'#'}
+            %span Company
+      %li
+         %a{:href=>'#'}
+            %span Contact
+      %li
+         - if current_user
+            =link_to signout_path, :class => 'last' do
+               %span Sign out
+         - else
+            =link_to "/auth/google_oauth2", id: "sign_in", :class => 'last' do
+               %span Sign in with Google

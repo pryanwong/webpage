@@ -1,0 +1,17 @@
+%div.form-style-10
+   %h1 Get In Touch...<span>We want to work with you!</span>
+   =form_for @message, url: contact_path do |message_form|
+      %div.section
+         <span>1</span>Name &amp; Email
+      %div.inner-wrap
+         =message_form.text_field :name, placeholder: "Name"
+         =message_form.email_field :email, placeholder: "Email"
+
+      %div.section
+         <span>2</span>Message
+      %div.inner-wrap
+         =message_form.text_area :content, placeholder: "Message"
+
+      %div.button-section
+         %div.field
+            =message_form.submit "Send"

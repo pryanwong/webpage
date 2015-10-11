@@ -1,5 +1,4 @@
 = javascript_include_tag 'jquery-ui'
-%p HAML Code
 %div{ :class=>"hide", :id=>"info"}
 %div{ :class=>"hide", :id=>"TextFormDiv"}
    %form{:id=>"TextForm", :autocomplete=>"off"}
@@ -21,8 +20,7 @@
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "FastText.png"
    %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
-   = link_to "Home", company_user_path(params[:company_id],params[:user_id])
-   = link_to 'Save', '#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"
+
 %div{:style=>"width:225px;position:absolute;left:0"}
    %div{ :id=>"accordion", :style=>"width:225px" }
       %h3 Cameras
