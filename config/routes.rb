@@ -23,6 +23,8 @@ Rails.application.routes.draw do
         resources :drawings do
           member do
             get 'create'
+            get 'editdrawingdetails'
+            post 'updatedrawingdetails'
           end
         end
         member do

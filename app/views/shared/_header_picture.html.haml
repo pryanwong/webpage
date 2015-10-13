@@ -14,6 +14,10 @@
          %li
             %a{:href=>'/contact.html'}
                %span Contact
+         -if current_user
+            %li
+               =link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  %span User Page
          %li
             - if current_user
                =link_to signout_path, :class => 'last' do

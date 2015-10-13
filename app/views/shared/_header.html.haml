@@ -4,10 +4,13 @@
          %li
             = link_to company_user_path(params[:company_id] || params[:id],session[:user_id]) do
                %span Home
-      - if (params[:id] != nil) & (params[:company_id]!= nil) & (params[:user_id] != nil)
+      - if @editdetails == true
          %li
             %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
                %span Save
+         %li
+            = link_to editdrawingdetails_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
+               %span Edit
       %li
          %a{:href=>'#'}
             %span Company

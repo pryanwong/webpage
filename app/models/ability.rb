@@ -13,13 +13,13 @@ class Ability
        if user.role? :moderator
          can :read, Company, :id => user.company_id
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
-         can [:read, :create, :update, :new], Drawing
+         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing
          can [:index,:show,:newdrawing,:newdrawingproc], :user
          #can :manage, :all
        elsif user.role? :admin
          can :manage, :all
        elsif user.role? :user
-         can [:read, :create, :update, :new], Drawing
+         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing
          can [:index,:show,:newdrawing,:newdrawingproc], User
        end
     #

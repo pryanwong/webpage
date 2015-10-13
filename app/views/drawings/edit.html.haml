@@ -20,7 +20,10 @@
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "FastText.png"
    %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
-
+   Customer:
+   = @drawing.customer
+   Opportunity:
+   = @drawing.opportunity
 %div{:style=>"width:225px;position:absolute;left:0"}
    %div{ :id=>"accordion", :style=>"width:225px" }
       %h3 Cameras

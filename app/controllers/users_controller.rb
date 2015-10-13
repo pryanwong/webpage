@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  helper_method :sort_column, :sort_direction
   load_and_authorize_resource :company
   load_and_authorize_resource :user
   load_and_authorize_resource :user, :through => :company
@@ -14,6 +15,7 @@ class UsersController < ApplicationController
     @listdrawings = false;
     if (@user.drawings.size > 0)
       @listdawings = true;
+      @userdrawings = Drawing.where("user_id = ?",params[:id]).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     end
   end
 
@@ -126,4 +128,13 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:email, :isadmin, :role_id)
     end
+
+    def sort_column
+       Drawing.column_names.include?(params[:sort]) ? params[:sort] : "customer"
+    end
+
+    def sort_direction
+       %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    end
+
 end
