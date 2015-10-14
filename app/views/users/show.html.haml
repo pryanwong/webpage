@@ -31,4 +31,4 @@
                %td= drawing.created_at
                %td= drawing.updated_at
                %td{:class=>"controlTd"}= link_to image_tag("9Q5f6cv.png"), edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
-   =will_paginate @userdrawings
+      =will_paginate @userdrawings
