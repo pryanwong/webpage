@@ -87,6 +87,7 @@
     margin-top: -3px;
 }
 .form-style-10 input[type="button"],
+.form-style-10 button[type="submit"],
 .form-style-10 input[type="submit"]{
     background: #2A88AD;
     padding: 8px 20px 8px 20px;

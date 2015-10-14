@@ -46,7 +46,7 @@ class DivisionsController < ApplicationController
     if @division.save
       # Handle a successful update.
       flash[:notice] = "New Company Saved"
-      redirect_to company_path(params[:company_id]), :method => :show
+      redirect_to company_path(@company), :method => :show
      else
        flash[:notice] = "Company Could Not Be Added"
        render action: "new"

@@ -5,6 +5,7 @@ class DrawingsController < ApplicationController
   load_and_authorize_resource :user, :through => :company
   load_and_authorize_resource :drawing, :through => :user
   respond_to :json, :html
+  before_filter :check_for_cancel, :only => [:updatedrawingdetails]
 
   def index
        @user = User.find(params[:id])
@@ -74,10 +75,17 @@ class DrawingsController < ApplicationController
        end
   end
 
+
   private
 
     def drawing_params
       params.require(:drawing).permit(:customer, :opportunity, :description)
+    end
+
+    def check_for_cancel
+      if params[:button] == "Cancel"
+        redirect_to edit_company_user_drawing_path
+      end
     end
 
 end

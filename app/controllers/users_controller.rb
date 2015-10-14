@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   load_and_authorize_resource :company
   load_and_authorize_resource :user
   load_and_authorize_resource :user, :through => :company
+  before_filter :check_for_cancel, :only => [:newdrawingproc]
 
   def new
     @company = Company.find(params[:company_id])
@@ -41,6 +42,7 @@ class UsersController < ApplicationController
   end
 
   def newdrawingproc
+       logger.fatal "Drawing Object #{params.inspect}"
        @user = User.find(params[:id])
        @company = Company.find(@user.company_id)
        @drawing = Drawing.new
@@ -135,6 +137,12 @@ class UsersController < ApplicationController
 
     def sort_direction
        %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    end
+
+    def check_for_cancel
+      if params[:button] == "Cancel"
+        redirect_to company_user_path
+      end
     end
 
 end

@@ -1,8 +1,8 @@
 %div{:id=>'cssmenu'}
    %ul
-      - if (params[:company_id]!= nil || params[:id] !=nil) & (session[:user_id] != nil)
+      - if (session[:company_id]!= nil) & (session[:user_id] != nil)
          %li
-            = link_to company_user_path(params[:company_id] || params[:id],session[:user_id]) do
+            = link_to company_user_path(session[:company_id] ,session[:user_id]) do
                %span Home
       - if @editdetails == true
          %li

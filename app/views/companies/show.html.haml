@@ -1,19 +1,21 @@
-%h1 Company
-= render 'shared/error_messages'
-%table
-   %tr
+%br
+%table{:class=>"flatTable"}
+   %tr{:class=>"titleTr"}
+      %td Company
+      %td= link_to "Companies List", companies_path
+      %td
+      %td
+   %tr{:class=>"headingTr"}
       %th Name
       %th Licenses
       %th
       %th
-      %th
 
    %tr
-      %td= @company.name
-      %td= @company.licenses
       %td
          -if can? :read, @company
-            = link_to "Show", @company
+            = link_to @company.name, @company
+      %td= @company.licenses
       %td
          -if can? :update, @company
             = link_to "Edit", edit_company_path(@company)
@@ -22,17 +24,19 @@
             = link_to "Remove", @company, method: :delete, data: { confirm: "Are you sure?" }
 
 %br
-
-= link_to "Companies List", companies_path
-
-%br
-
+- first = true
 - @company.divisions.each do |division|
-   %table
-      %tr
+   %table{:class=>"flatTable"}
+      - if first
+         %tr{:class=>"titleTr"}
+            %td Divisions
+            %td
+            %td
+            %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_division_path(@company)
+            - first = false
+      %tr{:class=>"headingTr"}
          %th Division
          %th Share
-         %th
          %th
          %th
       %tr
@@ -40,29 +44,41 @@
          %td= division.share
          %td= link_to "Edit", edit_company_division_path(@company, division)
          %td= link_to "Remove", company_division_path(@company, division), method: :delete, data: { confirm: "Are you sure?" }
+   %table{:class=>"flatTable"}
+      %tr{:class=>"headingTr"}
+         %th User
+         %th
+         %th
+         %th
       -division.users.each do |user|
          %tr
-            %td
             %td= user.email
             %td
-            %td
                -if can? :removeuserdiv, User
-                  =link_to "Remove From Division", removeuserdiv_company_division_user_path(@company, division, user)
--divids = #{division.users.pluck(:id)}
--compids = #{@company.users.pluck(:id)}
--if User.where(id: compids).where.not(id: divids).size > 0
-   = form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), method: "post" do |f|
-      = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false
-      = f.submit "Add User"
-%br
-= link_to "New Division", new_company_division_path(@company)
+                  =link_to "Remove", removeuserdiv_company_division_user_path(@company, division, user)
+            %td
+            %td
+   - divids = division.users.pluck(:id)
+   - compids = @company.users.pluck(:id)
+   -if User.where(id: compids).where.not(id: divids).size > 0
+      = form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), method: "post" do |f|
+         = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false
+         = f.submit "Add User"
+   %br
 %br
 
-%table
-   %tr
-      %th User
+%table{:class=>"flatTable"}
+   %tr{:class=>"titleTr"}
+      %td{:class=>"titleTd"}USERS
+      %td{:colspan=>"1"}
+      %td{:align=>"right"} New
+      -if can? :create, current_user
+         %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_user_path(@company)
+      -else
+         %td
+   %tr{:class=>"headingTr"}
+      %th Email
       %th Admin
-      %th
       %th
       %th
    -@company.users.each do |user|
@@ -75,7 +91,3 @@
          %td
             -if can? :destroy, user
                = link_to "Remove", company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" }
-%br
-
--if can? :create, current_user
-   =link_to "New User", new_company_user_path(@company)

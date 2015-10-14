@@ -1,7 +1,16 @@
-%h1 Listing Companies
-
-%table
-   %tr
+%br
+%table{:class=>"flatTable"}
+   %tr{:class=>"titleTr"}
+      %th Companies
+      %th
+      %th
+      -if can? :create, :company
+         %th New
+         %th{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_path
+      -else
+         %th
+         %th
+   %tr{:class=>"headingTr"}
       %th Name
       %th Licenses
       %th
@@ -21,7 +30,3 @@
          %td
             -if can? :destroy, company
                = link_to "Remove", company, method: :delete, data: { confirm: "Are you sure?" }
-%br
-
--if can? :create, :company
-   = link_to "New Company", new_company_path
