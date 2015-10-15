@@ -1,10 +1,17 @@
 class DivisionsController < ApplicationController
+  before_filter :check_for_cancel, :only => [:create, :update]
   def new
+    session.delete(:return_to)
+    session[:return_to] ||= request.referer
+    logger.fatal "Session Vals in New: #{session.inspect}"
     @company = Company.find(params[:company_id])
     @division = @company.divisions.build
   end
 
   def edit
+    session.delete(:return_to)
+    session[:return_to] ||= request.referer
+    logger.fatal "Session Vals in Edit: #{session.inspect}"
     @company = Company.find(params[:company_id])
     @division = Division.find(params[:id])
   end
@@ -66,4 +73,13 @@ class DivisionsController < ApplicationController
     def division_params
       params.require(:division).permit(:name, :share, :company_id)
     end
+
+    def check_for_cancel
+      logger.fatal "In Check_for_cancel Vals: #{session.inspect}"
+      session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
+      if params[:button] == "Cancel"
+        redirect_to session.delete(:return_to)
+      end
+    end
+
 end

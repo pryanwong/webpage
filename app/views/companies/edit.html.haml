@@ -1,19 +1,17 @@
-%h1 Update Company
+%div.form-style-10
+   %h1 Edit Company
+   = form_for(@company) do |f|
+      %div.section
+         %div.inner-wrap
+            %div.col-md-6.col-md-offset-3
+               = f.label :name
+               = f.text_field :name
+               %br
 
-%div.row
-   %div.col-md-6.col-md-offset-3
-      = form_for(@company) do |f|
+               = f.label :licenses
+               = f.number_field :licenses, :min => 1, :step => 1, class: 'form-control'
+               %br
 
-         = f.label :name
-         = f.text_field :name, class: 'form-control'
-         %br
-
-         = f.label :licenses
-         = f.number_field :licenses, :min => 1, :step => 1, class: 'form-control'
-         %br
-
-         = f.submit "Save changes", class: "btn btn-primary"
-         %br
-
-   %div.gravatar_edit
-      = link_to 'Back', company_path(@company) 
+               = f.submit "Save"
+               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
+               %br

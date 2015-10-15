@@ -1,6 +1,10 @@
 class CompaniesController < ApplicationController
   load_and_authorize_resource :company
+  before_filter :check_for_cancel, :only => [:create, :update]
   def new
+    session.delete(:return_to)
+    session[:return_to] ||= request.referer
+    logger.fatal "Session Vals in New: #{session.inspect}"
     @company = Company.new
   end
 
@@ -18,6 +22,8 @@ class CompaniesController < ApplicationController
   end
 
   def edit
+    session.delete(:return_to)
+    session[:return_to] ||= request.referer
     @company = Company.find(params[:id])
   end
 
@@ -57,4 +63,14 @@ class CompaniesController < ApplicationController
     def company_params
       params.require(:company).permit(:name, :licenses)
     end
+
+    def check_for_cancel
+      logger.fatal "Session Vals in check_for_cancel: #{session.inspect}"
+      logger.fatal "Return to val #{session[:return_to]}"
+      session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
+      if params[:button] == "Cancel"
+        redirect_to session.delete(:return_to)
+      end
+    end
+
 end

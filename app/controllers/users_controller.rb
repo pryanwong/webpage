@@ -3,9 +3,11 @@ class UsersController < ApplicationController
   load_and_authorize_resource :company
   load_and_authorize_resource :user
   load_and_authorize_resource :user, :through => :company
-  before_filter :check_for_cancel, :only => [:newdrawingproc]
+  before_filter :check_for_cancel, :only => [:newdrawingproc, :create, :update]
 
   def new
+    session.delete(:return_to)
+    session[:return_to] ||= request.referer
     @company = Company.find(params[:company_id])
     @user = User.new
     @user.company = @company
@@ -21,6 +23,8 @@ class UsersController < ApplicationController
   end
 
   def edit
+    session.delete(:return_to)
+    session[:return_to] ||= request.referer
     @company = Company.find(params[:company_id])
     @user = User.find(params[:id])
   end
@@ -140,8 +144,9 @@ class UsersController < ApplicationController
     end
 
     def check_for_cancel
+      session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
       if params[:button] == "Cancel"
-        redirect_to company_user_path
+        redirect_to session.delete(:return_to)
       end
     end
 
