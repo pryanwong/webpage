@@ -13,14 +13,18 @@ class Ability
        if user.role? :moderator
          can :read, Company, :id => user.company_id
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
-         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing
+         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing do |drawing|
+           (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
+         end
          can [:index,:show,:newdrawing,:newdrawingproc], :user
          #can :manage, :all
        elsif user.role? :admin
          can :manage, :all
        elsif user.role? :user
-         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing
-         can [:index,:show,:newdrawing,:newdrawingproc], User
+         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing do |drawing|
+           (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
+         end
+         can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
        end
     #
     # The first argument to `can` is the action you are giving the user

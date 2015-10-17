@@ -1,19 +1,24 @@
 class DrawingsController < ApplicationController
-  #before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
-  load_and_authorize_resource :company
-  load_and_authorize_resource :user
-  load_and_authorize_resource :user, :through => :company
-  load_and_authorize_resource :drawing, :through => :user
+  before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
+  load_and_authorize_resource
   before_filter :check_for_cancel, :only => [:updatedrawingdetails]
 
   def index
-       @user = User.find(params[:id])
+       @user = User.find(session[:id])
        @drawings = @user.drawings
   end
 
   def edit
+       logger.fatal "In edit Drawing Controller"
+       logger.fatal "Session Data #{session.inspect}"
        @drawing = Drawing.find(params[:id])
+       if (@drawing.user_id == session[:user_id])
+          logger.fatal "Drawing_controller:edit user_id matches drawing"
+       end
+       #else
+        #     redirect_to failed_path
+       #end
        @editdetails = true;
        if @drawing.drawing == nil || @drawing.drawing.length == 0
           @drawing.drawing = "{}"

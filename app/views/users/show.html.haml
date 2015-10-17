@@ -19,7 +19,7 @@
          %th= sortable "opportunity"
          %th= sortable "description"
          %th= sortable "customer"
-         %th= sortable "created_at"
+         %th= sortable "user_id"
          %th= sortable "updated_at"
          %th Edit
       %tbody
@@ -28,7 +28,7 @@
                %td= drawing.opportunity
                %td= drawing.description
                %td= drawing.customer
-               %td= drawing.created_at
+               %td= drawing.user.email
                %td= drawing.updated_at
                %td{:class=>"controlTd"}= link_to image_tag("9Q5f6cv.png"), edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
       =will_paginate @userdrawings

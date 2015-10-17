@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
+  #before_filter(:only => [:index, :show]) { unauthorized! if cannot? :read, :user }
   helper_method :sort_column, :sort_direction
-  load_and_authorize_resource :company
   load_and_authorize_resource :user
-  load_and_authorize_resource :user, :through => :company
+  #load_and_authorize_resource :drawing
   before_filter :check_for_cancel, :only => [:newdrawingproc, :create, :update]
 
   def new
@@ -16,10 +16,21 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id]);
     @listdrawings = false;
-    if (@user.drawings.size > 0)
-      @listdawings = true;
-      @userdrawings = Drawing.where("user_id = ?",params[:id]).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+
+    divs = @user.divisions
+    div_ids = divs.select{|u| u.share==true}.map{|x| x[:id]}
+    if (div_ids.count > 0)
+       user_ids = UserMembership.where(division: div_ids).map{|y| y[:user_id]}.uniq
+       @userdrawings = Drawing.where(user_id: user_ids).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+    else
+    #   @listdawings = true;
+       @userdrawings = Drawing.where(user_id: session[:user_id]).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     end
+    if (@userdrawings.count > 0 )
+       @listdawings = true;
+    end
+
+
   end
 
   def edit
