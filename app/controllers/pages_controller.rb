@@ -12,6 +12,9 @@ class PagesController < ApplicationController
   def failed
   end
 
+  def accessdenied
+  end
+  
   private
    def pages_layout
      "pages"

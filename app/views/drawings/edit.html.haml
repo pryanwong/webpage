@@ -61,7 +61,8 @@
 
 :javascript
      var handler = "";
-     var objId = 0;
+     var c = new Array();
+     var objId_var = 0;
      var contextmenuon = false;
      var activeObject = false;
      var activeObjectVal = "";
@@ -82,7 +83,7 @@
          } else {
               data_drawing = ""
          }
-
+         objId_var = 1;
          if (data_drawing != "") {
             canvas.clear();
             canvas.loadFromJSON(data_drawing, canvas.renderAll.bind(canvas), function(o, object) {
@@ -91,25 +92,34 @@
                object.on("mousedown", function(data, index) { imageDown(data,index)   });
              }
              if (object.type == "line") {
-               object.hasBorders = object.hasControls = false;
-               console.log(o);
+               object.hasBorders = false;
+               object.hasControls = false;
                console.log(object);
-               c = makeCircle(object);
                console.log("Line Props: X1: "+object.x1+", Y1: "+object.y1)
                console.log("Line Props: X2: "+object.x2+", Y2: "+object.y2)
                console.log("Line Props: Top: " +object.top + ", Left: " + object.left)
-               c[0].top =  object.getTop() + object.height/2 + object.y1;
-               c[0].left = object.left + object.width/2 + object.x1;
-               c[1].top =  object.getTop() + object.height/2 +  object.y2;
-               c[1].left = object.left + object.width/2 + object.x2;
-
-               canvas.add(c[0],c[1]);
+               object.objId = objId_var;
+               c[objId_var] = makeCircle(object);
+               console.log("From makeCircle")
+               console.log(c[objId_var])
+               c[objId_var][0].top =  object.getTop() + object.height/2 + object.y1;
+               c[objId_var][0].left = object.left + object.width/2 + object.x1;
+               c[objId_var][1].top =  object.getTop() + object.height/2 +  object.y2;
+               c[objId_var][1].left = object.left + object.width/2 + object.x2;
+               object.c1 = c[objId_var][0];
+               object.c2 = c[objId_var][1];
+               console.log("Circle0")
+               console.log(c[objId_var][0])
+               console.log("Circle1")
+               console.log(c[objId_var][1])
+               canvas.add(c[objId_var][0],c[objId_var][1]);
                object.on("mousedown", function(data, index) { lineDown(data,index); });
                object.c1.setCoords();
                object.c2.setCoords();
                object.setCoords();
                canvas.renderAll();
-
+               objId_var = objId_var + 1;
+               object.on("mousedown", function(data, index) { lineDown(data,index); });
              }
              if (object.type == "text") {
                object.on("mousedown", function(data, index) { textDown(data,index)   });
@@ -155,9 +165,9 @@
            if('type' in e.target) {
              if(e.target.type == "line") {
                makeCircle(e.target)
-               e.target.c1 = c[0];
-               e.target.c2 = c[1];
-               canvas.add(c[0],c[1]);
+               e.target.c1 = c[e.target.objId][0];
+               e.target.c2 = c[e.target.objId][1];
+               canvas.add(c[e.target.objId][0],c[e.target.objId][1]);
              }
            }
         }

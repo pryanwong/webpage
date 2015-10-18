@@ -311,17 +311,17 @@ function handleDrop(e) {
          var ypos1 = e.layerY;
          var xpos2 = xpos1 + 25;
          var ypos2 = ypos1 + 25;
-         var id = objId + 3;
+         var id = objId_var + 3;
          objId = id;
          var line = makeLine([ xpos1, ypos1, xpos2, ypos2 ], id)
          console.log("Line before makecircle")
          console.log(line)
          line.hasBorders = line.hasControls = false
          canvas.add(line)
-         c = makeCircle(line);
-         line.c1 = c[0];
-         line.c2 = c[1];
-         canvas.add(c[0],c[1]);
+         c[id] = makeCircle(line);
+         line.c1 = c[id][0];
+         line.c2 = c[id][1];
+         canvas.add(c[id][0],c[id][1]);
          line.on("mousedown", function(data, index) { lineDown(data,index); });
       } else if (imgsrc_val == "textbox_icon.png") {
          console.log("Hello!!!")
@@ -390,4 +390,12 @@ function menus(items, event) {
 function handleDragEnd(e) {
    // this/e.target is the source node.
    [].forEach.call(images, function (img) {    img.classList.remove('img_dragging');  });
+};
+
+function drawAsPNG(){
+    canvas.isDrawingMode = false;
+
+    if(!window.localStorage){alert("This function is not supported by your browser."); return;}
+    // to PNG
+    window.open(canvas.toDataURL('png'));
 };

@@ -11,6 +11,9 @@
          %li
             = link_to editdrawingdetails_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
                %span Edit
+         %li
+            %a{:href=>'#', :onclick => "drawAsPNG()"}
+               %span PNG
       %li
          %a{:href=>'#'}
             %span Company

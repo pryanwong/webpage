@@ -1,4 +1,5 @@
 class DivisionsController < ApplicationController
+  load_and_authorize_resource :division
   before_filter :check_for_cancel, :only => [:create, :update]
   def new
     session.delete(:return_to)

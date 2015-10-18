@@ -13,6 +13,7 @@ class Ability
        if user.role? :moderator
          can :read, Company, :id => user.company_id
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
+         can [:create, :read, :update, :destroy ], Division, :company_id => user.company_id
          can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails], Drawing do |drawing|
            (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
          end

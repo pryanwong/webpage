@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    flash[:notice] = exception.inspect
-    redirect_to failed_path
+    flash[:notice] = exception.message
+    redirect_to accessdenied_path
   end
 end
