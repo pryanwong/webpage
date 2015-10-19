@@ -1,0 +1,20 @@
+%div.form-style-10
+   %h1 Send Image<span>Let's share our work</span>
+   =form_for @message, url: send_image_company_user_drawing_path do |message_form|
+      %div.section
+         <span>1</span>Email 1
+      %div.inner-wrap
+         =message_form.email_field :email1, placeholder: "Email 1", validate: { presence: true }
+         =message_form.email_field :email2, placeholder: "Email 2"
+         =message_form.email_field :email3, placeholder: "Email 3"
+         =message_form.email_field :email3, placeholder: "Email 4"
+
+      %div.section
+         <span>2</span>Message
+      %div.inner-wrap
+         =message_form.text_area :content, placeholder: "Message"
+
+      %div.button-section
+         %div.field
+            =message_form.submit "Send"
+            =message_form.submit "Cancel"

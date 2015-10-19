@@ -24,6 +24,11 @@ Rails.application.routes.draw do
           member do
             get 'create'
             get 'editdrawingdetails'
+            get 'show_image'
+            get 'getimage'
+            get 'displayimage'
+            get 'send_image_form'
+            post 'send_image'
             post 'updatedrawingdetails'
           end
         end

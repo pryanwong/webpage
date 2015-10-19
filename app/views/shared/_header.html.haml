@@ -12,8 +12,12 @@
             = link_to editdrawingdetails_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
                %span Edit
          %li
-            %a{:href=>'#', :onclick => "drawAsPNG()"}
+            = link_to show_image_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
                %span PNG
+      - if @viewpng == true
+         %li
+            = link_to edit_company_user_drawing_path(@companyid,@userid,@drawingid) do
+               %span Back to Drawing
       %li
          %a{:href=>'#'}
             %span Company

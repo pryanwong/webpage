@@ -28,15 +28,25 @@ module RubyGettingStarted
     config.action_mailer.raise_delivery_errors = true
     config.action_mailer.perform_deliveries = true
     config.action_mailer.delivery_method = :smtp
+    
+    #config.action_mailer.smtp_settings = {
+    #  address: "smtp.gmail.com",
+    #  port: "587",
+    #  domain: "gmail.com",
+    #  user_name: ENV["GOOGLE_CONTACT_EMAIL"],
+    #  password: ENV["GOOGLE_CONTACT_EMAIL_PASS"],
+    #  authentication: "plain",
+    #  enable_starttls_auto: true
+    #}
+
     config.action_mailer.smtp_settings = {
-      address: "smtp.gmail.com",
-      port: "587",
-      domain: "gmail.com",
-      user_name: ENV["GOOGLE_CONTACT_EMAIL"],
-      password: ENV["GOOGLE_CONTACT_EMAIL_PASS"],
+      address: "smtpout.secureserver.net",
+      port:     "80",
+      domain: "www.fiveforces.ca",
       authentication: "plain",
-      enable_starttls_auto: true
-   }
+      user_name: ENV["GODADDY_CONTACT_EMAIL"],
+      password: ENV["GODADDY_CONTACT_EMAIL_PASS"]
+    }
 
    config.action_mailer.default_url_options = {
       :host => 'localhost:5000'

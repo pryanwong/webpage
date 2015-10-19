@@ -3,6 +3,7 @@ class DrawingsController < ApplicationController
   respond_to :json, :html
   load_and_authorize_resource
   before_filter :check_for_cancel, :only => [:updatedrawingdetails]
+  layout :resolve_layout
 
   def index
        @user = User.find(session[:id])
@@ -57,6 +58,7 @@ class DrawingsController < ApplicationController
     @drawing.user_id = params[:user_id]
     @drawing.opportunity = params[:opportunity]
     @drawing.drawing = ""
+    @drawing.png = ""
     if @drawing.save
       # Handle a successful update.
       flash[:notice] = "New Drawing Saved"
@@ -71,8 +73,9 @@ class DrawingsController < ApplicationController
     logger.fatal "Drawing Vals: #{params.inspect}"
     @drawing = Drawing.find(params[:id])
     @drawing.drawing = params[:drawing].to_json
-
+    @drawing.png     = params[:png]
     logger.fatal "Drawing Vals: #{@drawing.drawing}"
+    logger.fatal "Drawing png: #{@drawing.png}"
        if @drawing.save
          render :json => [ @drawing].to_json
        else
@@ -80,11 +83,62 @@ class DrawingsController < ApplicationController
        end
   end
 
+  def displayimage
+     drawing = Drawing.find(params[:id])
+     @png = drawing.png
+  end
+
+  def getimage
+     drawing = Drawing.find(params[:id])
+     png = drawing.png
+     justpngdata = png.slice(png.index(",")+1..-1)
+     decodedImage = Base64.decode64(justpngdata)
+     send_data decodedImage, :type => 'image/png',:disposition => 'inline'
+  end
+
+  def show_image
+      drawing = Drawing.find(params[:id])
+      @png = drawing.png
+      @companyid = params[:company_id]
+      @userid = params[:user_id]
+      @drawingid = params[:id]
+      @viewpng = true
+  end
+
+  def send_image_form
+      @message = MessageImage.new
+      @message.company_id = params[:company_id]
+      @message.user_id = params[:user_id]
+      @message.drawing_id = params[:id]
+  end
+
+  def send_image
+    logger.fatal "Inspect Params"
+    logger.fatal "#{params.inspect}"
+    @message = MessageImage.new
+    @message.company_id = params[:company_id]
+    @message.user_id = params[:user_id]
+    @message.drawing_id = params[:id]
+    @message.email1 = params[:message_image][:email1]
+    @message.email2 = params[:message_image][:email2]
+    @message.email3 = params[:message_image][:email3]
+    @message.email4 = params[:message_image][:email4]
+    logger.fatal "Inspect Message"
+    logger.fatal "#{@message.inspect}"
+    if @message.valid?
+      MessageImageMailer.new_message(@message).deliver
+      redirect_to edit_company_user_drawing_path(params[:company_id] ,params[:user_id],params[:id] ), notice: "Your messages has been sent."
+    else
+      flash[:alert] = "An error occurred while delivering this message."
+      redirect_to edit_company_user_drawing_path(params[:company_id] ,params[:user_id],params[:id] )
+    end
+
+  end
 
   private
 
     def drawing_params
-      params.require(:drawing).permit(:customer, :opportunity, :description)
+      params.require(:drawing).permit(:customer, :opportunity, :description, :png)
     end
 
     def check_for_cancel
@@ -92,5 +146,14 @@ class DrawingsController < ApplicationController
         redirect_to edit_company_user_drawing_path
       end
     end
+
+    def resolve_layout
+       case action_name
+          when "displayimage"
+             "nolayout"
+          else
+             "application"
+          end
+  end
 
 end

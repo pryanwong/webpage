@@ -12,11 +12,13 @@ function onSave(company_id, user_id, id) {
  }
  var data_drawing2 = JSON.stringify(canvas);
  var token = $('meta[name="csrf-token"]').attr('content');
+ var png_file = canvas.toDataURL('png');
  console.log("Token: " + token)
  var json_data = { company_id: company_id,
                    user_id:  user_id,
                    id: id,
                    authenticity_token: token,
+                   png: png_file,
                    drawing: canvas  }
  console.log(JSON.stringify(json_data))
  var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + id +".json"

@@ -1,7 +1,7 @@
 class MessageMailer < ActionMailer::Base
 
-  default from: "Your Mailer <adapetersean@gmail.com>"
-  default to: "Sean Ferenci <adapetersean@gmail.com>"
+  default from: "Your Mailer <sferenci@fiveforces.ca>"
+  default to: "Sean Ferenci <sferenci@fiveforces.ca>"
 
   def new_message(message)
     @message = message
