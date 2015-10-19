@@ -89,10 +89,13 @@ class DrawingsController < ApplicationController
   end
 
   def getimage
+     logger.fatal "Looking at drawing #{params[:id]}"
      drawing = Drawing.find(params[:id])
      png = drawing.png
      justpngdata = png.slice(png.index(",")+1..-1)
+     logger.fatal "Made it past justpngdata"
      decodedImage = Base64.decode64(justpngdata)
+     logger.fatal "decoded Image"
      send_data decodedImage, :type => 'image/png',:disposition => 'inline'
   end
 
