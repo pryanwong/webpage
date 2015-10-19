@@ -91,9 +91,9 @@ class DrawingsController < ApplicationController
   def getimage
      logger.fatal "Looking at drawing #{params[:id]}"
      drawing = Drawing.find(params[:id])
-     png = drawing.png
-     logger.fatal "Looking at png #{png}"
-     justpngdata = png.slice(png.index(",")+1..-1)
+     logger.fatal "#{drawing.inspect}"
+     logger.fatal "Looking at png #{drawing.png}"
+     justpngdata = drawing.png.slice(drawing.png.index(",")+1..-1)
      logger.fatal "Made it past justpngdata"
      decodedImage = Base64.decode64(justpngdata)
      logger.fatal "decoded Image"
