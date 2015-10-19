@@ -14,7 +14,8 @@ class Ability
          can :read, Company, :id => user.company_id
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
          can [:create, :read, :update, :destroy ], Division, :company_id => user.company_id
-         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
+         can [:create], Drawing
+         can [:index, :read, :update, :edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
            (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
          end
          can [:index,:show,:newdrawing,:newdrawingproc], :user
@@ -22,9 +23,10 @@ class Ability
        elsif user.role? :admin
          can :manage, :all
        elsif user.role? :user
-         can [:read, :create, :update, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
+         can [:index, :read, :update,:edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
            (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
          end
+         can [:create], Drawing
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
        end
     #

@@ -138,7 +138,7 @@ class DrawingsController < ApplicationController
   private
 
     def drawing_params
-      params.require(:drawing).permit(:customer, :opportunity, :description, :png)
+      params.permit(:customer, :opportunity, :description, :png)
     end
 
     def check_for_cancel
