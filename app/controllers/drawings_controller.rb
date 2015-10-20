@@ -2,7 +2,7 @@ class DrawingsController < ApplicationController
   before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
   load_and_authorize_resource
-  before_filter :check_for_cancel, :only => [:updatedrawingdetails]
+  before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image_form]
   layout :resolve_layout
 
   def index
@@ -35,6 +35,8 @@ class DrawingsController < ApplicationController
   end
 
   def updatedrawingdetails
+      session.delete(:return_to)
+      session[:return_to] ||= request.referer
       logger.fatal "Params Inspect updatedrawingdetails #{params.inspect}"
       @drawing = Drawing.find(params[:id])
       @user = User.find(params[:user_id])
@@ -110,6 +112,10 @@ class DrawingsController < ApplicationController
   end
 
   def send_image_form
+      session.delete(:return_to)
+      session[:return_to] ||= request.referer
+      logger.fatal "In Send Image Form"
+      logger.fatal "#{session.inspect}"
       @message = MessageImage.new
       @message.company_id = params[:company_id]
       @message.user_id = params[:user_id]
@@ -127,14 +133,15 @@ class DrawingsController < ApplicationController
     @message.email2 = params[:message_image][:email2]
     @message.email3 = params[:message_image][:email3]
     @message.email4 = params[:message_image][:email4]
+    @message.content = params[:message_image][:content]
     logger.fatal "Inspect Message"
     logger.fatal "#{@message.inspect}"
     if @message.valid?
       MessageImageMailer.new_message(@message).deliver
-      redirect_to edit_company_user_drawing_path(params[:company_id] ,params[:user_id],params[:id] ), notice: "Your messages has been sent."
+      redirect_to company_user_path(session[:company_id] ,session[:user_id]), notice: "Your messages has been sent."
     else
       flash[:alert] = "An error occurred while delivering this message."
-      redirect_to edit_company_user_drawing_path(params[:company_id] ,params[:user_id],params[:id] )
+      redirect_to company_user_path(session[:company_id] ,session[:user_id])
     end
 
   end
@@ -146,8 +153,9 @@ class DrawingsController < ApplicationController
     end
 
     def check_for_cancel
+      session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
       if params[:button] == "Cancel"
-        redirect_to edit_company_user_drawing_path
+        redirect_to session.delete(:return_to)
       end
     end
 

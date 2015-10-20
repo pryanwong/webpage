@@ -3,15 +3,15 @@
       %td= @user.email
       -if current_user.role? :admin
          %td=link_to "Companies", companies_path
-         %td{:colspan=>"4"}
+         %td{:colspan=>"5"}
       -elsif current_user.role? :moderator
          %td= link_to current_user.company.name, company_path(@user.company_id)
-         %td{:colspan=>"4"}
-      -else
          %td{:colspan=>"5"}
+      -else
+         %td{:colspan=>"6"}
    %tr{:class=>"titleTr"}
       %td{:class=>"titleTd"}DRAWINGS
-      %td{:colspan=>"3"}
+      %td{:colspan=>"4"}
       %td{:align=>"right"} New
       %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), newdrawing_company_user_path(@user.company.id, @user.id)
    -if @listdawings == true
@@ -21,6 +21,7 @@
          %th= sortable "customer"
          %th= sortable "user_id"
          %th= sortable "updated_at"
+         %th Send
          %th Edit
       %tbody
          -@userdrawings.each do |drawing|
@@ -30,5 +31,6 @@
                %td= drawing.customer
                %td= drawing.user.email
                %td= drawing.updated_at
+               %td= link_to image_tag("email-icon.png"), send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
                %td{:class=>"controlTd"}= link_to image_tag("9Q5f6cv.png"), edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
       =will_paginate @userdrawings

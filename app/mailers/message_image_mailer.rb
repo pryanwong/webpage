@@ -1,6 +1,6 @@
 class MessageImageMailer < ActionMailer::Base
 
-  default from: "Your Mailer <sferenci@fiveforces.ca>"
+  default from: "SaleSketch <sferenci@fiveforces.ca>"
   default to: "Sean Ferenci <sferenci@fiveforces.ca>"
 
   def new_message(message)
@@ -12,8 +12,8 @@ class MessageImageMailer < ActionMailer::Base
     justpngdata = png.slice(png.index(",")+1..-1)
     decodedImage = Base64.decode64(justpngdata)
     attachments['image.png'] = decodedImage
-
-    mail to: @message.email1
+    emails = [@message.email1, @message.email2, @message.email3, @message.email4]
+    mail to: emails
   end
 
 end
