@@ -1,9 +1,39 @@
 class UsersController < ApplicationController
   #before_filter(:only => [:index, :show]) { unauthorized! if cannot? :read, :user }
-  helper_method :sort_column, :sort_direction
+  helper_method :sort_column, :sort_column_user, :sort_direction
   load_and_authorize_resource :user
   #load_and_authorize_resource :drawing
   before_filter :check_for_cancel, :only => [:newdrawingproc, :create, :update]
+
+  def showall
+    @users = User.all.order("email" + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+  end
+
+  def switchuser
+    session[:switched]  = true;
+    session[:adminuser] = session[:user_id]
+    session[:admincompany] = session[:company_id]
+    @user = User.find(params[:user_id])
+    @current_user = @user
+    session.delete(:user_id)
+    session.delete(:company_id)
+    session[:user_id]  = @user.id
+    session[:company_id] = @user.company_id
+    redirect_to company_user_path(@user.company_id , @user.id)
+  end
+
+  def switchback
+    session.delete(:switched)
+    @user = User.find(session[:adminuser])
+    @current_user = @user
+    session.delete(:adminuser)
+    session.delete(:admincompany)
+    session.delete(:user_id)
+    session.delete(:company_id)
+    session[:user_id]  = @user.id
+    session[:company_id] = @user.company_id
+    redirect_to company_user_path(@user.company_id , @user.id)
+  end
 
   def new
     session.delete(:return_to)
@@ -148,6 +178,10 @@ class UsersController < ApplicationController
 
     def sort_column
        Drawing.column_names.include?(params[:sort]) ? params[:sort] : "customer"
+    end
+
+    def sort_column_user
+       User.column_names.include?(params[:sort]) ? params[:sort] : "email"
     end
 
     def sort_direction

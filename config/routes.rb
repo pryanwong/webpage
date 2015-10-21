@@ -17,9 +17,14 @@ Rails.application.routes.draw do
     resources :sessions, only: [:create, :destroy]
     resource :home, only: [:show]
     resource :pages
-    resources :users, only: [:show]
+    resources :users do
+       get 'showall'
+       get 'show'
+    end
     resources :companies do
       resources :users do
+        get 'switchuser'
+        get 'switchback'
         resources :drawings do
           member do
             get 'create'

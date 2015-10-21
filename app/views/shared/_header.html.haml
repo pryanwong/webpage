@@ -24,6 +24,14 @@
       %li
          %a{:href=>'#'}
             %span Contact
+      -if current_user.role_id == 3
+         %li
+            = link_to user_showall_path(session[:user_id]) do
+               %span Switch User
+      -if session[:switched] == true
+         %li
+            = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
+               %span Switch Back
       %li
          - if current_user
             =link_to signout_path, :class => 'last' do

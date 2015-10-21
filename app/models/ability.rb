@@ -13,8 +13,9 @@ class Ability
        if user.role? :moderator
          can :read, Company, :id => user.company_id
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
+          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create, :read, :update, :destroy ], Division, :company_id => user.company_id
-         can [:create], Drawing
+         can [:create], Drawing, :user_id => user.id, :companpy_id => user.company_id
          can [:index, :read, :update, :edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
            (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
          end
@@ -26,7 +27,8 @@ class Ability
          can [:index, :read, :update,:edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
            (drawing.user_id == user.id || ((UserMembership.where(division: (user.divisions.select{|u| u.share==true}.map{|x| x[:id]}))).map{|y| y[:user_id]}.include? drawing.user_id))
          end
-         can [:create], Drawing
+         can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
+         can [:create], Drawing, :user_id => user.id, :companpy_id => user.company_id
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
        end
     #
