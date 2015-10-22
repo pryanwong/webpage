@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   end
 
   def switchuser
-    if current_user.role_id == 3
+    if current_user.role_id == 3 && !session[:switched] == true
        session[:switched]  = true;
        session[:adminuser] = session[:user_id]
        session[:admincompany] = session[:company_id]

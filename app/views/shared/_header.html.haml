@@ -24,7 +24,7 @@
       %li
          %a{:href=>'#'}
             %span Contact
-      -if current_user.role_id == 3
+      -if current_user.role_id == 3 && !session[:switched] == true
          %li
             = link_to user_showall_path(session[:user_id]) do
                %span Switch User
