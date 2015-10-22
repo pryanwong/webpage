@@ -13,6 +13,8 @@
    border-bottom: rgba(0, 0, 0, 0.05) 1px solid;
 }
 
+.flatTable tbody tr td a {background: #d4d1d5;}
+
 th {
    box-sizing: border-box;
    font-size: 12pt;
@@ -21,7 +23,7 @@ th {
 }
 
 th .asc {
-   background-image: url(/assets/up_arrow.gif);
+   background-image: url(/assets/arrows_up_5.png);
    background-position: right center; /*Positioning*/
    background-repeat: no-repeat;
    box-sizing: border-box;
@@ -31,7 +33,7 @@ th .asc {
 }
 
 th .desc {
-   background-image: url(/assets/down_arrow.gif);
+   background-image: url(/assets/arrows_down_5.png);
    background-position: right center; /*Positioning*/
    background-repeat: no-repeat;
    padding-right: 20px;
@@ -56,6 +58,11 @@ th .desc {
 .flatTable .plusTd {
    background: rgba(0, 0, 0, 0.1);
 }
+
+.flatTable .plusTd a {
+   background: rgba(0, 0, 0, 0.1);
+}
+
 .flatTable .controlTd {
    position: relative;
    width: 80px;

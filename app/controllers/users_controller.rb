@@ -10,29 +10,35 @@ class UsersController < ApplicationController
   end
 
   def switchuser
-    session[:switched]  = true;
-    session[:adminuser] = session[:user_id]
-    session[:admincompany] = session[:company_id]
-    @user = User.find(params[:user_id])
-    @current_user = @user
-    session.delete(:user_id)
-    session.delete(:company_id)
-    session[:user_id]  = @user.id
-    session[:company_id] = @user.company_id
-    redirect_to company_user_path(@user.company_id , @user.id)
+    if current_user.role_id == 3
+       session[:switched]  = true;
+       session[:adminuser] = session[:user_id]
+       session[:admincompany] = session[:company_id]
+       @user = User.find(params[:user_id])
+       @current_user = @user
+       session.delete(:user_id)
+       session.delete(:company_id)
+       session[:user_id]  = @user.id
+       session[:company_id] = @user.company_id
+       redirect_to company_user_path(@user.company_id , @user.id)
+    else
+       redirect_to company_user_path(session[:company_id] , session[:user_id])
+    end
   end
 
   def switchback
-    session.delete(:switched)
-    @user = User.find(session[:adminuser])
-    @current_user = @user
-    session.delete(:adminuser)
-    session.delete(:admincompany)
-    session.delete(:user_id)
-    session.delete(:company_id)
-    session[:user_id]  = @user.id
-    session[:company_id] = @user.company_id
-    redirect_to company_user_path(@user.company_id , @user.id)
+    if session[:switched]
+       session.delete(:switched)
+       @user = User.find(session[:adminuser])
+       @current_user = @user
+       session.delete(:adminuser)
+       session.delete(:admincompany)
+       session.delete(:user_id)
+       session.delete(:company_id)
+       session[:user_id]  = @user.id
+       session[:company_id] = @user.company_id
+    end
+    redirect_to company_user_path(session[:company_id] , session[:user_id])
   end
 
   def new
