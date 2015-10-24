@@ -8,10 +8,14 @@ This application is in Progress but will look awesome when it's finished
 ## Deploying to Heroku
 
 ```sh
-$ heroku create
 $ git push heroku master
 $ heroku run rake db:migrate
+$ heroku run rake assets:precompile
 $ heroku open
+$ heroku logs --tail
+
+To peak at the database
+$ heroku pg:psql
 ```
 
 ## Documentation

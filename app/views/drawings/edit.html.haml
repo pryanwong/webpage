@@ -24,40 +24,41 @@
    = @drawing.customer
    Opportunity:
    = @drawing.opportunity
-%div{:style=>"width:225px;position:absolute;left:0"}
-   %div{ :id=>"accordion", :style=>"width:225px" }
-      %h3 Cameras
-      %div{:style=>"margin:0px;padding:0px;"}
-         %div{:id=>"images"}
-            %table
-               %tr
-                  %td
-                     = image_tag "IED.png", :img_val=>"IED.png", :draggable=>"true", :width=>"71", :height => "34"
-                     %figcaption IED
-                  %td
-                     = image_tag "esprit_cam.png", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
-                     %figcaption Esprit Cam
-               %tr
-                  %td
-                     = image_tag "Switch.png", :img_val=>"Switch.png", :draggable=>"true", :width=>"108", :height => "75"
-                     %figcaption Switch
-                  %td
-                     = image_tag "GE_WiYZ.png", :img_val=>"GE_WiYZ.png", :draggable=>"true", :width=>"72", :height => "83"
-                     %figcaption WiYZ
-               %tr
-                  %td
-                     = image_tag "line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
-                     %figcaption Line
-                  %td
-                     = image_tag "textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
-                     %figcaption Text Box
-      %h3 Networking
-      %div{:style=>"margin:0px;padding:0px;"}
-      %h3 Shapes
-      %div{:style=>"margin:0px;padding:0px;"}
-%div{:id=>"div2", :style=>"position:absolute;left:230px"}
-   %div{:id=>"canvas-container"}
-      %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
+%div{:id=>"accordian-canvas-wrapper", :style=>"position:relative;top:60px;height:1000px;width:100%;"}
+   %div{:id=>"accordian-container"}
+      %div{ :id=>"accordion" }
+         %h3 Cameras
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
+                  %tr
+                     %td
+                        = image_tag "IED.png", :img_val=>"IED.png", :draggable=>"true", :width=>"71", :height => "34"
+                        %figcaption IED
+                     %td
+                        = image_tag "esprit_cam.png", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
+                        %figcaption Esprit Cam
+                  %tr
+                     %td
+                        = image_tag "Switch.png", :img_val=>"Switch.png", :draggable=>"true", :width=>"108", :height => "75"
+                        %figcaption Switch
+                     %td
+                        = image_tag "GE_WiYZ.png", :img_val=>"GE_WiYZ.png", :draggable=>"true", :width=>"72", :height => "83"
+                        %figcaption WiYZ
+                  %tr
+                     %td
+                        = image_tag "line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
+                        %figcaption Line
+                     %td
+                        = image_tag "textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
+                        %figcaption Text Box
+         %h3 Networking
+         %div{:style=>"margin:0px;padding:0px;"}
+         %h3 Shapes
+         %div{:style=>"margin:0px;padding:0px;"}
+   %div{:id=>"div2", :style=>"position:absolute;left:230px"}
+      %div{:id=>"canvas-container"}
+         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
 
 :javascript
      var handler = "";

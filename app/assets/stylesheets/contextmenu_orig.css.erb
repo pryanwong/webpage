@@ -9,9 +9,72 @@
     -webkit-user-drag: element;
     cursor: move;
 }
+#color{
+
+    background: url('/assets/coffee.jpg') no-repeat 50% 50% ;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    height: 100%;
+    width: 100%;
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+
+}
+
+#blackwhite{
+
+    background: url('/assets/coffee-bw.jpg') no-repeat 50% 50%;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0px;
+    display: block;
+
+}
+
+#sepia{
+
+    background: url('/assets/coffee-sepia.jpg') no-repeat 50% 50%;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 200%;
+    left: 0px;
+    display: block;
+
+
+}
+
+#page-container {
+   position: relative;
+   top:40px;
+   height:1800px;
+   width:100%;
+}
+
+#accordian-canvas-wrapper {
+    position:relative;
+    top:60px;
+    height:1000px;
+    width:100%;
+}
 
 #canvas-container {
-    position: relative;
+    position: absolute;
     width: 1000px;
     height: 800px;
     box-shadow: 0 0 5px 1px black;
@@ -25,6 +88,10 @@
     opacity: 0.4;
 }
 
+#menubar {
+  position: relative;
+  top: 50px;
+}
 
 .hide {
     display: none;
@@ -118,8 +185,9 @@ html, body, div, canvas {
     box-sizing: border-box;
 }
 
-#accordian {
-    width:250;
+#accordian-container {
+  position: absolute;
+  width: 200px;
 }
 
 #accordion .ui-accordion-content {
@@ -138,4 +206,12 @@ html, body, div, canvas {
 
 accordion .ui-accordion-header h3 {
     font-size: 8pt;
+}
+
+#footer {
+ width:100%;
+ height:100px;
+ position:relative;
+ bottom:0px;
+ left:0;
 }

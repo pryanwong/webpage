@@ -1,7 +1,11 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
 #cssmenu {
+  position: fixed;
+  top: 0px;
+  left: 0px;
   background: #2A88AD;
-  width: auto;
+  width: 100%;
+  z-index: 1000;
 }
 #cssmenu ul {
   list-style: none;

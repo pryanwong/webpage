@@ -14,9 +14,9 @@ class PagesController < ApplicationController
 
   def accessdenied
   end
-  
+
   private
    def pages_layout
-     "pages"
+     "longpages"
    end
 end
