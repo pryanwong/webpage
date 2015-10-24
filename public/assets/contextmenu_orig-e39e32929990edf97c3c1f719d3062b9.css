@@ -1,0 +1,218 @@
+/* Prevent the text contents of draggable elements from being selectable. */
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+    cursor: move;
+}
+#color{
+
+    background: url('/assets/coffee.jpg') no-repeat 50% 50% ;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    height: 100%;
+    width: 100%;
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+
+}
+
+#blackwhite{
+
+    background: url('/assets/coffee-bw.jpg') no-repeat 50% 50%;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0px;
+    display: block;
+
+}
+
+#sepia{
+
+    background: url('/assets/coffee-sepia.jpg') no-repeat 50% 50%;
+    background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 200%;
+    left: 0px;
+    display: block;
+
+
+}
+
+#page-container {
+   position: relative;
+   top:40px;
+   height:1800px;
+   width:100%;
+}
+
+#accordian-canvas-wrapper {
+    position:relative;
+    top:60px;
+    height:1000px;
+    width:100%;
+}
+
+#canvas-container {
+    position: absolute;
+    width: 1000px;
+    height: 800px;
+    box-shadow: 0 0 5px 1px black;
+    margin: 10px auto;
+    border: 5px solid transparent;
+}
+#canvas-container.over {
+    border: 5px dashed cyan;
+}
+#images img.img_dragging {
+    opacity: 0.4;
+}
+
+#menubar {
+  position: relative;
+  top: 50px;
+}
+
+.hide {
+    display: none;
+}
+
+textarea  {
+  resize: none;
+  font-family: Consolas, Courier New, monospace;
+  font-size:14px;
+}
+
+div.padded {
+      padding-top: 0px;
+      padding-right: 0px;
+      padding-bottom: 0px;
+      padding-left: 0px;
+    }
+
+.show {
+    display: inline;
+}
+
+.glossymenu {
+   position: absolute;
+}
+
+.glossymenu ul{
+position: absolute;
+list-style-type: none;
+margin: 5px 0;
+padding: 0;
+width: 250px;
+border: 1px solid #9A9A9A;
+border-bottom-width: 0;
+list-style-type: none;
+list-style: none;
+}
+
+.glossymenu li a{
+background: white url(media/glossyback.gif) repeat-x bottom left;
+font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
+color: white;
+display: block;
+width: auto;
+padding: 3px 0;
+padding-left: 10px;
+text-decoration: none;
+list-style-type: none;
+list-style: none;
+
+}
+
+
+* html .glossymenu li a{ /*IE only. Actual menu width minus left padding of A element (10px) */
+background: white url(image_path("glossyback.gif")) repeat-x bottom left;
+font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
+color: white;
+display: block;
+width: auto;
+padding: 0px 0;
+padding-left: 0px;
+text-decoration: none;
+}
+
+.glossymenu li a:visited, .glossymenu li a:active{
+color: white;
+}
+
+.glossymenu li a:hover{
+background-image: url(image_path("glossyback2.gif"));
+}
+
+.LabelFormDiv {
+display: none;
+}
+
+.foo {
+    position: absolute;
+    left: 110px;
+    top: 10px;
+}
+
+html, body, div, canvas {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#accordian-container {
+  position: absolute;
+  width: 200px;
+}
+
+#accordion .ui-accordion-content {
+    font-size: 10pt;
+}
+
+#accordion .ui-accordion-content > * {
+    margin: 0;
+}
+
+#accordion .ui-accordion-header {
+    line-height: 10px;   //reduces height of the header box
+    font-size: 8pt;
+    text-indent: 10px;
+}
+
+accordion .ui-accordion-header h3 {
+    font-size: 8pt;
+}
+
+#footer {
+ width:100%;
+ height:100px;
+ position:relative;
+ bottom:0px;
+ left:0;
+}
