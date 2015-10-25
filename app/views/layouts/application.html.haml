@@ -13,5 +13,6 @@
       - flash.each do |key, value|
          .alert{:key=> '#{key}'}=value
       = render "shared/header"
-      = yield
+      %div#pagewrapper
+         = yield
       = render "shared/footer"
