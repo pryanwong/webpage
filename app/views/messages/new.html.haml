@@ -1,7 +1,4 @@
-%div#color
-%div#sepia
-%div#blackwhite
-%div#page-container
+%div#letter
    %div.form-style-10
       %h1 Get In Touch...<span>We want to work with you!</span>
       =form_for @message, url: contact_path do |message_form|
@@ -18,4 +15,4 @@
 
          %div.button-section
             %div.field
-               =message_form.submit "Send"
+            =message_form.submit "Send"

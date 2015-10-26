@@ -3,7 +3,6 @@
    %head
       %title Sales Sketch Program
       =stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
-      %link{:type => "text/css", :rel => "stylesheet", :href => "http://fonts.googleapis.com/css?family=Bitter"}
       =javascript_include_tag 'application', 'data-turbolinks-track' => true
       =javascript_include_tag 'jquery-ui'
       =javascript_include_tag 'jquery-2.1.3.min'
@@ -14,5 +13,6 @@
       - flash.each do |key, value|
          .alert{:key=> '#{key}'}=value
       = render "shared/header_start"
-      = yield
-      = render "shared/footer_home"
+      %div#pagewrapper
+         = yield
+      = render "shared/footer"

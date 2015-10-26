@@ -24,6 +24,6 @@ private
 
   private
    def pages_layout
-     "longpages"
+     "singleimageback"
    end
 end

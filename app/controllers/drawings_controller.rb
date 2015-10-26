@@ -163,6 +163,8 @@ class DrawingsController < ApplicationController
        case action_name
           when "displayimage"
              "nolayout"
+          when "edit"
+             "editlayout"
           else
              "application"
           end
