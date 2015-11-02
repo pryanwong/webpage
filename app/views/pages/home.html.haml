@@ -1,60 +1,89 @@
 %iframe{:id=>"logoutframe", :src=>"https://accounts.google.com/logout",:style=>"display: none"}
-%div#color
-   %div#hero
-      %h2 Sales Diagrams Made Simple
-      %div{:class=>"desc"}
-         %p SalesSketch allows your sales force to quickly capture requirements. Document the need, make the sale, create a customer.
-         %a{:href=>'/contact.html', :class=>'button'} Contact Us
-         %a{:href=>'#blackwhite'} Learn More
-%div#sepia
-%div#blackwhite
+%section#hero
+   %div#hero_bg
+   %h2 Sales Diagrams Made Simple
+   %div{:class=>"desc"}
+      %p SalesSketch allows your sales force to quickly capture requirements. Document the need, make the sale, create a customer.
+   %nav
+      %a{:href=>'/contact.html', :class=>'button'} Contact Us
+      %a#learnmore{:href=>'#features'} Learn More
+%section{:class=>"points"}
+   %a{:name=>"features"}
+   %div{:class=>"inner"}
+      %div{:class=>"point shop"}
+         %span
+         %h4 Setup Shop
+         %p Sell products and/or subscriptions without writing any code at all.
+      %div{:class=>"point wallet"}
+         %span
+         %h4  Digital Wallet
+         %p Securely store your credit cards to use for purchases.
+      %div{:class=>"point debit"}
+         %span
+         %h4 Physical Goods
+         %p Send shipment notifications to your customers with one click.
+      %div{:class=>"point delivery"}
+         %span
+         %h4 Digital Delivery
+         %p Sell your digital goods and files. Ebooks, videos, music, etc.
 
 :javascript
-   $(document).ready(function(){
-                $(".color").click(function(){
-                    if ($("#color").is(":hidden")){
-                        $("#color").slideDown("fast");
-                    }
-                    else{
-                        $("#color").slideUp("fast");
-                    }
-                });
-            });
-            function closeForm(){
-                $("#messageSent").show("fast");
-                setTimeout('$("#messageSent").hide();$("#color").slideUp("slow")', 2000);
-           }
+   document.addEventListener("touchstart", function(){}, true);
 
-   $(document).ready(function() {
-     function filterPath(string) {
-       return string
-         .replace(/^\//,'')
-         .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
-         .replace(/\/$/,'');
-     }
-     $('a[href*=#]').each(function() {
-       if ( filterPath(location.pathname) == filterPath(this.pathname)
-       && location.hostname == this.hostname
-       && this.hash.replace(/#/,'') ) {
-         var $targetId = $(this.hash), $targetAnchor = $('[name=' + this.hash.slice(1) +']');
-         var $target = $targetId.length ? $targetId : $targetAnchor.length ? $targetAnchor : false;
-          if ($target) {
-            var targetOffset = $target.offset().top;
-            $(this).click(function() {
-              $('html, body').animate({scrollTop: targetOffset}, 1000);
-              var d = document.createElement("div");
-           d.style.height = "101%";
-           d.style.overflow = "hidden";
-           document.body.appendChild(d);
-           window.scrollTo(0,scrollToM);
-           setTimeout(function() {
-           d.parentNode.removeChild(d);
-               }, 10);
-              return false;
-            });
+      if(window.devicePixelRatio >= 1.2) {
+        var retinas = document.getElementsByTagName('img');
+        for(var i=0;i < retinas.length;i++){
+          var src = retinas[i].src;
+          retinas[i].src = src.substr(0, src.lastIndexOf(".")) + "@2x" + src.substr(src.lastIndexOf("."));
+        }
+      }
+
+      function scroller(num){
+         var st = document.body.scrollTop,
+             c = 0;
+          for(var i=st;i<num;i++){
+             setTimeout('window.scrollTo(0,'+ i +')',c);
+             c++;
+             i = i + 1;
+          }
+      }
+
+      document.getElementById('learnmore').onclick = function(e){
+          scroller(document.getElementById('hero').offsetHeight - 70);
+          e.preventDefault();
+      };
+
+      document.getElementById('view_pricing').onclick = function(e){
+         var offtop = document.getElementById('pricing').offsetTop;
+         if(offtop){
+            scroller(offtop - 70);
+            e.preventDefault();
          }
+      };
+
+      var hero_hi = new Image();
+      hero_hi.src = 'https://plasso.co/images/hero-hi.jpg';
+      hero_hi.onload = function(){
+        document.getElementById('hero_bg').style.backgroundImage = 'url(https://plasso.co/images/hero-hi.jpg)';
+      };
+
+      if(document.location.toString().indexOf('?features') != -1){
+         window.scrollTo(0,(document.getElementById('hero').offsetHeight - 72));
+      }
+
+      if(typeof window.orientation == 'undefined'){
+         var hero_elem = document.getElementById('hero_bg');
+         window.onscroll = function(){
+         var y = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+         if(y < 800){
+            var translate = 'translate3d(0,'+(y * 0.4) +'px,0)';
+            hero_elem.style.WebkitTransform = translate;
+            hero_elem.style.MozTransform = translate;
+            hero_elem.style.msTransform = translate;
+            hero_elem.style.OTransform = translate;
+            hero_elem.style.transform = translate;
+         }
+        };
        }
-     });
-   });
-   /*! Smooth Scroll - v1.4.5 - 2012-07-22
-   * Copyright (c) 2012 Karl Swedberg; Licensed MIT, GPL */
+       !function(s,q,u,a,r,e){e=function(){s=q.createElement(u);u=q.getElementsByTagName(u)[0];s.src='//d1l6p2sc9645hc.cloudfront.net/tracker.js';u.parentNode.insertBefore(s,u)};a=s[a]=s[a]||function(){(a.q=a.q||[]).push(arguments)};s[r]?s[r]('load',e,!1):s.attachEvent('onload',e);}(window,document,'script','_gs','addEventListener');
+       _gs('GSN-002248-V');
