@@ -48,6 +48,50 @@ th .desc {
    font-size: 12pt;
 }
 
+table.flatTable tr.headingTr th.first {
+   box-sizing: border-box;
+   padding-left: 30px;
+   font-size: 12pt;
+   width: 20%;
+}
+
+table.flatTable tr.headingTr th.second {
+   box-sizing: border-box;
+   padding-left: 30px;
+   font-size: 12pt;
+   width: 10%;
+}
+
+table.flatTable tr.titleTr td.first {
+   width: 20%;
+}
+
+td.first {
+   box-sizing: border-box;
+   padding-left: 30px;
+   font-size: 12pt;
+   width: 20%;
+}
+
+td.second {
+   box-sizing: border-box;
+   padding-left: 30px;
+   font-size: 12pt;
+   width: 10%;
+}
+td.third {
+   box-sizing: border-box;
+   padding-left: 30px;
+   font-size: 12pt;
+   width: 10%;
+}
+
+td.fourth {
+   box-sizing: border-box;
+   padding-left: 30px;
+   font-size: 12pt;
+   width: 10%;
+}
 .flatTable .titleTr {
    height: 70px;
    color: #f6f3f7;

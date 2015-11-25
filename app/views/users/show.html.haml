@@ -1,10 +1,10 @@
 %table{:class=>"flatTable"}
    %tr
       %td= @user.email
-      -if current_user.role? :admin
+      -if current_user.admin?
          %td=link_to "Companies", companies_path
          %td{:colspan=>"5"}
-      -elsif current_user.role? :moderator
+      -elsif current_user.moderator?
          %td= link_to current_user.company.name, company_path(@user.company_id)
          %td{:colspan=>"5"}
       -else
@@ -19,7 +19,7 @@
          %th= sortable "opportunity"
          %th= sortable "description"
          %th= sortable "customer"
-         %th= sortable "user_id"
+         %th= sortable "users.email", "email"
          %th= sortable "updated_at"
          %th Send
          %th Edit

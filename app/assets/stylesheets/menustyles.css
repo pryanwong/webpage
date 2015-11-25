@@ -3,7 +3,7 @@
   position: fixed;
   top: 0px;
   left: 0px;
-  background: #2A88AD;
+  background: #150579;
   width: 100%;
   z-index: 1000;
 }
@@ -51,8 +51,8 @@
   transition: color .25s;
 }
 #cssmenu ul li a:hover {
-  color: #000000;
-  background: #2A88AD;
+  color: #d3d0e3;
+  background: #150579;
 }
 #cssmenu ul li a:hover:before {
   width: 100%;
@@ -65,7 +65,7 @@
   top: 19px;
   height: 6px;
   width: 6px;
-  background: #ffffff;
+  background: #d3d0e3;
   opacity: .5;
 }
 #cssmenu ul li a:before {
@@ -76,7 +76,7 @@
   bottom: 0;
   height: 3px;
   width: 0;
-  background: #333333;
+  background: #d3d0e3;
   -webkit-transition: width .25s;
   -moz-transition: width .25s;
   -ms-transition: width .25s;
@@ -88,7 +88,7 @@
   display: none;
 }
 #cssmenu ul li.active a {
-  color: #333333;
+  color: #d3d0e3;
 }
 #cssmenu ul li.active a:before {
   width: 100%;
@@ -110,7 +110,7 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    border-bottom: 1px solid #2A88AD;
+    border-bottom: 1px solid #d3d0e3;
   }
   #cssmenu ul li.last > a,
   #cssmenu ul li:last-child > a {

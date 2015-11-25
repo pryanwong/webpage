@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   end
 
   def switchuser
-    if current_user.role_id == 3 && !session[:switched] == true
+    if current_user.admin? && !session[:switched] == true
        session[:switched]  = true;
        session[:adminuser] = session[:user_id]
        session[:admincompany] = session[:company_id]
@@ -52,21 +52,46 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id]);
     @listdrawings = false;
-
-    divs = @user.divisions
-    div_ids = divs.select{|u| u.share==true}.map{|x| x[:id]}
-    if (div_ids.count > 0)
-       user_ids = UserMembership.where(division: div_ids).map{|y| y[:user_id]}.uniq
-       @userdrawings = Drawing.where(user_id: user_ids).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+    @privacies = Drawing.privacies
+    @divs = @user.divisions.to_a
+    if sort_column == "users.email"
+      if @user.admin?
+         @userdrawings = Drawing.includes(:user).all.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+      elsif @user.moderator?
+         @userdrawings = Drawing.includes(:user).where("(user_id = ?) or (drawings.company_id = ?)", @user.id, @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+      else @user.user?
+         @userdrawings = Drawing.includes(:user).where("(user_id = ?) or (privacy = ? and division_id IN (?)) or (privacy = ? and drawings.company_id = ?)", @user.id, Drawing.privacies["division"], @divs, Drawing.privacies["company"], @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+      end
     else
-    #   @listdawings = true;
-       @userdrawings = Drawing.where(user_id: session[:user_id]).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+       if @user.admin?
+          @userdrawings = Drawing.all.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+       elsif @user.moderator?
+          @userdrawings = Drawing.where("(user_id = ?) or (company_id = ?)", @user.id, @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+       else @user.user?
+          @userdrawings = Drawing.where("(user_id = ?) or (privacy = ? and division_id IN (?)) or (privacy = ? and company_id = ?)", @user.id, Drawing.privacies["division"], @divs, Drawing.privacies["company"], @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+       end
     end
     if (@userdrawings.count > 0 )
        @listdawings = true;
     end
+  end
 
-
+  def drawsearch
+     @searchparam = params[:search]
+     @user = User.find(params[:id])
+     divs = @user.divisions
+     div_ids = divs.select{|u| u.share==true}.map{|x| x[:id]}
+     if (div_ids.count > 0)
+        user_ids = UserMembership.where(division: div_ids).map{|y| y[:user_id]}.uniq
+        @userdrawings = Drawing.where(user_id: user_ids).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+     else
+     #   @listdawings = true;
+        @userdrawings = Drawing.where(user_id: session[:user_id]).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+     end
+     if (@userdrawings.count > 0 )
+        @listdawings = true;
+     end
+     render 'show'
   end
 
   def edit
@@ -89,21 +114,32 @@ class UsersController < ApplicationController
        @company = Company.find(@user.company_id)
        @drawing = Drawing.new
        @drawing.user_id = @user.id
+       @drawing.company_id = @user.company_id
+       @divisions = @user.divisions
+       @divs = (@divisions).to_a
+       @divcount = @divs.length
        params.merge(:user_id => @user.id)
   end
 
   def newdrawingproc
-       logger.fatal "Drawing Object #{params.inspect}"
        @user = User.find(params[:id])
        @company = Company.find(@user.company_id)
        @drawing = Drawing.new
-       logger.fatal "Params Inspect newdrawingproc #{params.inspect}"
        @drawing.customer = params[:drawing][:customer]
        @drawing.opportunity = params[:drawing][:opportunity]
        @drawing.description = params[:drawing][:description]
+       @drawing.company_id  = params[:drawing][:company_id]
+       priv_level = params[:drawing][:privacy]
+       logger.fatal "priv_level is #{priv_level}"
+       @drawing.privacy     = Drawing.privacies[priv_level]
+       if @drawing.privacy == "division"
+          @drawing.division_id = params[:drawing][:division]
+       else
+          @drawing.division_id = 0
+       end
        params.merge(:id => @user.id)
        logger.fatal "Drawing Object #{@drawing.inspect}"
-       redirect_to company_user_drawing_path(@company.id, @user.id, {:id => @user.id, :customer => params[:drawing][:customer], :opportunity => params[:drawing][:opportunity], :description => params[:drawing][:description]})
+       redirect_to company_user_drawing_path(@company.id, @user.id, {:id => @user.id, :customer => @drawing.customer, :opportunity => @drawing.opportunity, :description => @drawing.description, :privacy => @drawing.privacy, :division_id => @drawing.division_id})
   end
 
   def update
@@ -113,10 +149,10 @@ class UsersController < ApplicationController
     #logger.fatal "Params all: #{params.inspect}"
     if params[:user][:isadmin].to_i == 1
        #logger.fatal "Is Admin True: Changing Role_id to 2"
-       @user.role_id = 2
+       @user.role = :moderator
     else
        #logger.fatal "Is Admin False: Changing Role_id to 1"
-       @user.role_id = 1
+       @user.role = :user
     end
     @user.company = Company.find(params[:company_id])
     @user.isadmin = params[:user][:isadmin]
@@ -139,16 +175,16 @@ class UsersController < ApplicationController
     val = 1
     if params[:user][:isadmin].to_i == 1
        #logger.fatal "Is Admin True: Changing Role_id to 2"
-       val = 2
+       val = User.roles["moderator"]
     else
        #logger.fatal "Is Admin False: Changing Role_id to 1"
-       val = 1
+       val = User.roles["user"]
     end
 
     #logger.fatal "Number of Users at Company: #{@company.users.size}"
     #logger.fatal "Number of Licenses: #{@company.licenses}"
     if (@company.users.size < @company.licenses && !User.exists?(email: params[:user][:email]))
-      if (@user = User.create(email: params[:user][:email], role_id: val, isadmin: params[:user][:isadmin]))
+      if (@user = User.create(email: params[:user][:email], role: val, isadmin: params[:user][:isadmin]))
         # Handle a successful update.
         flash[:notice] = "New User Saved"
         @user.company = @company
@@ -179,19 +215,15 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :isadmin, :role_id)
+      params.require(:user).permit(:email, :isadmin, :role)
     end
 
     def sort_column
-       Drawing.column_names.include?(params[:sort]) ? params[:sort] : "customer"
-    end
-
-    def sort_column_user
-       User.column_names.include?(params[:sort]) ? params[:sort] : "email"
+       (Drawing.column_names.include?(params[:sort]) || (params[:sort] == "users.email")) ? params[:sort] : "updated_at"
     end
 
     def sort_direction
-       %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+       %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
     end
 
     def check_for_cancel

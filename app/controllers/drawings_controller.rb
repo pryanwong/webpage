@@ -31,6 +31,9 @@ class DrawingsController < ApplicationController
        @user = User.find(params[:user_id])
        @company = Company.find(params[:company_id])
        @drawing = Drawing.find(params[:id])
+       @divisions = @user.divisions
+       @divs = (@divisions).to_a
+       @divcount = @divs.length
        render 'editdrawingdetails'
   end
 
@@ -41,9 +44,13 @@ class DrawingsController < ApplicationController
       @drawing = Drawing.find(params[:id])
       @user = User.find(params[:user_id])
       @company = Company.find(params[:company_id])
-      #@drawing.opportunity = params[:drawing][:opportunity]
-      #@drawing.customer = params[:drawing][:customer]
-      #@drawing.description = params[:drawing][:description]
+      priv_level = params[:drawing][:privacy]
+      @drawing.privacy     = Drawing.privacies[priv_level]
+      if @drawing.privacy == "division"
+         @drawing.division_id = params[:drawing][:division]
+      else
+         @drawing.division_id = 0
+      end
       if @drawing.update_attributes(drawing_params)
         flash[:notice] = "Edit Saved"
         redirect_to edit_company_user_drawing_path(@company.id, @user, @drawing)
@@ -58,9 +65,13 @@ class DrawingsController < ApplicationController
     @drawing.customer = params[:customer]
     @drawing.description = params[:description]
     @drawing.user_id = params[:user_id]
+    @drawing.company_id = params[:company_id]
     @drawing.opportunity = params[:opportunity]
+    @drawing.division_id = params[:division_id]
+    @drawing.privacy = params[:privacy]
     @drawing.drawing = ""
     @drawing.png = ""
+    logger.fatal "Drawing Object in drawings_controller create #{@drawing.inspect}"
     if @drawing.save
       # Handle a successful update.
       flash[:notice] = "New Drawing Saved"
@@ -149,7 +160,7 @@ class DrawingsController < ApplicationController
   private
 
     def drawing_params
-      params.permit(:customer, :opportunity, :description, :png)
+      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png)
     end
 
     def check_for_cancel

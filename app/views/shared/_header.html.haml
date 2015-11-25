@@ -4,6 +4,9 @@
          %li
             = link_to company_user_path(session[:company_id] ,session[:user_id]) do
                %span Home
+         %li
+            = link_to company_path(session[:company_id] ) do
+               %span Company
       - if @editdetails == true
          %li
             %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
@@ -20,11 +23,8 @@
                %span Back to Drawing
       %li
          %a{:href=>'#'}
-            %span Company
-      %li
-         %a{:href=>'#'}
             %span Contact
-      -if current_user.role_id == 3 && !session[:switched] == true
+      -if current_user.admin? && !session[:switched] == true
          %li
             = link_to user_showall_path(session[:user_id]) do
                %span Switch User

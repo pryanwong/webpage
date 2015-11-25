@@ -1,14 +1,16 @@
 %br
+%br
+%br
 %table{:class=>"flatTable"}
    %tr{:class=>"titleTr"}
-      %td Company
-      %td= link_to "Companies List", companies_path
-      %td
+      %td{:class=>"first"} Company
+      %td{:class=>"second"}= link_to "Companies List", companies_path
+      %td{:class=>"third"}
       %td
    %tr{:class=>"headingTr"}
-      %th Name
-      %th Licenses
-      %th
+      %th{:class=>"first"} Name
+      %th{:class=>"second"} Licenses
+      %th{:class=>"third"}
       %th
 
    %tr
@@ -29,31 +31,31 @@
    %table{:class=>"flatTable"}
       - if first
          %tr{:class=>"titleTr"}
-            %td Divisions
-            %td
-            %td
+            %td{:class=>"first"} Divisions
             %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_division_path(@company)
             - first = false
+            %td
+            %td
       %tr{:class=>"headingTr"}
-         %th Division
-         %th Share
-         %th
+         %th{:class=>"first"} Division
+         %th{:class=>"second"}
+         %th{:class=>"third"}
          %th
       %tr
-         %td= division.name
-         %td= division.share
-         %td= link_to "Edit", edit_company_division_path(@company, division)
-         %td= link_to "Remove", company_division_path(@company, division), method: :delete, data: { confirm: "Are you sure?" }
+         %td{:class=>"first"}= division.name
+         %td{:class=>"second"}= link_to "Edit", edit_company_division_path(@company, division)
+         %td{:class=>"third"}= link_to "Remove", company_division_path(@company, division), method: :delete, data: { confirm: "Are you sure?" }
+         %td
    %table{:class=>"flatTable"}
       %tr{:class=>"headingTr"}
-         %th User
+         %th{:class=>"first"} User
          %th
          %th
          %th
       -division.users.each do |user|
          %tr
-            %td= user.email
-            %td
+            %td{:class=>"first"}= user.email
+            %td{:class=>"second"}
                -if can? :removeuserdiv, User
                   =link_to "Remove", removeuserdiv_company_division_user_path(@company, division, user)
             %td
@@ -69,17 +71,19 @@
 
 %table{:class=>"flatTable"}
    %tr{:class=>"titleTr"}
-      %td{:class=>"titleTd"}USERS
-      %td{:colspan=>"1"}
+      %td{:class=>"first"}USERS
       %td{:align=>"right"} New
       -if can? :create, current_user
          %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_user_path(@company)
       -else
          %td
+      %td
+      %td
    %tr{:class=>"headingTr"}
-      %th Email
-      %th Admin
-      %th
+      %th{:class=>"first"} Email
+      %th{:class=>"second"} Admin
+      %th{:class=>"second"} Edit
+      %th{:class=>"second"} Remove
       %th
    -@company.users.each do |user|
       %tr
@@ -91,3 +95,4 @@
          %td
             -if can? :destroy, user
                = link_to "Remove", company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" }
+         %td
