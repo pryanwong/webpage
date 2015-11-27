@@ -46,6 +46,9 @@ class DrawingsController < ApplicationController
       @company = Company.find(params[:company_id])
       priv_level = params[:drawing][:privacy]
       @drawing.privacy     = Drawing.privacies[priv_level]
+      @drawing.opportunity = params[:drawing][:opportunity]
+      @drawing.customer    = params[:drawing][:customer]
+      @drawing.description    = params[:drawing][:description]
       if @drawing.privacy == "division"
          @drawing.division_id = params[:drawing][:division]
       else

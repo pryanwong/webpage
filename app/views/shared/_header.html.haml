@@ -4,6 +4,7 @@
          %li
             = link_to company_user_path(session[:company_id] ,session[:user_id]) do
                %span Home
+      - if (current_user.admin? || current_user.moderator?)
          %li
             = link_to company_path(session[:company_id] ) do
                %span Company
@@ -32,10 +33,11 @@
          %li
             = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
                %span Switch Back
-      %li
-         - if current_user
+      - if current_user
+         %li{:class=>'align-right'}
             =link_to signout_path, :class => 'last' do
-               %span Sign out
-         - else
+               %span #{current_user.email} Sign out
+      - else
+         %li
             =link_to "/auth/google_oauth2", id: "sign_in", :class => 'last' do
                %span Sign in with Google

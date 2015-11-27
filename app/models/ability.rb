@@ -10,11 +10,11 @@ class Ability
        if user.moderator?
          can :read, Company, :id => user.company_id
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
-          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
-         can [:create, :read, :update, :destroy ], Division, :company_id => user.company_id
+         can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
+         can [:create, :read, :update, :destroy, :adduserdiv ], Division, :company_id => user.company_id
          can [:create], Drawing, :user_id => user.id, :companpy_id => user.company_id
          can [:index, :read, :update, :edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
-            Drawing.where("company_id = ?", user.company_id )
+            Drawing.moderator_access(user).pluck("id").include? drawing.id
          end
          can [:index,:show,:newdrawing,:newdrawingproc], :user
          #can :manage, :all
@@ -22,7 +22,7 @@ class Ability
          can :manage, :all
        elsif user.user?
          can [:index, :read, :update,:edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
-           Drawing.where("user_id = ? or (privacy = ? and division_id = ?) or (privacy = ? and company_id = ?)", user.id, Drawing.privacies["division"], user.divisions, Drawing.privacies["company"], user.company_id )
+           Drawing.user_access(user).pluck("id").include? drawing.id
          end
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create], Drawing, :user_id => user.id, :companpy_id => user.company_id

@@ -1,5 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
+#wrapper_head{position: absolute;}
 #cssmenu {
+  float: left;
   position: fixed;
   top: 0px;
   left: 0px;
@@ -7,6 +9,36 @@
   width: 100%;
   z-index: 1000;
 }
+
+#errors {
+  position: relative;
+  background: #150500;
+  width: 100%;
+  padding: 5px;
+}
+
+#errors ul {
+  padding-left:5px;
+  line-height: 1;
+  zoom: 1;
+}
+
+#errors ul li {
+  color: red;
+  width: 100%;
+  padding-left: 5px;
+  margin-left: 10px;
+  list-style-type: square;
+}
+
+#errors ul li.green {
+  color: green;
+  width: 100%;
+  padding-left: 5px;
+  margin-left: 10px;
+  list-style-type: square;
+}
+
 #cssmenu ul {
   list-style: none;
   margin: 0;
@@ -28,9 +60,18 @@
   padding: 0;
   margin: 0;
 }
+
+#cssmenu ul li.align-right {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  float: right;
+}
+
 #cssmenu.align-right ul li {
   float: right;
 }
+
 #cssmenu.align-center ul {
   text-align: center;
 }
@@ -50,6 +91,7 @@
   -o-transition: color .25s;
   transition: color .25s;
 }
+
 #cssmenu ul li a:hover {
   color: #d3d0e3;
   background: #150579;
@@ -112,6 +154,7 @@
     box-sizing: border-box;
     border-bottom: 1px solid #d3d0e3;
   }
+
   #cssmenu ul li.last > a,
   #cssmenu ul li:last-child > a {
     border: 0;

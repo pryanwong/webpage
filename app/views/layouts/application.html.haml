@@ -10,7 +10,17 @@
       =javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"
       =csrf_meta_tags
    %body
-      - flash.each do |key, value|
-         .alert{:key=> '#{key}'}=value
       = render "shared/header"
+      %div{:id=>'errors'}
+         %ul
+            - flash.each do |key, value|
+               - if (key=="notice")
+                  %li{:class=>'green'}
+                     #{value}
+               - else
+                  %li #{value}
       = yield
+      :javascript
+         $(document).ready(function() {
+            $('#errors').css('top', $('#cssmenu').outerHeight());
+         });

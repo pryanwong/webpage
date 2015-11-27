@@ -54,22 +54,12 @@ class UsersController < ApplicationController
     @listdrawings = false;
     @privacies = Drawing.privacies
     @divs = @user.divisions.to_a
-    if sort_column == "users.email"
-      if @user.admin?
+    if @user.admin?
          @userdrawings = Drawing.includes(:user).all.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-      elsif @user.moderator?
-         @userdrawings = Drawing.includes(:user).where("(user_id = ?) or (drawings.company_id = ?)", @user.id, @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-      else @user.user?
-         @userdrawings = Drawing.includes(:user).where("(user_id = ?) or (privacy = ? and division_id IN (?)) or (privacy = ? and drawings.company_id = ?)", @user.id, Drawing.privacies["division"], @divs, Drawing.privacies["company"], @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-      end
-    else
-       if @user.admin?
-          @userdrawings = Drawing.all.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-       elsif @user.moderator?
-          @userdrawings = Drawing.where("(user_id = ?) or (company_id = ?)", @user.id, @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-       else @user.user?
-          @userdrawings = Drawing.where("(user_id = ?) or (privacy = ? and division_id IN (?)) or (privacy = ? and company_id = ?)", @user.id, Drawing.privacies["division"], @divs, Drawing.privacies["company"], @user.company_id).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-       end
+    elsif @user.moderator?
+         @userdrawings = Drawing.moderator_access(@user).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+    elsif @user.user?
+         @userdrawings = Drawing.user_access(@user).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     end
     if (@userdrawings.count > 0 )
        @listdawings = true;
@@ -105,6 +95,7 @@ class UsersController < ApplicationController
     @company = Company.find(params[:company_id])
     @division = Division.find(params[:division_id])
     @user = User.find(params[:id])
+    @user.drawings.where(:division_id => params[:division_id].to_i).update_all(:privacy => Drawing.privacies["company"])
     @division.users.delete(@user)
     redirect_to company_path(@company)
   end
@@ -130,7 +121,6 @@ class UsersController < ApplicationController
        @drawing.description = params[:drawing][:description]
        @drawing.company_id  = params[:drawing][:company_id]
        priv_level = params[:drawing][:privacy]
-       logger.fatal "priv_level is #{priv_level}"
        @drawing.privacy     = Drawing.privacies[priv_level]
        if @drawing.privacy == "division"
           @drawing.division_id = params[:drawing][:division]
@@ -143,73 +133,70 @@ class UsersController < ApplicationController
   end
 
   def update
+
+    @company = Company.new
     @user = User.find(params[:id])
-    #assign role_id
-    #logger.fatal "Params isadmin value #{params[:user][:isadmin]}"
-    #logger.fatal "Params all: #{params.inspect}"
-    if params[:user][:isadmin].to_i == 1
-       #logger.fatal "Is Admin True: Changing Role_id to 2"
-       @user.role = :moderator
-    else
-       #logger.fatal "Is Admin False: Changing Role_id to 1"
-       @user.role = :user
+    #Verify that Company id is valid
+    company_valid, company_errors = @company.companyValid(params[:company_id])
+    if (!company_valid)
+      addErrorsToFlash(company_errors)
+      redirect_to user_path(session[:user_id])
+      return
     end
-    @user.company = Company.find(params[:company_id])
-    @user.isadmin = params[:user][:isadmin]
-    @user.email = params[:user][:email]
-    #logger.fatal "User before update save: #{@user.inspect}"
-    if @user.save
-      # Handle a successful update.
-      flash[:notice] = "Edit Saved"
-      redirect_to company_path(params[:company_id]), :method => :show
-    else
-      render 'edit'
+
+    user_params_valid, user_errors = @user.validateExistingUser(params)
+    if (!user_params_valid)
+       addErrorsToFlash(user_errors)
+       redirect_to edit_company_user_path(params[:company_id], params[:id])
+       return
     end
+
+    successful_update, errors = @user.updateUser(params)
+    addErrorsToFlash(errors)
+    redirect_to company_path(params[:company_id]), :method => :show
   end
 
   def create
+    @company = Company.new
+    #Verify that Company id is valid
+    company_valid, company_errors = @company.companyValid(params[:company_id])
+    if (!company_valid)
+      addErrorsToFlash(company_errors)
+      redirect_to user_path(session[:user_id])
+      return
+    end
     @company = Company.find(params[:company_id])
-    #assign role_id
-    #logger.fatal "Params isadmin value #{params[:user][:isadmin]}"
-    #logger.fatal "Params all: #{params.inspect}"
-    val = 1
-    if params[:user][:isadmin].to_i == 1
-       #logger.fatal "Is Admin True: Changing Role_id to 2"
-       val = User.roles["moderator"]
-    else
-       #logger.fatal "Is Admin False: Changing Role_id to 1"
-       val = User.roles["user"]
+    @user = User.new
+    sufficientLicenses = {};
+    successfullyAdded = {};
+    user_params_valid, errors = @user.validateNewUser(params)
+
+    #Validate User Parameters
+    if (!user_params_valid)
+       addErrorsToFlash(errors)
+       redirect_to new_company_user_path(params[:company_id])
+       return
     end
 
-    #logger.fatal "Number of Users at Company: #{@company.users.size}"
-    #logger.fatal "Number of Licenses: #{@company.licenses}"
-    if (@company.users.size < @company.licenses && !User.exists?(email: params[:user][:email]))
-      if (@user = User.create(email: params[:user][:email], role: val, isadmin: params[:user][:isadmin]))
-        # Handle a successful update.
-        flash[:notice] = "New User Saved"
-        @user.company = @company
-        @user.save
-        redirect_to company_path(params[:company_id]), :method => :show
-      else
-        flash[:notice] = "User Could Not Be Added"
-        redirect_to company_path(params[:company_id]), :method => :show
-      end
+    #Verify There are Sufficient Licenses to Add User
+    sufficientLicenses, licenseError = @company.additionalUserLicensed
+    if (sufficientLicenses)
+      #Add User To Company
+      successfullyAdded, addUserErrors = @user.addNewUser(params)
+      addErrorsToFlash(addUserErrors)
     else
-      if User.exists?(email: params[:user][:email])
-        flash[:notice] = "User already exists, cannot be added twice"
-      else
-        flash[:notice] = "User Could Not Be Added, Number of Licenses Exceeded"
-      end
-      redirect_to company_path(params[:company_id]), :method => :show
+      addErrorsToFlash(licenseError)
     end
+
+    #Redirect to Company Listing
+    redirect_to company_path(params[:company_id]), :method => :show
   end
 
   def destroy
     @user = User.find(params[:id])
-    if @user.destroy
-       flash[:notice] = "User Removed"
-       redirect_to company_path(params[:company_id])
-    end
+    val, errors = @user.deleteUser
+    addErrorsToFlash(errors)
+    redirect_to company_path(params[:company_id]), :method => :show
   end
 
   private
@@ -230,6 +217,12 @@ class UsersController < ApplicationController
       session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
       if params[:button] == "Cancel"
         redirect_to session.delete(:return_to)
+      end
+    end
+
+    def addErrorsToFlash(errors)
+      errors.each do |key, val|
+        flash[key] = val;
       end
     end
 

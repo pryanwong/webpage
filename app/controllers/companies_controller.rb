@@ -9,9 +9,9 @@ class CompaniesController < ApplicationController
   end
 
   def index
-    if current_user.role? :admin
+    if current_user.admin?
        @companies = Company.all
-    elsif current_user.role? :moderator
+    elsif current_user.moderator?
        temp = current_user.company
        @companies = [temp]
     end
