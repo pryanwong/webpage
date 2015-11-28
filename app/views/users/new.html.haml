@@ -9,8 +9,11 @@
                   = f.email_field :email
                   %br
 
-                  = f.label :isadmin
-                  = f.check_box :isadmin
+                  = f.label :role
+                  - User.roles.slice(:user,:moderator).each do |key, val|
+                     -if key=="moderator" then key_show="Admin" else key_show=key end
+                     = f.radio_button :role, key, :checked => (key == "user")
+                     = key_show
                   %br
 
                   = f.submit "Save"

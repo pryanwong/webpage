@@ -7,7 +7,7 @@ class Company < ActiveRecord::Base
     def companyValid(val_id)
       valid_company = false;
       error_messages = {};
-      if (!val_id.blank?)
+      if (!id.blank? && !(id == nil))
          if Company.exists?(id: val_id)
             valid_company = true;
          else

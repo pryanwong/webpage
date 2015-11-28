@@ -88,7 +88,7 @@
    -@company.users.each do |user|
       %tr
          %td= user.email
-         %td= user.isadmin
+         %td= user.moderator?
          %td
             -if can? :update, user
                = link_to "Edit", edit_company_user_path(@company, user)

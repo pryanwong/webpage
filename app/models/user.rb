@@ -38,14 +38,14 @@ class User < ActiveRecord::Base
          error_messages[:email_blank] = "Email not Provided"
       end
 
-      if (!params[:user][:isadmin].blank?)
-         if (params[:user][:isadmin].to_i ==1 || params[:user][:isadmin].to_i == 0)
+      if (!params[:user][:role].blank?)
+         if (params[:user][:role] == "user" || params[:user][:role] == "moderator")
            isadmin_valid = true;
          else
-           error_messages[:isadmin] = "Admin Value Not Valid"
+           error_messages[:isadmin] = "Role Value Not Valid"
          end
       else
-        error_messages[:isadmin_blank] = "Is Admin not Provided"
+        error_messages[:isadmin_blank] = "Role not Provided"
       end
       if (!user_exists & email_param & isadmin_valid)
         valid_data = true;
@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
       user_exists = false;
       email_param = false;
       user_id_param = false;
-      isadmin_valid = false;
+      role_valid = false;
       valid_data = false;
       error_messages = {};
 
@@ -73,16 +73,16 @@ class User < ActiveRecord::Base
          error_messages[:email_blank] = "Email not Provided"
       end
 
-      if (!params[:user][:isadmin].blank?)
-         if (params[:user][:isadmin].to_i ==1 || params[:user][:isadmin].to_i == 0)
-           isadmin_valid = true;
+      if (!params[:user][:role].blank?)
+         if (params[:user][:role] == "moderator" || params[:user][:role] == "user")
+           role_valid = true;
          else
-           error_messages[:isadmin] = "Admin Value Not Valid"
+           error_messages[:role] = "Role Value Not Valid"
          end
       else
-        error_messages[:isadmin_blank] = "Is Admin not Provided"
+        error_messages[:role_blank] = "Role not Provided"
       end
-      if (user_exists & email_param & isadmin_valid)
+      if (user_exists & email_param & role_valid)
         valid_data = true;
       end
       return [valid_data, error_messages]
@@ -90,13 +90,11 @@ class User < ActiveRecord::Base
 
   def updateUser(params)
 
-      if (!params[:user][:isadmin].blank?)
-         if params[:user][:isadmin].to_i == 1
+      if (!params[:user][:role].blank?)
+         if params[:user][:role] == "moderator"
             self.moderator!
-            self.isadmin = true;
          else
             self.user!
-            self.isadmin = false;
          end
       end
 
@@ -139,15 +137,10 @@ class User < ActiveRecord::Base
   end
 
   def addNewUser(params)
-      role_val = 1
-      if params[:user][:isadmin].to_i == 1
-         role_val = User.roles["moderator"]
-      else
-         role_val = User.roles["user"]
-      end
+      role_val = User.roles[(params[:user][:role])]
       successfullyAdded = false;
       userErrors = {}
-      successfullyAdded = User.create(email: params[:user][:email], role: role_val, isadmin: params[:user][:isadmin], company_id: params[:company_id])
+      successfullyAdded = User.create(email: params[:user][:email], role: role_val, company_id: params[:company_id])
       if successfullyAdded
         userErrors[:notice] = "User Has Been Added Successfully"
       else

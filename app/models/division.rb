@@ -64,15 +64,15 @@ class Division < ActiveRecord::Base
     return [val, divisionErrors]
    end
 
-   def validateExistingDivision(params)
+   def validateExistingDivision(id )
      division_exists = true;
      error_messages = {};
-     if (!params[:id].blank?)
-        if (Division.exists?(id: params[:id]))
+     if (!id.blank? && !(id == nil))
+        if (Division.exists?(id: id))
            user_exists = true;
         end
      else
-       error_messages[:email_blank] = "Division Does Not Exist"
+       error_messages[:id_blank] = "Division Does Not Exist"
      end
      if (division_exists)
        valid_data = true;
@@ -102,8 +102,8 @@ class Division < ActiveRecord::Base
    def duplicate(company, div_name)
      divisionErrors = {}
      #check for duplicate
-     divisions = company.divisions.pluck(:name)
-     duplicate = divisions.include?(div_name)
+     divisions = company.divisions.pluck(:name).map(&:upcase)
+     duplicate = divisions.include?(div_name.upcase)
      return duplicate
    end
 
