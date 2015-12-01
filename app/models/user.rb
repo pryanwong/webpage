@@ -53,6 +53,21 @@ class User < ActiveRecord::Base
       return [valid_data, error_messages]
   end
 
+  def userValid(id)
+    valid_user = false;
+    error_messages = {};
+    if (!id.blank? && !(id == nil))
+       if User.exists?(id: id)
+          valid_user = true;
+       else
+          error_messages[:error_company_not_found] = "User Not Found"
+       end
+    else
+       error_messages[:error_company_id] = "User Id not Provided"
+    end
+    return [valid_user, error_messages];
+  end
+
   def validateExistingUser(params)
       #Determine if User already exists
       user_exists = false;

@@ -1,7 +1,11 @@
 class Division < ActiveRecord::Base
     validates :name, presence: true
+    validates :company_id, presence: true, numericality: { only_integer: true }
+
     has_many :user_memberships, :dependent => :restrict_with_error
     has_many :users, :through => :user_memberships
+    :validate_company_id
+    :validate_name_company_unique
 
 
    def deleteDivision
@@ -105,6 +109,14 @@ class Division < ActiveRecord::Base
      divisions = company.divisions.pluck(:name).map(&:upcase)
      duplicate = divisions.include?(div_name.upcase)
      return duplicate
+   end
+
+   def validate_company_id
+      errors.add(:company_id, "is invalid") unless Company.exists?(self.company_id)
+   end
+
+   def validate_name_company_unique
+      errors.add(:name, "and company are duplicate") unless !duplicate(Company.find(self.company_id),self.name)
    end
 
 end

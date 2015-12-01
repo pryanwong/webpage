@@ -50,6 +50,9 @@ class UsersController < ApplicationController
   end
 
   def show
+    @user = User.new
+    user_valid, user_errors = @user.userValid(params[:id])
+    redirectIfUserInvalid(user_valid, user_errors)
     @user = User.find(params[:id]);
     @listdrawings = false;
     @privacies = Drawing.privacies
@@ -68,6 +71,9 @@ class UsersController < ApplicationController
 
   def drawsearch
      @searchparam = params[:search]
+     @user = User.new
+     user_valid, user_errors = @user.userValid(params[:id])
+     redirectIfUserInvalid(user_valid, user_errors)
      @user = User.find(params[:id])
      divs = @user.divisions
      div_ids = divs.select{|u| u.share==true}.map{|x| x[:id]}
@@ -87,21 +93,56 @@ class UsersController < ApplicationController
   def edit
     session.delete(:return_to)
     session[:return_to] ||= request.referer
+    @company = Company.new
+    company_valid, company_errors = @company.companyValid(params[:company_id])
+    redirectIfCompanyInvalid(company_valid, company_errors)
     @company = Company.find(params[:company_id])
+    @user = User.new
+    user_valid, user_errors = @user.userValid(params[:id])
+    redirectIfUserInvalid(user_valid, user_errors)
     @user = User.find(params[:id])
   end
 
   def removeuserdiv
+    @company = Company.new
+    company_valid, company_errors = @company.companyValid(params[:company_id])
+    redirectIfCompanyInvalid(company_valid, company_errors)
     @company = Company.find(params[:company_id])
     @division = Division.find(params[:division_id])
+    @user = User.new
+    user_valid, user_errors = @user.userValid(params[:id])
+    redirectIfUserInvalid(user_valid, user_errors)
     @user = User.find(params[:id])
     @user.drawings.where(:division_id => params[:division_id].to_i).update_all(:privacy => Drawing.privacies["company"])
-    @division.users.delete(@user)
+    userMembership = UserMembership.membershipExists(@division.id, @user.id)
+    userErrors = {}
+    if (userMembership.length == 1)
+        successfullyDestroyed = userMembership[0].destroy!
+        if successfullyDestroyed
+          userErrors[:notice] = "User Has Been Deleted From Division"
+        else
+          if (!userMembership.errors.empty?)
+             userMembership.errors.each do |attr,err|
+               userErrors[attr] = err.to_s()
+             end
+          end
+          userErrors[:could_not_update] = "Could Not Remove User From Division"
+        end
+     else
+        userErrors[:errors] = "Could Not Find User In Division"
+     end
+    addErrorsToFlash(userErrors)
     redirect_to company_path(@company)
   end
 
   def newdrawing
+       @user = User.new
+       user_valid, user_errors = @user.userValid(params[:id])
+       redirectIfUserInvalid(user_valid, user_errors)
        @user = User.find(params[:id])
+       @company = Company.new
+       company_valid, company_errors = @company.companyValid(@user.company_id)
+       redirectIfCompanyInvalid(company_valid, company_errors)
        @company = Company.find(@user.company_id)
        @drawing = Drawing.new
        @drawing.user_id = @user.id
@@ -114,6 +155,8 @@ class UsersController < ApplicationController
 
   def newdrawingproc
        @user = User.find(params[:id])
+       company_valid, company_errors = @company.companyValid(@user.company_id)
+       redirectIfCompanyInvalid(company_valid, company_errors)
        @company = Company.find(@user.company_id)
        @drawing = Drawing.new
        @drawing.customer = params[:drawing][:customer]
@@ -135,14 +178,13 @@ class UsersController < ApplicationController
   def update
 
     @company = Company.new
+    @user = User.new
+    user_valid, user_errors = @user.userValid(params[:id])
+    redirectIfUserInvalid(user_valid, user_errors)
     @user = User.find(params[:id])
     #Verify that Company id is valid
     company_valid, company_errors = @company.companyValid(params[:company_id])
-    if (!company_valid)
-      addErrorsToFlash(company_errors)
-      redirect_to user_path(session[:user_id])
-      return
-    end
+    redirectIfCompanyInvalid(company_valid, company_errors)
 
     user_params_valid, user_errors = @user.validateExistingUser(params)
     if (!user_params_valid)
@@ -160,11 +202,7 @@ class UsersController < ApplicationController
     @company = Company.new
     #Verify that Company id is valid
     company_valid, company_errors = @company.companyValid(params[:company_id])
-    if (!company_valid)
-      addErrorsToFlash(company_errors)
-      redirect_to user_path(session[:user_id])
-      return
-    end
+    redirectIfCompanyInvalid(company_valid, company_errors)
     @company = Company.find(params[:company_id])
     @user = User.new
     sufficientLicenses = {};
@@ -218,6 +256,22 @@ class UsersController < ApplicationController
       if params[:button] == "Cancel"
         redirect_to session.delete(:return_to)
       end
+    end
+
+    def redirectIfCompanyInvalid(company_valid, company_errors)
+       if (!company_valid)
+         addErrorsToFlash(company_errors)
+         redirect_to user_path(session[:user_id])
+         return
+       end
+    end
+
+    def redirectIfUserInvalid(user_valid, user_errors)
+       if (!user_valid)
+         addErrorsToFlash(user_errors)
+         redirect_to user_path(session[:user_id])
+         return
+       end
     end
 
     def addErrorsToFlash(errors)

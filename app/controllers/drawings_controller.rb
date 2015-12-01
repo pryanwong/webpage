@@ -5,21 +5,10 @@ class DrawingsController < ApplicationController
   before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image_form]
   layout :resolve_layout
 
-  def index
-       @user = User.find(session[:id])
-       @drawings = @user.drawings
-  end
-
   def edit
-       logger.fatal "In edit Drawing Controller"
-       logger.fatal "Session Data #{session.inspect}"
+       @drawing = Drawing.new
+       drawing_valid(params[:id],  @drawing)
        @drawing = Drawing.find(params[:id])
-       if (@drawing.user_id == session[:user_id])
-          logger.fatal "Drawing_controller:edit user_id matches drawing"
-       end
-       #else
-        #     redirect_to failed_path
-       #end
        @editdetails = true;
        if @drawing.drawing == nil || @drawing.drawing.length == 0
           @drawing.drawing = "{}"
@@ -28,8 +17,14 @@ class DrawingsController < ApplicationController
 
 
   def editdrawingdetails
+       @user = User.new
+       user_valid(params[:user_id], @user)
        @user = User.find(params[:user_id])
+       @company = Company.new
+       company_valid(params[:company_id], @company)
        @company = Company.find(params[:company_id])
+       @drawing = Drawing.new
+       drawing_valid(params[:id],  @drawing)
        @drawing = Drawing.find(params[:id])
        @divisions = @user.divisions
        @divs = (@divisions).to_a
@@ -41,9 +36,15 @@ class DrawingsController < ApplicationController
       session.delete(:return_to)
       session[:return_to] ||= request.referer
       logger.fatal "Params Inspect updatedrawingdetails #{params.inspect}"
-      @drawing = Drawing.find(params[:id])
+      @user = User.new
+      user_valid(params[:user_id], @user)
       @user = User.find(params[:user_id])
+      @company = Company.new
+      company_valid(params[:company_id], @company)
       @company = Company.find(params[:company_id])
+      @drawing = Drawing.new
+      drawing_valid(params[:id],  @drawing)
+      @drawing = Drawing.find(params[:id])
       priv_level = params[:drawing][:privacy]
       @drawing.privacy     = Drawing.privacies[priv_level]
       @drawing.opportunity = params[:drawing][:opportunity]
@@ -161,6 +162,36 @@ class DrawingsController < ApplicationController
   end
 
   private
+
+    def drawing_valid(id,  drawing)
+       draw_valid, drawing_errors = drawing.validateExistingDrawing(id)
+       if (!draw_valid)
+         addErrorsToFlash(drawing_errors)
+         redirect_to user_path(session[:user_id])
+       end
+    end
+
+    def company_valid( id, company)
+        valid_data, error_messages = company.companyValid( id )
+        if (!valid_data)
+          addErrorsToFlash(error_messages)
+          redirect_to user_path(session[:user_id])
+        end
+    end
+
+    def user_valid( id, user)
+        valid_data, error_messages = user.userValid( id )
+        if (!valid_data)
+          addErrorsToFlash(error_messages)
+          redirect_to user_path(session[:user_id])
+        end
+    end
+
+    def addErrorsToFlash(errors)
+      errors.each do |key, val|
+        flash[key] = val;
+      end
+    end
 
     def drawing_params
       params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png)

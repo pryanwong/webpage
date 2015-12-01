@@ -11,6 +11,7 @@ class DivisionsController < ApplicationController
   end
 
   def edit
+    logger.fatal "Divisions Edit Parameters: #{params.inspect}"
     session.delete(:return_to)
     session[:return_to] ||= request.referer
     @company = Company.new
@@ -20,23 +21,39 @@ class DivisionsController < ApplicationController
 
   end
 
-  def adduser
-    @company = Company.new
-    @division = Division.new
-
-    @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
-
-    render 'adduser'
-  end
-
   def adduserdiv
     @company = Company.new
     @division = Division.new
-    @user = User.find(params[:division][:id])
+    @user = User.new
+    userErrors = {}
+    user_valid, user_errors = @user.userValid(params[:division][:id])
+    addErrorsToFlash(user_errors)
+    if user_valid
+       @user = User.find(params[:division][:id])
+    else
+       redirect_to company_path(params[:company_id]), :method => :show
+    end
 
-    @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
-
-    @division.users << @user
+    division_valid(params[:division][:id], @division )
+    @division = Division.find(params[:id])
+    # @division.users << @user
+    if (UserMembership.membershipExists(@division.id, @user.id).length == 0)
+       userMember = UserMembership.new(:division_id=>@division.id, :user_id=>@user.id)
+       successfullyAdded = userMember.save!
+       if successfullyAdded
+         userErrors[:notice] = "User Has Been Successfully Added to Division"
+       else
+         if (!userMember.errors.empty?)
+            userMember.errors.each do |attr,err|
+              userErrors[attr] = err.to_s()
+            end
+         end
+         userErrors[:could_not_update] = "Could Not Update User"
+       end
+    else
+       userErrors[:errors] = "User already in Division "
+    end
+    addErrorsToFlash(userErrors)
     redirect_to company_path(params[:company_id]), :method => :show
   end
 
@@ -51,9 +68,7 @@ class DivisionsController < ApplicationController
     @division = Division.new
     @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
     div_valid, division_errors = @division.updateDivision(params[:division][:name])
-    if (!div_valid)
-      addErrorsToFlash(division_errors)
-    end
+    addErrorsToFlash(division_errors)
     redirect_to company_path(params[:company_id]), :method => :show
   end
 

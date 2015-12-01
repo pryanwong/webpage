@@ -8,4 +8,21 @@ class Drawing < ActiveRecord::Base
   belongs_to :division
   belongs_to :company
 
+  def validateExistingDrawing(id)
+    drawing_exists = true;
+    valid_data = false;
+    error_messages = {};
+    if (!id.blank? && !(id == nil))
+       if (Drawing.exists?(id: id))
+          drawing_exists = true;
+       end
+    else
+      error_messages[:id_blank] = "Drawing Does Not Exist"
+    end
+    if (drawing_exists)
+      valid_data = true;
+    end
+    return [valid_data, error_messages]
+  end
+  
 end

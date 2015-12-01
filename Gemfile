@@ -50,3 +50,16 @@ gem "jscolor-rails"
 gem 'jquery-turbolinks' #adding turbo
 gem 'haml' #haml gem
 gem 'will_paginate'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0'
+  gem 'factory_girl_rails'
+end
+
+group :test do
+  gem 'faker'
+  gem 'capybara'
+  gem 'guard-rspec'
+  gem 'launchy'
+  gem 'minitest'
+end

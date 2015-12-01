@@ -28,7 +28,7 @@ module RubyGettingStarted
     config.action_mailer.raise_delivery_errors = true
     config.action_mailer.perform_deliveries = true
     config.action_mailer.delivery_method = :smtp
-    
+
     #config.action_mailer.smtp_settings = {
     #  address: "smtp.gmail.com",
     #  port: "587",
@@ -39,6 +39,17 @@ module RubyGettingStarted
     #  enable_starttls_auto: true
     #}
 
+    config.generators do |g|
+       g.test_framework :rspec,
+          :fixtures => true,
+          :view_specs => false,
+          :helper_specs => false,
+          :routing_specs => false,
+          :controller_specs => true,
+          :request_specs => true
+       g.fixture_replacement :factory_girl, :dir => "spec/factories"
+    end
+    
     config.action_mailer.smtp_settings = {
       address: "smtpout.secureserver.net",
       port:     "80",

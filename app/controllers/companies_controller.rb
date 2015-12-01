@@ -1,10 +1,10 @@
-class CompaniesController < ApplicationController
+ class CompaniesController < ApplicationController
   load_and_authorize_resource :company
   before_filter :check_for_cancel, :only => [:create, :update]
   def new
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    logger.fatal "Session Vals in New: #{session.inspect}"
+    #logger.fatal "Session Vals in New: #{session.inspect}"
     @company = Company.new
   end
 
@@ -18,7 +18,14 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    @company = Company.find(params[:id])
+    @company = Company.new
+    valid_data, error_messages = @company.companyValid( params[:id] )
+    if valid_data
+       @company = Company.find(params[:id])
+    else
+       addErrorsToFlash(error_messages)
+       redirect_to companies_path
+    end 
   end
 
   def edit
@@ -28,34 +35,51 @@ class CompaniesController < ApplicationController
   end
 
   def update
-    @company = Company.find(params[:id])
-    if @company.update_attributes(company_params)
-      # Handle a successful update.
-      flash[:notice] = "Edit Saved"
-      redirect_to companies_path
-    else
-      render 'edit'
+    @company = Company.new
+    valid_data, error_messages = @company.companyValid( params[:id] )
+    if (valid_data)
+       valid_company, error_messages = companyParamsValid(params)
+       if (valid_company)
+          @company = Company.find(params[:id])
+          if @company.update_attributes(company_params)
+            # Handle a successful update.
+            flash[:notice] = "Edit Saved"
+          else
+            flash[:error] = "Company Could Not Be Updated"
+          end
+       end
     end
+    addErrorsToFlash(error_messages)
+    redirect_to companies_path
   end
 
   def create
-    @company = Company.new(company_params)
-    if @company.save
-      # Handle a successful update.
-      flash[:notice] = "New Company Saved"
-      redirect_to companies_path
-     else
-       flash[:notice] = "Company Could Not Be Added"
-       render action: "new"
-     end
+    valid_company, error_messages = companyParamsValid(params)
+    if valid_company
+       @company = Company.new(company_params)
+       if @company.save
+          # Handle a successful update.
+         flash[:notice] = "New Company Saved"
+       else
+         flash[:error] = "Company Could Not Be Added"
+       end
+    end
+    addErrorsToFlash(error_messages)
+    redirect_to companies_path
+
   end
 
   def destroy
-    @company = Company.find(params[:id])
-    if @company.destroy
-       flash[:notice] = "Company Removed"
-       redirect_to companies_path
+    @company = Company.new
+    valid_data, error_messages = validateExistingCompany(params[:id], @company)
+    if valid_data
+       @company = Company.find(params[:id])
+       val, errors = @company.deleteCompany
+       addErrorsToFlash(errors)
+    else
+       addErrorsToFlash(error_messages)
     end
+    redirect_to companies_path
   end
 
   private
@@ -70,6 +94,12 @@ class CompaniesController < ApplicationController
       session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
       if params[:button] == "Cancel"
         redirect_to session.delete(:return_to)
+      end
+    end
+
+    def addErrorsToFlash(errors)
+      errors.each do |key, val|
+        flash[key] = val;
       end
     end
 
