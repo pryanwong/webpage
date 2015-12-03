@@ -2,13 +2,17 @@ class DrawingsController < ApplicationController
   before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
   load_and_authorize_resource
-  before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image_form]
+  before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image, :send_image_form]
   layout :resolve_layout
 
   def edit
        @drawing = Drawing.new
-       drawing_valid(params[:id],  @drawing)
-       @drawing = Drawing.find(params[:id])
+       if (Drawing.exists?(params[:id]))
+          @drawing = Drawing.find(params[:id]);
+       else
+          flash[:error] = "Drawing not Found"
+          redirect_to root_path
+       end
        @editdetails = true;
        if @drawing.drawing == nil || @drawing.drawing.length == 0
           @drawing.drawing = "{}"
@@ -18,14 +22,26 @@ class DrawingsController < ApplicationController
 
   def editdrawingdetails
        @user = User.new
-       user_valid(params[:user_id], @user)
-       @user = User.find(params[:user_id])
+       if (User.exists?(params[:user_id]))
+          @user = User.find(params[:user_id]);
+       else
+          flash[:error] = "User not Found"
+          redirect_to root_path
+       end
        @company = Company.new
-       company_valid(params[:company_id], @company)
-       @company = Company.find(params[:company_id])
+       if (Company.exists?(@user.company_id))
+          @company = Company.find(@user.company_id);
+       else
+          flash[:error] = "Company not Found"
+          redirect_to root_path
+       end
        @drawing = Drawing.new
-       drawing_valid(params[:id],  @drawing)
-       @drawing = Drawing.find(params[:id])
+       if (Drawing.exists?(params[:id]))
+          @drawing = Drawing.find(params[:id]);
+       else
+          flash[:error] = "Drawing not Found"
+          redirect_to root_path
+       end
        @divisions = @user.divisions
        @divs = (@divisions).to_a
        @divcount = @divs.length
@@ -37,14 +53,26 @@ class DrawingsController < ApplicationController
       session[:return_to] ||= request.referer
       logger.fatal "Params Inspect updatedrawingdetails #{params.inspect}"
       @user = User.new
-      user_valid(params[:user_id], @user)
-      @user = User.find(params[:user_id])
+      if (User.exists?(params[:user_id]))
+         @user = User.find(params[:user_id]);
+      else
+         flash[:error] = "User not Found"
+         redirect_to root_path
+      end
       @company = Company.new
-      company_valid(params[:company_id], @company)
-      @company = Company.find(params[:company_id])
+      if (Company.exists?(@user.company_id))
+         @company = Company.find(@user.company_id);
+      else
+         flash[:error] = "Company not Found"
+         redirect_to root_path
+      end
       @drawing = Drawing.new
-      drawing_valid(params[:id],  @drawing)
-      @drawing = Drawing.find(params[:id])
+      if (Drawing.exists?(params[:id]))
+         @drawing = Drawing.find(params[:id]);
+      else
+         flash[:error] = "Drawing not Found"
+         redirect_to root_path
+      end
       priv_level = params[:drawing][:privacy]
       @drawing.privacy     = Drawing.privacies[priv_level]
       @drawing.opportunity = params[:drawing][:opportunity]
@@ -127,6 +155,8 @@ class DrawingsController < ApplicationController
   end
 
   def send_image_form
+      logger.fatal "Inspect Params"
+      logger.fatal "#{params.inspect}"
       session.delete(:return_to)
       session[:return_to] ||= request.referer
       logger.fatal "In Send Image Form"
@@ -140,52 +170,31 @@ class DrawingsController < ApplicationController
   def send_image
     logger.fatal "Inspect Params"
     logger.fatal "#{params.inspect}"
-    @message = MessageImage.new
-    @message.company_id = params[:company_id]
-    @message.user_id = params[:user_id]
-    @message.drawing_id = params[:id]
-    @message.email1 = params[:message_image][:email1]
-    @message.email2 = params[:message_image][:email2]
-    @message.email3 = params[:message_image][:email3]
-    @message.email4 = params[:message_image][:email4]
-    @message.content = params[:message_image][:content]
-    logger.fatal "Inspect Message"
-    logger.fatal "#{@message.inspect}"
-    if @message.valid?
-      MessageImageMailer.new_message(@message).deliver
-      redirect_to company_user_path(session[:company_id] ,session[:user_id]), notice: "Your messages has been sent."
-    else
-      flash[:alert] = "An error occurred while delivering this message."
-      redirect_to company_user_path(session[:company_id] ,session[:user_id])
-    end
-
+    #if params[:commit].to_s == "Send"
+       @message = MessageImage.new
+       @message.company_id = params[:company_id]
+       @message.user_id = params[:user_id]
+       @message.drawing_id = params[:id]
+       @message.email1 = params[:message_image][:email1]
+       @message.email2 = params[:message_image][:email2]
+       @message.email3 = params[:message_image][:email3]
+       @message.email4 = params[:message_image][:email4]
+       @message.content = params[:message_image][:content]
+       logger.fatal "Inspect Message"
+       logger.fatal "#{@message.inspect}"
+       if @message.valid?
+         MessageImageMailer.new_message(@message).deliver
+         redirect_to company_user_path(session[:company_id] ,session[:user_id]), notice: "Your messages has been sent."
+       else
+         flash[:alert] = "An error occurred while delivering this message."
+         redirect_to company_user_path(session[:company_id] ,session[:user_id])
+       end
+    #else
+    #   redirect_to company_user_path(session[:company_id] ,session[:user_id])
+    #end
   end
 
   private
-
-    def drawing_valid(id,  drawing)
-       draw_valid, drawing_errors = drawing.validateExistingDrawing(id)
-       if (!draw_valid)
-         addErrorsToFlash(drawing_errors)
-         redirect_to user_path(session[:user_id])
-       end
-    end
-
-    def company_valid( id, company)
-        valid_data, error_messages = company.companyValid( id )
-        if (!valid_data)
-          addErrorsToFlash(error_messages)
-          redirect_to user_path(session[:user_id])
-        end
-    end
-
-    def user_valid( id, user)
-        valid_data, error_messages = user.userValid( id )
-        if (!valid_data)
-          addErrorsToFlash(error_messages)
-          redirect_to user_path(session[:user_id])
-        end
-    end
 
     def addErrorsToFlash(errors)
       errors.each do |key, val|
@@ -213,6 +222,5 @@ class DrawingsController < ApplicationController
           else
              "application"
           end
-  end
-
-end
+      end
+   end

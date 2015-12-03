@@ -51,9 +51,12 @@ class UsersController < ApplicationController
 
   def show
     @user = User.new
-    user_valid, user_errors = @user.userValid(params[:id])
-    redirectIfUserInvalid(user_valid, user_errors)
-    @user = User.find(params[:id]);
+    if (User.exists?(params[:id]))
+       @user = User.find(params[:id]);
+    else
+       flash[:error] = "User not Found"
+       redirect_to root_path
+    end
     @listdrawings = false;
     @privacies = Drawing.privacies
     @divs = @user.divisions.to_a
@@ -72,8 +75,12 @@ class UsersController < ApplicationController
   def drawsearch
      @searchparam = params[:search]
      @user = User.new
-     user_valid, user_errors = @user.userValid(params[:id])
-     redirectIfUserInvalid(user_valid, user_errors)
+     if (User.exists?(params[:id]))
+        @user = User.find(params[:id]);
+     else
+        flash[:error] = "User not Found"
+        redirect_to root_path
+     end
      @user = User.find(params[:id])
      divs = @user.divisions
      div_ids = divs.select{|u| u.share==true}.map{|x| x[:id]}
@@ -94,24 +101,38 @@ class UsersController < ApplicationController
     session.delete(:return_to)
     session[:return_to] ||= request.referer
     @company = Company.new
-    company_valid, company_errors = @company.companyValid(params[:company_id])
-    redirectIfCompanyInvalid(company_valid, company_errors)
-    @company = Company.find(params[:company_id])
+    if (Company.exists?(params[:company_id]))
+       @company = Company.find(params[:company_id]);
+    else
+       flash[:error] = "Company not Found"
+       redirect_to root_path
+    end
     @user = User.new
-    user_valid, user_errors = @user.userValid(params[:id])
-    redirectIfUserInvalid(user_valid, user_errors)
+    if (User.exists?(params[:id]))
+       @user = User.find(params[:id]);
+    else
+       flash[:error] = "User not Found"
+       redirect_to root_path
+    end
     @user = User.find(params[:id])
   end
 
   def removeuserdiv
     @company = Company.new
-    company_valid, company_errors = @company.companyValid(params[:company_id])
-    redirectIfCompanyInvalid(company_valid, company_errors)
-    @company = Company.find(params[:company_id])
+    if (Company.exists?(params[:company_id]))
+       @company = Company.find(params[:company_id]);
+    else
+       flash[:error] = "Company not Found"
+       redirect_to root_path
+    end
     @division = Division.find(params[:division_id])
     @user = User.new
-    user_valid, user_errors = @user.userValid(params[:id])
-    redirectIfUserInvalid(user_valid, user_errors)
+    if (User.exists?(params[:id]))
+       @user = User.find(params[:id]);
+    else
+       flash[:error] = "User not Found"
+       redirect_to root_path
+    end
     @user = User.find(params[:id])
     @user.drawings.where(:division_id => params[:division_id].to_i).update_all(:privacy => Drawing.privacies["company"])
     userMembership = UserMembership.membershipExists(@division.id, @user.id)
@@ -137,13 +158,20 @@ class UsersController < ApplicationController
 
   def newdrawing
        @user = User.new
-       user_valid, user_errors = @user.userValid(params[:id])
-       redirectIfUserInvalid(user_valid, user_errors)
+       if (User.exists?(params[:id]))
+          @user = User.find(params[:id]);
+       else
+          flash[:error] = "User not Found"
+          redirect_to root_path
+       end
        @user = User.find(params[:id])
        @company = Company.new
-       company_valid, company_errors = @company.companyValid(@user.company_id)
-       redirectIfCompanyInvalid(company_valid, company_errors)
-       @company = Company.find(@user.company_id)
+       if (Company.exists?(params[:company_id]))
+          @company = Company.find(params[:company_id]);
+       else
+          flash[:error] = "Company not Found"
+          redirect_to root_path
+       end
        @drawing = Drawing.new
        @drawing.user_id = @user.id
        @drawing.company_id = @user.company_id
@@ -154,10 +182,19 @@ class UsersController < ApplicationController
   end
 
   def newdrawingproc
-       @user = User.find(params[:id])
-       company_valid, company_errors = @company.companyValid(@user.company_id)
-       redirectIfCompanyInvalid(company_valid, company_errors)
-       @company = Company.find(@user.company_id)
+       if (User.exists?(params[:id]))
+          @user = User.find(params[:id]);
+       else
+          flash[:error] = "User not Found"
+          redirect_to root_path
+       end
+       @company = Company.new
+       if (Company.exists?(@user.company_id))
+          @company = Company.find(@user.company_id);
+       else
+          flash[:error] = "Company not Found"
+          redirect_to root_path
+       end
        @drawing = Drawing.new
        @drawing.customer = params[:drawing][:customer]
        @drawing.opportunity = params[:drawing][:opportunity]
@@ -165,11 +202,7 @@ class UsersController < ApplicationController
        @drawing.company_id  = params[:drawing][:company_id]
        priv_level = params[:drawing][:privacy]
        @drawing.privacy     = Drawing.privacies[priv_level]
-       if @drawing.privacy == "division"
-          @drawing.division_id = params[:drawing][:division]
-       else
-          @drawing.division_id = 0
-       end
+       @drawing.division_id = params[:drawing][:division]
        params.merge(:id => @user.id)
        logger.fatal "Drawing Object #{@drawing.inspect}"
        redirect_to company_user_drawing_path(@company.id, @user.id, {:id => @user.id, :customer => @drawing.customer, :opportunity => @drawing.opportunity, :description => @drawing.description, :privacy => @drawing.privacy, :division_id => @drawing.division_id})
@@ -177,64 +210,61 @@ class UsersController < ApplicationController
 
   def update
 
-    @company = Company.new
     @user = User.new
-    user_valid, user_errors = @user.userValid(params[:id])
-    redirectIfUserInvalid(user_valid, user_errors)
-    @user = User.find(params[:id])
-    #Verify that Company id is valid
-    company_valid, company_errors = @company.companyValid(params[:company_id])
-    redirectIfCompanyInvalid(company_valid, company_errors)
-
-    user_params_valid, user_errors = @user.validateExistingUser(params)
-    if (!user_params_valid)
-       addErrorsToFlash(user_errors)
-       redirect_to edit_company_user_path(params[:company_id], params[:id])
-       return
+    if (User.exists?(id: params[:id]))
+       @user = User.find(params[:id])
+    else
+       flash[:error] = "User Could Not Be Found"
+       redirect_to companies_path
     end
 
-    successful_update, errors = @user.updateUser(params)
-    addErrorsToFlash(errors)
+    if (!params[:user][:role].blank?)
+       if params[:user][:role] == "moderator"
+          @user.moderator!
+       else
+          @user.user!
+       end
+    end
+
+    if (!params[:user][:email].blank?)
+       @user.email = params[:user][:email]
+    end
+
+    successfullyUpdated = @user.save
+    if !successfullyUpdated
+       addErrorsToFlash(@user.errors)
+    end
     redirect_to company_path(params[:company_id]), :method => :show
   end
 
   def create
+    logger.fatal "User CREATE Params: #{params.inspect}"
     @company = Company.new
-    #Verify that Company id is valid
-    company_valid, company_errors = @company.companyValid(params[:company_id])
-    redirectIfCompanyInvalid(company_valid, company_errors)
-    @company = Company.find(params[:company_id])
-    @user = User.new
-    sufficientLicenses = {};
-    successfullyAdded = {};
-    user_params_valid, errors = @user.validateNewUser(params)
-
-    #Validate User Parameters
-    if (!user_params_valid)
-       addErrorsToFlash(errors)
-       redirect_to new_company_user_path(params[:company_id])
-       return
-    end
-
-    #Verify There are Sufficient Licenses to Add User
-    sufficientLicenses, licenseError = @company.additionalUserLicensed
-    if (sufficientLicenses)
-      #Add User To Company
-      successfullyAdded, addUserErrors = @user.addNewUser(params)
-      addErrorsToFlash(addUserErrors)
+    if (!Company.exists?(id: params[:company_id]))
+       flash[:error] = "Company Could Not Be Found"
     else
-      addErrorsToFlash(licenseError)
+       @company = Company.find(params[:company_id])
+       role_val = User.roles[(params[:user][:role])]
+       successfullyAdded = false;
+       userErrors = {}
+       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id])
+       successfullyAdded = @user.save
+       if !successfullyAdded
+         addErrorsToFlash(@user.errors)
+       end
     end
-
-    #Redirect to Company Listing
     redirect_to company_path(params[:company_id]), :method => :show
   end
 
   def destroy
     @user = User.find(params[:id])
-    val, errors = @user.deleteUser
-    addErrorsToFlash(errors)
+    @user.destroy
+    if (!@user.destroyed?)
+       addErrorsToFlash(@user.errors)
+    end
     redirect_to company_path(params[:company_id]), :method => :show
+
+
   end
 
   private
@@ -256,22 +286,6 @@ class UsersController < ApplicationController
       if params[:button] == "Cancel"
         redirect_to session.delete(:return_to)
       end
-    end
-
-    def redirectIfCompanyInvalid(company_valid, company_errors)
-       if (!company_valid)
-         addErrorsToFlash(company_errors)
-         redirect_to user_path(session[:user_id])
-         return
-       end
-    end
-
-    def redirectIfUserInvalid(user_valid, user_errors)
-       if (!user_valid)
-         addErrorsToFlash(user_errors)
-         redirect_to user_path(session[:user_id])
-         return
-       end
     end
 
     def addErrorsToFlash(errors)

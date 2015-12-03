@@ -16,49 +16,37 @@ class DivisionsController < ApplicationController
     session[:return_to] ||= request.referer
     @company = Company.new
     @division = Division.new
-
     @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
 
   end
 
   def adduserdiv
+    logger.fatal "Add User DIV parameters: #{params.inspect}"
     @company = Company.new
     @division = Division.new
     @user = User.new
-    userErrors = {}
-    user_valid, user_errors = @user.userValid(params[:division][:id])
-    addErrorsToFlash(user_errors)
-    if user_valid
+    if User.exists?(id: params[:division][:id])
        @user = User.find(params[:division][:id])
     else
        redirect_to company_path(params[:company_id]), :method => :show
     end
 
-    division_valid(params[:division][:id], @division )
-    @division = Division.find(params[:id])
-    # @division.users << @user
-    if (UserMembership.membershipExists(@division.id, @user.id).length == 0)
-       userMember = UserMembership.new(:division_id=>@division.id, :user_id=>@user.id)
-       successfullyAdded = userMember.save!
-       if successfullyAdded
-         userErrors[:notice] = "User Has Been Successfully Added to Division"
-       else
-         if (!userMember.errors.empty?)
-            userMember.errors.each do |attr,err|
-              userErrors[attr] = err.to_s()
-            end
-         end
-         userErrors[:could_not_update] = "Could Not Update User"
-       end
+    if Division.exists?(id: params[:id])
+       @division = Division.find(params[:id])
     else
-       userErrors[:errors] = "User already in Division "
+       redirect_to company_path(params[:company_id]), :method => :show
     end
-    addErrorsToFlash(userErrors)
-    redirect_to company_path(params[:company_id]), :method => :show
+    userMember = UserMembership.new(:division_id=>@division.id, :user_id=>@user.id)
+    successfullyAdded = userMember.save
+    if successfullyAdded
+       flash[:notice] = "User Has Been Successfully Added to Division"
+    else
+       addErrorsToFlash(userMember.errors)
+    end
+    redirect_to company_path(@user.company_id), :method => :show
   end
 
   def update_user
-    #logger.fatal "Params all: #{params.inspect}"
     redirect_to company_path(params[:company_id]), :method => :show
   end
 
@@ -67,8 +55,8 @@ class DivisionsController < ApplicationController
     @company = Company.new
     @division = Division.new
     @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
-    div_valid, division_errors = @division.updateDivision(params[:division][:name])
-    addErrorsToFlash(division_errors)
+    @division.update(name: params[:division][:name])
+    addErrorsToFlash(@division.errors)
     redirect_to company_path(params[:company_id]), :method => :show
   end
 
@@ -79,25 +67,35 @@ class DivisionsController < ApplicationController
     #Verify that Company id is valid
     company_valid(params[:company_id], @company)
     @company = Company.find(params[:company_id])
-    div_valid, division_errors = division.validateDivision(params)
-    if (!div_valid)
-      addErrorsToFlash(company_errors)
-      redirect_to company_path(@company), :method => :show
-      return
-    end
     div_name = params[:division][:name]
-    val, errors = division.addDivision(@company, div_name)
-    addErrorsToFlash(errors)
+    division.name = div_name
+    division.company_id = @company.id
+    if division.save
+       flash[:notice] = "Division Added Successfully"
+       val = true
+    else
+       addErrorsToFlash(division.errors)
+       flash[:not_created] = "Division Not Created"
+    end
     redirect_to company_path(@company), :method => :show
   end
 
   def destroy
+    logger.fatal "Division DESTROY Params: #{params.inspect}"
     @division = Division.new
-    division_valid(params[:id], @division)
-    @division = Division.find(params[:id])
-    val, errors = @division.deleteDivision
-    addErrorsToFlash(errors)
-    redirect_to company_path(params[:company_id]), :method => :show
+    if Division.exists?(id: params[:id])
+       @division = Division.find(params[:id])
+    else
+       redirect_to company_path(params[:company_id])
+    end
+    company_id = @division.company_id
+    @division.destroy
+    if @division.destroyed?
+      flash[:notice] = "Division Removed"
+    else
+      addErrorsToFlash(@division.errors)
+    end
+    redirect_to company_path(params[:company_id])
   end
 
   private
@@ -107,17 +105,15 @@ class DivisionsController < ApplicationController
     end
 
     def company_valid(id, company)
-      comp_valid, company_errors = company.companyValid(id)
-      if (!comp_valid)
-        addErrorsToFlash(company_errors)
+      if (!Company.exists?(id: id))
+        flash[:error] = "Company ID not valid"
         redirect_to user_path(session[:user_id])
       end
     end
 
     def division_valid(id,  division)
-      div_valid, division_errors = division.validateExistingDivision(id)
-      if (!div_valid)
-        addErrorsToFlash(division_errors)
+      if (!Division.exists?(id: id))
+        flash[:error] = "Division ID not valid"
         redirect_to user_path(session[:user_id])
       end
     end

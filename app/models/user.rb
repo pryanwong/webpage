@@ -17,151 +17,18 @@ class User < ActiveRecord::Base
   has_many :divisions, :through => :user_memberships
   has_many :drawings, :dependent => :restrict_with_error
   belongs_to :company
-  validates_associated :company
-  validates :role, presence: true
+  validates_presence_of :company
+  validates :role, presence: true, inclusion: { in: User.roles.keys }
+  validate :validate_license_available
 
-  def validateNewUser(params)
-      #Determine if User already exists
-      user_exists = false;
-      email_param = false;
-      isadmin_valid = false;
-      valid_data = false;
-      error_messages = {};
-
-      if (!params[:user][:email].blank?)
-         email_param = true;
-         if User.exists?(email: params[:user][:email])
-            user_exists = true;
-            error_messages[:user_exists] = "User already exists"
-         end
-      else
-         error_messages[:email_blank] = "Email not Provided"
-      end
-
-      if (!params[:user][:role].blank?)
-         if (params[:user][:role] == "user" || params[:user][:role] == "moderator")
-           isadmin_valid = true;
-         else
-           error_messages[:isadmin] = "Role Value Not Valid"
-         end
-      else
-        error_messages[:isadmin_blank] = "Role not Provided"
-      end
-      if (!user_exists & email_param & isadmin_valid)
-        valid_data = true;
-      end
-      return [valid_data, error_messages]
-  end
-
-  def userValid(id)
-    valid_user = false;
-    error_messages = {};
-    if (!id.blank? && !(id == nil))
-       if User.exists?(id: id)
-          valid_user = true;
-       else
-          error_messages[:error_company_not_found] = "User Not Found"
-       end
-    else
-       error_messages[:error_company_id] = "User Id not Provided"
-    end
-    return [valid_user, error_messages];
-  end
-
-  def validateExistingUser(params)
-      #Determine if User already exists
-      user_exists = false;
-      email_param = false;
-      user_id_param = false;
-      role_valid = false;
-      valid_data = false;
-      error_messages = {};
-
-      if (!params[:id].blank?)
-         if (User.exists?(id: params[:id]))
-            user_exists = true;
-         end
-      end
-      if (!params[:user][:email].blank?)
-         email_param = true;
-      else
-         error_messages[:email_blank] = "Email not Provided"
-      end
-
-      if (!params[:user][:role].blank?)
-         if (params[:user][:role] == "moderator" || params[:user][:role] == "user")
-           role_valid = true;
-         else
-           error_messages[:role] = "Role Value Not Valid"
-         end
-      else
-        error_messages[:role_blank] = "Role not Provided"
-      end
-      if (user_exists & email_param & role_valid)
-        valid_data = true;
-      end
-      return [valid_data, error_messages]
-  end
-
-  def updateUser(params)
-
-      if (!params[:user][:role].blank?)
-         if params[:user][:role] == "moderator"
-            self.moderator!
-         else
-            self.user!
-         end
-      end
-
-      if (!params[:user][:email].blank?)
-         self.email = params[:user][:email]
-      end
-
-
-      successfullyAdded = false;
-      userErrors = {}
-      successfullyAdded = self.save
-
-      if successfullyAdded
-        userErrors[:notice] = "User Has Been Successfully Updated "
-      else
-        if (!self.errors.empty?)
-           self.errors.each do |attr,err|
-             userErrors[attr] = err.to_s()
-           end
+  def validate_license_available
+     if Company.exists?(self.company_id)
+        company = Company.find(self.company_id)
+        count = User.where(:company_id => self.company_id).count
+        if (count >= company.licenses)
+            errors.add(:licenses, "Insufficient Licenses to Add a User")
         end
-        userErrors[:could_not_update] = "Could Not Update User"
-      end
-      return [successfullyAdded, userErrors]
-  end
-
-  def deleteUser
-     successfullyDeleted = self.destroy
-     userErrors = {}
-     if successfullyDeleted
-       userErrors[:notice] = "User Has Been Successfully Deleted "
-     else
-       if (!self.errors.empty?)
-          self.errors.each do |attr,err|
-            userErrors[attr] = err.to_s()
-          end
-       end
-       userErrors[:could_not_update] = "Could Not Delete User"
      end
-     return [successfullyDeleted, userErrors]
-  end
-
-  def addNewUser(params)
-      role_val = User.roles[(params[:user][:role])]
-      successfullyAdded = false;
-      userErrors = {}
-      successfullyAdded = User.create(email: params[:user][:email], role: role_val, company_id: params[:company_id])
-      if successfullyAdded
-        userErrors[:notice] = "User Has Been Added Successfully"
-      else
-        userErrors[:error] = "Could not Add User"
-      end
-      return [successfullyAdded, userErrors]
   end
 
   def self.from_omniauth(auth)

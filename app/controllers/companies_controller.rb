@@ -19,65 +19,64 @@
 
   def show
     @company = Company.new
-    valid_data, error_messages = @company.companyValid( params[:id] )
-    if valid_data
+    if (Company.exists?(id: params[:id]))
        @company = Company.find(params[:id])
     else
-       addErrorsToFlash(error_messages)
+       flash[:error] = "Company Could Not Be Found"
        redirect_to companies_path
-    end 
+    end
   end
 
   def edit
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    @company = Company.find(params[:id])
+    @company = Company.new
+    if (Company.exists?(id: params[:id]))
+       @company = Company.find(params[:id])
+    else
+       flash[:error] = "Company Could Not Be Found"
+       redirect_to companies_path
+    end
   end
 
   def update
     @company = Company.new
-    valid_data, error_messages = @company.companyValid( params[:id] )
-    if (valid_data)
-       valid_company, error_messages = companyParamsValid(params)
-       if (valid_company)
+    if (Company.exists?(id: params[:id]))
           @company = Company.find(params[:id])
           if @company.update_attributes(company_params)
             # Handle a successful update.
             flash[:notice] = "Edit Saved"
           else
+            addErrorsToFlash(@company.errors)
             flash[:error] = "Company Could Not Be Updated"
           end
-       end
     end
-    addErrorsToFlash(error_messages)
+    addErrorsToFlash(@company.errors)
     redirect_to companies_path
   end
 
   def create
-    valid_company, error_messages = companyParamsValid(params)
-    if valid_company
-       @company = Company.new(company_params)
-       if @company.save
+    @company = Company.new(company_params)
+    if @company.save
           # Handle a successful update.
-         flash[:notice] = "New Company Saved"
-       else
-         flash[:error] = "Company Could Not Be Added"
-       end
+      flash[:notice] = "New Company Saved"
+    else
+      addErrorsToFlash(@company.errors)
+      flash[:error] = "Company Could Not Be Added"
     end
-    addErrorsToFlash(error_messages)
+
     redirect_to companies_path
 
   end
 
   def destroy
     @company = Company.new
-    valid_data, error_messages = validateExistingCompany(params[:id], @company)
-    if valid_data
+    if Company.exists?(id: params[:id])
        @company = Company.find(params[:id])
-       val, errors = @company.deleteCompany
-       addErrorsToFlash(errors)
+       @company.destroy
+       addErrorsToFlash(@company.errors)
     else
-       addErrorsToFlash(error_messages)
+       flash[:error] = "Company ID not found"
     end
     redirect_to companies_path
   end

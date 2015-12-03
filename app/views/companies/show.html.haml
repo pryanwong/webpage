@@ -44,7 +44,7 @@
       %tr
          %td{:class=>"first"}= division.name
          %td{:class=>"second"}= link_to "Edit", edit_company_division_path(@company, division)
-         %td{:class=>"third"}= link_to "Remove", company_division_path(@company, division), method: :delete, data: { confirm: "Are you sure?" }
+         %td{:class=>"third"}= link_to "Remove", company_division_path(@company, division),  method: :delete , data: { confirm: "Are you sure?" }
          %td
    %table{:class=>"flatTable"}
       %tr{:class=>"headingTr"}

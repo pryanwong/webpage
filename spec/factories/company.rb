@@ -1,4 +1,4 @@
-# spec/factories/company_factory.rb
+# spec/factories/company.rb
 require 'faker'
 
 FactoryGirl.define do
@@ -7,6 +7,10 @@ FactoryGirl.define do
 
     trait :name do
       name {Faker::Company.name}
+    end
+
+    trait :namefixed do
+      name "SeanCo"
     end
 
     trait :noname do
@@ -18,7 +22,7 @@ FactoryGirl.define do
     end
 
     trait :license_fixed do
-      licenses 10
+      licenses 2
     end
 
     trait :nolicense do
@@ -31,6 +35,10 @@ FactoryGirl.define do
 
     trait :licensedec do
        licenses 2.5
+    end
+
+    trait :licenseneg do
+       licenses -1
     end
 
     trait :with_divisions do

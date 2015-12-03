@@ -18,4 +18,4 @@
          %div.button-section
             %div.field
                =message_form.submit "Send"
-               =message_form.submit "Cancel"
+               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
