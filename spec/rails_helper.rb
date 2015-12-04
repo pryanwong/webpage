@@ -6,6 +6,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 require 'factory_girl_rails'
+require 'support/spec_test_helper'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -33,7 +34,7 @@ RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.include FactoryGirl::Syntax::Methods
   FactoryGirl.definition_file_paths = [File.expand_path('../factories', __FILE__)]
-
+  config.include SpecTestHelper, :type => :controller
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

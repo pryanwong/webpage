@@ -9,20 +9,11 @@ describe Company do
   it "is invalid without a name" do
      expect{FactoryGirl.create(:company,:noname,:license_rand)}.to raise_error(ActiveRecord::RecordInvalid)
   end
-  it "is invalid without licenses" do
-     expect{FactoryGirl.create(:company,:name,:nolicense)}.to raise_error(ActiveRecord::RecordInvalid)
-  end
 
-  it "is invalid with character license" do
-     expect{FactoryGirl.create(:company,:name,:licensechar)}.to raise_error(ActiveRecord::RecordInvalid)
-  end
-
-  it "is invalid with decimal license" do
-     expect{FactoryGirl.create(:company,:name,:licensedec)}.to raise_error(ActiveRecord::RecordInvalid)
-  end
-
-  it "is invalid with negative license" do
-     expect{FactoryGirl.create(:company,:name,:licenseneg)}.to raise_error(ActiveRecord::RecordInvalid)
+  ['', -1, 1.1, 'blahblah', nil].each do |invalid_license_num|
+     it "is invalid with an invalid license number (#{invalid_license_num})" do
+        expect{FactoryGirl.create(:company,:name,:licenses => invalid_license_num)}.to raise_error(ActiveRecord::RecordInvalid)
+     end
   end
 
   it "cannot be destroyed with divisions" do
