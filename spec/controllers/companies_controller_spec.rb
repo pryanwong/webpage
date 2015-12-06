@@ -2,8 +2,10 @@ require 'rails_helper'
 
 describe CompaniesController, :type => :controller do
 
-    let(:company1) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions)}
-    let(:company2) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions)}
+    let(:company1) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 1)}
+    let(:company2) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 2)}
+    let(:company3) { double("company3", update_attributes: {name: "batman", licenses: "3"}, errors: {})}
+    let(:company4) { double("company4", update_attributes: {name: "batman", licenses: "3"}, errors: {}, save: true, :id => 1)}
     let(:user) {double("user") }
     #let(:user_admin) { FactoryGirl.create(:user, :admin,:company_id => company2.id) }
 
@@ -46,5 +48,426 @@ describe CompaniesController, :type => :controller do
           get :index
           expect(response).to redirect_to("/accessdenied")
        end
+     end
+
+     describe "GET 'new'" do
+       it "renders the accessdenied page because no user was logged in" do
+         get :new
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         login(user.email)
+         get :new
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         login(user.email)
+         get :new
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the new page because user (admin role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:new).and_return(company1)
+         login(user.email)
+         get :new
+         expect(response).to render_template("new")
+         expect(assigns(:company)).to eq(company1)
+       end
+     end
+
+     describe "GET 'show'" do
+       it "renders the accessdenied page because no user was logged in" do
+         allow(Company).to receive(:exists?).and_return(true)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         get :show, :id => 1
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(true)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         login(user.email)
+         get :show, :id => 1
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the show page because user (moderator role) was logged in, and the company is his" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         get :show, :id => 1
+         expect(assigns(:company)).to eq(company1)
+         expect(response).to render_template("show")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in, and the company was not his" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company2)
+         allow(Company).to receive(:where).and_return(company2)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         get :show, :id => 2
+         expect(assigns(:company)).to eq(company2)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the show page because user (admin role) was logged in, and the company was not his" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company2)
+         allow(Company).to receive(:where).and_return(company2)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         get :show, :id => 2
+         expect(assigns(:company)).to eq(company2)
+         expect(response).to render_template("show")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in, but the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         get :show, :id => 999
+         expect(assigns(:company)).to eq(nil)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in, but the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         get :show, :id => 999
+         expect(assigns(:company)).to eq(nil)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "redirects to the company list page because user (admin role) was logged in, and the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         get :show, :id => 2
+         expect(assigns(:company)).to eq(nil)
+         expect(response).to redirect_to("/accessdenied")
+       end
+     end
+
+     describe "GET 'edit'" do
+       it "renders the accessdenied page because no user was logged in" do
+         allow(Company).to receive(:exists?).and_return(true)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         get :edit, :id => 1
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(true)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         login(user.email)
+         get :edit, :id => 1
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied because user (moderator role) was logged in, and the company is his" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         get :edit, :id => 1
+         expect(assigns(:company)).to eq(company1)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in, and the company was not his" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company2)
+         allow(Company).to receive(:where).and_return(company2)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         get :edit, :id => 2
+         expect(assigns(:company)).to eq(company2)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the show page because user (admin role) was logged in, and the company was not his" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company2)
+         allow(Company).to receive(:where).and_return(company2)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         get :edit, :id => 2
+         expect(assigns(:company)).to eq(company2)
+         expect(response).to render_template("edit")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in, but the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         get :edit, :id => 999
+         expect(assigns(:company)).to eq(nil)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in, but the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         get :edit, :id => 999
+         expect(assigns(:company)).to eq(nil)
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders accessdenied page because user (admin role) was logged in, and the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         get :edit, :id => 2
+         expect(assigns(:company)).to eq(nil)
+         expect(response).to redirect_to("/accessdenied")
+       end
+     end
+
+
+     describe "PUT 'update'" do
+       it "renders the accessdenied page because no user was logged in" do
+         allow(Company).to receive(:exists?).and_return(true)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         put :update, :id => 1
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(true)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         login(user.email)
+         put :update, :id => 1
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied because user (moderator role) was logged in, and the company is his" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company1)
+         allow(Company).to receive(:where).and_return(company1)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         put :update, :id => 1, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in, and the company was not his" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company2)
+         allow(Company).to receive(:where).and_return(company2)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         put :update, :id => 2, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the companies page because user (admin role) was logged in, and the company was not his" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:find).and_return(company3)
+         allow(Company).to receive(:where).and_return(company3)
+         allow(Company).to receive(:exists?).and_return(true)
+         login(user.email)
+         put :update, :id => 2, company: {name: "batman", licenses: "3"}
+         expect(company3).to have_received(:update_attributes)
+         expect(response).to redirect_to(companies_path)
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in, but the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         put :update, :id => 999, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (moderator role) was logged in, but the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         put :update, :id => 999, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "redirects to the company list page because user (admin role) was logged in, and the company did not exist" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:exists?).and_return(false)
+         login(user.email)
+         put :update, :id => 2, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+     end
+
+
+
+
+
+     describe "POST 'create'" do
+       it "renders the accessdenied page because no user was logged in" do
+         allow(Company).to receive(:new).and_return(company4)
+         allow(company4).to receive_messages(:save => true)
+         post :create, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied page because user (user role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(company4).to receive_messages(:save => true)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:new).and_return(company4)
+         login(user.email)
+         post :create, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the accessdenied because user (moderator role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(company4).to receive_messages(:save => true)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:new).and_return(company4)
+         login(user.email)
+         post :create, company: {name: "batman", licenses: "3"}
+         expect(response).to redirect_to("/accessdenied")
+       end
+
+       it "renders the companies page because user (admin role) was logged in" do
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(company4).to receive_messages(:save => true)
+         allow(User).to receive(:where).and_return([user])
+         allow(User).to receive(:find).and_return(user)
+         allow(Company).to receive(:new).and_return(company4)
+         login(user.email)
+         post :create, company: {name: "batman", licenses: "3"}
+         expect(company4).to have_received(:save)
+         expect(response).to redirect_to(companies_path)
+       end
+     end
+
+
+       describe "DELETE 'destroy'" do
+         it "renders the accessdenied page because no user was logged in" do
+           allow(Company).to receive(:new).and_return(company4)
+           allow(company4).to receive_messages(:delete => true)
+           allow(Company).to receive(:exists?).and_return(true)
+           delete :destroy, :id => 1
+           expect(response).to redirect_to("/accessdenied")
+         end
+
+         it "renders the accessdenied page because user (user role) was logged in" do
+           allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+           allow(company4).to receive_messages(:save => true)
+           allow(User).to receive(:where).and_return([user])
+           allow(User).to receive(:find).and_return(user)
+           allow(Company).to receive(:exists?).and_return(true)
+           login(user.email)
+           delete :destroy, :id => 1
+           expect(response).to redirect_to("/accessdenied")
+         end
+
+         it "renders the accessdenied because user (moderator role) was logged in" do
+           allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+           allow(company4).to receive_messages(:destroy => true)
+           allow(User).to receive(:where).and_return([user])
+           allow(User).to receive(:find).and_return(user)
+           allow(Company).to receive(:exists?).and_return(true)
+           login(user.email)
+           delete :destroy, :id => 1
+           expect(response).to redirect_to("/accessdenied")
+         end
+
+         it "renders the companies page because user (admin role) was logged in, no company exists" do
+           allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+           allow(company4).to receive_messages(:destroy => true)
+           allow(User).to receive(:where).and_return([user])
+           allow(User).to receive(:find).and_return(user)
+           allow(Company).to receive(:exists?).and_return(false)
+           allow(Company).to receive(:find).and_return(nil)
+           login(user.email)
+           delete :destroy, :id => 1
+           expect(company4).to have_received(:destroy).at_most(0).times
+           expect(response).to redirect_to(companies_path)
+         end
+
+         it "renders the companies page because user (admin role) was logged in" do
+           allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+           allow(company4).to receive_messages(:destroy => true)
+           allow(User).to receive(:where).and_return([user])
+           allow(User).to receive(:find).and_return(user)
+           allow(Company).to receive(:exists?).and_return(true)
+           allow(Company).to receive(:find).and_return(company4)
+           login(user.email)
+           delete :destroy, :id => 1
+           expect(company4).to have_received(:destroy)
+           expect(response).to redirect_to(companies_path)
+         end
+
      end
 end

@@ -1,5 +1,5 @@
  class CompaniesController < ApplicationController
-  load_and_authorize_resource :company
+  load_and_authorize_resource :company, :raise_on_record_not_found => false
   before_filter :check_for_cancel, :only => [:create, :update]
   def new
     session.delete(:return_to)
@@ -18,9 +18,8 @@
   end
 
   def show
-    @company = Company.new
     if (Company.exists?(id: params[:id]))
-       @company = Company.find(params[:id])
+      @company = Company.find(params[:id])
     else
        flash[:error] = "Company Could Not Be Found"
        redirect_to companies_path
@@ -30,7 +29,6 @@
   def edit
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    @company = Company.new
     if (Company.exists?(id: params[:id]))
        @company = Company.find(params[:id])
     else
@@ -40,7 +38,6 @@
   end
 
   def update
-    @company = Company.new
     if (Company.exists?(id: params[:id]))
           @company = Company.find(params[:id])
           if @company.update_attributes(company_params)
@@ -70,7 +67,6 @@
   end
 
   def destroy
-    @company = Company.new
     if Company.exists?(id: params[:id])
        @company = Company.find(params[:id])
        @company.destroy

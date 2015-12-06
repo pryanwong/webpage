@@ -14,17 +14,11 @@ class DivisionsController < ApplicationController
     logger.fatal "Divisions Edit Parameters: #{params.inspect}"
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    @company = Company.new
-    @division = Division.new
     @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
-
   end
 
   def adduserdiv
     logger.fatal "Add User DIV parameters: #{params.inspect}"
-    @company = Company.new
-    @division = Division.new
-    @user = User.new
     if User.exists?(id: params[:division][:id])
        @user = User.find(params[:division][:id])
     else
@@ -52,8 +46,6 @@ class DivisionsController < ApplicationController
 
   def update
 
-    @company = Company.new
-    @division = Division.new
     @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
     @division.update(name: params[:division][:name])
     addErrorsToFlash(@division.errors)
@@ -82,7 +74,6 @@ class DivisionsController < ApplicationController
 
   def destroy
     logger.fatal "Division DESTROY Params: #{params.inspect}"
-    @division = Division.new
     if Division.exists?(id: params[:id])
        @division = Division.find(params[:id])
     else

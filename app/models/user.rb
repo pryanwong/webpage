@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   belongs_to :company
   validates_presence_of :company
   validates :role, presence: true, inclusion: { in: User.roles.keys }
-  validate :validate_license_available
+  validate :validate_license_available, :only => :new
 
   def validate_license_available
      if Company.exists?(self.company_id)

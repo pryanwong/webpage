@@ -14,6 +14,11 @@ class ApplicationController < ActionController::Base
      @current_ability ||= Ability.new(current_user)
   end
 
+  rescue_from  ActiveRecord::RecordNotFound do |exception|
+    flash[:notice] = exception.message
+    redirect_to accessdenied_path
+  end
+
   rescue_from CanCan::AccessDenied do |exception|
     flash[:notice] = exception.message
     redirect_to accessdenied_path
