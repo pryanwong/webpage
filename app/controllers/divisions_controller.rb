@@ -14,7 +14,16 @@ class DivisionsController < ApplicationController
     logger.fatal "Divisions Edit Parameters: #{params.inspect}"
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
+    if (!Company.exists?(id: params[:company_id]))
+      flash[:error] = "Company ID not valid"
+      redirect_to user_path(session[:user_id])
+    end
+    if (!Division.exists?(id: params[:id]))
+      flash[:error] = "Division ID not valid"
+      redirect_to user_path(session[:user_id])
+    end
+    @company = Company.find(params[:company_id])
+    @division = Division.find(params[:id])
   end
 
   def adduserdiv
@@ -109,10 +118,10 @@ class DivisionsController < ApplicationController
       end
     end
 
-    def div_comp_validate(div_id, comp_id, division, company)
-      company_valid(comp_id, company)
+    def div_comp_validate(div_id, comp_id, division_in, company_in)
+      company_valid(comp_id, company_in)
       company = Company.find(comp_id)
-      division_valid(div_id, division)
+      division_valid(div_id, division_in)
       division = Division.find(div_id)
       return [division, company]
     end

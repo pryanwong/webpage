@@ -11,16 +11,18 @@
       =csrf_meta_tags
    %body
       = render "shared/header"
-      %div{:id=>'errors'}
-         %ul
-            - flash.each do |key, value|
-               - if (key=="notice")
-                  %li{:class=>'green'}
-                     #{value}
-               - else
-                  %li #{value}
-      = yield
+      %div{:id=>'wrapper'}
+         -if !flash.empty?
+            %div{:id=>'errors'}
+               %ul
+                  - flash.each do |key, value|
+                     - if (key=="notice")
+                        %li{:class=>'green'}
+                           #{value}
+                     - else
+                        %li #{value}
+         = yield
       :javascript
          $(document).ready(function() {
-            $('#errors').css('top', $('#cssmenu').outerHeight());
+            $('#wrapper').css('top', $('#cssmenu').outerHeight());
          });

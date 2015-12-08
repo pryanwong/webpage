@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     match '/home' => 'pages#home', via: [:get]
     match '/about' => 'pages#about', via: [:get]
     match '/failed' => 'pages#failed', via: [:get]
+    match '/recordnotfound' => 'pages#recordnotfound', via: [:get]
     match '/accessdenied' => 'pages#accessdenied', via: [:get]
 
     get 'contact', to: 'messages#new', as: 'contact'

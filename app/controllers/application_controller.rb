@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from  ActiveRecord::RecordNotFound do |exception|
     flash[:notice] = exception.message
-    redirect_to accessdenied_path
+    redirect_to recordnotfound_path
   end
 
   rescue_from CanCan::AccessDenied do |exception|

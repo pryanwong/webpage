@@ -10,7 +10,14 @@
   z-index: 1000;
 }
 
+#wrapper {
+  float: left;
+  position: relative;
+  width: 100%;
+}
+
 #errors {
+  float: left;
   position: relative;
   background: #150500;
   width: 100%;

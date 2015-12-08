@@ -11,8 +11,19 @@
       =javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"
       =csrf_meta_tags
    %body
-      - flash.each do |key, value|
-         .alert{:key=> '#{key}'}=value
       = render "shared/header_start"
-      = yield
-      = render "shared/footer_home"
+      %div{:id=>'wrapper'}
+         -if !flash.empty?
+            %div{:id=>'errors'}
+               %ul
+                  - flash.each do |key, value|
+                     - if (key=="notice")
+                        %li{:class=>'green'}
+                           #{value}
+                     - else
+                        %li #{value}
+         = yield
+      :javascript
+         $(document).ready(function() {
+            $('#wrapper').css('top', $('#cssmenu').outerHeight());
+         });

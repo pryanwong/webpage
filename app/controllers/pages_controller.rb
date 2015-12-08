@@ -12,6 +12,9 @@ class PagesController < ApplicationController
   def accessdenied
   end
 
+  def recordnotfound
+  end
+
   private
    def pages_layout
      "longpages"

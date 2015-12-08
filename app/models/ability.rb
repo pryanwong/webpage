@@ -8,7 +8,8 @@ class Ability
        #logger.fatal "User Role #{user.role}"
        #logger.fatal "User Role ID #{user.role_id}"
        if user.moderator?
-         can :read, Company, :id => user.company_id
+         can [:read], Company, :id => user.company_id
+         #can [:create, :read, :update, :destroy], Company
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create, :read, :update, :destroy, :adduserdiv ], Division, :company_id => user.company_id

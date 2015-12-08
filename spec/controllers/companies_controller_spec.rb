@@ -154,7 +154,7 @@ describe CompaniesController, :type => :controller do
          login(user.email)
          get :show, :id => 999
          expect(assigns(:company)).to eq(nil)
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
 
        it "renders the accessdenied page because user (moderator role) was logged in, but the company did not exist" do
@@ -165,7 +165,7 @@ describe CompaniesController, :type => :controller do
          login(user.email)
          get :show, :id => 999
          expect(assigns(:company)).to eq(nil)
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
 
        it "redirects to the company list page because user (admin role) was logged in, and the company did not exist" do
@@ -176,7 +176,7 @@ describe CompaniesController, :type => :controller do
          login(user.email)
          get :show, :id => 2
          expect(assigns(:company)).to eq(nil)
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
      end
 
@@ -248,7 +248,7 @@ describe CompaniesController, :type => :controller do
          login(user.email)
          get :edit, :id => 999
          expect(assigns(:company)).to eq(nil)
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
 
        it "renders the accessdenied page because user (moderator role) was logged in, but the company did not exist" do
@@ -259,7 +259,7 @@ describe CompaniesController, :type => :controller do
          login(user.email)
          get :edit, :id => 999
          expect(assigns(:company)).to eq(nil)
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
 
        it "renders accessdenied page because user (admin role) was logged in, and the company did not exist" do
@@ -270,7 +270,7 @@ describe CompaniesController, :type => :controller do
          login(user.email)
          get :edit, :id => 2
          expect(assigns(:company)).to eq(nil)
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
      end
 
@@ -340,7 +340,7 @@ describe CompaniesController, :type => :controller do
          allow(Company).to receive(:exists?).and_return(false)
          login(user.email)
          put :update, :id => 999, company: {name: "batman", licenses: "3"}
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
 
        it "renders the accessdenied page because user (moderator role) was logged in, but the company did not exist" do
@@ -350,7 +350,7 @@ describe CompaniesController, :type => :controller do
          allow(Company).to receive(:exists?).and_return(false)
          login(user.email)
          put :update, :id => 999, company: {name: "batman", licenses: "3"}
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
 
        it "redirects to the company list page because user (admin role) was logged in, and the company did not exist" do
@@ -360,7 +360,7 @@ describe CompaniesController, :type => :controller do
          allow(Company).to receive(:exists?).and_return(false)
          login(user.email)
          put :update, :id => 2, company: {name: "batman", licenses: "3"}
-         expect(response).to redirect_to("/accessdenied")
+         expect(response).to redirect_to("/recordnotfound")
        end
      end
 
@@ -418,7 +418,7 @@ describe CompaniesController, :type => :controller do
            allow(company4).to receive_messages(:delete => true)
            allow(Company).to receive(:exists?).and_return(true)
            delete :destroy, :id => 1
-           expect(response).to redirect_to("/accessdenied")
+           expect(response).to redirect_to("/recordnotfound")
          end
 
          it "renders the accessdenied page because user (user role) was logged in" do
@@ -429,7 +429,7 @@ describe CompaniesController, :type => :controller do
            allow(Company).to receive(:exists?).and_return(true)
            login(user.email)
            delete :destroy, :id => 1
-           expect(response).to redirect_to("/accessdenied")
+           expect(response).to redirect_to("/recordnotfound")
          end
 
          it "renders the accessdenied because user (moderator role) was logged in" do
@@ -440,7 +440,7 @@ describe CompaniesController, :type => :controller do
            allow(Company).to receive(:exists?).and_return(true)
            login(user.email)
            delete :destroy, :id => 1
-           expect(response).to redirect_to("/accessdenied")
+           expect(response).to redirect_to("/recordnotfound")
          end
 
          it "renders the companies page because user (admin role) was logged in, no company exists" do
