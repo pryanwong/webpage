@@ -31,13 +31,17 @@ class DivisionsController < ApplicationController
     if User.exists?(id: params[:division][:id])
        @user = User.find(params[:division][:id])
     else
-       redirect_to company_path(params[:company_id]), :method => :show
+      flash[:error] = "User Not Added to Division, company wasn't found"
+      redirect_to company_path(params[:company_id]), :method => :show
+      return
     end
 
     if Division.exists?(id: params[:id])
        @division = Division.find(params[:id])
     else
+       flash[:error] = "User Not Added to Division, division wasn't found"
        redirect_to company_path(params[:company_id]), :method => :show
+       return
     end
     userMember = UserMembership.new(:division_id=>@division.id, :user_id=>@user.id)
     successfullyAdded = userMember.save
@@ -54,8 +58,19 @@ class DivisionsController < ApplicationController
   end
 
   def update
+    if (!Company.exists?(id: params[:company_id]))
+      flash[:error] = "Company ID not valid"
+      redirect_to user_path(session[:user_id])
+      return
+    end
+    if (!Division.exists?(id: params[:id]))
+      flash[:error] = "Division ID not valid"
+      redirect_to user_path(session[:user_id])
+      return
+    end
 
-    @division, @company = div_comp_validate(params[:id], params[:company_id],@division, @company)
+    @company = Company.find(params[:company_id])
+    @division = Division.find(params[:id])
     @division.update(name: params[:division][:name])
     addErrorsToFlash(@division.errors)
     redirect_to company_path(params[:company_id]), :method => :show
@@ -66,7 +81,11 @@ class DivisionsController < ApplicationController
     division = Division.new
 
     #Verify that Company id is valid
-    company_valid(params[:company_id], @company)
+    if (!Company.exists?(id: params[:company_id]))
+      flash[:error] = "Company ID not valid"
+      redirect_to user_path(session[:user_id])
+      return
+    end
     @company = Company.find(params[:company_id])
     div_name = params[:division][:name]
     division.name = div_name
@@ -86,7 +105,9 @@ class DivisionsController < ApplicationController
     if Division.exists?(id: params[:id])
        @division = Division.find(params[:id])
     else
+       flash[:error] = "Division Not Deleted, Division Not Found"
        redirect_to company_path(params[:company_id])
+       return
     end
     company_id = @division.company_id
     @division.destroy
