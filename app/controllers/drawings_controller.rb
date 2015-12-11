@@ -21,26 +21,26 @@ class DrawingsController < ApplicationController
 
 
   def editdrawingdetails
-       @user = User.new
        if (User.exists?(params[:user_id]))
           @user = User.find(params[:user_id]);
        else
           flash[:error] = "User not Found"
           redirect_to root_path
+          return
        end
-       @company = Company.new
        if (Company.exists?(@user.company_id))
           @company = Company.find(@user.company_id);
        else
           flash[:error] = "Company not Found"
           redirect_to root_path
+          return
        end
-       @drawing = Drawing.new
        if (Drawing.exists?(params[:id]))
           @drawing = Drawing.find(params[:id]);
        else
           flash[:error] = "Drawing not Found"
           redirect_to root_path
+          return
        end
        @divisions = @user.divisions
        @divs = (@divisions).to_a
@@ -52,26 +52,26 @@ class DrawingsController < ApplicationController
       session.delete(:return_to)
       session[:return_to] ||= request.referer
       logger.fatal "Params Inspect updatedrawingdetails #{params.inspect}"
-      @user = User.new
       if (User.exists?(params[:user_id]))
          @user = User.find(params[:user_id]);
       else
          flash[:error] = "User not Found"
          redirect_to root_path
+         return
       end
-      @company = Company.new
       if (Company.exists?(@user.company_id))
          @company = Company.find(@user.company_id);
       else
          flash[:error] = "Company not Found"
          redirect_to root_path
+         return
       end
-      @drawing = Drawing.new
       if (Drawing.exists?(params[:id]))
          @drawing = Drawing.find(params[:id]);
       else
          flash[:error] = "Drawing not Found"
          redirect_to root_path
+         return
       end
       priv_level = params[:drawing][:privacy]
       @drawing.privacy     = Drawing.privacies[priv_level]
@@ -85,7 +85,8 @@ class DrawingsController < ApplicationController
       end
       if @drawing.update_attributes(drawing_params)
         flash[:notice] = "Edit Saved"
-        redirect_to edit_company_user_drawing_path(@company.id, @user, @drawing)
+        redirect_to edit_company_user_drawing_path(@company.id, @user.id, @drawing.id)
+        return
       else
         render 'editdrawingdetails'
       end
@@ -107,25 +108,33 @@ class DrawingsController < ApplicationController
     if @drawing.save
       # Handle a successful update.
       flash[:notice] = "New Drawing Saved"
-      redirect_to edit_company_user_drawing_path(@drawing.user.company.id, @drawing.user, @drawing)
+      redirect_to edit_company_user_drawing_path(params[:company_id], params[:user_id], @drawing.id)
+      return
      else
        flash[:notice] = "Drawing Could Not Be Added"
-       render action: company_user_path
+       redirect_to company_user_path(params[:company_id], params[:user_id])
      end
   end
 
   def update
     logger.fatal "Drawing Vals: #{params.inspect}"
-    @drawing = Drawing.find(params[:id])
+    if (Drawing.exists?(params[:id]))
+       @drawing = Drawing.find(params[:id]);
+    else
+       flash[:error] = "Drawing not Found"
+       redirect_to root_path
+       return
+    end
     @drawing.drawing = params[:drawing].to_json
     @drawing.png     = params[:png]
     logger.fatal "Drawing Vals: #{@drawing.drawing}"
     logger.fatal "Drawing png: #{@drawing.png}"
-       if @drawing.save
+    if @drawing.save
          render :json => [ @drawing].to_json
-       else
+         return
+    else
          render :json => [{ :error => "An error was encountered while processing your photos. Please try again." }], :status => 304
-       end
+    end
   end
 
   def displayimage

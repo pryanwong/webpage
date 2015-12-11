@@ -5,6 +5,14 @@ FactoryGirl.define do
 
   factory :drawing do |f|
     f.drawing ''
+    f.privacy ''
+    f.opportunity ''
+    f.customer ''
+    f.description ''
+    f.division_id ''
+    f.user_id ''
+    f.company_id ''
+
   end
 
   trait :privacy_user do
