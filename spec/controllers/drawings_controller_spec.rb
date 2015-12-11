@@ -255,4 +255,21 @@ describe DrawingsController, :type => :controller do
         expect(response).to redirect_to company_user_path(1, 1)
       end
     end
+
+    describe "POST 'update'" do
+      it "redirects to the edit_company_user_drawing_path page" do
+        allow(user).to receive_messages(:id => 1, :admin? => false, :divisions => divisions, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+        allow(User).to receive(:where).and_return([user])
+        allow(User).to receive(:find).and_return(user)
+        allow(User).to receive(:exists?).and_return(true)
+        allow(Drawing).to receive(:new).and_return(drawing)
+        allow(Drawing).to receive(:where).and_return([drawing])
+        allow(Drawing).to receive(:find).and_return(drawing)
+        allow(Drawing).to receive(:exists?).and_return(true)
+        allow(drawing).to receive(:save).and_return(true)
+        login(user.email)
+        post :create, :company_id => 1, :user_id => 1, :id => 1, :privacy => "company", :opportunity =>"hi", :customer => "peter", :description => "description", :division_id => "1"
+        expect(response).to redirect_to edit_company_user_drawing_path(1, 1, 1)
+      end
+    end
 end
