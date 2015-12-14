@@ -11,6 +11,7 @@ class Drawing < ActiveRecord::Base
   validates_presence_of :division, :if => :division_testing?
   validate :division_belongs_to_user, :if => :division_testing?
   validate :company_belongs_to_user
+  validates_inclusion_of :privacy, in: Drawing.privacies.keys
 
   def division_testing?
      val = (self.privacy == "division")

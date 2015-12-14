@@ -7,6 +7,10 @@ describe Drawing do
   let(:user) { FactoryGirl.create(:user, :user,:company_id => company1.id)}
 
 
+  it "is invalid, raises error because of invalid privacy" do
+     expect { FactoryGirl.build(:drawing, :privacy => "blahblah", :division_id => company1.divisions[0].id, :user_id => user.id,:company_id => company1.id) }.to raise_error
+  end
+
   it "is valid" do
      record = FactoryGirl.build(:drawing, :privacy_division, :division_id => company1.divisions[0].id, :user_id => user.id,:company_id => company1.id)
      expect(record.save).to eq(true)

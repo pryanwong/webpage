@@ -10,26 +10,39 @@ class UsersController < ApplicationController
   end
 
   def switchuser
+    if (User.exists?(params[:user_id]))
+       @user = User.find(params[:user_id]);
+    else
+       flash[:error] = "User not Found"
+       redirect_to root_path
+       return
+    end
     if current_user.admin? && !session[:switched] == true
        session[:switched]  = true;
        session[:adminuser] = session[:user_id]
        session[:admincompany] = session[:company_id]
-       @user = User.find(params[:user_id])
        @current_user = @user
        session.delete(:user_id)
        session.delete(:company_id)
        session[:user_id]  = @user.id
        session[:company_id] = @user.company_id
        redirect_to company_user_path(@user.company_id , @user.id)
+       return
     else
        redirect_to company_user_path(session[:company_id] , session[:user_id])
     end
   end
 
   def switchback
+    if (User.exists?(session[:adminuser]))
+       @user = User.find(session[:adminuser]);
+    else
+       flash[:error] = "User not Found"
+       redirect_to root_path
+       return
+    end
     if session[:switched]
        session.delete(:switched)
-       @user = User.find(session[:adminuser])
        @current_user = @user
        session.delete(:adminuser)
        session.delete(:admincompany)
@@ -44,18 +57,24 @@ class UsersController < ApplicationController
   def new
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    @company = Company.find(params[:company_id])
+    if (Company.exists?(params[:company_id]))
+       @company = Company.find(params[:company_id])
+    else
+      flash[:error] = "Company not Found"
+      redirect_to root_path
+      return
+    end
     @user = User.new
     @user.company = @company
   end
 
   def show
-    @user = User.new
     if (User.exists?(params[:id]))
        @user = User.find(params[:id]);
     else
        flash[:error] = "User not Found"
        redirect_to root_path
+       return
     end
     @listdrawings = false;
     @privacies = Drawing.privacies
@@ -68,7 +87,7 @@ class UsersController < ApplicationController
          @userdrawings = Drawing.user_access(@user).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     end
     if (@userdrawings.count > 0 )
-       @listdawings = true;
+       @listdrawings = true;
     end
   end
 
@@ -80,6 +99,7 @@ class UsersController < ApplicationController
      else
         flash[:error] = "User not Found"
         redirect_to root_path
+        return
      end
      @user = User.find(params[:id])
      divs = @user.divisions
@@ -100,40 +120,44 @@ class UsersController < ApplicationController
   def edit
     session.delete(:return_to)
     session[:return_to] ||= request.referer
-    @company = Company.new
     if (Company.exists?(params[:company_id]))
        @company = Company.find(params[:company_id]);
     else
        flash[:error] = "Company not Found"
        redirect_to root_path
+       return
     end
-    @user = User.new
     if (User.exists?(params[:id]))
        @user = User.find(params[:id]);
     else
        flash[:error] = "User not Found"
        redirect_to root_path
+       return
     end
-    @user = User.find(params[:id])
   end
 
   def removeuserdiv
-    @company = Company.new
     if (Company.exists?(params[:company_id]))
        @company = Company.find(params[:company_id]);
     else
        flash[:error] = "Company not Found"
        redirect_to root_path
+       return
     end
-    @division = Division.find(params[:division_id])
-    @user = User.new
+    if (Division.exists?(params[:division_id]))
+       @division = Division.find(params[:division_id])
+    else
+      flash[:error] = "Division not Found"
+      redirect_to root_path
+      return
+    end
     if (User.exists?(params[:id]))
        @user = User.find(params[:id]);
     else
        flash[:error] = "User not Found"
        redirect_to root_path
+       return
     end
-    @user = User.find(params[:id])
     @user.drawings.where(:division_id => params[:division_id].to_i).update_all(:privacy => Drawing.privacies["company"])
     userMembership = UserMembership.membershipExists(@division.id, @user.id)
     userErrors = {}
@@ -157,20 +181,19 @@ class UsersController < ApplicationController
   end
 
   def newdrawing
-       @user = User.new
        if (User.exists?(params[:id]))
           @user = User.find(params[:id]);
        else
           flash[:error] = "User not Found"
           redirect_to root_path
+          return
        end
-       @user = User.find(params[:id])
-       @company = Company.new
        if (Company.exists?(params[:company_id]))
           @company = Company.find(params[:company_id]);
        else
           flash[:error] = "Company not Found"
           redirect_to root_path
+          return
        end
        @drawing = Drawing.new
        @drawing.user_id = @user.id
@@ -187,13 +210,14 @@ class UsersController < ApplicationController
        else
           flash[:error] = "User not Found"
           redirect_to root_path
+          return
        end
-       @company = Company.new
        if (Company.exists?(@user.company_id))
           @company = Company.find(@user.company_id);
        else
           flash[:error] = "Company not Found"
           redirect_to root_path
+          return
        end
        @drawing = Drawing.new
        @drawing.customer = params[:drawing][:customer]
@@ -201,7 +225,13 @@ class UsersController < ApplicationController
        @drawing.description = params[:drawing][:description]
        @drawing.company_id  = params[:drawing][:company_id]
        priv_level = params[:drawing][:privacy]
-       @drawing.privacy     = Drawing.privacies[priv_level]
+       if (Drawing.privacies.keys.include?priv_level)
+         @drawing.privacy     = Drawing.privacies[priv_level]
+       else
+         flash[:error] = "Privacy Level not Found"
+         redirect_to root_path
+         return
+       end
        @drawing.division_id = params[:drawing][:division]
        params.merge(:id => @user.id)
        logger.fatal "Drawing Object #{@drawing.inspect}"
@@ -216,6 +246,7 @@ class UsersController < ApplicationController
     else
        flash[:error] = "User Could Not Be Found"
        redirect_to companies_path
+       return
     end
 
     if (!params[:user][:role].blank?)
@@ -234,7 +265,11 @@ class UsersController < ApplicationController
     if !successfullyUpdated
        addErrorsToFlash(@user.errors)
     end
-    redirect_to company_path(params[:company_id]), :method => :show
+    if (Company.exists?(params[:company_id]))
+       redirect_to company_path(params[:company_id]), :method => :show
+       return
+    end
+    redirect_to root_path
   end
 
   def create
@@ -242,6 +277,8 @@ class UsersController < ApplicationController
     @company = Company.new
     if (!Company.exists?(id: params[:company_id]))
        flash[:error] = "Company Could Not Be Found"
+       redirect_to root_path
+       return
     else
        @company = Company.find(params[:company_id])
        role_val = User.roles[(params[:user][:role])]
@@ -251,20 +288,35 @@ class UsersController < ApplicationController
        successfullyAdded = @user.save
        if !successfullyAdded
          addErrorsToFlash(@user.errors)
+         flash[:error] = "User Has Failed To Be Created"
+       else
+         flash[:notice] = "User Has Been Created"
        end
     end
-    redirect_to company_path(params[:company_id]), :method => :show
+    if (!params[:company_id].blank?)
+       redirect_to company_path(params[:company_id]), :method => :show
+       return
+    end
+    redirect_to root_path
   end
 
   def destroy
-    @user = User.find(params[:id])
+    if (User.exists?(params[:id]))
+       @user = User.find(params[:id])
+    else
+       flash[:error] = "User Not Found"
+       redirect_to root_path
+       return
+    end
     @user.destroy
     if (!@user.destroyed?)
        addErrorsToFlash(@user.errors)
     end
-    redirect_to company_path(params[:company_id]), :method => :show
-
-
+    if (Company.exists?(params[:company_id]))
+      redirect_to company_path(params[:company_id]), :method => :show
+      return
+    end
+    redirect_to root_path
   end
 
   private

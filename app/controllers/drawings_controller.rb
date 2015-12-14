@@ -130,7 +130,7 @@ class DrawingsController < ApplicationController
     logger.fatal "Drawing Vals: #{@drawing.drawing}"
     logger.fatal "Drawing png: #{@drawing.png}"
     if @drawing.save
-         render :json => [ @drawing].to_json
+         render :json => [ @drawing ].to_json
          return
     else
          render :json => [{ :error => "An error was encountered while processing your photos. Please try again." }], :status => 304
@@ -138,13 +138,25 @@ class DrawingsController < ApplicationController
   end
 
   def displayimage
-     drawing = Drawing.find(params[:id])
-     @png = drawing.png
+    if (Drawing.exists?(params[:id]))
+       @drawing = Drawing.find(params[:id]);
+       @png = @drawing.png
+    else
+       flash[:error] = "Drawing not Found"
+       redirect_to root_path
+       return
+    end
   end
 
   def getimage
      logger.fatal "Looking at drawing #{params[:id]}"
-     drawing = Drawing.find(params[:id])
+     if (Drawing.exists?(params[:id]))
+        drawing = Drawing.find(params[:id]);
+     else
+        flash[:error] = "Drawing not Found"
+        redirect_to root_path
+        return
+     end
      logger.fatal "#{drawing.inspect}"
      logger.fatal "Looking at png #{drawing.png}"
      justpngdata = drawing.png.slice(drawing.png.index(",")+1..-1)
@@ -155,7 +167,13 @@ class DrawingsController < ApplicationController
   end
 
   def show_image
-      drawing = Drawing.find(params[:id])
+      if (Drawing.exists?(params[:id]))
+         drawing = Drawing.find(params[:id]);
+      else
+         flash[:error] = "Drawing not Found"
+         redirect_to root_path
+         return
+      end
       @png = drawing.png
       @companyid = params[:company_id]
       @userid = params[:user_id]

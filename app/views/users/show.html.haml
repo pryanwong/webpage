@@ -14,7 +14,7 @@
       %td{:colspan=>"4"}
       %td{:align=>"right"} New
       %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), newdrawing_company_user_path(@user.company.id, @user.id)
-   -if @listdawings == true
+   -if @listdrawings == true
       %tr{:class=>"headingTr"}
          %th= sortable "opportunity"
          %th= sortable "description"

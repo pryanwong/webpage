@@ -4,7 +4,7 @@ describe DrawingsController, :type => :controller do
 
     let(:company1) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 1)}
     let(:company2) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 2)}
-    let(:drawing) { FactoryGirl.build(:drawing, :privacy_company, :drawing=>"", :user_id=> 1, :company_id=>1, :id=> 1)}
+    let(:drawing) { FactoryGirl.build(:drawing, :privacy_company, :png=>"png", :drawing=>"", :user_id=> 1, :company_id=>1, :id=> 1)}
     let(:company4) { double("company4", update_attributes: {name: "batman", licenses: "3"}, errors: {}, save: true, :id => 1)}
     let(:user) {double("user") }
     let(:divisions) { FactoryGirl.build_list(:division, 5)}
@@ -257,7 +257,7 @@ describe DrawingsController, :type => :controller do
     end
 
     describe "POST 'update'" do
-      it "redirects to the edit_company_user_drawing_path page" do
+      it "renders json page after save" do
         allow(user).to receive_messages(:id => 1, :admin? => false, :divisions => divisions, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
         allow(User).to receive(:where).and_return([user])
         allow(User).to receive(:find).and_return(user)
@@ -268,8 +268,89 @@ describe DrawingsController, :type => :controller do
         allow(Drawing).to receive(:exists?).and_return(true)
         allow(drawing).to receive(:save).and_return(true)
         login(user.email)
-        post :create, :company_id => 1, :user_id => 1, :id => 1, :privacy => "company", :opportunity =>"hi", :customer => "peter", :description => "description", :division_id => "1"
-        expect(response).to redirect_to edit_company_user_drawing_path(1, 1, 1)
+        @drawingExpected = Drawing.new
+        @drawingExpected.drawing = "test drawing".to_json
+        post :update, :company_id => 1, :user_id => 1, :id => 1, :drawing => "test drawing", :privacy => "company", :opportunity =>"hi", :customer => "peter", :description => "description", :division_id => "1", :format => :json
+        expect(response.body).to eq([@drawingExpected].to_json)
       end
+
+      it "renders json with a 304 error" do
+        allow(user).to receive_messages(:id => 1, :admin? => false, :divisions => divisions, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
+        allow(User).to receive(:where).and_return([user])
+        allow(User).to receive(:find).and_return(user)
+        allow(User).to receive(:exists?).and_return(true)
+        allow(Drawing).to receive(:new).and_return(drawing)
+        allow(Drawing).to receive(:where).and_return([drawing])
+        allow(Drawing).to receive(:find).and_return(drawing)
+        allow(Drawing).to receive(:exists?).and_return(true)
+        allow(drawing).to receive(:save).and_return(false)
+        login(user.email)
+        post :update, :company_id => 1, :user_id => 1, :id => 1, :drawing => "test drawing", :privacy => "company", :opportunity =>"hi", :customer => "peter", :description => "description", :division_id => "1", :format => :json
+        expect(response.status).to eq(304)
+      end
+    end
+
+    describe "GET 'displayimage'" do
+        it "renders image" do
+          allow(Drawing).to receive(:new).and_return(drawing)
+          allow(Drawing).to receive(:where).and_return([drawing])
+          allow(Drawing).to receive(:find).and_return(drawing)
+          allow(Drawing).to receive(:exists?).and_return(true)
+          allow(drawing).to receive(:png).and_return("png")
+          get :displayimage, :company_id => 1, :user_id => 1, :id => 1
+          expect(response.status).to eq(200)
+        end
+
+        it "fails to render image" do
+          allow(Drawing).to receive(:new).and_return(drawing)
+          allow(Drawing).to receive(:where).and_return([drawing])
+          allow(Drawing).to receive(:find).and_return(drawing)
+          allow(Drawing).to receive(:exists?).and_return(false)
+          get :displayimage, :company_id => 1, :user_id => 1, :id => 1
+          expect(response).to redirect_to(root_path)
+        end
+    end
+
+    describe "GET 'getimage'" do
+        xit "renders image" do
+          allow(Drawing).to receive(:new).and_return(drawing)
+          allow(Drawing).to receive(:where).and_return([drawing])
+          allow(Drawing).to receive(:find).and_return(drawing)
+          allow(Drawing).to receive(:exists?).and_return(true)
+          allow(drawing).to receive(:png).and_return("png")
+          get :getimage, :company_id => 1, :user_id => 1, :id => 1
+          expect(response.status).to eq(200)
+          expect(response.header['Content-Type']).to eql('image/png')
+        end
+
+        it "fails to render image" do
+          allow(Drawing).to receive(:new).and_return(drawing)
+          allow(Drawing).to receive(:where).and_return([drawing])
+          allow(Drawing).to receive(:find).and_return(drawing)
+          allow(Drawing).to receive(:exists?).and_return(false)
+          get :getimage, :company_id => 1, :user_id => 1, :id => 1
+          expect(response).to redirect_to(root_path)
+        end
+    end
+
+    describe "GET 'show_image'" do
+        it "renders image" do
+          allow(Drawing).to receive(:new).and_return(drawing)
+          allow(Drawing).to receive(:where).and_return([drawing])
+          allow(Drawing).to receive(:find).and_return(drawing)
+          allow(Drawing).to receive(:exists?).and_return(true)
+          allow(drawing).to receive(:png).and_return("png")
+          get :show_image, :company_id => 1, :user_id => 1, :id => 1
+          expect(assigns(:viewpng)).to eq(true)
+        end
+
+        it "fails to render image" do
+          allow(Drawing).to receive(:new).and_return(drawing)
+          allow(Drawing).to receive(:where).and_return([drawing])
+          allow(Drawing).to receive(:find).and_return(drawing)
+          allow(Drawing).to receive(:exists?).and_return(false)
+          get :show_image, :company_id => 1, :user_id => 1, :id => 1
+          expect(response).to redirect_to(root_path)
+        end
     end
 end

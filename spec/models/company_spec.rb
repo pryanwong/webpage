@@ -13,7 +13,7 @@ describe Company do
   ['', -1, 1.1, 'blahblah', nil].each do |invalid_license_num|
      it "is invalid with an invalid license number (#{invalid_license_num})" do
         expect{FactoryGirl.create(:company,:name,:licenses => invalid_license_num)}.to raise_error(ActiveRecord::RecordInvalid)
-     end
+     end   
   end
 
   it "cannot be destroyed with divisions" do
