@@ -70,7 +70,12 @@
      var activeLineGroup = null;
      var objectName = "";
      var _curX, _curY;
+     var adjustedX = false;
+     var adjustedY = false;
+     var freezeY = 0;
+     var freezeX = 0;
      var canvas = new fabric.CanvasEx('demoCanvas2');
+     var motionInbounds = true;
 
      if(!window.location.hash) {
          window.location = window.location + '#loaded';
@@ -93,32 +98,22 @@
                object.on("mousedown", function(data, index) { imageDown(data,index)   });
              }
              if (object.type == "line") {
-               object.hasBorders = false;
-               object.hasControls = false;
-               console.log(object);
-               console.log("Line Props: X1: "+object.x1+", Y1: "+object.y1)
-               console.log("Line Props: X2: "+object.x2+", Y2: "+object.y2)
-               console.log("Line Props: Top: " +object.top + ", Left: " + object.left)
+               object.hasBorders = object.hasControls = false;
                object.objId = objId_var;
                c[objId_var] = makeCircle(object);
-               console.log("From makeCircle")
-               console.log(c[objId_var])
                c[objId_var][0].top =  object.getTop() + object.height/2 + object.y1;
                c[objId_var][0].left = object.left + object.width/2 + object.x1;
+               c[objId_var][0].setCoords();
                c[objId_var][1].top =  object.getTop() + object.height/2 +  object.y2;
                c[objId_var][1].left = object.left + object.width/2 + object.x2;
-               object.c1 = c[objId_var][0];
-               object.c2 = c[objId_var][1];
-               console.log("Circle0")
-               console.log(c[objId_var][0])
-               console.log("Circle1")
-               console.log(c[objId_var][1])
+               c[objId_var][1].setCoords();
+               object.c1 = c[objId_var][0]
+               object.c2 = c[objId_var][1]
                canvas.add(c[objId_var][0],c[objId_var][1]);
                object.on("mousedown", function(data, index) { lineDown(data,index); });
                object.c1.setCoords();
                object.c2.setCoords();
                object.setCoords();
-               canvas.renderAll();
                objId_var = objId_var + 1;
                object.on("mousedown", function(data, index) { lineDown(data,index); });
              }
@@ -129,6 +124,7 @@
            });
 
          }
+         canvas.renderAll();
          console.log( "Drawing should be loaded ");
      }
 
@@ -141,16 +137,19 @@
 
      canvas.on('object:selected', function(e) {
         //find the selected object type
+        adjustedY  = false
+        adjustedYb = false
+        adjustedX  = false
+        adjustedXb = false
         console.log("object:selected starting")
-        console.log(e.target)
+        console.log("_curX: " + _curX);
+        console.log("_curY: " +_curY);
+        //console.log(e.target)
         var objType = e.target.get('type');
         if (objType == 'line') {
           console.log("object:selected removing circles")
           _curX = e.e.clientX;
           _curY = e.e.clientY;
-
-          console.log("_curX: " + _curX);
-          console.log("_curY: " +_curY);
           e.target.c1.remove();
           e.target.c2.remove();
           canvas.renderAll();
@@ -159,29 +158,46 @@
      });
 
      canvas.on('mouse:up', function(e) {
-         console.log("In mouse:up")
+         //console.log("In mouse:up")
+         //console.log(e.target)
          if(e.target) {
-           console.log("Target")
-           console.log(e.target)
+           //console.log("Target")
+           //console.log(e.target)
            if('type' in e.target) {
              if(e.target.type == "line") {
-               makeCircle(e.target)
+               c[e.target.objId] = makeCircle(e.target)
+               canvas.add(c[e.target.objId][0],c[e.target.objId][1]);
+               c[e.target.objId][0].top =  e.target.y1;
+               c[e.target.objId][0].left = e.target.x1;
+               c[e.target.objId][0].setCoords();
+               c[e.target.objId][1].top =  e.target.y2;
+               c[e.target.objId][1].left = e.target.x2
+               c[e.target.objId][1].setCoords();
                e.target.c1 = c[e.target.objId][0];
                e.target.c2 = c[e.target.objId][1];
-               canvas.add(c[e.target.objId][0],c[e.target.objId][1]);
+               e.target.set({ 'x1': e.target.c1.left, 'y1': e.target.c1.top });
+               e.target.set({ 'x2': e.target.c2.left, 'y2': e.target.c2.top });
+               c[e.target.objId][0].line && c[e.target.objId][0].line.set({ 'x1': c[e.target.objId][0].left, 'y1': c[e.target.objId][0].top });
+               c[e.target.objId][0].line.setCoords();
+               c[e.target.objId][1].line && c[e.target.objId][1].line.set({ 'x2': c[e.target.objId][1].left, 'y2': c[e.target.objId][1].top });
+               c[e.target.objId][1].line.setCoords();
+               e.target.setCoords();
+               e.target.c1.setCoords();
+               e.target.c2.setCoords();
+               //console.log(e.target)
              }
            }
         }
      })
 
      canvas.on('mouse:down', function(e) {
-         console.log("In Canvas On Mouse:down")
+         //console.log("In Canvas On Mouse:down")
          handler =""
          $('#glossymenu').remove();
          contextmenuon = false;
          if(e.target) {
-           console.log("Target")
-           console.log(e.target)
+           //console.log("Target")
+           //console.log(e.target)
            if('type' in e.target) {
              if(e.target.type == "line") {
                if (e.target.c1) {
@@ -195,8 +211,8 @@
      });
 
      canvas.on('mouse:out', function(e) {
-        console.log("Mouse:out")
-        console.log(e.target)
+        //console.log("Mouse:out")
+        //console.log(e.target)
         e.target.setOpacity(1);
         canvas.renderAll();
         activeObject = false;
@@ -207,8 +223,11 @@
 
      canvas.on('object:moving', function(e) {
         var p = e.target;
-        console.log("Event")
-        console.log(e);
+        //console.log("Event")
+        //console.log(e);
+        console.log("object:moving starting")
+        console.log("_curX: " + _curX);
+        console.log("_curY: " +_curY);
         if(p.type == 'circle1') {
            p.line && p.line.set({ 'x2': p.left, 'y2': p.top });
            p.line.setCoords();
@@ -222,8 +241,24 @@
         if(e.target.type == 'line') {
           var _curXm = (_curX - e.e.clientX);
           var _curYm = (_curY - e.e.clientY);
-          console.log("moved: " + _curXm);
-          console.log("moved: " + _curYm);
+          if(adjustedY) {
+              _curYm = _curY - freezeY
+              adjustedY = false;
+          }
+          if(adjustedYb) {
+              _curYm = _curY - freezeYb
+              adjustedYb = false;
+          }
+          if(adjustedX) {
+              _curXm = _curX - freezeX
+              adjustedX = false;
+          }
+          if (adjustedXb) {
+             _curXm = _curX - freezeXb
+             adjustedXb = false;
+          }
+          //console.log("moved: " + _curXm);
+          //console.log("moved: " + _curYm);
           e.target.c1.set({ 'left' : e.target.c1.left - _curXm, 'top' : e.target.c1.top - _curYm });
           e.target.c2.set({ 'left' : e.target.c2.left - _curXm, 'top' : e.target.c2.top - _curYm  });
           e.target.set({ 'x1': e.target.c1.left, 'y1': e.target.c1.top });
@@ -233,11 +268,9 @@
           e.target.setCoords();
           canvas.renderAll();
         }
-        //p.line2.setCoords();
-        //p.line1.setCoords();
-
-        _curX = e.e.clientX;
-        _curY = e.e.clientY;
+          _curX = e.e.clientX;
+          _curY = e.e.clientY;
+          console.log("clientY: " + e.e.clientY)
      });
 
      // canvas moving limit
@@ -246,41 +279,107 @@
        //alert("oval moving");
        var obj = e.target;
        // if object is too big ignore
-       console.log("In canvas.observe object.moving")
-       console.log(obj)
+       //console.log("In canvas.observe object.moving")
+       //console.log(obj)
        var halfw = obj.width/2;
        var halfh = obj.height/2;
        var posBottom = obj.top + obj.height;
        var posRight = obj.left + obj.width;
-
        var bounds = {tl: {x: halfw, y:halfh},
          br: {x: canvas.width , y: canvas.height }
        };
+
        // top-left  corner
 
          // alert("text");
        if(obj.top < bounds.tl.y || obj.left < bounds.tl.x){
-         console.log("In first canvas.observe if")
-         obj.top = Math.max(obj.top, '0'  );
-         obj.left = Math.max(obj.left , '0' )
-         obj.setCoords();
-         console.log(obj);
+         e.target.setTop(Math.max(obj.top, '0'  ));
+         e.target.left = Math.max(obj.left , '0' );
+         e.target.setCoords();
+         canvas.renderAll();
+         //console.log("At Top/Left boundary")
+         //console.log("Line Top Calculated: " + Math.max(e.target.top, '0'  ))
+         //console.log("Line Top Retrieved : " + e.target.top)
+         console.log("x1 : " + e.target.x1)
+         console.log("x2 : " + e.target.x2)
+         minY = Math.min(e.target.y1, e.target.y2)
+         minX = Math.min(e.target.x1, e.target.x2)
+         console.log("minX : " + minX)
+         if(!adjustedY ) {
+            freezeY = e.e.clientY
+         }
 
+         if(!adjustedX ) {
+            freezeX = e.e.clientX
+            console.log("Not Adjusted FreezeX: " + freezeX)
+         } else {
+            console.log("FreezeX is frozen")
+         }
+
+         if (minY < 0)
+         {
+            e.target.y1 = e.target.y1 - minY
+            e.target.y2 = e.target.y2 - minY
+            e.target.setCoords();
+            adjustedY = true;
+
+         }
+         if (minX < 0)
+         {
+            console.log("minX less than 0")
+            e.target.x1 = e.target.x1 - minX
+            e.target.x2 = e.target.x2 - minX
+            e.target.setCoords();
+            adjustedX = true;
+
+         }
+         //console.log(e.target);
        }
 
 
 
      // bot-right corner
      if(posBottom > bounds.br.y || posRight > bounds.br.x ){
-         console.log("In second canvas.observe if")
+         //console.log("In second canvas.observe if")
          obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height;
          obj.left = Math.min(posRight, bounds.br.x ) - obj.width;
          obj.setCoords();
+         maxY = Math.max(e.target.y1, e.target.y2)
+         maxX = Math.max(e.target.x1, e.target.x2)
+         console.log("maxX : " + maxX)
+         console.log("maxY : " + maxY)
+         if(!adjustedYb ) {
+            freezeYb = e.e.clientY
+         }
+
+         if(!adjustedXb ) {
+            freezeXb = e.e.clientX
+            console.log("Not Adjusted FreezeXb: " + freezeX)
+         } else {
+            console.log("FreezeX is frozen")
+         }
+
+         if (maxY > bounds.br.y)
+         {
+            e.target.y1 = e.target.y1 - (maxY - bounds.br.y)
+            e.target.y2 = e.target.y2 - (maxY - bounds.br.y)
+            e.target.setCoords();
+            adjustedYb = true;
+
+         }
+         if (maxX > bounds.br.x)
+         {
+            console.log("minX less than 0")
+            e.target.x1 = e.target.x1 - (maxX - bounds.br.x)
+            e.target.x2 = e.target.x2 - (maxX - bounds.br.x)
+            e.target.setCoords();
+            adjustedXb = true;
+
+         }
      }
 
      // top-right corner case
      if (obj.top < bounds.tl.y && posRight > bounds.br.x) {
-       console.log("In third canvas.observe if")
        obj.top = Math.max(obj.top, '0'  );
        obj.left = Math.min(posRight, bounds.br.x ) - obj.width;
        obj.setCoords();
@@ -288,7 +387,6 @@
 
      // bottom-left corner case
      if (posBottom > bounds.br.y && obj.left < bounds.tl.x) {
-       console.log("In fourth canvas.observe if")
        obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height;
        obj.left = Math.max(obj.left , '0' )
        obj.setCoords();
