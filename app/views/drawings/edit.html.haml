@@ -74,9 +74,22 @@
      var adjustedY = false;
      var freezeY = 0;
      var freezeX = 0;
+     var lastScrollY = 0;
+     var lastScrollX = 0;
      var canvas = new fabric.CanvasEx('demoCanvas2');
      var motionInbounds = true;
-
+     //$('.canvas-container').on('scroll', canvas.calcOffset.bind(canvas));
+     window.onscroll = function(ev) {
+            canvas.calcOffset.bind(canvas)
+            var scrollY = $(window).scrollTop();
+            console.log("Window is scrolling" + scrollY)
+            _curY = _curY - (scrollY - lastScrollY);
+            lastScrollY = scrollY;
+            var scrollX = $(window).scrollLeft();
+            console.log("Window is scrolling" + scrollX)
+            _curX = _curX - (scrollX - lastScrollX);
+            lastScrollX = scrollX;
+     }
      if(!window.location.hash) {
          window.location = window.location + '#loaded';
          window.location.reload();
