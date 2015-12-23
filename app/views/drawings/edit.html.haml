@@ -38,6 +38,10 @@
                      %td
                         = image_tag "esprit_cam.png", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption Esprit Cam
+         %h3 Networking
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
                   %tr
                      %td
                         = image_tag "Switch.png", :img_val=>"Switch.png", :draggable=>"true", :width=>"108", :height => "75"
@@ -45,6 +49,10 @@
                      %td
                         = image_tag "GE_WiYZ.png", :img_val=>"GE_WiYZ.png", :draggable=>"true", :width=>"72", :height => "83"
                         %figcaption WiYZ
+         %h3 Shapes
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
                   %tr
                      %td
                         = image_tag "line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
@@ -52,10 +60,10 @@
                      %td
                         = image_tag "textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
                         %figcaption Text Box
-         %h3 Networking
-         %div{:style=>"margin:0px;padding:0px;"}
-         %h3 Shapes
-         %div{:style=>"margin:0px;padding:0px;"}
+                  %tr
+                     %td
+                        = image_tag "circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
+                        %figcaption Circle
    %div{:id=>"div2", :style=>"position:absolute;left:230px"}
       %div{:id=>"canvas-container"}
          %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
@@ -110,6 +118,9 @@
              if (object.type == "image") {
                object.on("mousedown", function(data, index) { imageDown(data,index)   });
              }
+             if (object.type == "circle") {
+               object.fill = undefined
+             }
              if (object.type == "line") {
                object.hasBorders = object.hasControls = false;
                object.objId = objId_var;
@@ -132,6 +143,9 @@
              }
              if (object.type == "text") {
                object.on("mousedown", function(data, index) { textDown(data,index)   });
+             }
+             if (object.type == "circle") {
+               object.on("mousedown", function(data, index) { circleDown(data,index)   });
              }
 
            });
@@ -294,10 +308,10 @@
        // if object is too big ignore
        //console.log("In canvas.observe object.moving")
        //console.log(obj)
-       var halfw = obj.width/2;
-       var halfh = obj.height/2;
-       var posBottom = obj.top + obj.height;
-       var posRight = obj.left + obj.width;
+       var halfw = (e.target.scaleX)*obj.width/2;
+       var halfh = (e.target.scaleY)*obj.height/2;
+       var posBottom = obj.top + obj.height*e.target.scaleY;
+       var posRight = obj.left + obj.width*e.target.scaleX;
        var bounds = {tl: {x: halfw, y:halfh},
          br: {x: canvas.width , y: canvas.height }
        };
@@ -310,9 +324,6 @@
          e.target.left = Math.max(obj.left , '0' );
          e.target.setCoords();
          canvas.renderAll();
-         //console.log("At Top/Left boundary")
-         //console.log("Line Top Calculated: " + Math.max(e.target.top, '0'  ))
-         //console.log("Line Top Retrieved : " + e.target.top)
          console.log("x1 : " + e.target.x1)
          console.log("x2 : " + e.target.x2)
          minY = Math.min(e.target.y1, e.target.y2)
@@ -352,10 +363,16 @@
 
 
      // bot-right corner
+     console.log("posBottom: " + posBottom)
+     console.log("posRight : " + posRight)
+     console.log("bounds.br.y: " + bounds.br.y)
+     console.log("bounds.br.x : " + bounds.br.x)
+     console.log("Scale.Y : " + e.target.scaleY)
+     console.log("Scale.X : " + e.target.scaleX)
      if(posBottom > bounds.br.y || posRight > bounds.br.x ){
-         //console.log("In second canvas.observe if")
-         obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height;
-         obj.left = Math.min(posRight, bounds.br.x ) - obj.width;
+         console.log("In second canvas.observe if")
+         obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height*(e.target.scaleY);
+         obj.left = Math.min(posRight, bounds.br.x ) - obj.width*(e.target.scaleX);
          obj.setCoords();
          maxY = Math.max(e.target.y1, e.target.y2)
          maxX = Math.max(e.target.x1, e.target.x2)
@@ -394,13 +411,13 @@
      // top-right corner case
      if (obj.top < bounds.tl.y && posRight > bounds.br.x) {
        obj.top = Math.max(obj.top, '0'  );
-       obj.left = Math.min(posRight, bounds.br.x ) - obj.width;
+       obj.left = Math.min(posRight, bounds.br.x ) - obj.width*(e.target.scaleX);
        obj.setCoords();
      }
 
      // bottom-left corner case
      if (posBottom > bounds.br.y && obj.left < bounds.tl.x) {
-       obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height;
+       obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height*(e.target.scaleY);
        obj.left = Math.max(obj.left , '0' )
        obj.setCoords();
      }

@@ -59,6 +59,15 @@ function makeLine(coords, id) {
    });
  }
 
+ function makeCircleShape(coords, id) {
+   return new fabric.Circle({ top: coords[1],
+                              left: coords[0],
+                              radius: 15,
+                              fill : undefined,
+                              stroke : 'red',
+                              strokeWidth : 1 })
+ }
+
  function activateColorPicker(e) {
       var activeObject = e.target;
       document.getElementById('myColor').color.showPicker();
@@ -69,6 +78,9 @@ function makeLine(coords, id) {
         if (activeObjectVal.type) {
           if (activeObjectVal.type == "line") {
             activeObjectVal.fill = newLineColor;
+            activeObjectVal.stroke = newLineColor;
+          }
+          if (activeObjectVal.type == "circle") {
             activeObjectVal.stroke = newLineColor;
           }
         }
@@ -175,6 +187,43 @@ function bringToFront() {
 }
 
 function lineDown(data,index) {
+   if (handler != "") {
+      document.removeEventListener('contextmenu', handler);
+   }
+
+   if (data.e.which == 3) {
+      //console.log("In mouse down Image")
+      handler = function(e) {
+         //console.log("Entering handler function");
+         //console.log("contextmenuon =" + contextmenuon);
+         //console.log(activeObjectVal)
+         if (contextmenuon == false &&  activeObject == true) {
+            e.preventDefault();
+            var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            menus(items, e);
+            $('a:contains("Delete")').click(  function() {console.log("In Delete");
+                                             var activeObject = canvas.getActiveObject();
+                                             console.log(activeObjectVal);
+                                             canvas.remove(activeObjectVal.c1)
+                                             canvas.remove(activeObjectVal.c2)
+                                             canvas.remove(activeObjectVal);
+                                             $('#glossymenu').remove();
+                                             contextmenuon = false;
+                                             activeObject = false;}   );
+           $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+           $('a:contains("Send Backward")').click(function() {sendBackward();});
+           $('a:contains("Send To Back")').click(function() {sendToBack();});
+           $('a:contains("Bring Forward")').click(function() {bringFoward();});
+           $('a:contains("Bring To Front")').click(function() {bringToFront();});
+           contextmenuon = true;
+        };
+      }
+      document.addEventListener('contextmenu', handler, false);
+   }
+
+}
+
+function circleDown(data,index) {
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -325,6 +374,19 @@ function handleDrop(e) {
          line.c2 = c[id][1];
          canvas.add(c[id][0],c[id][1]);
          line.on("mousedown", function(data, index) { lineDown(data,index); });
+      } else if (imgsrc_val == "circle_icon.png") {
+        objectName = "circle";
+        var xpos1 = e.layerX;
+        var ypos1 = e.layerY;
+        var id = objId_var + 1;
+        objId = id;
+        var circleShape = makeCircleShape([ xpos1, ypos1 ], id)
+        circleShape.hasBorders = circleShape.hasControls = true
+        circleShape.on("mousedown", function(data, index) { circleDown(data,index); });
+        console.log(circleShape)
+        //console.log(line)
+        //circleShape.hasBorders = circleShape.hasControls = true
+        canvas.add(circleShape)
       } else if (imgsrc_val == "textbox_icon.png") {
          //console.log("Hello!!!")
          var textbox = new fabric.IText('Tap and Type', {
