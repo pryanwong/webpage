@@ -64,6 +64,9 @@
                      %td
                         = image_tag "circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
                         %figcaption Circle
+                     %td
+                        = image_tag "ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
+                        %figcaption Ellipse
    %div{:id=>"div2", :style=>"position:absolute;left:230px"}
       %div{:id=>"canvas-container"}
          %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
@@ -118,7 +121,7 @@
              if (object.type == "image") {
                object.on("mousedown", function(data, index) { imageDown(data,index)   });
              }
-             if (object.type == "circle") {
+             if (object.type == "circle" || object.type == "ellipse") {
                object.fill = undefined
              }
              if (object.type == "line") {
@@ -185,10 +188,10 @@
      });
 
      canvas.on('mouse:up', function(e) {
-         //console.log("In mouse:up")
-         //console.log(e.target)
+         console.log("In mouse:up")
+         console.log(e.target)
          if(e.target) {
-           //console.log("Target")
+           console.log("Target")
            //console.log(e.target)
            if('type' in e.target) {
              if(e.target.type == "line") {
@@ -212,6 +215,16 @@
                e.target.c1.setCoords();
                e.target.c2.setCoords();
                //console.log(e.target)
+             } else if(e.target.type == "circle") {
+                 newWidth = e.target.width * e.target.scaleX
+                 newRadius = e.target.radius * e.target.scaleX
+                 e.target.set({ width: newWidth, radius: newRadius, height: newWidth, scaleX: 1, scaleY: 1, });
+             } else if(e.target.type == "ellipse") {
+                 newWidth = e.target.width * e.target.scaleX
+                 newHeight = e.target.height * e.target.scaleY
+                 newRadiusX = newWidth/2
+                 newRadiusY = newHeight/2
+                 e.target.set({ rx: newRadiusX, ry: newRadiusY, scaleX: 1, scaleY: 1, });
              }
            }
         }
