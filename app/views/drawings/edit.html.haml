@@ -90,6 +90,7 @@
      var lastScrollY = 0;
      var lastScrollX = 0;
      var canvas = new fabric.CanvasEx('demoCanvas2');
+     canvas.selection = false;
      var motionInbounds = true;
      //$('.canvas-container').on('scroll', canvas.calcOffset.bind(canvas));
 
@@ -299,7 +300,8 @@
      });
 
 
-     canvas.on('object:moving', function(e) {
+     canvas.on('object:moving', boundaryInspectorCircle)
+     function boundaryInspectorCircle(e) {
         e.target.setCoords()
         var p = e.target;
         //console.log("Event")
@@ -363,21 +365,17 @@
           _curX = e.e.clientX;
           _curY = e.e.clientY;
           console.log("clientY: " + e.e.clientY)
-     });
+     }
 
      // canvas moving limit
 
-     canvas.observe("object:moving", function(e){
+     canvas.observe("object:moving", objectBoundaryCheck)
+     function objectBoundaryCheck(e){
        e.target.setCoords();
        if (e.target.type != "circle0" && e.target.type != "circle1") {
           var obj = e.target;
-          //var halfw = (e.target.scaleX)*obj.width/2;
-          //var halfh = (e.target.scaleY)*obj.height/2;
           var posBottom = e.target.getBoundingRect().top + e.target.getBoundingRect().height;
           var posRight = e.target.getBoundingRect().left + e.target.getBoundingRect().width;
-          //var bounds = {tl: {x: halfw, y:halfh},
-          //    br: {x: canvas.width , y: canvas.height }
-          //};
           var boundRect = obj.getBoundingRect();
           var x1Delta = -(boundRect.left - obj.left)
           var y1Delta = -(boundRect.top - obj.top)
@@ -387,15 +385,6 @@
 
           // top-left  corner
 
-          // alert("text");
-          //console.log("Evaluating within Bounds")
-          //console.log(bounds)
-          //console.log(e.target)
-          //console.log("e.target.getBoundingRect().top  < bounds.tl.y: " + (e.target.getBoundingRect().top < bounds.tl.y))
-          //console.log("e.target.getBoundingRect().left < bounds.tl.x: " + (e.target.getBoundingRect().left < bounds.tl.x))
-          //console.log("e.target.getBoundingRect().left: " + e.target.getBoundingRect().left)
-          //console.log("Angle: " + e.target.angle)
-          //console.log("Radians: " + (e.target.angle * Math.PI)/180)
           console.log("y1Delta: " + y1Delta)
           if((e.target.getBoundingRect().top <= bounds.tl.y || e.target.getBoundingRect().left <= bounds.tl.x) ){
             console.log("In Top section")
@@ -441,13 +430,6 @@
 
 
           // bot-right corner
-          //console.log("posBottom: " + posBottom)
-          //console.log("posRight : " + posRight)
-          //console.log("bounds.br.y: " + bounds.br.y)
-          //console.log("bounds.br.y: " + bounds.br.y)
-          //console.log("bounds.br.x : " + bounds.br.x)
-          //console.log("Scale.Y : " + e.target.scaleY)
-          //console.log("Scale.X : " + e.target.scaleX)
           console.log("e.target.top: " + e.target.top)
           console.log("e.target.height: " + e.target.height)
           console.log("e.target.getBoundingRect().top : " +  e.target.getBoundingRect().top)
@@ -456,10 +438,7 @@
           console.log("Angle: " + e.target.angle)
 
           if((posBottom >= bounds.br.y || posRight >= bounds.br.x )){
-             var x2Delta = -((boundRect.left + boundRect.width) - (e.target.left + e.target.width))
-             var y2Delta = -((boundRect.top + boundRect.height) - (e.target.top + e.target.top))
 
-             console.log("Projected Left: " + (x2Delta - e.target.width))
              console.log("Actual Left: " + e.target.left)
              console.log("In Bottom Right if area")
              if (posBottom >= bounds.br.y) {
@@ -557,7 +536,7 @@
          }
          */
        }
-     });
+     };
 
      if (Modernizr.draganddrop) {
        // Browser supports HTML5 DnD.
@@ -579,6 +558,7 @@
        alert("This browser doesn't support the HTML5 Drag and Drop API.");
      }
 
+     /*
      canvas.on('after:render', function() {
        canvas.contextContainer.strokeStyle = '#555';
 
@@ -593,3 +573,20 @@
           );
        })
      });
+     */
+     //canvas.on('after:render', function() {
+    //   canvas.contextContainer.strokeStyle = '#555';
+
+      // canvas.forEachObject(function(obj) {
+        //  var bound = obj.getBoundingRect();
+
+          //canvas.contextContainer.strokeRect(
+            //bound.left + 0.5,
+            //bound.top + 0.5,
+            //bound.width,
+            //bound.height
+          //);
+       //})
+     //});
+
+     canvas.observe("object:rotating", objectBoundaryCheck);
