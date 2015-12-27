@@ -81,8 +81,10 @@
      var activeLineGroup = null;
      var objectName = "";
      var _curX, _curY;
-     var adjustedX = false;
-     var adjustedY = false;
+     var adjustedXr = false;
+     var adjustedXl = false;
+     var adjustedYu = false;
+     var adjustedYd = false;
      var freezeY = 0;
      var freezeX = 0;
      var lastScrollY = 0;
@@ -90,6 +92,7 @@
      var canvas = new fabric.CanvasEx('demoCanvas2');
      var motionInbounds = true;
      //$('.canvas-container').on('scroll', canvas.calcOffset.bind(canvas));
+
      window.onscroll = function(ev) {
             canvas.calcOffset.bind(canvas)
             var scrollY = $(window).scrollTop();
@@ -115,47 +118,76 @@
          }
          objId_var = 1;
          if (data_drawing != "") {
-            canvas.clear();
-            canvas.loadFromJSON(data_drawing, canvas.renderAll.bind(canvas), function(o, object) {
+             canvas.loadFromJSON(data_drawing, function () {
+                //first render
+                canvas.renderAll.bind(canvas);
+                var objs = canvas.getObjects().map(function(o) {
+                  return o.set('active', false);
+                });
+                console.log(objs)
+                for(i = 0; i < objs.length; i++ ) {
+                   console.log(objs[i].type)
+                   if (objs[i].type == "line") {
+                      var objId_var = objs[i].objId
+                      c[objId_var] = makeCircle(objs[i]);
+                      x1 = objs[i].left + objs[i].width/2 + objs[i].x1
+                      x2 = objs[i].left + objs[i].width/2 + objs[i].x2
+                      y1 = objs[i].getTop() + objs[i].height/2 + objs[i].y1
+                      y2 = objs[i].getTop() + objs[i].height/2 +  objs[i].y2
+                      c[objId_var][0].top =  y1
+                      c[objId_var][0].left = x1
+                      c[objId_var][0].setCoords();
+                      c[objId_var][1].top =  y2
+                      c[objId_var][1].left = x2
+                      c[objId_var][1].setCoords();
+                      objs[i].hasControls = objs[i].hasBorders = false
+                      objs[i].c1 = c[objId_var][0]
+                      objs[i].c2 = c[objId_var][1]
+                      objs[i].set('x1', x1)
+                      objs[i].set('y1', y1)
+                      objs[i].set('x2', x2)
+                      objs[i].set('y2', y2)
+                      //objs[i].setTop(0)
+                      //objs[i].setLeft(0)
+                      objs[i].setCoords();
+                      canvas.add(c[objId_var][0],c[objId_var][1]);
+                      canvas.renderAll.bind(canvas);
+                      console.log("Circles")
+                      console.log(c[objId_var][0])
+                      console.log(c[objId_var][1])
+                      console.log(objs[i])
+                   }
+                }
+                canvas.renderAll();
+             },
+             function(o, object) {
 
-             if (object.type == "image") {
-               object.on("mousedown", function(data, index) { imageDown(data,index)   });
-             }
-             if (object.type == "circle" || object.type == "ellipse") {
-               object.fill = undefined
-             }
-             if (object.type == "line") {
-               object.hasBorders = object.hasControls = false;
-               object.objId = objId_var;
-               c[objId_var] = makeCircle(object);
-               c[objId_var][0].top =  object.getTop() + object.height/2 + object.y1;
-               c[objId_var][0].left = object.left + object.width/2 + object.x1;
-               c[objId_var][0].setCoords();
-               c[objId_var][1].top =  object.getTop() + object.height/2 +  object.y2;
-               c[objId_var][1].left = object.left + object.width/2 + object.x2;
-               c[objId_var][1].setCoords();
-               object.c1 = c[objId_var][0]
-               object.c2 = c[objId_var][1]
-               canvas.add(c[objId_var][0],c[objId_var][1]);
-               object.on("mousedown", function(data, index) { lineDown(data,index); });
-               object.c1.setCoords();
-               object.c2.setCoords();
-               object.setCoords();
-               objId_var = objId_var + 1;
-               object.on("mousedown", function(data, index) { lineDown(data,index); });
-             }
-             if (object.type == "text") {
-               object.on("mousedown", function(data, index) { textDown(data,index)   });
-             }
-             if (object.type == "circle") {
-               object.on("mousedown", function(data, index) { circleDown(data,index)   });
-             }
+               if (object.type == "image") {
+                 object.on("mousedown", function(data, index) { imageDown(data,index)   });
+               }
+               if (object.type == "circle" || object.type == "ellipse") {
+                 object.fill = undefined
+               }
+               if (object.type == "line") {
+                 //object.hasBorders = object.hasControls = false;
+                 object.objId = objId_var;
+                 object.on("mousedown", function(data, index) { lineDown(data,index); });
+                 console.log("added line to canvas")
+                 console.log(object)
 
-           });
+               }
+               if (object.type == "text") {
+                 object.on("mousedown", function(data, index) { textDown(data,index)   });
+               }
+               if (object.type == "circle") {
+                 object.on("mousedown", function(data, index) { circleDown(data,index)   });
+               }
+
+            });
 
          }
-         canvas.renderAll();
          console.log( "Drawing should be loaded ");
+
      }
 
      canvas.on('mouse:over', function(e) {
@@ -167,14 +199,14 @@
 
      canvas.on('object:selected', function(e) {
         //find the selected object type
-        adjustedY  = false
-        adjustedYb = false
-        adjustedX  = false
-        adjustedXb = false
+        adjustedYu  = false
+        adjustedYd  = false
+        adjustedXr  = false
+        adjustedXl  = false
         console.log("object:selected starting")
+        console.log(e.target)
         console.log("_curX: " + _curX);
         console.log("_curY: " +_curY);
-        //console.log(e.target)
         var objType = e.target.get('type');
         if (objType == 'line') {
           console.log("object:selected removing circles")
@@ -195,6 +227,10 @@
            //console.log(e.target)
            if('type' in e.target) {
              if(e.target.type == "line") {
+               console.log("Top : " + e.target.top)
+               console.log("Left: " + e.target.left)
+               console.log("x1  : " + e.target.x1)
+               console.log("y1  : " + e.target.y1)
                c[e.target.objId] = makeCircle(e.target)
                canvas.add(c[e.target.objId][0],c[e.target.objId][1]);
                c[e.target.objId][0].top =  e.target.y1;
@@ -231,16 +267,18 @@
      })
 
      canvas.on('mouse:down', function(e) {
-         //console.log("In Canvas On Mouse:down")
+         console.log("In Canvas On Mouse:down")
          handler =""
          $('#glossymenu').remove();
          contextmenuon = false;
          if(e.target) {
-           //console.log("Target")
-           //console.log(e.target)
            if('type' in e.target) {
              if(e.target.type == "line") {
                if (e.target.c1) {
+                 console.log("Top : " + e.target.top)
+                 console.log("Left: " + e.target.left)
+                 console.log("x1  : " + e.target.x1)
+                 console.log("y1  : " + e.target.y1)
                  e.target.c1.remove();
                  e.target.c2.remove();
                  canvas.renderAll();
@@ -262,46 +300,60 @@
 
 
      canvas.on('object:moving', function(e) {
+        e.target.setCoords()
         var p = e.target;
         //console.log("Event")
         //console.log(e);
         console.log("object:moving starting")
         console.log("_curX: " + _curX);
         console.log("_curY: " +_curY);
-        if(p.type == 'circle1') {
-           p.line && p.line.set({ 'x2': p.left, 'y2': p.top });
+        bounds = {tl: {x: 0, y:0}, br: {x: canvas.width , y: canvas.height } };
+        if(p.type == 'circle1' || p.type == 'circle0') {
+           console.log("p.top  > bounds.br.y: " + (p.top > bounds.br.y))
+           console.log("p.left > bounds.br.x: " + (p.left > bounds.br.x))
+           if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
+             e.target.setTop(Math.max('0', e.target.top))
+             e.target.left = Math.max('0', e.target.left)
+           }  else if ((p.top + 2*p.radius) > bounds.br.y || (p.left + 2*p.radius) > bounds.br.x ) {
+              e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
+              e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
+              console.log("Setting left: " + e.target.left + " Vs: " + bounds.br.x)
+           }
+           if (p.type == "circle1")  {
+              p.line && p.line.set({ 'x2': p.left, 'y2': p.top });
+           } else {
+              p.line && p.line.set({ 'x1': p.left, 'y1': p.top });
+           }
+
            p.line.setCoords();
+           e.target.setCoords();
+           canvas.renderAll();
         }
-        if(p.type == 'circle0') {
-           p.line && p.line.set({ 'x1': p.left, 'y1': p.top });
-           p.line.setCoords();
-        }
-        canvas.renderAll();
 
         if(e.target.type == 'line') {
           var _curXm = (_curX - e.e.clientX);
           var _curYm = (_curY - e.e.clientY);
-          if(adjustedY) {
+          if(adjustedYu) {
               _curYm = _curY - freezeY
-              adjustedY = false;
+              adjustedYu = false;
           }
-          if(adjustedYb) {
-              _curYm = _curY - freezeYb
-              adjustedYb = false;
+          if(adjustedYd) {
+              _curYm = _curY - freezeY
+              adjustedYd = false;
           }
-          if(adjustedX) {
+          if(adjustedXl) {
               _curXm = _curX - freezeX
-              adjustedX = false;
+              adjustedXl = false;
           }
-          if (adjustedXb) {
-             _curXm = _curX - freezeXb
-             adjustedXb = false;
+          if (adjustedXr) {
+             _curXm = _curX - freezeX
+             adjustedXr = false;
           }
           //console.log("moved: " + _curXm);
           //console.log("moved: " + _curYm);
           e.target.c1.set({ 'left' : e.target.c1.left - _curXm, 'top' : e.target.c1.top - _curYm });
           e.target.c2.set({ 'left' : e.target.c2.left - _curXm, 'top' : e.target.c2.top - _curYm  });
-          e.target.set({ 'x1': e.target.c1.left, 'y1': e.target.c1.top });
+          e.target.set({ 'x1': e.target.c1.left , 'y1': e.target.c1.top });
           e.target.set({ 'x2': e.target.c2.left, 'y2': e.target.c2.top });
           e.target.c2.setCoords();
           e.target.c1.setCoords();
@@ -316,124 +368,195 @@
      // canvas moving limit
 
      canvas.observe("object:moving", function(e){
-       //alert("oval moving");
-       var obj = e.target;
-       // if object is too big ignore
-       //console.log("In canvas.observe object.moving")
-       //console.log(obj)
-       var halfw = (e.target.scaleX)*obj.width/2;
-       var halfh = (e.target.scaleY)*obj.height/2;
-       var posBottom = obj.top + obj.height*e.target.scaleY;
-       var posRight = obj.left + obj.width*e.target.scaleX;
-       var bounds = {tl: {x: halfw, y:halfh},
-         br: {x: canvas.width , y: canvas.height }
-       };
+       e.target.setCoords();
+       if (e.target.type != "circle0" && e.target.type != "circle1") {
+          var obj = e.target;
+          //var halfw = (e.target.scaleX)*obj.width/2;
+          //var halfh = (e.target.scaleY)*obj.height/2;
+          var posBottom = e.target.getBoundingRect().top + e.target.getBoundingRect().height;
+          var posRight = e.target.getBoundingRect().left + e.target.getBoundingRect().width;
+          //var bounds = {tl: {x: halfw, y:halfh},
+          //    br: {x: canvas.width , y: canvas.height }
+          //};
+          var boundRect = obj.getBoundingRect();
+          var x1Delta = -(boundRect.left - obj.left)
+          var y1Delta = -(boundRect.top - obj.top)
 
-       // top-left  corner
+          bounds = {tl: {x: 0, y: 0}, br: {x: canvas.width , y: canvas.height } };
 
-         // alert("text");
-       if(obj.top < bounds.tl.y || obj.left < bounds.tl.x){
-         e.target.setTop(Math.max(obj.top, '0'  ));
-         e.target.left = Math.max(obj.left , '0' );
-         e.target.setCoords();
-         canvas.renderAll();
-         console.log("x1 : " + e.target.x1)
-         console.log("x2 : " + e.target.x2)
-         minY = Math.min(e.target.y1, e.target.y2)
-         minX = Math.min(e.target.x1, e.target.x2)
-         console.log("minX : " + minX)
-         if(!adjustedY ) {
-            freezeY = e.e.clientY
-         }
 
-         if(!adjustedX ) {
-            freezeX = e.e.clientX
-            console.log("Not Adjusted FreezeX: " + freezeX)
-         } else {
-            console.log("FreezeX is frozen")
-         }
+          // top-left  corner
 
-         if (minY < 0)
-         {
-            e.target.y1 = e.target.y1 - minY
-            e.target.y2 = e.target.y2 - minY
+          // alert("text");
+          //console.log("Evaluating within Bounds")
+          //console.log(bounds)
+          //console.log(e.target)
+          //console.log("e.target.getBoundingRect().top  < bounds.tl.y: " + (e.target.getBoundingRect().top < bounds.tl.y))
+          //console.log("e.target.getBoundingRect().left < bounds.tl.x: " + (e.target.getBoundingRect().left < bounds.tl.x))
+          //console.log("e.target.getBoundingRect().left: " + e.target.getBoundingRect().left)
+          //console.log("Angle: " + e.target.angle)
+          //console.log("Radians: " + (e.target.angle * Math.PI)/180)
+          console.log("y1Delta: " + y1Delta)
+          if((e.target.getBoundingRect().top <= bounds.tl.y || e.target.getBoundingRect().left <= bounds.tl.x) ){
+            console.log("In Top section")
+            console.log("y1Delta: " + y1Delta)
+            console.log("e.target.top: " + e.target.top)
+            e.target.setTop(Math.max(e.target.top  , y1Delta  ));
+            e.target.left = Math.max(e.target.left , x1Delta );
             e.target.setCoords();
-            adjustedY = true;
+            canvas.renderAll();
+            if (e.target.type == "line")  {
+               minY = Math.min(e.target.y1, e.target.y2)
+               minX = Math.min(e.target.x1, e.target.x2)
+               console.log("minX : " + minX)
+               if(!adjustedYu ) {
+                  freezeY = e.e.clientY
+               }
+               if(!adjustedXl ) {
+                  freezeX = e.e.clientX
+                  console.log("Not Adjusted FreezeX: " + freezeX)
+               } else {
+                  console.log("FreezeX is frozen")
+               }
+               console.log("x1 : " + e.target.x1)
+               console.log("x2 : " + e.target.x2)
+               if (minY < 0)
+               {
+                  e.target.y1 = e.target.y1 - minY
+                  e.target.y2 = e.target.y2 - minY
+                  e.target.setCoords();
+                  adjustedYu = true;
+               }
+               if (minX < 0)
+               {
+                  console.log("minX less than 0")
+                  e.target.x1 = e.target.x1 - minX
+                  e.target.x2 = e.target.x2 - minX
+                  e.target.setCoords();
+                  adjustedXl = true;
+               }
+            }
+          }
 
-         }
-         if (minX < 0)
-         {
-            console.log("minX less than 0")
-            e.target.x1 = e.target.x1 - minX
-            e.target.x2 = e.target.x2 - minX
-            e.target.setCoords();
-            adjustedX = true;
 
+
+          // bot-right corner
+          //console.log("posBottom: " + posBottom)
+          //console.log("posRight : " + posRight)
+          //console.log("bounds.br.y: " + bounds.br.y)
+          //console.log("bounds.br.y: " + bounds.br.y)
+          //console.log("bounds.br.x : " + bounds.br.x)
+          //console.log("Scale.Y : " + e.target.scaleY)
+          //console.log("Scale.X : " + e.target.scaleX)
+          console.log("e.target.top: " + e.target.top)
+          console.log("e.target.height: " + e.target.height)
+          console.log("e.target.getBoundingRect().top : " +  e.target.getBoundingRect().top)
+          console.log("e.target.getBoundingRect().height: " +  e.target.getBoundingRect().height)
+          console.log("posBottom: " + posBottom)
+          console.log("Angle: " + e.target.angle)
+
+          if((posBottom >= bounds.br.y || posRight >= bounds.br.x )){
+             var x2Delta = -((boundRect.left + boundRect.width) - (e.target.left + e.target.width))
+             var y2Delta = -((boundRect.top + boundRect.height) - (e.target.top + e.target.top))
+
+             console.log("Projected Left: " + (x2Delta - e.target.width))
+             console.log("Actual Left: " + e.target.left)
+             console.log("In Bottom Right if area")
+             if (posBottom >= bounds.br.y) {
+                if (e.target.angle >= 270 && e.target.angle < 360) {
+                   console.log("e.target.angle > 270 && e.target.angle.angle < 360")
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height + y1Delta;
+                   console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height + y1Delta))
+                } else if (e.target.angle >= 90 && e.target.angle <= 180){
+                   console.log("e.target.angle >= 90 && e.target.angle <= 180")
+                   //e.target.left = bounds.br.y - e.target.getBoundingRect().width;
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height + y1Delta
+                   console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height + y1Delta))
+                   //e.target.left = bounds.br.x
+                } else if (e.target.angle > 180 && e.target.angle < 270){
+                   console.log("e.target.angle > 180 && e.target.angle < 270")
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height +y1Delta
+                   console.log("Calculated top: " + (bounds.br.y -  e.target.getBoundingRect().height +y1Delta))
+                } else if (e.target.angle >= 0 && e.target.angle < 90){
+                   console.log("e.target.angle >= 0 && e.target.angle < 90")
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height +y1Delta ;
+                   console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height +y1Delta))
+                }
+             }
+             if (posRight >= bounds.br.x) {
+                //e.target.left = Math.min( (posRight - Math.max(adjustCos, adjustSin)) , (bounds.br.x - Math.max(adjustCos, adjustSin)) )
+                if (e.target.angle >= 270 && e.target.angle < 360) {
+                   console.log("e.target.angle > 270 && e.target.angle.angle < 360")
+                   e.target.left = bounds.br.x -  e.target.getBoundingRect().width;
+                   console.log("Calculated Left: " + (bounds.br.x -  e.target.getBoundingRect().width))
+                } else if (e.target.angle >= 90 && e.target.angle <= 180){
+                   console.log("e.target.angle >= 90 && e.target.angle <= 180")
+                   //e.target.left = bounds.br.x - e.target.getBoundingRect().width;
+                   e.target.left = bounds.br.x
+                   console.log("Calculated Left: " + (bounds.br.x))
+                   //e.target.left = bounds.br.x
+                } else if (e.target.angle > 180 && e.target.angle < 270){
+                   console.log("e.target.angle > 180 && e.target.angle < 270")
+                   e.target.left = bounds.br.x -  e.target.getBoundingRect().width +x1Delta
+                   console.log("Calculated Left: " + (bounds.br.x -  e.target.getBoundingRect().width +x1Delta))
+                } else if (e.target.angle >= 0 && e.target.angle < 90){
+                   console.log("e.target.angle >= 0 && e.target.angle < 90")
+                   e.target.left = bounds.br.x -  e.target.getBoundingRect().width +x1Delta ;
+                   console.log("Calculated Left: " + (bounds.br.x -  e.target.getBoundingRect().width +x1Delta))
+                }
+             }
+             obj.setCoords();
+             if (e.target.type == "line") {
+                maxY = Math.max(e.target.y1, e.target.y2)
+                maxX = Math.max(e.target.x1, e.target.x2)
+                console.log("maxX : " + maxX)
+                console.log("maxY : " + maxY)
+                if(!adjustedYd ) {
+                   freezeY = e.e.clientY
+                }
+
+                if(!adjustedXr ) {
+                  freezeX = e.e.clientX
+                  console.log("Not Adjusted FreezeX: " + freezeX)
+                } else {
+                  console.log("FreezeX is frozen")
+                }
+
+                if (maxY > bounds.br.y)
+                {
+                   e.target.y1 = e.target.y1 - (maxY - bounds.br.y)
+                   e.target.y2 = e.target.y2 - (maxY - bounds.br.y)
+                   e.target.setCoords();
+                   adjustedYd = true;
+                }
+                if (maxX > bounds.br.x)
+                {
+                   console.log("minX less than 0")
+                   e.target.x1 = e.target.x1 - (maxX - bounds.br.x)
+                   e.target.x2 = e.target.x2 - (maxX - bounds.br.x)
+                   e.target.setCoords();
+                   adjustedXr = true;
+                }
+             }
          }
-         //console.log(e.target);
+
+         // top-right corner case
+         /*
+         if ((obj.top < bounds.tl.y && posRight > bounds.br.x) ) {
+            obj.top = Math.max(obj.top, '0'  );
+            obj.left = Math.min(posRight, bounds.br.x ) - obj.width*(e.target.scaleX);
+            obj.setCoords();
+         }
+         */
+         // bottom-left corner case
+         /*
+         if ((posBottom > bounds.br.y && obj.left < bounds.tl.x) ) {
+            obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height*(e.target.scaleY);
+            obj.left = Math.max(obj.left , '0' )
+            obj.setCoords();
+         }
+         */
        }
-
-
-
-     // bot-right corner
-     console.log("posBottom: " + posBottom)
-     console.log("posRight : " + posRight)
-     console.log("bounds.br.y: " + bounds.br.y)
-     console.log("bounds.br.x : " + bounds.br.x)
-     console.log("Scale.Y : " + e.target.scaleY)
-     console.log("Scale.X : " + e.target.scaleX)
-     if(posBottom > bounds.br.y || posRight > bounds.br.x ){
-         console.log("In second canvas.observe if")
-         obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height*(e.target.scaleY);
-         obj.left = Math.min(posRight, bounds.br.x ) - obj.width*(e.target.scaleX);
-         obj.setCoords();
-         maxY = Math.max(e.target.y1, e.target.y2)
-         maxX = Math.max(e.target.x1, e.target.x2)
-         console.log("maxX : " + maxX)
-         console.log("maxY : " + maxY)
-         if(!adjustedYb ) {
-            freezeYb = e.e.clientY
-         }
-
-         if(!adjustedXb ) {
-            freezeXb = e.e.clientX
-            console.log("Not Adjusted FreezeXb: " + freezeX)
-         } else {
-            console.log("FreezeX is frozen")
-         }
-
-         if (maxY > bounds.br.y)
-         {
-            e.target.y1 = e.target.y1 - (maxY - bounds.br.y)
-            e.target.y2 = e.target.y2 - (maxY - bounds.br.y)
-            e.target.setCoords();
-            adjustedYb = true;
-
-         }
-         if (maxX > bounds.br.x)
-         {
-            console.log("minX less than 0")
-            e.target.x1 = e.target.x1 - (maxX - bounds.br.x)
-            e.target.x2 = e.target.x2 - (maxX - bounds.br.x)
-            e.target.setCoords();
-            adjustedXb = true;
-
-         }
-     }
-
-     // top-right corner case
-     if (obj.top < bounds.tl.y && posRight > bounds.br.x) {
-       obj.top = Math.max(obj.top, '0'  );
-       obj.left = Math.min(posRight, bounds.br.x ) - obj.width*(e.target.scaleX);
-       obj.setCoords();
-     }
-
-     // bottom-left corner case
-     if (posBottom > bounds.br.y && obj.left < bounds.tl.x) {
-       obj.top = Math.min(posBottom, bounds.br.y  ) - obj.height*(e.target.scaleY);
-       obj.left = Math.max(obj.left , '0' )
-       obj.setCoords();
-     }
      });
 
      if (Modernizr.draganddrop) {
@@ -455,3 +578,18 @@
        // Replace with a fallback to a library solution.
        alert("This browser doesn't support the HTML5 Drag and Drop API.");
      }
+
+     canvas.on('after:render', function() {
+       canvas.contextContainer.strokeStyle = '#555';
+
+       canvas.forEachObject(function(obj) {
+          var bound = obj.getBoundingRect();
+
+          canvas.contextContainer.strokeRect(
+            bound.left + 0.5,
+            bound.top + 0.5,
+            bound.width,
+            bound.height
+          );
+       })
+     });
