@@ -83,7 +83,7 @@ function makeLine(coords, id) {
  }
 
  function activateColorPicker(e) {
-      var activeObject = e.target;
+      var activeObjectVal = e.target;
       document.getElementById('myColor').color.showPicker();
  }
 
@@ -161,9 +161,9 @@ function handleDragLeave(e) {
 }
 
 function sendBackward() {
-   var activeObject = canvas.getActiveObject();
-   if (activeObject) {
-      canvas.sendBackwards(activeObject);
+   var activeObjectVal = canvas.getActiveObject();
+   if (activeObjectVal) {
+      canvas.sendBackwards(activeObjectVal);
    }
    $('#glossymenu').remove();
    contextmenuon = false;
@@ -171,9 +171,9 @@ function sendBackward() {
 }
 
 function sendToBack() {
-   var activeObject = canvas.getActiveObject();
-   if (activeObject) {
-      canvas.sendToBack(activeObject);
+   var activeObjectVal = canvas.getActiveObject();
+   if (activeObjectVal) {
+      canvas.sendToBack(activeObjectVal);
    }
    $('#glossymenu').remove();
    contextmenuon = false;
@@ -181,9 +181,9 @@ function sendToBack() {
 }
 
 function bringFoward() {
-   var activeObject = canvas.getActiveObject();
-   if (activeObject) {
-      canvas.bringForward(activeObject);
+   var activeObjectVal = canvas.getActiveObject();
+   if (activeObjectVal) {
+      canvas.bringForward(activeObjectVal);
    }
    $('#glossymenu').remove();
    contextmenuon = false;
@@ -191,9 +191,9 @@ function bringFoward() {
 }
 
 function bringToFront() {
-   var activeObject = canvas.getActiveObject();
-   if (activeObject) {
-      canvas.bringToFront(activeObject);
+   var activeObjectVal = canvas.getActiveObject();
+   if (activeObjectVal) {
+      canvas.bringToFront(activeObjectVal);
    }
    $('#glossymenu').remove();
    contextmenuon = false;
@@ -201,12 +201,19 @@ function bringToFront() {
 }
 
 function lineDown(data,index) {
+   console.log("In LineDown **********************")
+   console.log(data)
+   console.log(index)
+   console.log("activeObject: " + activeObject)
+   console.log("contextmenuon: " + contextmenuon)
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
 
+   console.log("Button Pressed: " + data.e.which)
    if (data.e.which == 3) {
       //console.log("In mouse down Image")
+      console.log("Button 3 Pressed")
       handler = function(e) {
          //console.log("Entering handler function");
          //console.log("contextmenuon =" + contextmenuon);
@@ -238,6 +245,9 @@ function lineDown(data,index) {
 }
 
 function ellipseDown(data,index) {
+    console.log("In ellipseDown **********************")
+    console.log(data)
+    console.log(index)
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
