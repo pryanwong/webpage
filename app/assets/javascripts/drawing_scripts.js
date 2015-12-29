@@ -5,6 +5,13 @@ function onSave(company_id, user_id, id) {
  objects = canvas.getObjects();
  var len = objects.length;
  for (index=len -1; index > -1; index--) {
+   if (objects[index].type == "lineGroup") {
+      var items = objects[index]._objects;
+      objects[index]._restoreObjectsState();
+      canvas.remove(objects[index]);
+      canvas.add(items[2])
+   }
+
    if (objects[index].type == "circle0" || objects[index].type == "circle1") {
      //console.log("Removed: " + objects[index].type)
      canvas.remove(objects[index]);
@@ -83,7 +90,7 @@ function makeLine(coords, id) {
  }
 
  function activateColorPicker(e) {
-      var activeObjectVal = e.target;
+      var activeObjectVal = canvas.getActiveObject();
       document.getElementById('myColor').color.showPicker();
  }
 
@@ -94,11 +101,24 @@ function makeLine(coords, id) {
             activeObjectVal.fill = newLineColor;
             activeObjectVal.stroke = newLineColor;
           }
+          if (activeObjectVal.type == "lineGroup") {
+            console.log("lineGroup Color Picker")
+            console.log(activeObjectVal)
+            activeObjectVal._objects[2].stroke = newLineColor;
+          }
           if (activeObjectVal.type == "circle") {
             activeObjectVal.stroke = newLineColor;
           }
+          if (activeObjectVal.type == "ellipse") {
+            activeObjectVal.stroke = newLineColor;
+          }
+          if (activeObjectVal.type == "i-text") {
+            activeObjectVal.stroke = newLineColor;
+            //activeObjectVal.setColor(newLineColor);
+          }
         }
       }
+      canvas.renderAll();
  }
 
  function makeCircle(line) {
@@ -108,7 +128,7 @@ function makeLine(coords, id) {
        left: line.get('x1'),
        top: line.get('y1'),
        strokeWidth: 2,
-       radius: 3,
+       radius: 5,
        fill: '#fff',
        stroke: '#666',
        belongsTo: line.objId,
@@ -116,11 +136,12 @@ function makeLine(coords, id) {
      });
      c1.hasControls = c1.hasBorders = false;
      c1.visible = true;
+     c1.hoverCursor = 'crosshair'
      var c2 = new fabric.Circle({
        left: line.get('x2'),
        top: line.get('y2'),
        strokeWidth: 2,
-       radius: 3,
+       radius: 5,
        fill: '#fff',
        stroke: '#666',
        belongsTo: line.objId,
@@ -128,6 +149,7 @@ function makeLine(coords, id) {
      });
      c2.hasControls = c2.hasBorders = false;
      c2.visible = true;
+     c2.hoverCursor = 'crosshair'
      c1.belongsTo = line.objId;
      c2.belongsTo = line.objId;
      c1.line = line;
@@ -205,8 +227,11 @@ function lineDown(data,index) {
    console.log(data)
    console.log(index)
    console.log("activeObject: " + activeObject)
+   console.log(canvas.getActiveObject())
+   console.log(activeObjectVal)
    console.log("contextmenuon: " + contextmenuon)
    if (handler != "") {
+      console.log("removing line handler")
       document.removeEventListener('contextmenu', handler);
    }
 
@@ -220,18 +245,52 @@ function lineDown(data,index) {
          //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
-            var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("In Delete");
-                                             var activeObject = canvas.getActiveObject();
-                                             console.log(activeObjectVal);
-                                             canvas.remove(activeObjectVal.c1)
-                                             canvas.remove(activeObjectVal.c2)
-                                             canvas.remove(activeObjectVal);
+            $('a:contains("Delete")').click(  function() {console.log("lineDown: In Delete");
+                                             if (canvas.getActiveObject() != null) {
+                                                activeObjectVal = canvas.getActiveObject();
+                                             }
+                                             console.log("Active Object")
+                                             console.log(activeObjectVal)
+                                             if (activeObjectVal.type) {
+                                               console.log("Object Type: " + activeObjectVal.type)
+
+                                               if (activeObjectVal.type == "line") {
+                                                 console.log("lineDown: Removing line")
+                                                 console.log(activeObjectVal);
+                                                 canvas.remove(activeObjectVal.c1)
+                                                 canvas.remove(activeObjectVal.c2)
+                                                 canvas.remove(activeObjectVal);
+                                               } else if(activeObjectVal.type == "lineGroup") {
+                                                 console.log("Removing LineGroup")
+                                                 searchId = getItemIndex(activeObjectVal)
+                                                 canvas.setActiveObject(canvas.item(searchId))
+
+                                                 if(canvas.getActiveGroup()){
+                                                    canvas.getActiveGroup().forEachObject(function(o){ canvas.remove(o) });
+                                                    canvas.discardActiveGroup().renderAll();
+                                                    lineActive = false;
+                                                 } else {
+                                                    canvas.remove(canvas.getActiveObject());
+                                                    lineActive = false;
+                                                 }
+                                                 canvas.renderAll()
+                                               }
+                                             }
                                              $('#glossymenu').remove();
+
                                              contextmenuon = false;
-                                             activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+                                             activeObject = false;
+
+                                             console.log("Lineactive to: " + lineActive)
+                                             console.log("Exiting Delete Group")
+
+                                           });
+           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
+                                                             $('#glossymenu').remove();
+                                                             contextmenuon = false;}
+                                                );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
            $('a:contains("Send To Back")').click(function() {sendToBack();});
            $('a:contains("Bring Forward")').click(function() {bringFoward();});
@@ -248,7 +307,12 @@ function ellipseDown(data,index) {
     console.log("In ellipseDown **********************")
     console.log(data)
     console.log(index)
+    console.log("activeObject: " + activeObject)
+    console.log(canvas.getActiveObject())
+    console.log("handler")
+    console.log(handler)
    if (handler != "") {
+      console.log("removing ellipse handler")
       document.removeEventListener('contextmenu', handler);
    }
 
@@ -260,18 +324,19 @@ function ellipseDown(data,index) {
          //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
-            var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            var items = ["Delete Ellipse", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("In Delete");
-                                             var activeObject = canvas.getActiveObject();
+            $('a:contains("Delete")').click(  function() {console.log("ellipseDown: In Delete");
+                                             activeObjectVal = canvas.getActiveObject();
                                              console.log(activeObjectVal);
-                                             canvas.remove(activeObjectVal.c1)
-                                             canvas.remove(activeObjectVal.c2)
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
+                                                             $('#glossymenu').remove();
+                                                             contextmenuon = false;}
+                                                );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
            $('a:contains("Send To Back")').click(function() {sendToBack();});
            $('a:contains("Bring Forward")').click(function() {bringFoward();});
@@ -285,7 +350,10 @@ function ellipseDown(data,index) {
 }
 
 function circleDown(data,index) {
+   console.log("activeObject: " + activeObject)
+   console.log(canvas.getActiveObject())
    if (handler != "") {
+      console.log("removing circle handler")
       document.removeEventListener('contextmenu', handler);
    }
 
@@ -297,18 +365,19 @@ function circleDown(data,index) {
          //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
-            var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            var items = ["Delete Circle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("In Delete");
-                                             var activeObject = canvas.getActiveObject();
+            $('a:contains("Delete")').click(  function() {console.log("circleDown: In Delete");
+                                             activeObjectVal = canvas.getActiveObject();
                                              console.log(activeObjectVal);
-                                             canvas.remove(activeObjectVal.c1)
-                                             canvas.remove(activeObjectVal.c2)
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
+                                                             $('#glossymenu').remove();
+                                                             contextmenuon = false;}
+                                                );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
            $('a:contains("Send To Back")').click(function() {sendToBack();});
            $('a:contains("Bring Forward")').click(function() {bringFoward();});
@@ -322,7 +391,12 @@ function circleDown(data,index) {
 }
 
 function textDown(data,index) {
+   console.log("In Text Down")
+   console.log("activeObject: " + activeObject)
+   console.log(canvas.getActiveObject())
+   console.log(canvas.getActiveObject().type)
    if (handler != "") {
+      console.log("removing text handler")
       document.removeEventListener('contextmenu', handler);
    }
 
@@ -334,16 +408,19 @@ function textDown(data,index) {
          //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
-            var items = ["Delete", "Change Label", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            var items = ["Delete Text", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("In Delete");
-                                             var activeObject = canvas.getActiveObject();
+            $('a:contains("Delete")').click(  function() {console.log("textDown: In Delete");
+                                             activeObjectVal = canvas.getActiveObject();
                                              console.log(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
-            $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
+            $('a:contains("Change Color")').click(function() {activateColorPicker(e);
+                                                              $('#glossymenu').remove();
+                                                              contextmenuon = false;}
+                                                 );
             $('a:contains("Send Backward")').click(function() {sendBackward();});
             $('a:contains("Send To Back")').click(function() {sendToBack();});
             $('a:contains("Bring Forward")').click(function() {bringFoward();});
@@ -365,6 +442,9 @@ function imageDown(data,index) {
    //console.log(data.e.which)
    //console.log(data);
    //console.log(this);
+   console.log("imageDown")
+   console.log("activeObject: " + activeObject)
+   console.log(canvas.getActiveObject())
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -376,11 +456,11 @@ function imageDown(data,index) {
          //console.log("contextmenuon =" + contextmenuon);
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
-            var items = ["Delete", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
+            var items = ["Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("In Delete");
-                                               var activeObject = canvas.getActiveObject();
-                                               //console.log(activeObjectVal);
+            $('a:contains("Delete")').click(  function() {console.log("imageDown: In Delete");
+                                               activeObjectVal = canvas.getActiveObject();
+                                               console.log(activeObjectVal);
                                                canvas.remove(activeObjectVal);
                                                $('#glossymenu').remove();
                                                contextmenuon = false;
@@ -433,7 +513,14 @@ function handleDrop(e) {
          c[id] = makeCircle(line);
          line.c1 = c[id][0];
          line.c2 = c[id][1];
+
+         line.id = itemId
+         itemId = itemId + 1;
          canvas.add(c[id][0],c[id][1]);
+         console.log("Added Line: ")
+         console.log(line)
+         console.log(c[id][0])
+         console.log(c[id][1])
          line.on("mousedown", function(data, index) { lineDown(data,index); });
       } else if (imgsrc_val == "circle_icon.png") {
         objectName = "circle";
@@ -444,6 +531,8 @@ function handleDrop(e) {
         var circleShape = makeCircleShape([ xpos1, ypos1 ], id)
         circleShape.hasBorders = circleShape.hasControls = true
         circleShape.on("mousedown", function(data, index) { circleDown(data,index); });
+        circleShape.id = itemId
+        itemId = itemId + 1;
         console.log(circleShape)
         //console.log(line)
         //circleShape.hasBorders = circleShape.hasControls = true
@@ -457,6 +546,8 @@ function handleDrop(e) {
         var ellipseShape = makeEllipseShape([ xpos1, ypos1 ], id)
         ellipseShape.hasBorders = ellipseShape.hasControls = true
         ellipseShape.on("mousedown", function(data, index) { ellipseDown(data,index); });
+        ellipseShape.id = itemId
+        itemId = itemId + 1;
         console.log(ellipseShape)
         canvas.add(ellipseShape)
       } else if (imgsrc_val == "textbox_icon.png") {
@@ -468,9 +559,11 @@ function handleDrop(e) {
              top: e.layerY
          });
          textbox.hasBorders = textbox.hasControls = true
+         textbox.id = itemId
+         itemId = itemId + 1;
          canvas.add(textbox);
          //console.log(textbox);
-         canvas.on("mousedown", function(data, index) { textDown(data,index); });
+         textbox.on("mousedown", function(data, index) { textDown(data,index); });
       } else {
          var newImage = new fabric.Image(img, {
             width: img.width,
@@ -481,6 +574,8 @@ function handleDrop(e) {
             top: e.layerY
          });
          //console.log(newImage);
+         newImage.id = itemId
+         itemId = itemId + 1;
          canvas.add(newImage);
          newImage.on("mousedown", function(data, index) { imageDown(data,index); });
       }
@@ -535,3 +630,15 @@ function drawAsPNG(){
     // to PNG
     window.open(canvas.toDataURL('png'));
 };
+
+function getItemIndex(object) {
+     id = object.id;
+     index = 0;
+     objectList = canvas.getObjects();
+     for (i = 0; i < objectList.length; i++) {
+       if (objectList[i].id == id) {
+         index = i
+       }
+     }
+     return index;
+}

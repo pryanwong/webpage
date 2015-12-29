@@ -75,25 +75,22 @@
      var handler = "";
      var c = new Array();
      var objId_var = 0;
+     var itemId = 0;
      var contextmenuon = false;
      var activeObject = false;
      var activeObjectVal = "";
      var activeLineGroup = null;
      var objectName = "";
      var _curX, _curY;
-     var adjustedXr = false;
-     var adjustedXl = false;
-     var adjustedYu = false;
-     var adjustedYd = false;
-     var freezeY = 0;
-     var freezeX = 0;
      var lastScrollY = 0;
      var lastScrollX = 0;
      var canvas = new fabric.CanvasEx('demoCanvas2');
-     canvas.selection = false;
      var motionInbounds = true;
+     var lineActive = true;
+     var lineSelected = false;
      //$('.canvas-container').on('scroll', canvas.calcOffset.bind(canvas));
 
+    /*
      window.onscroll = function(ev) {
             canvas.calcOffset.bind(canvas)
             var scrollY = $(window).scrollTop();
@@ -105,6 +102,7 @@
             _curX = _curX - (scrollX - lastScrollX);
             lastScrollX = scrollX;
      }
+     */
      if(!window.location.hash) {
          window.location = window.location + '#loaded';
          window.location.reload();
@@ -128,6 +126,8 @@
                 console.log(objs)
                 for(i = 0; i < objs.length; i++ ) {
                    console.log(objs[i].type)
+                   objs[i].id = itemId
+                   itemId = itemId + 1;
                    if (objs[i].type == "line") {
                       var objId_var = objs[i].objId
                       c[objId_var] = makeCircle(objs[i]);
@@ -148,10 +148,10 @@
                       objs[i].set('y1', y1)
                       objs[i].set('x2', x2)
                       objs[i].set('y2', y2)
-                      //objs[i].setTop(0)
-                      //objs[i].setLeft(0)
                       objs[i].setCoords();
                       canvas.add(c[objId_var][0],c[objId_var][1]);
+                      c[objId_var][0].bringToFront();
+                      c[objId_var][1].bringToFront();
                       canvas.renderAll.bind(canvas);
                       console.log("Circles")
                       console.log(c[objId_var][0])
@@ -166,9 +166,16 @@
                if (object.type == "image") {
                  object.on("mousedown", function(data, index) { imageDown(data,index)   });
                }
-               if (object.type == "circle" || object.type == "ellipse") {
+               if (object.type == "circle") {
                  object.fill = undefined
+                 object.on("mousedown", function(data, index) { circleDown(data,index)   });
                }
+
+               if (object.type == "ellipse") {
+                 object.fill = undefined
+                 object.on("mousedown", function(data, index) { ellipseDown(data,index)   });
+               }
+
                if (object.type == "line") {
                  //object.hasBorders = object.hasControls = false;
                  object.objId = objId_var;
@@ -177,12 +184,11 @@
                  console.log(object)
 
                }
-               if (object.type == "text") {
+
+               if (object.type == "i-text") {
                  object.on("mousedown", function(data, index) { textDown(data,index)   });
                }
-               if (object.type == "circle") {
-                 object.on("mousedown", function(data, index) { circleDown(data,index)   });
-               }
+
 
             });
 
@@ -192,9 +198,68 @@
      }
 
      canvas.on('mouse:over', function(e) {
+        console.log("In mouse:over")
+        console.log(e.target)
+        e.target.setOpacity(0.5);
+        activeObjectVal = e.target
+        if (e.target.type) {
+            console.log("e.target.type: " + e.target.type)
+            if (e.target.type == "line") {
+              searchId = getItemIndex(e.target)
+              canvas.setActiveObject(canvas.item(searchId))
+            }
+        }
 
+     });
+
+     canvas.on('mouse:out', function(e) {
+        console.log("In mouse:out")
+        e.target.setOpacity(1);
+        canvas.renderAll();
+        if (e.target.type) {
+           console.log("e.target type and class")
+           console.log("e.target.type: " + e.target.type)
+           console.log(e.target)
+           console.log("lineActive: " + lineActive)
+        }
+        if (e.target.type == "lineGroup" && lineActive) {
+           console.log("Group Top: " + e.target.top)
+           console.log("Group Left: " + e.target.left)
+           console.log(e.target)
+           var items = e.target._objects;
+           e.target._restoreObjectsState();
+           searchId = getItemIndex(e.target)
+           canvas.setActiveObject(canvas.item(searchId))
+           if(canvas.getActiveGroup()){
+              canvas.getActiveGroup().forEachObject(function(o){ canvas.remove(o) });
+              canvas.discardActiveGroup().renderAll();
+           } else {
+              canvas.remove(canvas.getActiveObject());
+           }
+           console.log("Line Group added back seperately")
+           for(var i = 0; i < items.length; i++) {
+              items[i].hasBorders = items[i].hasControls = false
+              console.log(items[i])
+              canvas.add(items[i]);
+           }
+           items[2].c1 = items[0]
+           items[2].c2 = items[1]
+           items[0].bringToFront();
+           items[1].bringToFront();
+           items[2].sendBackwards();
+           canvas.renderAll();
+           items[2].on("mousedown", function(data, index) { lineDown(data,index); });
+        }
+     });
+
+     canvas.on('object:selected', function(e) {
+        console.log("In object:selected")
         activeObject = true;
         activeObjectVal = e.target;
+        var objType = e.target.get('type');
+        console.log("activeObject: " + activeObject)
+        console.log(activeObjectVal)
+        console.log("Leaving object:selected")
         if (e.target.type == "line") {
            console.log("Adding LineGroup *******************")
            newGroup = new fabric.Group();
@@ -203,32 +268,17 @@
            newGroup.addWithUpdate(e.target)
            newGroup.type = "lineGroup"
            newGroup.hasControls = false;
+           newGroup.id = itemId
+           itemId = itemId + 1;
            canvas.add(newGroup)
            e.target.c1.remove();
            e.target.c2.remove();
            e.target.remove();
-           activeObjectVal = newGroup;
            newGroup.on("mousedown", function(data, index) { lineDown(data,index); });
         }
-        e.target.setOpacity(0.5);
-        canvas.renderAll();
-     });
-
-     canvas.on('object:selected', function(e) {
-        //find the selected object type
-        //Temp remove
-
-        adjustedYu  = false
-        adjustedYd  = false
-        adjustedXr  = false
-        adjustedXl  = false
-        console.log("object:selected starting")
-        console.log(e.target)
-        console.log("_curX: " + _curX);
-        console.log("_curY: " +_curY);
-
-        var objType = e.target.get('type');
-
+        lineSelected = true;
+        console.log("lineSelected: " + lineSelected)
+        console.log("Out object:selected")
      });
 
      canvas.on('mouse:up', function(e) {
@@ -238,36 +288,55 @@
 
      canvas.on('mouse:down', function(e) {
          console.log("In Canvas On Mouse:down")
-         handler =""
          $('#glossymenu').remove();
          contextmenuon = false;
+         console.log("mouse:down")
+         console.log(e.target)
+
      });
 
-     canvas.on('mouse:out', function(e) {
-        //console.log("Mouse:out")
-        //console.log(e.target)
-        e.target.setOpacity(1);
+
+     canvas.on('selection:cleared', function(e) {
+
+        console.log("In selection:cleared")
+        lineActive = true
+        lineSelected = false
+        console.log("lineSelected: " + lineSelected)
+        /*
+        console.log("Object Type: " + activeObjectVal)
+        console.log("LineActive: " + lineActive)
+        activeObjectVal.setOpacity(1);
         canvas.renderAll();
-        activeObject = false;
+
         objectName ="";
-        if (e.target.type == "lineGroup") {
-           var items = e.target._objects;
-           e.target._restoreObjectsState();
-           canvas.remove(e.target);
+        if (activeObjectVal.type == "lineGroup" && lineActive  && !lineSelected) {
+           console.log("Group Top: " + activeObjectVal.top)
+           console.log("Group Left: " + activeObjectVal.left)
+           console.log(activeObjectVal)
+           var items = activeObjectVal._objects;
+           activeObjectVal._restoreObjectsState();
+           canvas.remove(activeObjectVal);
            console.log("Line Group added back seperately")
            for(var i = 0; i < items.length; i++) {
               items[i].hasBorders = items[i].hasControls = false
               console.log(items[i])
               canvas.add(items[i]);
            }
-           items[0].bringToFront();
-           items[1].bringToFront();
-           canvas.renderAll()
+
            items[2].c1 = items[0]
            items[2].c2 = items[1]
+           items[0].bringToFront();
+           items[1].bringToFront();
+           items[2].sendBackwards();
+           canvas.renderAll()
+
+
+
            items[2].on("mousedown", function(data, index) { lineDown(data,index); });
         }
+        lineActive = true
 
+        */
      });
 
      canvas.on('object:scaling', objectResize)
