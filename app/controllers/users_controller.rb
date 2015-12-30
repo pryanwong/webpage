@@ -322,7 +322,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :isadmin, :role)
+      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id)
     end
 
     def sort_column

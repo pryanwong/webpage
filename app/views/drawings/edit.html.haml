@@ -85,6 +85,7 @@
      var lastScrollY = 0;
      var lastScrollX = 0;
      var canvas = new fabric.CanvasEx('demoCanvas2');
+     var fabric = fabric || { version: "1.4.13" };
      var motionInbounds = true;
      var lineActive = true;
      var lineSelected = false;
@@ -103,6 +104,34 @@
             lastScrollX = scrollX;
      }
      */
+
+     fabric.CustomImage = fabric.util.createClass(fabric.Image, {
+         type: 'custom-image',
+         initialize: function(element, options) {
+             this.callSuper('initialize', element, options);
+             options && this.set('config', options.config);
+         },
+         toObject: function() {
+             return fabric.util.object.extend(this.callSuper('toObject'),
+                                              {config: this.config});
+         },
+
+         _render: function(ctx) {
+            this.callSuper('_render', ctx);
+            if (this.config != 'undefined') {
+              ctx.font = '12px Helvetica';
+              ctx.fillStyle = '#333';
+              ctx.fillText(this.config, -this.width/2, this.height);
+            }
+         }
+     });
+     fabric.CustomImage.fromObject = function(object, callback) {
+       fabric.util.loadImage(object.src, function(img) {
+         callback && callback(new fabric.CustomImage(img, object));
+       });
+     };
+     fabric.CustomImage.async = true;
+
      if(!window.location.hash) {
          window.location = window.location + '#loaded';
          window.location.reload();
@@ -163,7 +192,7 @@
              },
              function(o, object) {
 
-               if (object.type == "image") {
+               if (object.type == "custom-image") {
                  object.on("mousedown", function(data, index) { imageDown(data,index)   });
                }
                if (object.type == "circle") {

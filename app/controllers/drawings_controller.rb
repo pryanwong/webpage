@@ -1,7 +1,7 @@
 class DrawingsController < ApplicationController
   before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
-  load_and_authorize_resource
+  load_and_authorize_resource :drawing
   before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image, :send_image_form]
   layout :resolve_layout
 
@@ -94,6 +94,8 @@ class DrawingsController < ApplicationController
   end
 
   def create
+    logger.fatal "In Drawing#create"
+    logger.fatal "Params #{params.inspect}"
     @drawing = Drawing.new
     @drawing.customer = params[:customer]
     @drawing.description = params[:description]
@@ -230,7 +232,7 @@ class DrawingsController < ApplicationController
     end
 
     def drawing_params
-      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png)
+      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
     end
 
     def check_for_cancel

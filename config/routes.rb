@@ -17,11 +17,20 @@ Rails.application.routes.draw do
     resources :sessions, only: [:create, :destroy]
     resource :home, only: [:show]
     resource :pages
+
     resources :users do
        get 'showall'
        get 'show'
     end
     resources :companies do
+
+      resources :configurators do
+
+        member do
+          get 'productconfig'
+        end
+      end
+
       resources :users do
         get 'switchuser'
         get 'switchback'
@@ -38,6 +47,7 @@ Rails.application.routes.draw do
             post 'updatedrawingdetails'
           end
         end
+
         member do
             get 'newdrawing'
             post 'newdrawingproc'

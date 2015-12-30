@@ -455,11 +455,21 @@ function imageDown(data,index) {
          //console.log("Entering handler function");
          //console.log("contextmenuon =" + contextmenuon);
          if (contextmenuon == false &&  activeObject == true) {
+            //activeObjectVal = canvas.getActiveObject();
             e.preventDefault();
-            var items = ["Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
+            var items = ["Configure","Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
             menus(items, e);
+            $('a:contains("Configure")').click( function() {
+                                                   var productId = 1
+                                                   var companyId = 1
+                                                   searchId = getItemIndex(activeObjectVal)
+                                                   canvas.setActiveObject(canvas.item(searchId))
+                                                   configuratorProduct(productId, companyId, searchId);
+                                                   $('#glossymenu').remove();
+                                                   contextmenuon = false;
+                                                   activeObject = true;
+                                                });
             $('a:contains("Delete")').click(  function() {console.log("imageDown: In Delete");
-                                               activeObjectVal = canvas.getActiveObject();
                                                console.log(activeObjectVal);
                                                canvas.remove(activeObjectVal);
                                                $('#glossymenu').remove();
@@ -565,13 +575,14 @@ function handleDrop(e) {
          //console.log(textbox);
          textbox.on("mousedown", function(data, index) { textDown(data,index); });
       } else {
-         var newImage = new fabric.Image(img, {
+         var newImage = new fabric.CustomImage(img, {
             width: img.width,
             height: img.height,
             // Set the center of the new object based on the event coordinates relative
             // to the canvas container.
             left: e.layerX,
-            top: e.layerY
+            top: e.layerY,
+            config: 'undefined'
          });
          //console.log(newImage);
          newImage.id = itemId
@@ -641,4 +652,10 @@ function getItemIndex(object) {
        }
      }
      return index;
+}
+
+var popup;
+function configuratorProduct(productId, companyId, searchId) {
+   popup = window.open("/companies/" + companyId + "/configurators/" + productId + "/productconfig.html", "Popup", "width=300,height=100");
+   popup.focus();
 }
