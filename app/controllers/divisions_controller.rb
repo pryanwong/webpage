@@ -109,7 +109,6 @@ class DivisionsController < ApplicationController
        redirect_to company_path(params[:company_id])
        return
     end
-    company_id = @division.company_id
     @division.destroy
     if @division.destroyed?
       flash[:notice] = "Division Removed"

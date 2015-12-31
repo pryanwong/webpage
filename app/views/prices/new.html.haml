@@ -1,0 +1,17 @@
+%div.form-style-10
+   %h1 New Product Price
+   = form_for([@company,@price]) do |f|
+      %div.section
+         %div.inner-wrap
+            %div.col-md-6.col-md-offset-3
+               = f.label :name
+               = f.text_field :name
+               %br
+
+               = f.label  :price
+               = f.text_area :price, :cols => "10", :rows => "10"
+               %br
+
+               = f.submit "Save"
+               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
+               %br

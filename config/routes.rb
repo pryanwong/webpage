@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     end
     resources :companies do
 
-      resources :configurators do
+      resources :prices do
 
         member do
           get 'productconfig'

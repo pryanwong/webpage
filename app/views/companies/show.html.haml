@@ -93,3 +93,35 @@
             -if can? :destroy, user
                = link_to "Remove", company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" }
          %td
+%table{:class=>"flatTable"}
+   %tr{:class=>"titleTr"}
+      %td{:class=>"first"} Products
+      -if can? :create, Price
+         %td{:align=>"right"} New
+         %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_price_path(@company)
+      -else
+         %td
+         %td
+      %td
+      %td
+   %tr{:class=>"headingTr"}
+      %th{:class=>"first"} Id
+      %th{:class=>"second"} Product Name
+      -if can? :edit, Price
+         %th{:class=>"second"} Edit
+         %th{:class=>"second"} Remove
+      -else
+         %th{:class=>"second"}
+         %th{:class=>"second"}
+      %th
+   -@company.prices.each do |price|
+      %tr
+         %td= price.id
+         %td= price.name
+         %td
+            -if can? :delete, Price
+               =link_to "Edit", edit_company_price_path(@company, price)
+         %td
+            -if can? :edit, Price
+               =link_to "Remove", company_price_path(@company, price), method: :delete, data: {confirm: "You sure?"}
+         %td
