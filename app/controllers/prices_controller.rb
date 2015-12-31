@@ -3,6 +3,7 @@ class PricesController < ApplicationController
   before_filter :check_for_cancel, :only => [:create, :update]
   layout :pages_layout
   def productconfig
+    @price   = Price.find(params[:id])
   end
 
   def new

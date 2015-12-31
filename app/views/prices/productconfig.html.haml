@@ -1,2 +1,92 @@
-%h1 productconfig
-productconfig
+%h1 Product Configuration
+
+%body
+   %div{:id => 'data'}
+   %p{:id => 'prodconfig'}
+
+:javascript
+   var selectId = "";
+   var searchId = "";
+   function onload() {
+     console.log("At start of onload")
+     searchId = QueryString.searchId;
+     console.log("SelectId: " + searchId)
+     var jsontext= #{@price.price};
+     document.getElementById('data').innerHTML += '<br>' + jsontext.product.name;
+     for (i=0; i< jsontext.product.options.length; i++) {
+         document.getElementById('data').innerHTML += '<br>' + jsontext.product.options[i].opname
+         var selectHTML = "";
+         var selectid = 'select' + i
+         selectHTML='<select id="' + selectid + '">';
+         for (j=0; j< jsontext.product.options[i].selections.length; j++) {
+            selectHTML += '<option value="'
+            selectHTML += jsontext.product.options[i].selections[j].code
+            selectHTML +='">'
+            selectHTML +=jsontext.product.options[i].selections[j].description
+            selectHTML +='</option>'
+         }
+         selectHTML += "</select>";
+         document.getElementById('data').innerHTML += selectHTML
+       }
+       configString(jsontext)
+       console.log("Adding Listeners: Before For Loop")
+       for (i=0; i< jsontext.product.options.length; i++) {
+         var selectid = 'select' + i
+         console.log("Adding Listeners: " + selectid)
+         document.getElementById(selectid).onchange = function() {
+               var index = this.selectedIndex;
+               var inputText = this.children[index].innerHTML.trim();
+               console.log(inputText);
+               configString(jsontext)
+         }
+         console.log(document.getElementById(selectid))
+       }
+
+   }
+
+   function configString(jsontext) {
+     var configurationString = jsontext.product.name;
+     for (i=0; i< jsontext.product.options.length; i++) {
+          selectid = 'select' + i
+          var index = document.getElementById(selectid).selectedIndex
+          configurationString += '-'
+          configurationString += document.getElementById(selectid).children[index].value
+     }
+     document.getElementById('prodconfig').innerHTML = configurationString
+     SetConfig()
+   }
+
+   function SetConfig() {
+        var canvas = "";
+        if (window.opener != null && !window.opener.closed) {
+            canvas = window.opener.document.getElementById("demoCanvas2").fabric
+            canvas.item(searchId).config = document.getElementById('prodconfig').innerHTML
+            console.log(canvas.item(searchId))
+            canvas.renderAll();
+        }
+        //window.close();
+    }
+
+    var QueryString = function () {
+      // This function is anonymous, is executed immediately and
+      // the return value is assigned to QueryString!
+      var query_string = {};
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+         // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+           query_string[pair[0]] = decodeURIComponent(pair[1]);
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+           var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+           query_string[pair[0]] = arr;
+            // If third or later entry with this name
+        } else {
+          query_string[pair[0]].push(decodeURIComponent(pair[1]));
+        }
+      }
+       return query_string;
+    }();
+      window.onload = onload();
