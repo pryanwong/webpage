@@ -90,6 +90,8 @@
      var motionInbounds = true;
      var lineActive = true;
      var lineSelected = false;
+
+     $(".spinner").show();
      //$('.canvas-container').on('scroll', canvas.calcOffset.bind(canvas));
 
     /*
@@ -228,6 +230,7 @@
 
          }
          console.log( "Drawing should be loaded ");
+         $(".spinner").hide();
 
      }
 

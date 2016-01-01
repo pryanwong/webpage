@@ -1,0 +1,71 @@
+/* line 1, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+.spinner {
+  margin: 100px auto;
+  width: 50px;
+  height: 40px;
+  text-align: center;
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 99999;
+  opacity: 0;
+}
+
+/* line 12, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+.spinner > div {
+  background-color: #333;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+/* line 22, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+
+/* line 27, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+/* line 32, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+/* line 37, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+  /* line 43, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+  0%, 40%, 100% {
+    -webkit-transform: scaleY(0.4);
+  }
+
+  /* line 44, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+  20% {
+    -webkit-transform: scaleY(1);
+  }
+}
+
+@keyframes sk-stretchdelay {
+  /* line 48, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }
+
+  /* line 51, C:/Users/sferenci/jruby-getting-started/app/assets/stylesheets/spinner.css.scss */
+  20% {
+    transform: scaleY(1);
+    -webkit-transform: scaleY(1);
+  }
+}
