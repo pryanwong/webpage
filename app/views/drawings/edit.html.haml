@@ -33,10 +33,10 @@
                %table
                   %tr
                      %td
-                        = image_tag "IED.png", :img_val=>"IED.png", :draggable=>"true", :width=>"71", :height => "34"
+                        = image_tag "IED.png", :img_val=>"IED.png",  :"data-config"=>"4", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption IED
                      %td
-                        = image_tag "esprit_cam.png", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
+                        = image_tag "esprit_cam.png", :"data-config"=>"3", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption Esprit Cam
          %h3 Networking
          %div{:style=>"margin:0px;padding:0px;"}
@@ -111,10 +111,14 @@
          initialize: function(element, options) {
              this.callSuper('initialize', element, options);
              options && this.set('config', options.config);
+             options && this.set('price', options.price);
+             options && this.set('price', options.configdbid);
          },
          toObject: function() {
              return fabric.util.object.extend(this.callSuper('toObject'),
-                                              {config: this.config});
+                                              {config: this.config,
+                                               price:  this.price,
+                                               configdbid: this.configdbid});
          },
 
          _render: function(ctx) {
@@ -122,7 +126,7 @@
             if (this.config != 'undefined') {
               ctx.font = '12px Helvetica';
               ctx.fillStyle = '#333';
-              ctx.fillText(this.config, -this.width/2, this.height);
+              ctx.fillText(this.config, -this.width/2, this.height)
             }
          }
      });

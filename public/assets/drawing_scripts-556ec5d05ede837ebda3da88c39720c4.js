@@ -671,3 +671,4 @@ function configuratorProduct(productId, companyId, searchId) {
    popup = window.open("/companies/" + companyId + "/prices/" + productId + "/productconfig.html?searchId=" + searchId, "Popup", "width=300,height=500");
    popup.focus();
 }
+;

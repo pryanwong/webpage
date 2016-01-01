@@ -3,14 +3,28 @@
 %body
    %div{:id => 'data'}
    %p{:id => 'prodconfig'}
+   List Price: <em id='listconfig'></em>
 
 :javascript
    var selectId = "";
    var searchId = "";
+   var canvas = "";
+   var objectConfig = "";
+   var selectChoices = false;
+   var splitVals = "";
+
    function onload() {
      console.log("At start of onload")
      searchId = QueryString.searchId;
      console.log("SelectId: " + searchId)
+     if (window.opener != null && !window.opener.closed) {
+       canvas = window.opener.document.getElementById("demoCanvas2").fabric
+       objectConfig = canvas.item(searchId).config
+     }
+     if (objectConfig != undefined) {
+        selectChoices = true;
+        splitVals = objectConfig.split("-")
+     }
      var jsontext= #{@price.price};
      document.getElementById('data').innerHTML += '<br>' + jsontext.product.name;
      for (i=0; i< jsontext.product.options.length; i++) {
@@ -19,9 +33,17 @@
          var selectid = 'select' + i
          selectHTML='<select id="' + selectid + '">';
          for (j=0; j< jsontext.product.options[i].selections.length; j++) {
-            selectHTML += '<option value="'
+            selectHTML += '<option value=\'{"code":"'
             selectHTML += jsontext.product.options[i].selections[j].code
-            selectHTML +='">'
+            selectHTML += '","price":"'
+            selectHTML += jsontext.product.options[i].selections[j].price
+            selectHTML +='"}\''
+            if (selectChoices) {
+                if (jsontext.product.options[i].selections[j].code == splitVals[i+1]) {
+                   selectHTML +=' selected="selected" '
+                }
+            }
+            selectHTML += '>'
             selectHTML +=jsontext.product.options[i].selections[j].description
             selectHTML +='</option>'
          }
@@ -46,13 +68,20 @@
 
    function configString(jsontext) {
      var configurationString = jsontext.product.name;
+     var priceString = "List Price: $";
+     var listPrice = 0;
      for (i=0; i< jsontext.product.options.length; i++) {
           selectid = 'select' + i
           var index = document.getElementById(selectid).selectedIndex
           configurationString += '-'
-          configurationString += document.getElementById(selectid).children[index].value
+          var values = JSON.parse(document.getElementById(selectid).children[index].value)
+          configurationString += values.code
+          listPrice = parseInt(listPrice) + parseInt(values.price)
+          console.log(document.getElementById(selectid).children[index].value)
+          console.log(values.code)
      }
      document.getElementById('prodconfig').innerHTML = configurationString
+     document.getElementById('listconfig').innerHTML = listPrice
      SetConfig()
    }
 
@@ -61,6 +90,7 @@
         if (window.opener != null && !window.opener.closed) {
             canvas = window.opener.document.getElementById("demoCanvas2").fabric
             canvas.item(searchId).config = document.getElementById('prodconfig').innerHTML
+            canvas.item(searchId).price = document.getElementById('listconfig').innerHTML
             console.log(canvas.item(searchId))
             canvas.renderAll();
         }

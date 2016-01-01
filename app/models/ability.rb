@@ -14,6 +14,7 @@ class Ability
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create, :read, :update, :destroy, :adduserdiv ], Division, :company_id => user.company_id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
+         can [:productconfig], Price, :company_id => user.company.id
          can [:index, :read, :update, :edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
             Drawing.moderator_access(user).pluck("id").include? drawing.id
          end
@@ -25,6 +26,7 @@ class Ability
          can [:index, :read, :update,:edit, :new, :editdrawingdetails, :updatedrawingdetails, :show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing do |drawing|
            Drawing.user_access(user).pluck("id").include? drawing.id
          end
+         can [:productconfig], Price, :company_id => user.company.id
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
