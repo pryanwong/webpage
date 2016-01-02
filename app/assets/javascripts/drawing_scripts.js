@@ -681,6 +681,7 @@ function configuratorProduct(productId, companyId, searchId) {
 function configuratorProduct2(productId, companyId, searchId) {
    $(".modalDialog").show();
    $('#gifspinner').show();
+   document.getElementById('data').innerHTML = "";
    var selectChoices = false;
    var splitVals = "";
    var objectConfig = canvas.item(searchId).config
@@ -701,7 +702,6 @@ function configuratorProduct2(productId, companyId, searchId) {
       console.log(jsonstring)
       jsontext = JSON.parse(jsonstring)
       console.log(jsontext)
-      document.getElementById('data').innerHTML = "";
       document.getElementById('data').innerHTML += '<br>' + jsontext.product.name;
       for (i=0; i< jsontext.product.options.length; i++) {
          document.getElementById('data').innerHTML += '<br>' + jsontext.product.options[i].opname
@@ -741,7 +741,6 @@ function configuratorProduct2(productId, companyId, searchId) {
        }
        $('#gifspinner').fadeOut( 400 )
    });
-   //$('.spinnergif.medium').delay(30000).hide();
 }
 
 function configString(jsontext,searchId) {
