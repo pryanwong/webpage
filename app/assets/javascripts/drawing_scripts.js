@@ -39,7 +39,7 @@ function onSave(company_id, user_id, id) {
         data: JSON.stringify(json_data), // This goes to Controller in params hash, i.e. params[:file_name]
      timeout: 3000, // sets timeout to 3 seconds
     complete: function() {
-                $(".spinner").hide();
+                $(".spinner").fadeOut( 400 );
               },
      success: function(data, textStatus, xhr) {
                 // Do something with the response here
@@ -680,6 +680,7 @@ function configuratorProduct(productId, companyId, searchId) {
 
 function configuratorProduct2(productId, companyId, searchId) {
    $(".modalDialog").show();
+   $('#gifspinner').show();
    var selectChoices = false;
    var splitVals = "";
    var objectConfig = canvas.item(searchId).config
@@ -694,51 +695,53 @@ function configuratorProduct2(productId, companyId, searchId) {
    var jsondata = "";
 
    $.getJSON( json_url, function( data ) { jsondata = data;
-   console.log("Ajax output:" + jsondata)
-   console.log(jsondata)
-   jsonstring = jsondata.price;
-   console.log(jsonstring)
-   jsontext = JSON.parse(jsonstring)
-   console.log(jsontext)
-   document.getElementById('data').innerHTML = "";
-   document.getElementById('data').innerHTML += '<br>' + jsontext.product.name;
-   for (i=0; i< jsontext.product.options.length; i++) {
-       document.getElementById('data').innerHTML += '<br>' + jsontext.product.options[i].opname
-       var selectHTML = "";
-       var selectid = 'select' + i
-       selectHTML='<select id="' + selectid + '">';
-       for (j=0; j< jsontext.product.options[i].selections.length; j++) {
-          selectHTML += '<option value=\'{"code":"'
-          selectHTML += jsontext.product.options[i].selections[j].code
-          selectHTML += '","price":"'
-          selectHTML += jsontext.product.options[i].selections[j].price
-          selectHTML +='"}\''
-          if (selectChoices) {
-              if (jsontext.product.options[i].selections[j].code == splitVals[i+1]) {
-                 selectHTML +=' selected="selected" '
-              }
-          }
-          selectHTML += '>'
-          selectHTML +=jsontext.product.options[i].selections[j].description
-          selectHTML +='</option>'
+      console.log("Ajax output:" + jsondata)
+      console.log(jsondata)
+      jsonstring = jsondata.price;
+      console.log(jsonstring)
+      jsontext = JSON.parse(jsonstring)
+      console.log(jsontext)
+      document.getElementById('data').innerHTML = "";
+      document.getElementById('data').innerHTML += '<br>' + jsontext.product.name;
+      for (i=0; i< jsontext.product.options.length; i++) {
+         document.getElementById('data').innerHTML += '<br>' + jsontext.product.options[i].opname
+         var selectHTML = "";
+         var selectid = 'select' + i
+         selectHTML='<select id="' + selectid + '">';
+         for (j=0; j< jsontext.product.options[i].selections.length; j++) {
+            selectHTML += '<option value=\'{"code":"'
+            selectHTML += jsontext.product.options[i].selections[j].code
+            selectHTML += '","price":"'
+            selectHTML += jsontext.product.options[i].selections[j].price
+            selectHTML +='"}\''
+            if (selectChoices) {
+                if (jsontext.product.options[i].selections[j].code == splitVals[i+1]) {
+                   selectHTML +=' selected="selected" '
+                }
+            }
+            selectHTML += '>'
+            selectHTML +=jsontext.product.options[i].selections[j].description
+            selectHTML +='</option>'
+         }
+         selectHTML += "</select>";
+         document.getElementById('data').innerHTML += selectHTML
        }
-       selectHTML += "</select>";
-       document.getElementById('data').innerHTML += selectHTML
-     }
-     configString(jsontext,searchId)
-     console.log("Adding Listeners: Before For Loop")
-     for (i=0; i< jsontext.product.options.length; i++) {
-       var selectid = 'select' + i
-       console.log("Adding Listeners: " + selectid)
-       document.getElementById(selectid).onchange = function() {
-             var index = this.selectedIndex;
-             var inputText = this.children[index].innerHTML.trim();
-             console.log(inputText);
-             configString(jsontext,searchId)
+       configString(jsontext,searchId)
+       console.log("Adding Listeners: Before For Loop")
+       for (i=0; i< jsontext.product.options.length; i++) {
+         var selectid = 'select' + i
+         console.log("Adding Listeners: " + selectid)
+         document.getElementById(selectid).onchange = function() {
+               var index = this.selectedIndex;
+               var inputText = this.children[index].innerHTML.trim();
+               console.log(inputText);
+               configString(jsontext,searchId)
+         }
+         console.log(document.getElementById(selectid))
        }
-       console.log(document.getElementById(selectid))
-     }
-  });
+       $('#gifspinner').fadeOut( 400 )
+   });
+   //$('.spinnergif.medium').delay(30000).hide();
 }
 
 function configString(jsontext,searchId) {
