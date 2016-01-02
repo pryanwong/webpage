@@ -739,7 +739,7 @@ function configuratorProduct2(productId, companyId, searchId) {
          }
          console.log(document.getElementById(selectid))
        }
-       $('#gifspinner').fadeOut( 400 )
+       $('#gifspinner').delay(5000).fadeOut( 400 )
    });
    //$('.spinnergif.medium').delay(30000).hide();
 }
