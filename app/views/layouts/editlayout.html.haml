@@ -12,6 +12,13 @@
    %body
       - flash.each do |key, value|
          .alert{:key=> '#{key}'}=value
+      %div{ :class=>"modalDialog", :id=>"openModal"}
+         %p Product Configuration
+         %div{ :id=>"configsection"}
+            %a{:onclick => "$('#openModal').hide();", :class=>"close"}X
+            %div{ :id=>"data" }
+            %p{:id => 'prodconfig'}
+            List Price: <em id='listconfig'></em>
       %div{ :id=>"spinner", :class=>"spinner"}
          %div{ :class=>"rect1"}
          %div{ :class=>"rect2"}

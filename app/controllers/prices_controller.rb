@@ -1,9 +1,11 @@
 class PricesController < ApplicationController
+  respond_to :json, :html
   load_and_authorize_resource :price
   before_filter :check_for_cancel, :only => [:create, :update]
   layout :pages_layout
   def productconfig
     @price   = Price.find(params[:id])
+    render :json => @price
   end
 
   def new
@@ -69,6 +71,7 @@ class PricesController < ApplicationController
   end
 
   def update
+    logger.fatal "Product Price update Parameters: #{params.inspect}"
     if (!Company.exists?(id: params[:company_id]))
       flash[:error] = "Company ID not valid"
       redirect_to user_path(session[:user_id])
@@ -83,6 +86,12 @@ class PricesController < ApplicationController
     @company = Company.find(params[:company_id])
     @price = Price.find(params[:id])
     @price.update(name: params[:price][:name], price: params[:price][:price])
+
+    if (!Price.exists?(id: params[:price][:id]))
+       Price.where(id: params[:id]).update_all(id: params[:price][:id])
+    else
+       flash[:error] = "The new product price ID has been taken"
+    end
     addErrorsToFlash(@price.errors)
     redirect_to company_path(params[:company_id]), :method => :show
   end
@@ -98,7 +107,7 @@ class PricesController < ApplicationController
    end
 
    def price_params
-     params.require(:price).permit(:name, :price)
+     params.require(:price).permit(:id, :name, :price)
    end
 
    def check_for_cancel
