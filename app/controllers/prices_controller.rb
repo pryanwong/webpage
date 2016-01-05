@@ -4,7 +4,10 @@ class PricesController < ApplicationController
   before_filter :check_for_cancel, :only => [:create, :update]
   layout :pages_layout
   def productconfig
-    @price   = Price.find(params[:id])
+    if (Price.exists?(product_id: params[:product_id]))
+       @price   = Price.find_by_product_id(params[:product_id])
+       logger.fatal @price
+    end
     render :json => @price
   end
 
@@ -22,6 +25,8 @@ class PricesController < ApplicationController
   end
 
   def create
+    logger.fatal "Create New Price"
+    logger.fatal params
     @price = Price.new(price_params)
     @price.company_id = params[:company_id]
     @price.version = 1
@@ -85,13 +90,8 @@ class PricesController < ApplicationController
 
     @company = Company.find(params[:company_id])
     @price = Price.find(params[:id])
-    @price.update(name: params[:price][:name], price: params[:price][:price])
+    @price.update(name: params[:price][:name], price: params[:price][:price], product_id: params[:price][:product_id])
 
-    if (!Price.exists?(id: params[:price][:id]))
-       Price.where(id: params[:id]).update_all(id: params[:price][:id])
-    else
-       flash[:error] = "The new product price ID has been taken"
-    end
     addErrorsToFlash(@price.errors)
     redirect_to company_path(params[:company_id]), :method => :show
   end
@@ -107,7 +107,7 @@ class PricesController < ApplicationController
    end
 
    def price_params
-     params.require(:price).permit(:id, :name, :price)
+     params.require(:price).permit(:product_id, :name, :price)
    end
 
    def check_for_cancel

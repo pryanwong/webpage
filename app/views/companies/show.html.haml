@@ -105,7 +105,7 @@
       %td
       %td
    %tr{:class=>"headingTr"}
-      %th{:class=>"first"} Id
+      %th{:class=>"first"} Product Id
       %th{:class=>"second"} Product Name
       -if can? :edit, Price
          %th{:class=>"second"} Edit
@@ -116,7 +116,7 @@
       %th
    -@company.prices.each do |price|
       %tr
-         %td= price.id
+         %td= price.product_id
          %td= price.name
          %td
             -if can? :delete, Price

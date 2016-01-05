@@ -46,6 +46,7 @@ gem 'puma'
 gem 'omniauth'
 gem 'omniauth-google'
 gem "omniauth-google-oauth2"
+gem 'omniauth-linkedin-oauth2'
 gem 'cancancan', '~> 1.10'
 gem "jscolor-rails"
 gem 'jquery-turbolinks' #adding turbo

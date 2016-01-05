@@ -32,15 +32,17 @@ class User < ActiveRecord::Base
   end
 
   def self.from_omniauth(auth)
-      if User.where(:email => auth.info.email).blank?
+      if (auth.info.email).blank?
         user = nil
       else
-        user = User.find_by(email: auth.info.email)
-        user.uid = auth.uid
-        user.reset_password_token = auth.credentials.token
-        user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
-        #user.setrole(user.role_id)
-        user.save!
+         if User.exists?(:email => auth.info.email)
+            user = User.find_by(email: auth.info.email)
+            user.uid = auth.uid
+            user.reset_password_token = auth.credentials.token
+            user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
+            #user.setrole(user.role_id)
+            user.save!
+         end
       end
       user
   end

@@ -16,10 +16,14 @@
          %li
             =link_to company_user_path(session[:company_id] ,session[:user_id]) do
                %span User Page
-      %li
-         - if current_user
+      - if current_user
+         %li{:class=>'align-right'}
             =link_to signout_path, :class => 'last' do
-               %span Sign out
-         - else
+               %span #{current_user.email} Sign out
+      - else
+         %li
             =link_to "/auth/google_oauth2", id: "sign_in", :class => 'last' do
                %span Sign in with Google
+         %li
+            =link_to "/auth/linkedin", id: "sign_in", :class => 'last' do
+               %span Sign in with LinkedIn

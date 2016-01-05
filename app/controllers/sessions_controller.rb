@@ -1,9 +1,9 @@
 class SessionsController < ApplicationController
 
   def create
+   logger.fatal "In SessionsController Create"
+   logger.fatal env["omniauth.auth"]
    user = User.from_omniauth(env["omniauth.auth"])
-   logger.fatal "In Session Controller"
-   logger.fatal "User Role #{user.id}"
    if !user.nil?
      session[:user_id] = user.id
      session[:company_id] = user.company_id
