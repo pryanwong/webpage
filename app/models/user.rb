@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   def validate_only_one_email_per_provider
     logger.fatal "validate_only_one_email_per_provider"
     logger.fatal "#{self.email} , #{self.provider}"
-    count = User.where(:email => self.email, :provider => User.providers[self.provider], id: !self.id).count
+    count = User.where(:email => self.email, :provider => User.providers[self.provider]).where.not(id: self.id).count
     logger.fatal "count: #{count}"
     if (count > 0)
       errors.add(:licenses, "Duplicate, error in edit, record exists")
