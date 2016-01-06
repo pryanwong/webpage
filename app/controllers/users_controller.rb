@@ -251,10 +251,16 @@ class UsersController < ApplicationController
 
     if (!params[:user][:role].blank?)
        if params[:user][:role] == "moderator"
-          @user.moderator!
+          @user.role = User.roles["moderator"]
        else
-          @user.user!
+          @user.role = User.roles["user"]
        end
+    end
+
+    if (!params[:user][:provider].blank?)
+       @user.provider = User.providers[params[:user][:provider]]
+    else
+       @user.provider = 0;
     end
 
     if (!params[:user][:email].blank?)
@@ -263,7 +269,10 @@ class UsersController < ApplicationController
 
     successfullyUpdated = @user.save
     if !successfullyUpdated
+       logger.fatal "User update failed #{@user.errors}"
        addErrorsToFlash(@user.errors)
+    else
+       flash[:notice] = "User Has Been Updated"
     end
     if (Company.exists?(params[:company_id]))
        redirect_to company_path(params[:company_id]), :method => :show
@@ -274,6 +283,8 @@ class UsersController < ApplicationController
 
   def create
     logger.fatal "User CREATE Params: #{params.inspect}"
+    provalue = User.providers[params[:user][:provider]]
+    logger.fatal "Provider Value: #{provalue}"
     @company = Company.new
     if (!Company.exists?(id: params[:company_id]))
        flash[:error] = "Company Could Not Be Found"
@@ -284,7 +295,7 @@ class UsersController < ApplicationController
        role_val = User.roles[(params[:user][:role])]
        successfullyAdded = false;
        userErrors = {}
-       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id])
+       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id], provider: provalue)
        successfullyAdded = @user.save
        if !successfullyAdded
          addErrorsToFlash(@user.errors)
@@ -322,7 +333,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id)
+      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id, :provider)
     end
 
     def sort_column

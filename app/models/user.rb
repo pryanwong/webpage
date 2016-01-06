@@ -12,14 +12,38 @@ class User < ActiveRecord::Base
   #ROLES = {0 => :guest, 1 => :user, 2 => :moderator, 3 => :admin}
   #attr_reader :role
   enum role: [ :guest, :user, :moderator, :admin]
-  validates :email, presence: true, uniqueness: true, email: true
+  enum provider: [ :google_oauth2, :linkedin]
+  validates :email, presence: true
   has_many :user_memberships, :class_name => 'UserMembership', :dependent => :destroy
   has_many :divisions, :through => :user_memberships
   has_many :drawings, :dependent => :restrict_with_error
   belongs_to :company
   validates_presence_of :company
   validates :role, presence: true, inclusion: { in: User.roles.keys }
+  validates :provider, presence: true, inclusion: { in: User.providers.keys }
   validate :validate_license_available, :only => :new
+  validate :validate_only_one_email_per_provider_new, :on => :create
+  validate :validate_only_one_email_per_provider
+
+  def validate_only_one_email_per_provider_new
+    logger.fatal "validate_only_one_email_per_provider_new"
+    logger.fatal "#{self.email} , #{self.provider}"
+    count = User.where(:email => self.email, :provider => User.providers[self.provider]).count
+    logger.fatal "count: #{count}"
+    if (count > 0)
+      errors.add(:licenses, "Duplicate new record, already exists")
+    end
+  end
+
+  def validate_only_one_email_per_provider
+    logger.fatal "validate_only_one_email_per_provider"
+    logger.fatal "#{self.email} , #{self.provider}"
+    count = User.where(:email => self.email, :provider => User.providers[self.provider]).count
+    logger.fatal "count: #{count}"
+    if (count > 0)
+      errors.add(:licenses, "Duplicate, error in edit, record exists")
+    end
+  end
 
   def validate_license_available
      if Company.exists?(self.company_id)

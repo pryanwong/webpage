@@ -1,6 +1,6 @@
 class AddProviderColumnToUsers < ActiveRecord::Migration
   def change
-    add_column :users, :provider, :string, :default => "google_oauth2"
+    add_column :users, :provider, :provider
   end
 
   def down

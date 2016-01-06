@@ -15,6 +15,12 @@
                   = key_show
                %br
 
+               = f.label :provider
+               - User.providers.each do |key, val|
+                  = f.radio_button :provider, key
+                  = key
+               %br
+
                = f.submit "Save"
                = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
                %br
