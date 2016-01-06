@@ -18,7 +18,7 @@
 
                   = f.label :provider
                   - User.providers.each do |key, val|
-                     = f.radio_button :provider, key
+                     = f.radio_button :provider, key, :checked => (key == "google_oauth2")
                      = key
                   %br
 

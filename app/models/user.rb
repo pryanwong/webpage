@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   def validate_only_one_email_per_provider
     logger.fatal "validate_only_one_email_per_provider"
     logger.fatal "#{self.email} , #{self.provider}"
-    count = User.where(:email => self.email, :provider => User.providers[self.provider]).count
+    count = User.where(:email => self.email, :provider => User.providers[self.provider], id: !self.id).count
     logger.fatal "count: #{count}"
     if (count > 0)
       errors.add(:licenses, "Duplicate, error in edit, record exists")
@@ -56,11 +56,13 @@ class User < ActiveRecord::Base
   end
 
   def self.from_omniauth(auth)
+      logger.fatal "In User from_omniauth"
+      logger.fatal "#{auth.provider}"
       if (auth.info.email).blank?
         user = nil
       else
-         if User.exists?(:email => auth.info.email)
-            user = User.find_by(email: auth.info.email)
+         if User.exists?(:email => auth.info.email, :provider => User.providers[auth.provider])
+            user = User.where(email: auth.info.email, provider: User.providers[auth.provider]).first
             user.uid = auth.uid
             user.reset_password_token = auth.credentials.token
             user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
