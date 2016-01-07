@@ -3,6 +3,9 @@ class PagesController < ApplicationController
   def home
   end
 
+  def show
+    redirect_to(root_path)
+  end
   def about
   end
 

@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
     get 'auth/:provider/callback', to: 'sessions#create'
-    get 'auth/failure', to: redirect('pages#home')
     get 'signout', to: 'sessions#destroy', as: 'signout'
 
     resources :sessions, only: [:create, :destroy]
@@ -74,6 +73,8 @@ Rails.application.routes.draw do
 
     get 'contact', to: 'messages#new', as: 'contact'
     post 'contact', to: 'messages#create'
+
+    get 'auth/failure', to: 'pages#show'
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 

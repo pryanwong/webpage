@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
 
   def self.from_omniauth(auth)
       logger.fatal "In User from_omniauth"
-      logger.fatal "#{auth.provider}"
+      logger.fatal "#{auth}"
       if (auth.info.email).blank?
         user = nil
       else
