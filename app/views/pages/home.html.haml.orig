@@ -1,13 +1,23 @@
 %iframe{:id=>"logoutframe", :src=>"https://accounts.google.com/logout",:style=>"display: none"}
-%div#color
-   %div#hero
-      %h2 Sales Diagrams Made Simple
-      %div{:class=>"desc"}
-         %p SalesSketch allows your sales force to quickly capture requirements. Document the need, make the sale, create a customer.
-         %a{:href=>'/contact.html', :class=>'button'} Contact Us
-         %a{:href=>'#blackwhite'} Learn More
-%div#sepia
-%div#blackwhite
+
+%header{:class=>"jumbotron"}
+  <!-- Main component for a primary marketing message or call to action -->
+   %div{:class=>"container"}
+      %div{:class=>"row row-header"}
+         %div{:class=>"col-xs-12 col-sm-5"}
+            %h1 Optecture
+               %p{:style=>"padding:40px;"}
+                  %p Draw It, Plan It, Sell It
+                  %a{:class=>"btn btn-block btn-social btn-linkedin"}
+                     %span{:class=>"fa fa-linkedin"}
+                     Sign in with LinkedIn
+                  %a{:class=>"btn btn-block btn-social btn btn-google"}
+                     %span{:class=>"fa fa-google-plus"}
+                     Sign in with Google
+
+
+
+
 
 :javascript
    $(document).ready(function(){

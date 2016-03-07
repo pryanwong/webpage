@@ -1,15 +1,29 @@
-%table{:class=>"flatTable"}
-   %tr{:class=>"titleTr"}
-      %td{:class=>"titleTd"}Users
-      %td{:colspan=>"4"}
-   %tr{:class=>"headingTr"}
-      %th= sortable "users.email", "email"
-      %th= "Switch"
-      %th{:colspan=>"3"}
-   %tbody
-      -@users.each do |user|
-         %tr
-            %td= user.email
-            %td= link_to image_tag("rotate.png",:onMouseover=> "this.src='#{asset_path('rotate-hover.png')}'", :onMouseout=> "this.src='#{asset_path('rotate.png')}'"), company_user_switchuser_path(user.company_id ,user.id)
-            %td{:colspan=>"3"}
-   =will_paginate @users
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li Switch User
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %thead
+               %tr
+                  %td Users
+                  %td{:class=>"hidden-sm hidden-xs", :colspan=>'4'}
+               %tr
+                  %th= sortable "users.email", "email"
+                  %th Switch
+                  %th{:colspan=>"3"}
+            %tbody
+               -@users.each do |user|
+                  %tr
+                     %td= user.email
+                     %td
+                        =link_to company_user_switchuser_path(user.company_id ,user.id) do
+                           %i{:class=>"fa fa-user"}
+                     %td{:colspan=>"3"}
+         =will_paginate @users

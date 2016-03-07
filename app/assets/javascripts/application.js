@@ -21,3 +21,4 @@
 //= require fabric.canvasex
 //= require jquery.turbolinks
 //= require drawing_scripts
+//= require bootstrap.min

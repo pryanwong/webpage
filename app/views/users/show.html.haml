@@ -1,36 +1,43 @@
-%table{:class=>"flatTable"}
-   %tr
-      %td= @user.email
-      -if current_user.admin?
-         %td=link_to "Companies", companies_path
-         %td{:colspan=>"5"}
-      -elsif current_user.moderator?
-         %td= link_to current_user.company.name, company_path(@user.company_id)
-         %td{:colspan=>"5"}
-      -else
-         %td{:colspan=>"6"}
-   %tr{:class=>"titleTr"}
-      %td{:class=>"titleTd"}DRAWINGS
-      %td{:colspan=>"4"}
-      %td{:align=>"right"} New
-      %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), newdrawing_company_user_path(@user.company.id, @user.id)
-   -if @listdrawings == true
-      %tr{:class=>"headingTr"}
-         %th= sortable "opportunity"
-         %th= sortable "description"
-         %th= sortable "customer"
-         %th= sortable "users.email", "email"
-         %th= sortable "updated_at"
-         %th Send
-         %th Edit
-      %tbody
-         -@userdrawings.each do |drawing|
-            %tr
-               %td= drawing.opportunity
-               %td= drawing.description
-               %td= drawing.customer
-               %td= drawing.user.email
-               %td= drawing.updated_at
-               %td= link_to image_tag("email-icon.png",:onMouseover=> "this.src='#{asset_path('email-icon-hover.png')}'", :onMouseout=> "this.src='#{asset_path('email-icon.png')}'"), send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
-               %td{:class=>"controlTd"}= link_to image_tag("cog.png",:onMouseover=> "this.src='#{asset_path('cog-hover.png')}'", :onMouseout=> "this.src='#{asset_path('cog.png')}'"), edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id)
-      =will_paginate @userdrawings
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li Drawings
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %thead
+               %tr
+                  %td Drawings
+                  %td{:class=>"hidden-sm hidden-xs", :colspan=>'4'}
+                  %td New
+                  %td
+                     = link_to newdrawing_company_user_path(@user.company.id, @user.id) do
+                        %i{:class=>"fa fa-plus-square"}
+               %tr
+                  %th= sortable "opportunity"
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "description"
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "customer"
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "users.email", "email"
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "updated_at"
+                  %th Send
+                  %th Edit
+            %tbody
+               -@userdrawings.each do |drawing|
+                  %tr
+                     %td= drawing.opportunity
+                     %td{:class=>"hidden-sm hidden-xs"}= drawing.description
+                     %td{:class=>"hidden-sm hidden-xs"}= drawing.customer
+                     %td{:class=>"hidden-sm hidden-xs"}= drawing.user.email
+                     %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at
+                     %td
+                        = link_to send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
+                           %i{:class=>"fa fa-envelope"}
+                     %td{:class=>"controlTd"}
+                        = link_to edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
+                           %i{:class=>"fa fa-pencil-square-o"}
+         =will_paginate @userdrawings

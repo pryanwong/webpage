@@ -23,6 +23,7 @@
                      - else
                         %li #{value}
          = yield
+      = render "shared/footer"
       :javascript
          $(document).ready(function() {
             $('#wrapper').css('top', $('#cssmenu').outerHeight());

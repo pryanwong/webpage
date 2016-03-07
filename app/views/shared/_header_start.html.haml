@@ -1,29 +1,28 @@
-%div{:id=>'cssmenu'}
-   %ul
-      %li
-         %a{:href=>'/'}
-            %span Home
-      %li
-         %a{:href=>'#blackwhite'}
-            %span Products
-      %li
-         %a{:href=>'#sepia'}
-            %span Company
-      %li
-         %a{:href=>'/contact.html'}
-            %span Contact
-      -if current_user
-         %li
-            =link_to company_user_path(session[:company_id] ,session[:user_id]) do
-               %span User Page
-      - if current_user
-         %li{:class=>'align-right'}
-            =link_to signout_path, :class => 'last' do
-               %span #{current_user.email} Sign out
-      - else
-         %li
-            =link_to "/auth/google_oauth2", id: "sign_in", :class => 'last' do
-               %span Sign in with Google
-         %li
-            =link_to "/auth/linkedin", id: "sign_in", :class => 'last' do
-               %span Sign in with LinkedIn
+%nav{:class=>'navbar navbar-inverse navbar-fixed-top', :role=>'navigation'}
+   %div{:class=>"container"}
+      %div{:class=>"navbar-header"}
+         %a{:class=>"navbar-brand", :href=>'/'}Optecture
+      %div{:id=>"navbar", :class=>"navbar-collapse collapse"}
+         %ul{:class=>"nav navbar-nav"}
+            %li{:class=>"active"}
+               %a{:href=>"/"}
+                  %span{:class=>"glyphicon glyphicon-home", "aria-hidden" =>"true"}
+                  Home
+            %li
+               %a{:href=>'#blackwhite'}
+                  %span Products
+            %li
+               %a{:href=>'#sepia'}
+                  %span Company
+            %li
+               %a{:href=>'/contact.html'}
+                  %span Contact
+         %ul{:class=>"nav navbar-nav navbar-right"}
+            -if current_user
+               %li
+                  =link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                     %span User Page
+            - if current_user
+               %li
+                  =link_to signout_path, :class => 'last' do
+                     %span #{current_user.email} Sign out

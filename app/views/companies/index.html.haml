@@ -1,32 +1,47 @@
-%br
-%table{:class=>"flatTable"}
-   %tr{:class=>"titleTr"}
-      %th Companies
-      %th
-      %th
-      -if can? :create, :company
-         %th New
-         %th{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_path
-      -else
-         %th
-         %th
-   %tr{:class=>"headingTr"}
-      %th Name
-      %th Licenses
-      %th
-      %th
-      %th
-
-   -@companies.each do |company|
-      %tr
-         %td= company.name
-         %td= company.licenses
-         %td
-            -if can? :read, company
-               = link_to "Show", company
-         %td
-            -if can? :update, company
-               = link_to "Edit", edit_company_path(company)
-         %td
-            -if can? :destroy, company
-               = link_to "Remove", company, method: :delete, data: { confirm: "Are you sure?" }
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li Companies
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %thead
+               %tr
+                  %td Companies
+                  %td
+                  %td{:class=>"hidden-sm hidden-xs"}
+                  -if can? :create, :company
+                     %td{:class=>"hidden-sm hidden-xs"} New
+                     %td{:class=>"hidden-sm hidden-xs"}
+                        = link_to new_company_path do
+                           %i{:class=>"fa fa-plus-square"}
+                  -else
+                     %td{:class=>"hidden-sm hidden-xs"}
+                     %td{:class=>"hidden-sm hidden-xs"}
+               %tr
+                  %th Name
+                  %th License
+                  %th{:class=>"hidden-sm hidden-xs"}Show
+                  %th{:class=>"hidden-sm hidden-xs"}Edit
+                  %th{:class=>"hidden-sm hidden-xs"}Delete
+            -@companies.each do |company|
+               %tr
+                  %td= company.name
+                  %td= company.licenses
+                  %td{:class=>"hidden-sm hidden-xs"}
+                     -if can? :read, company
+                        = link_to company do
+                           %i{:class=>"fa fa-gears"}
+                  %td{:class=>"hidden-sm hidden-xs"}
+                     -if can? :update, company
+                        = link_to edit_company_path(company) do
+                           %i{:class=>"fa fa-edit"}
+                  %td{:class=>"hidden-sm hidden-xs"}
+                     -if can? :destroy, company
+                        = link_to company, method: :delete, data: { confirm: "Are you sure?" } do
+                           %i{:class=>"fa fa-cut"}

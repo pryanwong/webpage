@@ -1,46 +1,52 @@
-%div{:id=>'cssmenu'}
-   %ul
-      - if (session[:company_id]!= nil) & (session[:user_id] != nil)
-         %li
-            = link_to company_user_path(session[:company_id] ,session[:user_id]) do
-               %span Home
-      - if (current_user.admin? || current_user.moderator?)
-         %li
-            = link_to company_path(session[:company_id] ) do
-               %span Company
-      - if @editdetails == true
-         %li
-            %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
-               %span Save
-         %li
-            = link_to editdrawingdetails_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
-               %span Edit
-         %li
-            = link_to show_image_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
-               %span PNG
-      - if @viewpng == true
-         %li
-            = link_to edit_company_user_drawing_path(@companyid,@userid,@drawingid) do
-               %span Back to Drawing
-      %li
-         %a{:href=>'#'}
-            %span Contact
-      -if current_user.admin? && !session[:switched] == true
-         %li
-            = link_to user_showall_path(session[:user_id]) do
-               %span Switch User
-      -if session[:switched] == true
-         %li
-            = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
-               %span Switch Back
-      - if current_user
-         %li{:class=>'align-right'}
-            =link_to signout_path, :class => 'last' do
-               %span #{current_user.email} Sign out
-      - else
-         %li
-            =link_to "/auth/google_oauth2", id: "sign_in", :class => 'last' do
-               %span Sign in with Google
-         %li
-            =link_to "/auth/linkedin", id: "sign_in", :class => 'last' do
-               %span Sign in with LinkedIn
+%nav{:class=>'navbar navbar-inverse navbar-fixed-top', :role=>'navigation'}
+   %div{:class=>"container"}
+      %div{:class=>"navbar-header"}
+         %a{:class=>"navbar-brand", :href=>'/'}Optecture
+      %div{:id=>"navbar", :class=>"navbar-collapse collapse"}
+         %ul{:class=>"nav navbar-nav"}
+            - if (session[:company_id]!= nil) & (session[:user_id] != nil)
+               %li
+                  = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                     %span{:class=>"glyphicon glyphicon-home"}
+                     Home
+            - if (current_user.admin? || current_user.moderator?)
+               %li
+                  = link_to company_path(session[:company_id] ) do
+                     %span CurComp
+            -if current_user.admin?
+               %li
+                  =link_to companies_path do
+                     %span AllComp
+            %li
+               = link_to new_company_path do
+                  %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
+                  Drawing
+            - if @editdetails == true
+               %li
+                  %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
+                     %span Save
+               %li
+                  =link_to editdrawingdetails_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
+                     %span Edit
+               %li
+                  =link_to show_image_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
+                     %span PNG
+            - if @viewpng == true
+               %li
+                  = link_to edit_company_user_drawing_path(@companyid,@userid,@drawingid) do
+                     %span Back to Drawing
+            -if current_user.admin? && !session[:switched] == true
+               %li
+                  = link_to user_showall_path(session[:user_id]) do
+                     %span Switch User
+            -if session[:switched] == true
+               %li
+                  = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
+                     %span Switch Back
+         - if current_user
+            %ul{:class=>"nav navbar-nav navbar-right"}
+               %li
+                  %span{:class=>"navbar-text",:style=>"color:white"} #{current_user.email}
+               %li{:class=>'align-right'}
+                  =link_to signout_path, :class => 'last' do
+                     %span Sign out

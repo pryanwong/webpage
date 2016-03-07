@@ -1,127 +1,165 @@
-%table{:class=>"flatTable"}
-   %tr{:class=>"titleTr"}
-      %td{:class=>"first"} Company
-      %td{:class=>"second"}= link_to "Companies List", companies_path
-      %td{:class=>"third"}
-      %td
-   %tr{:class=>"headingTr"}
-      %th{:class=>"first"} Name
-      %th{:class=>"second"} Licenses
-      %th{:class=>"third"}
-      %th
-
-   %tr
-      %td
-         -if can? :read, @company
-            = link_to @company.name, @company
-      %td= @company.licenses
-      %td
-         -if can? :update, @company
-            = link_to "Edit", edit_company_path(@company)
-      %td
-         -if can? :destroy, @company
-            = link_to "Remove", @company, method: :delete, data: { confirm: "Are you sure?" }
-
-%br
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li Current Company
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding2"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %thead
+               %tr
+                  %td Company
+                  %td
+                     =link_to "Companies List", companies_path
+                  %td
+                  %td
+               %tr
+                  %th Name
+                  %th Licenses
+                  %th
+                  %th
+               %tr
+                  %td
+                     -if can? :read, @company
+                        = link_to @company.name, @company
+                  %td= @company.licenses
+                  %td
+                     -if can? :update, @company
+                        = link_to edit_company_path(@company) do
+                           %i{:class=>"fa fa-edit"}
+                  %td
+                     -if can? :destroy, @company
+                        = link_to @company, method: :delete, data: { confirm: "Are you sure?" } do
+                           %i{:class=>"fa fa-cut"}
 - first = true
 - @company.divisions.each do |division|
-   %table{:class=>"flatTable"}
-      - if first
-         %tr{:class=>"titleTr"}
-            %td{:class=>"first"} Divisions
-            %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_division_path(@company)
-            - first = false
-            %td
-            %td
-      %tr{:class=>"headingTr"}
-         %th{:class=>"first"} Division
-         %th{:class=>"second"}
-         %th{:class=>"third"}
-         %th
-      %tr
-         %td{:class=>"first"}= division.name
-         %td{:class=>"second"}= link_to "Edit", edit_company_division_path(@company, division)
-         %td{:class=>"third"}= link_to "Remove", company_division_path(@company, division),  method: :delete , data: { confirm: "Are you sure?" }
-         %td
-   %table{:class=>"flatTable"}
-      %tr{:class=>"headingTr"}
-         %th{:class=>"first"} User
-         %th
-         %th
-         %th
-      -division.users.each do |user|
-         %tr
-            %td{:class=>"first"}= user.email
-            %td{:class=>"second"}
-               -if can? :removeuserdiv, User
-                  =link_to "Remove", removeuserdiv_company_division_user_path(@company, division, user)
-            %td
-            %td
-   - divids = division.users.pluck(:id)
-   - compids = @company.users.pluck(:id)
-   -if User.where(id: compids).where.not(id: divids).size > 0
-      = form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), method: "post" do |f|
-         = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false
-         = f.submit "Add User"
-   %br
-%br
+   %div{:class=>"container"}
+      %div{:class=>"row row-content-no-padding2"}
+         %div
+            %table{:class=>"table table-bordered table-hover"}
+               %thead
+                  %tr
+                     %td Divisions
+                     %td
+                        = link_to new_company_division_path(@company) do
+                           %i{:class=>"fa fa-plus-square"}
+                     - first = false
+                     %td
+                     %td
+                  %tr
+                     %th Division
+                     %th
+                     %th
+                     %th
+               %tr
+                  %td
+                     =division.name
+                  %td
+                     =link_to edit_company_division_path(@company, division) do
+                        %i{:class=>"fa fa-edit"}
+                  %td
+                     =link_to company_division_path(@company, division),  method: :delete , data: { confirm: "Are you sure?" } do
+                        %i{:class=>"fa fa-cut"}
+                  %td
+   %div{:class=>"container"}
+      %div{:class=>"row row-content-no-padding2"}
+         %div
+            %table{:class=>"table table-bordered table-hover"}
+               %tr
+                  %th User
+                  %th
+                  %th
+                  %th
+               -division.users.each do |user|
+                  %tr
+                     %td
+                        = user.email
+                     %td
+                        -if can? :removeuserdiv, User
+                           =link_to removeuserdiv_company_division_user_path(@company, division, user) do
+                              %i{:class=>"fa fa-cut"}
+                     %td
+                     %td
+            - divids = division.users.pluck(:id)
+            - compids = @company.users.pluck(:id)
+            -if User.where(id: compids).where.not(id: divids).size > 0
+               = form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), method: "post" do |f|
+                  = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false
+                  = f.submit "Add User"
 
-%table{:class=>"flatTable"}
-   %tr{:class=>"titleTr"}
-      %td{:class=>"first"}USERS
-      %td{:align=>"right"} New
-      -if can? :create, current_user
-         %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_user_path(@company)
-      -else
-         %td
-      %td
-      %td
-   %tr{:class=>"headingTr"}
-      %th{:class=>"first"} Email
-      %th{:class=>"second"} Admin
-      %th{:class=>"second"} Edit
-      %th{:class=>"second"} Remove
-      %th
-   -@company.users.each do |user|
-      %tr
-         %td= user.email
-         %td= user.moderator?
-         %td
-            -if can? :update, user
-               = link_to "Edit", edit_company_user_path(@company, user)
-         %td
-            -if can? :destroy, user
-               = link_to "Remove", company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" }
-         %td
-%table{:class=>"flatTable"}
-   %tr{:class=>"titleTr"}
-      %td{:class=>"first"} Products
-      -if can? :create, Price
-         %td{:align=>"right"} New
-         %td{:class=>"plusTd button"}= link_to image_tag("3hSkhay.png"), new_company_price_path(@company)
-      -else
-         %td
-         %td
-      %td
-      %td
-   %tr{:class=>"headingTr"}
-      %th{:class=>"first"} Product Id
-      %th{:class=>"second"} Product Name
-      -if can? :edit, Price
-         %th{:class=>"second"} Edit
-         %th{:class=>"second"} Remove
-      -else
-         %th{:class=>"second"}
-         %th{:class=>"second"}
-      %th
-   -@company.prices.each do |price|
-      %tr
-         %td= price.product_id
-         %td= price.name
-         %td
-            -if can? :delete, Price
-               =link_to "Edit", edit_company_price_path(@company, price)
-         %td
-            -if can? :edit, Price
-               =link_to "Remove", company_price_path(@company, price), method: :delete, data: {confirm: "You sure?"}
-         %td
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding2"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %tr
+               %td Users
+               %td New
+               %td
+                  -if can? :create, current_user
+                     = link_to new_company_user_path(@company) do
+                        %i{:class=>"fa fa-plus-square"}
+               %td
+               %td
+            %tr
+               %th Email
+               %th Admin
+               %th Edit
+               %th Remove
+               %th
+            -@company.users.each do |user|
+               %tr
+                  %td= user.email
+                  %td= user.moderator?
+                  %td
+                     -if can? :update, user
+                        = link_to edit_company_user_path(@company, user) do
+                           %i{:class=>"fa fa-edit"}
+                  %td
+                     -if can? :destroy, user
+                        = link_to company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" } do
+                           %i{:class=>"fa fa-cut"}
+                  %td
+
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding2"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %tr
+               %td Products
+               -if can? :create, Price
+                  %td  New
+                  %td
+                     = link_to new_company_price_path(@company) do
+                        %i{:class=>"fa fa-plus-square"}
+               -else
+                  %td
+                  %td
+               %td
+               %td
+            %tr
+               %th Product Id
+               %th Product Name
+               -if can? :edit, Price
+                  %th Edit
+                  %th Remove
+               -else
+                  %th
+                  %th
+               %th
+            -@company.prices.each do |price|
+               %tr
+                  %td= price.product_id
+                  %td= price.name
+                  %td
+                     -if can? :edit, Price
+                        =link_to edit_company_price_path(@company, price) do
+                           %i{:class=>"fa fa-edit"}
+                  %td
+                     -if can? :delete, Price
+                        =link_to company_price_path(@company, price), method: :delete, data: {confirm: "You sure?"} do
+                           %i{:class=>"fa fa-cut"}
+                  %td

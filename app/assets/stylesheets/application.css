@@ -13,7 +13,21 @@
  *= require_tree .
  *= require_self
  */
- //= require 'jquery-ui'
+//= require 'bootstrap.min'
+//= require 'font-awesome.min'
+//= require 'bootstrap-theme.min'
+//= require 'bootstrap-social'
+//= require 'jquery-ui'
 //= require 'contextmenu_orig'
 //= require 'form_style'
-//= require 'tableslist'
+//= require 'tableslist' */
+//= require 'mystyles'
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../assets/glyphicons-halflings-regular.eot');
+  src: url('../assets/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+  url('../assets/glyphicons-halflings-regular.woff') format('woff'),
+  url('../assets/glyphicons-halflings-regular.ttf') format('truetype'),
+  url('../assets/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}

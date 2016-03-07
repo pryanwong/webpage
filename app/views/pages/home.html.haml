@@ -1,31 +1,18 @@
 %iframe{:id=>"logoutframe", :src=>"https://accounts.google.com/logout",:style=>"display: none"}
-%section#hero
-   %div#hero_bg
-   %h2 Sales Diagrams Made Simple
-   %div{:class=>"desc"}
-      %p Optecture allows your sales force to quickly capture requirements. Document the need, make the sale, create a customer.
-   %nav
-      %a{:href=>'/contact.html', :class=>'button'} Contact Us
-      %a#learnmore{:href=>'#features'} Learn More
-%section{:class=>"points"}
-   %a{:name=>"features"}
-   %div{:class=>"inner"}
-      %div{:class=>"point shop"}
-         %span
-         %h4 Setup Shop
-         %p Sell products and/or subscriptions without writing any code at all.
-      %div{:class=>"point wallet"}
-         %span
-         %h4  Digital Wallet
-         %p Securely store your credit cards to use for purchases.
-      %div{:class=>"point debit"}
-         %span
-         %h4 Physical Goods
-         %p Send shipment notifications to your customers with one click.
-      %div{:class=>"point delivery"}
-         %span
-         %h4 Digital Delivery
-         %p Sell your digital goods and files. Ebooks, videos, music, etc.
+%header{:class=>"jumbotron"}
+   <!-- Main component for a primary marketing message or call to action -->
+   %div{:class=>"container"}
+      %div{:class=>"row row-header"}
+         %div{:class=>"col-xs-12 col-sm-5"}
+            %h1 Optecture
+            %p{:style=>"padding:40px;"}
+            %p Draw It, Plan It, Sell It
+            =link_to "/auth/linkedin", id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
+               %span{:class=>"fa fa-linkedin"}
+               Sign in with LinkedIn
+            =link_to "/auth/google_oauth2", id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
+               %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
+               Sign in with Google
 
 :javascript
    document.addEventListener("touchstart", function(){}, true);

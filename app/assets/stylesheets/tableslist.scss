@@ -1,3 +1,4 @@
+/*
 .flatTable {
    width: 100%;
    min-width: 500px;
@@ -9,11 +10,12 @@
 
 .flatTable tr {
    height: 50px;
-   background: #d4d1d5;
+   background: #fff;
    border-bottom: rgba(0, 0, 0, 0.05) 1px solid;
 }
 
 .flatTable tbody tr td a {background: #d4d1d5;}
+*/
 
 th {
    box-sizing: border-box;
@@ -94,8 +96,6 @@ td.fourth {
 }
 .flatTable .titleTr {
    height: 70px;
-   color: #f6f3f7;
-   background: #418a95;
    border: 0px solid;
 }
 
@@ -115,8 +115,6 @@ td.fourth {
 
 .flatTable .headingTr {
    height: 30px;
-   background: #63acb7;
-   color: #f6f3f7;
    font-size: 12pt;
    border: 0px solid;
 }
@@ -176,8 +174,6 @@ td.fourth {
 
 .settingsIcon {
    float: right;
-   background: #418a95;
-   color: #f6f3f7;
    height: 50px;
    width: 80px;
    padding-top: 15px;
