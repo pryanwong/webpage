@@ -1,22 +1,26 @@
-%div.form-style-10
+%div{:class=>"container"}
    %h1 New Sketch
-   = form_for(@drawing, url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
+   = form_for(@drawing,:class=>"form-horizontal", url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
       %div.section
-         %div.inner-wrap
-            %div.col-md-6.col-md-offset-3
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :customer
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :customer
-               %br
-
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :opportunity
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :opportunity
-               %br
-
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :description
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :description
-               %br
-
-               %p Privacy Level
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
+               = f.label :privacy
+            %div{:class=>"control-label col-sm-10"}
                = f.radio_button :privacy, "company"
                = f.label :privacy_company, "within Company", :style => "display:inline"
                %br
@@ -24,11 +28,9 @@
                   = f.radio_button :privacy, "division"
                   = f.label :privacy_division, "within Division", :style => "display:inline"
                   =f.collection_select :division, @divisions,:id,:name, include_blank: false
+               %br
                = f.radio_button :privacy, "user"
                = f.label :privacy_division, "Only for User", :style => "display:inline"
-               %br
-               %br
-
-               = f.submit "Save"
-               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
-               %br
+         %div{:class=>"form-group"}
+            = f.submit "Save"
+            = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"

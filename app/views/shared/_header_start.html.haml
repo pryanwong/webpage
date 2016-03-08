@@ -1,8 +1,12 @@
 %nav{:class=>'navbar navbar-inverse navbar-fixed-top', :role=>'navigation'}
    %div{:class=>"container"}
       %div{:class=>"navbar-header"}
+         %button{"type"=>"button",:class=>"navbar-toggle", "data-toggle"=>"collapse", "data-target"=>"#starterNavbar"}
+            %span{:class=>"icon-bar"}
+            %span{:class=>"icon-bar"}
+            %span{:class=>"icon-bar"}
          %a{:class=>"navbar-brand", :href=>'/'}Optecture
-      %div{:id=>"navbar", :class=>"navbar-collapse collapse"}
+      %div{:id=>"starterNavbar", :class=>"navbar-collapse collapse"}
          %ul{:class=>"nav navbar-nav"}
             %li{:class=>"active"}
                %a{:href=>"/"}
