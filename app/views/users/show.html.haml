@@ -14,6 +14,7 @@
                %tr
                   %td Drawings
                   %td{:class=>"hidden-sm hidden-xs", :colspan=>'4'}
+                  %td
                   %td New
                   %td
                      = link_to newdrawing_company_user_path(@user.company.id, @user.id) do
@@ -25,6 +26,7 @@
                   %th{:class=>"hidden-sm hidden-xs"}= sortable "users.email", "email"
                   %th{:class=>"hidden-sm hidden-xs"}= sortable "updated_at"
                   %th Send
+                  %th Desc
                   %th Edit
             %tbody
                -@userdrawings.each do |drawing|
@@ -37,7 +39,10 @@
                      %td
                         = link_to send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-envelope"}
-                     %td{:class=>"controlTd"}
+                     %td
+                        = link_to editdrawingdetails_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
+                           %i{:class=>"fa fa-pencil-square-o"}
+                     %td
                         = link_to edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-pencil-square-o"}
          =will_paginate @userdrawings
