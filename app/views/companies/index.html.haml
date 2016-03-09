@@ -44,4 +44,4 @@
                   %td{:class=>"hidden-sm hidden-xs"}
                      -if can? :destroy, company
                         = link_to company, method: :delete, data: { confirm: "Are you sure?" } do
-                           %i{:class=>"fa fa-cut"}
+                           %span{:class=>"glyphicon glyphicon-trash"}

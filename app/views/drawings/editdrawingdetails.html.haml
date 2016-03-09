@@ -1,37 +1,49 @@
 %div{:class=>"container"}
-   %h1 Edit Sketch
-   = render 'shared/error_messages'
-   = form_for(@drawing, :class=>"form-horizontal", url: updatedrawingdetails_company_user_drawing_path(@company.id, @user.id, @drawing.id), :method => :POST) do |f|
-      %div.section
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :customer
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :customer, :required => true
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :opportunity
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :opportunity, :required => true
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :description
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :description
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :privacy
-            %div{:class=>"control-label col-sm-10"}
-               = f.radio_button :privacy, "company"
-               = f.label :privacy_company, "within Company", :style => "display:inline"
-               %br
-               -if @divcount > 0
-                  = f.radio_button :privacy, "division"
-                  = f.label :privacy_division, "within Division", :style => "display:inline"
-                  =f.collection_select :division, @divisions,:id,:name, include_blank: false, :selected =>  [Drawing.find(@drawing.id).division_id]
-               %br
-               = f.radio_button :privacy, "user"
-               = f.label :privacy_division, "Only for User", :style => "display:inline"
-         %div{:class=>"form-group"}
-            = f.submit "Save"
-            = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Drawings
+            %li Edit Drawing Description
+%div{:class=>"container"}
+   %div{:style=>"background: white;padding-bottom:10px"}
+      %h1 Edit Sketch
+      = render 'shared/error_messages'
+      = form_for(@drawing, :class=>"form-horizontal", url: updatedrawingdetails_company_user_drawing_path(@company.id, @user.id, @drawing.id), :method => :POST) do |f|
+         %div.section
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+                  = f.label :customer
+               %div{:class=>"control-label col-sm-10"}
+                  = f.text_field :customer, :required => true
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+                  = f.label :opportunity
+               %div{:class=>"control-label col-sm-10"}
+                  = f.text_field :opportunity, :required => true
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+                  = f.label :description
+               %div{:class=>"control-label col-sm-10"}
+                  = f.text_field :description
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+                  = f.label :privacy
+               %div{:class=>"control-label col-sm-10"}
+                  = f.radio_button :privacy, "company"
+                  = f.label :privacy_company, "within Company", :style => "display:inline"
+                  %br
+                  -if @divcount > 0
+                     = f.radio_button :privacy, "division"
+                     = f.label :privacy_division, "within Division", :style => "display:inline"
+                     =f.collection_select :division, @divisions,:id,:name, include_blank: false, :selected =>  [Drawing.find(@drawing.id).division_id]
+                  %br
+                  = f.radio_button :privacy, "user"
+                  = f.label :privacy_division, "Only for User", :style => "display:inline"
+            %div{:class=>"form-group"}
+               = f.submit "Save"
+               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"

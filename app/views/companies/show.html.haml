@@ -5,7 +5,7 @@
             %li
                = link_to company_user_path(session[:company_id] ,session[:user_id]) do
                   Home
-            %li Current Company
+            %li Company
 %div{:class=>"container"}
    %div{:class=>"row row-content-no-padding2"}
       %div
@@ -34,7 +34,7 @@
                   %td
                      -if can? :destroy, @company
                         = link_to @company, method: :delete, data: { confirm: "Are you sure?" } do
-                           %i{:class=>"fa fa-cut"}
+                           %span{:class=>"glyphicon glyphicon-trash"}
 - first = true
 - @company.divisions.each do |division|
    %div{:class=>"container"}
@@ -63,7 +63,7 @@
                         %i{:class=>"fa fa-edit"}
                   %td
                      =link_to company_division_path(@company, division),  method: :delete , data: { confirm: "Are you sure?" } do
-                        %i{:class=>"fa fa-cut"}
+                        %span{:class=>"glyphicon glyphicon-trash"}
                   %td
    %div{:class=>"container"}
       %div{:class=>"row row-content-no-padding2"}
@@ -81,7 +81,7 @@
                      %td
                         -if can? :removeuserdiv, User
                            =link_to removeuserdiv_company_division_user_path(@company, division, user) do
-                              %i{:class=>"fa fa-cut"}
+                              %span{:class=>"glyphicon glyphicon-trash"}
                      %td
                      %td
             - divids = division.users.pluck(:id)
@@ -121,7 +121,7 @@
                   %td
                      -if can? :destroy, user
                         = link_to company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" } do
-                           %i{:class=>"fa fa-cut"}
+                           %span{:class=>"glyphicon glyphicon-trash"}
                   %td
 
 %div{:class=>"container"}
@@ -161,5 +161,5 @@
                   %td
                      -if can? :delete, Price
                         =link_to company_price_path(@company, price), method: :delete, data: {confirm: "You sure?"} do
-                           %i{:class=>"fa fa-cut"}
+                           %span{:class=>"glyphicon glyphicon-trash"}
                   %td

@@ -1,7 +1,20 @@
 %div{:class=>"container"}
-   %h1 New Sketch
-   = form_for(@drawing,:class=>"form-horizontal", url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
-      %div.section
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Drawings
+            %li New Drawing
+
+%div{:class=>"container"}
+   %div{:style=>"background: white;padding-bottom:10px"}
+      = form_for(@drawing,:class=>"form-horizontal", url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
+         %div.col-sm-12
+            %h2 New Sketch
          %div{:class=>"form-group"}
             %div{:class=>"control-label col-sm-2"}
                = f.label :customer
@@ -28,9 +41,10 @@
                   = f.radio_button :privacy, "division"
                   = f.label :privacy_division, "within Division", :style => "display:inline"
                   =f.collection_select :division, @divisions,:id,:name, include_blank: false
-               %br
+                  %br
                = f.radio_button :privacy, "user"
                = f.label :privacy_division, "Only for User", :style => "display:inline"
-         %div{:class=>"form-group"}
-            = f.submit "Save"
-            = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
+         %div.row
+            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
+               = f.submit "Save"
+               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"

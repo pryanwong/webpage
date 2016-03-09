@@ -1,20 +1,32 @@
 %div{:class=>"container"}
-   %h1 New Company
-   = form_for(@company , :class=>"form-horizontal") do |f|
-      %div.section
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :name
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :name
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :licenses
-            %div{:class=>"control-label col-sm-2"}
-               = f.number_field :licenses, :min => 1, :step => 1, class: 'form-control', placeholder:"1"
-            %div{:class=>"control-label col-sm-8"}
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-            %div{:class=>"control-label col-sm-10"}
-               = f.submit "Save"
-               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li
+               = link_to companies_path do
+                  Companies
+            %li New
+%div{:style=>"background: white;"}
+   %div{:class=>"container"}
+      %h1 New Company
+      = form_for(@company , :class=>"form-horizontal") do |f|
+         %div.section
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+                  = f.label :name
+               %div{:class=>"control-label col-sm-10"}
+                  = f.text_field :name
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+                  = f.label :licenses
+               %div{:class=>"control-label col-sm-2"}
+                  = f.number_field :licenses, :min => 1, :step => 1, class: 'form-control', placeholder:"1"
+               %div{:class=>"control-label col-sm-8"}
+            %div{:class=>"form-group"}
+               %div{:class=>"control-label col-sm-2"}
+               %div{:class=>"control-label col-sm-10"}
+                  = f.submit "Save"
+                  = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
