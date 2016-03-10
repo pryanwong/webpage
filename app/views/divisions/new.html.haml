@@ -1,13 +1,26 @@
-%div.form-style-10
-   %h1 New Division
-   = form_for([@company,@division]) do |f|
-      %div.section
-         %div.inner-wrap
-            %div.col-md-6.col-md-offset-3
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li
+               = link_to company_path(session[:company_id] ) do
+                  Company
+            %li New Division
+%div{:class=>"container"}
+   %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
+      = render 'shared/error_messages'
+      = form_for([@company,@division],:class=>"form-horizontal") do |f|
+         %div.col-sm-12
+            %h2 New Division
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :name
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :name
-               %br
-
+         %div.row
+            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
                = f.submit "Save"
                = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
-               %br

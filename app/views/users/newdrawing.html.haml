@@ -11,7 +11,7 @@
             %li New Drawing
 
 %div{:class=>"container"}
-   %div{:style=>"background: white;padding-bottom:10px"}
+   %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = form_for(@drawing,:class=>"form-horizontal", url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
          %div.col-sm-12
             %h2 New Sketch

@@ -1,26 +1,40 @@
-%div.form-style-10
-   %h1 Update User
-   = form_for([@company, @user]) do |f|
-      %div.section
-         %div.inner-wrap
-            %div.col-md-6.col-md-offset-3
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li
+               = link_to company_path(session[:company_id] ) do
+                  Company
+            %li Edit User
+%div{:class=>"container"}
+   %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
+      = form_for([@company, @user],:class=>"form-horizontal") do |f|
+         %div.col-sm-12
+            %h2 Edit User
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :email
+            %div{:class=>"control-label col-sm-10"}
                = f.email_field :email, :required => true
-               %br
-
-               = f.label :role
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
+               = f.label :provider, :style => "display:inline"
+            %div{:class=>"control-label col-sm-10"}
+               - User.providers.each do |key, val|
+                  = f.radio_button :provider, key
+                  = key
+         %div{:class=>"form-group"}
+            %div{:class=>"control-label col-sm-2"}
+               = f.label :role, :style => "display:inline"
+            %div{:class=>"control-label col-sm-10"}
                - User.roles.slice(:user,:moderator).each do |key, val|
                   -if key=="moderator" then key_show="Admin" else key_show=key end
                   = f.radio_button :role, key
                   = key_show
-               %br
-
-               = f.label :provider
-               - User.providers.each do |key, val|
-                  = f.radio_button :provider, key
-                  = key
-               %br
-
+         %div.row
+            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
                = f.submit "Save"
                = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
-               %br
