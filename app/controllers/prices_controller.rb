@@ -1,7 +1,7 @@
 class PricesController < ApplicationController
   respond_to :json, :html
   load_and_authorize_resource :price
-  before_filter :check_for_cancel, :only => [:create, :update]
+  #before_filter :check_for_cancel, :only => [:create, :update]
   layout :pages_layout
   def productconfig
     if (Price.exists?(product_id: params[:product_id]))

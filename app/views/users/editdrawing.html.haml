@@ -20,4 +20,4 @@
                = f.text_field :description
          %div{:class=>"form-group"}
                = f.submit "Save"
-               = button_tag "Cancel", :type => 'submit', :class => 'button', :value=>"Cancel"
+               = link_to "<button>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])

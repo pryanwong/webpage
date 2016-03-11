@@ -385,9 +385,10 @@ accordion .ui-accordion-header h3 {
 	background: -o-linear-gradient(#fff, #999);
 }
 
-.close {
-	background: #606061;
-	color: #FFFFFF;
+.closeDialog, .closeDialog:visited {
+	background-color: green;
+	color: #000000;
+  opacity: 1.0;
 	line-height: 25px;
 	position: absolute;
 	right: -12px;
@@ -404,4 +405,4 @@ accordion .ui-accordion-header h3 {
 	box-shadow: 1px 1px 3px #000;
 }
 
-.close:hover { background: #00d9ff; }
+.closeDialog:hover { background: #00d9ff; }

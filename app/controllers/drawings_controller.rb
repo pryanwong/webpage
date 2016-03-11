@@ -2,7 +2,7 @@ class DrawingsController < ApplicationController
   before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
   load_and_authorize_resource :drawing
-  before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image, :send_image_form]
+  #before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image, :send_image_form]
   layout :resolve_layout
 
   def edit
@@ -235,12 +235,12 @@ class DrawingsController < ApplicationController
       params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
     end
 
-    def check_for_cancel
-      session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
-      if params[:button] == "Cancel"
-        redirect_to session.delete(:return_to)
-      end
-    end
+    #def check_for_cancel
+    #  session[:return_to] ||= company_user_path(session[:company_id] ,session[:user_id])
+    #  if params[:button] == "Cancel"
+    #    redirect_to session.delete(:return_to)
+    #  end
+    #end
 
     def resolve_layout
        case action_name

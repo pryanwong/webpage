@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   helper_method :sort_column, :sort_column_user, :sort_direction
   load_and_authorize_resource :user
   #load_and_authorize_resource :drawing
-  before_filter :check_for_cancel, :only => [:newdrawingproc, :create, :update]
+  #before_filter :check_for_cancel, :only => [:newdrawingproc, :create, :update]
 
   def showall
     @users = User.all.order("email" + " " + sort_direction).paginate(page: params[:page], per_page: 10)

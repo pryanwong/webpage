@@ -1,6 +1,6 @@
  class CompaniesController < ApplicationController
   load_and_authorize_resource :company, :raise_on_record_not_found => false
-  before_filter :check_for_cancel, :only => [:create, :update]
+  #before_filter :check_for_cancel, :only => [:create, :update]
   def new
     session.delete(:return_to)
     session[:return_to] ||= request.referer
