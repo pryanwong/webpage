@@ -67,6 +67,10 @@
                      %td
                         = image_tag "ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
                         %figcaption Ellipse
+                  %tr
+                     %td
+                        = image_tag "rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
+                        %figcaption Rectangle
    %div{:id=>"div2", :style=>"position:absolute;left:230px"}
       %div{:id=>"canvas-container"}
          %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
@@ -210,6 +214,11 @@
                if (object.type == "ellipse") {
                  object.fill = undefined
                  object.on("mousedown", function(data, index) { ellipseDown(data,index)   });
+               }
+
+               if (object.type == "rect") {
+                 object.fill = undefined
+                 object.on("mousedown", function(data, index) { rectangleDown(data,index)   });
                }
 
                if (object.type == "line") {
@@ -388,6 +397,11 @@
            newRadiusX = newWidth/2
            newRadiusY = newHeight/2
            e.target.set({ rx: newRadiusX, ry: newRadiusY, scaleX: 1, scaleY: 1, });
+        } else if(e.target.type == "rect") {
+           console.log("In Rectangle Scaling")
+           newWidth = e.target.width * e.target.scaleX;
+           newHeight = e.target.height * e.target.scaleY;
+           e.target.set({ height: newHeight, width: newWidth, scaleX: 1, scaleY: 1, });
         }
         objectBoundaryCheck(e)
      }
