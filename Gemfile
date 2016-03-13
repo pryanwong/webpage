@@ -52,6 +52,7 @@ gem "jscolor-rails"
 gem 'jquery-turbolinks' #adding turbo
 gem 'haml' #haml gem
 gem 'will_paginate'
+gem "paperclip", "~> 4.2"
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'

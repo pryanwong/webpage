@@ -7,11 +7,15 @@ class Drawing < ActiveRecord::Base
   belongs_to :user
   belongs_to :division
   belongs_to :company
+  has_attached_file :background,
+                  url: "/system/:hash.:extension",
+                  hash_secret: "abc123"
   validates_presence_of :company, :user
   validates_presence_of :division, :if => :division_testing?
   validate :division_belongs_to_user, :if => :division_testing?
   validate :company_belongs_to_user
   validates_inclusion_of :privacy, in: Drawing.privacies.keys
+  validates_attachment :background, content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
   def division_testing?
      val = (self.privacy == "division")

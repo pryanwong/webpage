@@ -44,6 +44,7 @@ Rails.application.routes.draw do
             get 'send_image_form'
             post 'send_image'
             post 'updatedrawingdetails'
+            post 'updateBackground'
           end
         end
 

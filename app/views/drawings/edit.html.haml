@@ -16,6 +16,7 @@
       %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
 %div#inputs
 %div#menubar
+   = link_to "<button>Background</button>".html_safe, "", :onClick=>"backgroundModal(); return false;"
    =image_tag "paint_bucket.png"
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "FastText.png"

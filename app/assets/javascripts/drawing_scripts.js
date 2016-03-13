@@ -747,6 +747,11 @@ function configuratorProduct(productId, companyId, searchId) {
    popup.focus();
 }
 
+function backgroundModal() {
+  console.log("Background Modal Clicked");
+  $('#backgroundSection').modal('show');
+}
+
 function configuratorProduct2(productId, companyId, searchId) {
    $('#configsection').modal('show');
    $('#gifspinner').show();

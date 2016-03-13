@@ -139,6 +139,19 @@ class DrawingsController < ApplicationController
     end
   end
 
+  def updateBackground
+    @drawing = Drawing.find(params[:id]);
+    logger.fatal "Background Vals: #{params.inspect}"
+    @drawing.update_attribute(:background, params[:drawing][:background])
+    if @drawing.save
+      flash[:success] = "The background was added!"
+    else
+      flash[:success] = "The background was not uploaded!"
+    end
+    redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
+  end
+
+
   def displayimage
     if (Drawing.exists?(params[:id]))
        @drawing = Drawing.find(params[:id]);
@@ -232,7 +245,7 @@ class DrawingsController < ApplicationController
     end
 
     def drawing_params
-      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
+      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id, :background)
     end
 
     #def check_for_cancel

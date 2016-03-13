@@ -28,6 +28,20 @@
                   %br
                   %button{:type=>"button",:class=>"btn btn-default btn-sm","data-dismiss"=>"modal"} Done
 
+      %div{ :id=>"backgroundSection", :class=>"modal fade", :role=>"dialog"}
+         %div{ :class=>"modal-dialog", :id=>"openModal"}
+            %div{:class=>"modal-content"}
+               %div{:class=>"modal-header"}
+                  %button{:type=>"button",:class=>"close","data-dismiss"=>"modal"} &times;
+                  %h4{:class=>"modal-title"}Background Image
+               %div{:class=>"modal-body"}
+                  %div{ :id=>"data" }
+                     = form_for(@drawing, :class=>"form-horizontal", url: updateBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :method => :POST) do |f|
+                        %p Current Value: #{@drawing.background_file_name}
+                        %div{:class=>"form-group"}
+                           = f.file_field :background, :class=>'form-control'
+                        = f.submit 'Upload', :class=>'btn btn-primary'
+
       %div{ :id=>"spinner", :class=>"spinner"}
          %div{ :class=>"rect1"}
          %div{ :class=>"rect2"}
