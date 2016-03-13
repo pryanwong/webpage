@@ -16,7 +16,10 @@
       %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
 %div#inputs
 %div#menubar
-   = link_to "<button>Background</button>".html_safe, "", :onClick=>"backgroundModal(); return false;"
+   - if !(@drawing.background_file_name.nil?)
+      = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
+   - else
+      = link_to "<button>Background</button>".html_safe, "", :onClick=>"onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}'); backgroundModal(); return false;"
    =image_tag "paint_bucket.png"
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "FastText.png"
@@ -97,21 +100,6 @@
      var lineSelected = false;
 
      $(".spinner").show();
-     //$('.canvas-container').on('scroll', canvas.calcOffset.bind(canvas));
-
-    /*
-     window.onscroll = function(ev) {
-            canvas.calcOffset.bind(canvas)
-            var scrollY = $(window).scrollTop();
-            console.log("Window is scrolling" + scrollY)
-            _curY = _curY - (scrollY - lastScrollY);
-            lastScrollY = scrollY;
-            var scrollX = $(window).scrollLeft();
-            console.log("Window is scrolling" + scrollX)
-            _curX = _curX - (scrollX - lastScrollX);
-            lastScrollX = scrollX;
-     }
-     */
 
      fabric.CustomImage = fabric.util.createClass(fabric.Image, {
          type: 'custom-image',
@@ -238,6 +226,18 @@
 
             });
 
+         }
+         var center = canvas.getCenter();
+         if (#{@drawing.background.exists?}) {
+            canvas.setBackgroundImage('#{asset_url(@drawing.background.url(:original))}',
+                                   canvas.renderAll.bind(canvas), {
+                                   scaleX:1,
+                                   scaleY:1,
+                                   top: center.top,
+                                   left: center.left,
+                                   originX: 'center',
+                                   originY: 'center'
+            });
          }
          console.log( "Drawing should be loaded ");
          $(".spinner").fadeOut( 400 );

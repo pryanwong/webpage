@@ -142,15 +142,27 @@ class DrawingsController < ApplicationController
   def updateBackground
     @drawing = Drawing.find(params[:id]);
     logger.fatal "Background Vals: #{params.inspect}"
-    @drawing.update_attribute(:background, params[:drawing][:background])
-    if @drawing.save
-      flash[:success] = "The background was added!"
+    logger.fatal "Background Present: #{params[:drawing].present?}"
+    if(params[:drawing].present?)
+       @drawing.update_attribute(:background, params[:drawing][:background])
+       if @drawing.save
+         flash[:success] = "The background was added!"
+       else
+         flash[:error] = "The background was not uploaded!"
+       end
     else
-      flash[:success] = "The background was not uploaded!"
+      flash[:error] = "The background was not uploaded!"
     end
     redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
   end
 
+  def deleteBackground
+    @drawing = Drawing.find(params[:id]);
+    @drawing.background.destroy;
+    @drawing.background = nil;
+    @drawing.save;
+    redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
+  end
 
   def displayimage
     if (Drawing.exists?(params[:id]))
