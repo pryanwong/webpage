@@ -1,3 +1,6 @@
+
+require 'aws-sdk'
+
 class Drawing < ActiveRecord::Base
 
   enum privacy: [ :company, :division, :user]
@@ -8,8 +11,11 @@ class Drawing < ActiveRecord::Base
   belongs_to :division
   belongs_to :company
   has_attached_file :background,
-                  url: "/system/:hash.:extension",
-                  hash_secret: "abc123"
+                  url: ":s3_domain_url",
+                  hash_secret: "abc123",
+                  storage: :s3,
+                  s3_credentials: "#{Rails.root}/config/s3.yml",
+                  path: "/system/:hash.:extension"
   validates_presence_of :company, :user
   validates_presence_of :division, :if => :division_testing?
   validate :division_belongs_to_user, :if => :division_testing?

@@ -32,6 +32,19 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  #Paperclip S3 development
+  # Amazon Web Services - S3
+  config.paperclip_defaults = {
+    :storage => :s3,
+    :url => "https://s3-us-west-1.amazonaws.com/",
+    :s3_credentials => {
+      :bucket => 'developmentbackground',
+      :s3_credentials => "#{Rails.root}/config/aws.yml",
+    }
+  }
+   Paperclip.options[:content_type_mappings] = { jpeg: 'image/jpeg', jpg: 'image/jpeg' }
 end

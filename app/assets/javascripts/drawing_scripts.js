@@ -4,17 +4,24 @@ function onSave(company_id, user_id, id) {
  // Remove circle0 and circle1 from image
  $(".spinner").show();
  objects = canvas.getObjects();
+ temp = canvas.backgroundImage;
+ canvas.backgroundImage = "";
+ console.log("Canvas Objects: ")
+ console.log(objects)
  var len = objects.length;
  for (index=len -1; index > -1; index--) {
    if (objects[index].type == "lineGroup") {
       var items = objects[index]._objects;
       objects[index]._restoreObjectsState();
+      console.log(objects[index])
       canvas.remove(objects[index]);
+      console.log(items[2])
       canvas.add(items[2])
    }
 
    if (objects[index].type == "circle0" || objects[index].type == "circle1") {
      //console.log("Removed: " + objects[index].type)
+     console.log(objects[index])
      canvas.remove(objects[index]);
    }
  }
@@ -42,8 +49,7 @@ function onSave(company_id, user_id, id) {
                 $(".spinner").fadeOut( 400 );
               },
      success: function(data, textStatus, xhr) {
-                // Do something with the response here
-                alert("Saved!")
+              canvas.backgroundImage = temp;
               },
        error: function(data, textStatus) {
               console.log(data);

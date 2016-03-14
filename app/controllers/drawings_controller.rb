@@ -143,6 +143,7 @@ class DrawingsController < ApplicationController
     @drawing = Drawing.find(params[:id]);
     logger.fatal "Background Vals: #{params.inspect}"
     logger.fatal "Background Present: #{params[:drawing].present?}"
+    logger.fatal "#{ENV['s3_region']}"
     if(params[:drawing].present?)
        @drawing.update_attribute(:background, params[:drawing][:background])
        if @drawing.save
@@ -153,6 +154,7 @@ class DrawingsController < ApplicationController
     else
       flash[:error] = "The background was not uploaded!"
     end
+    logger.fatal "URL: #{@drawing.background.url}"
     redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
   end
 
