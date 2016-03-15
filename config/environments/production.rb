@@ -82,7 +82,7 @@ Rails.application.configure do
     :storage => :s3,
     :url => "https://s3-us-west-1.amazonaws.com/",
     :s3_credentials => {
-      :bucket => 'developmentbackground',
+      :bucket => 'productionbackground',
       :s3_credentials => "#{Rails.root}/config/aws.yml",
     }
   }
