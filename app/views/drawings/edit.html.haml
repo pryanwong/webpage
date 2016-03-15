@@ -246,7 +246,8 @@
             };
 
          } else {
-           canvas.setBackgroundImage('', canvas.renderAll.bind(canvas));
+           canvas.background = "";
+           canvas.backgroundImage = "";
          }
          console.log( "Drawing should be loaded ");
          $(".spinner").fadeOut( 400 );
@@ -563,6 +564,5 @@
        // Replace with a fallback to a library solution.
        alert("This browser doesn't support the HTML5 Drag and Drop API.");
      }
-
 
      canvas.observe("object:rotating", objectBoundaryCheck);

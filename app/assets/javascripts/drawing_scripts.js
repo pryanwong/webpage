@@ -4,8 +4,10 @@ function onSave(company_id, user_id, id) {
  // Remove circle0 and circle1 from image
  $(".spinner").show();
  objects = canvas.getObjects();
- temp = canvas.backgroundImage;
- canvas.backgroundImage = "";
+ var temp = canvas.backgroundImage;
+ if (canvas.background === "") {
+   canvas.backgroundImage = "";
+ }
  console.log("Canvas Objects: ")
  console.log(objects)
  var len = objects.length;
@@ -49,7 +51,7 @@ function onSave(company_id, user_id, id) {
                 $(".spinner").fadeOut( 400 );
               },
      success: function(data, textStatus, xhr) {
-              canvas.backgroundImage = temp;
+
               },
        error: function(data, textStatus) {
               console.log(data);
