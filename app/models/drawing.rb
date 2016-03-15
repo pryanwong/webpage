@@ -14,7 +14,7 @@ class Drawing < ActiveRecord::Base
                   url: ":s3_domain_url",
                   hash_secret: "abc123",
                   storage: :s3,
-                  s3_credentials: "#{Rails.root}/config/s3.yml",
+                  s3_credentials: "#{Rails.root}/config/aws.yml",
                   path: "/system/:hash.:extension"
   validates_presence_of :company, :user
   validates_presence_of :division, :if => :division_testing?
