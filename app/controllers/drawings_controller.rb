@@ -145,6 +145,7 @@ class DrawingsController < ApplicationController
     logger.fatal "Background Present: #{params[:drawing].present?}"
     logger.fatal "#{ENV['s3_region']}"
     if(params[:drawing].present?)
+       logger.fatal "Background Val: #{params[:drawing][:background]}"
        @drawing.update_attribute(:background, params[:drawing][:background])
        if @drawing.save
          flash[:success] = "The background was added!"
