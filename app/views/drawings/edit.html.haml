@@ -100,7 +100,7 @@
      var lineSelected = false;
 
      $(".spinner").show();
-
+    canvas.backgroundColor="";
      fabric.CustomImage = fabric.util.createClass(fabric.Image, {
          type: 'custom-image',
          initialize: function(element, options) {
@@ -249,6 +249,7 @@
            canvas.background = "";
            canvas.backgroundImage = "";
          }
+
          console.log( "Drawing should be loaded ");
          $(".spinner").fadeOut( 400 );
 
