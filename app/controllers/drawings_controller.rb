@@ -161,7 +161,11 @@ class DrawingsController < ApplicationController
 
   def deleteBackground
     @drawing = Drawing.find(params[:id]);
-    @drawing.background.destroy;
+    logger.fatal "Drawing URL: #{@drawing.background.url}"
+    logger.fatal "Drawing URL: #{@drawing.background}"
+    if !(@drawing.background.url.include? "question-mark.jpg")
+       @drawing.background.destroy;
+    end
     @drawing.background = nil;
     @drawing.save;
     redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
