@@ -10,6 +10,7 @@ class SessionsController < ApplicationController
      logger.fatal "User Role #{user_path(user.id)}"
      redirect_to user_path(user.id)
    else
+     logger.fatal "User is nil"
      redirect_to failed_path
    end
  end

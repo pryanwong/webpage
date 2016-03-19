@@ -44,6 +44,7 @@ gem 'puma'
 # gem 'debugger', group: [:development, :test]
 
 gem 'omniauth'
+gem 'omniauth-oauth2', '1.3.1'
 gem 'omniauth-google'
 gem "omniauth-google-oauth2"
 gem 'omniauth-linkedin-oauth2'
