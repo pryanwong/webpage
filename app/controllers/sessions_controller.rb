@@ -18,6 +18,7 @@ class SessionsController < ApplicationController
  def destroy
    session[:user_id] = nil
    session[:company_id] = nil
+   cookies.delete('_optecture_session')
    reset_session
    redirect_to root_path
  end
