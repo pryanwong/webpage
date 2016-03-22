@@ -278,6 +278,8 @@ class DrawingsController < ApplicationController
              "nolayout"
           when "edit"
              "editlayout"
+          when "show_image"
+              "application_png"
           else
              "application"
           end

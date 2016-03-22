@@ -1,0 +1,29 @@
+!!! 5
+%html
+   %head
+      %title Optecture
+      =stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+      =javascript_include_tag 'application', 'data-turbolinks-track' => true
+      =javascript_include_tag 'jquery-ui'
+      =javascript_include_tag 'jquery-2.1.3.min'
+      =stylesheet_link_tag "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"
+      =javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"
+      =csrf_meta_tags
+   %body
+      = render "shared/header_png"
+      %div{:id=>'wrapper'}
+         -if !flash.empty?
+            %div{:id=>'errors'}
+               %ul
+                  - flash.each do |key, value|
+                     - if (key=="notice")
+                        %li{:class=>'green'}
+                           #{value}
+                     - else
+                        %li #{value}
+         = yield
+      = render "shared/footer"
+      :javascript
+         $(document).ready(function() {
+            $('#wrapper').css('top', $('#cssmenu').outerHeight());
+         });

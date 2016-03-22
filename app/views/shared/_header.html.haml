@@ -30,14 +30,6 @@
                   %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
                      %span{:class=>"fa fa-save","aria-hidden"=>"true"}
                      Save
-               %li
-                  =link_to show_image_company_user_drawing_path(params[:company_id],session[:user_id],params[:id]) do
-                     %span{:class=>"fa fa-picture-o","aria-hidden"=>"true"}
-                     PNG
-            - if @viewpng == true
-               %li
-                  = link_to edit_company_user_drawing_path(@companyid,@userid,@drawingid) do
-                     %span Back to Drawing
             -if current_user.admin? && !session[:switched] == true
                %li
                   = link_to user_showall_path(session[:user_id]) do
