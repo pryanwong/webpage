@@ -1,2 +1,5 @@
 = javascript_include_tag 'jquery-ui'
-= image_tag url_for(:controller => "drawings", :action => "getimage", :id => params[:id])
+- if @png == "none"
+   = image_tag "none/No_image_available.svg"
+- else
+   = image_tag url_for(:controller => "drawings", :action => "getimage", :id => params[:id])

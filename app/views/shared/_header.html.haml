@@ -21,10 +21,11 @@
                %li
                   =link_to companies_path do
                      %span AllComp
-            %li
-               = link_to newdrawing_company_user_path(session[:company_id], session[:user_id]) do
-                  %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
-                  Drawing
+            - if @showdrawing == true
+               %li
+                  = link_to newdrawing_company_user_path(session[:company_id], session[:user_id]) do
+                     %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
+                     New Drawing
             - if @editdetails == true
                %li
                   %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
@@ -43,7 +44,9 @@
          - if current_user
             %ul{:class=>"nav navbar-nav navbar-right"}
                %li
-                  %span{:class=>"navbar-text",:style=>"color:white"} #{current_user.email}
+                  %span{:class=>"navbar-text",:style=>"color:white"}
+                     %span{:class=>"fa fa-user","aria-hidden"=>"true"}
+                     #{current_user.email}
                %li{:class=>'align-right'}
                   =link_to signout_path, :class => 'last' do
                      %span{:class=>"fa fa-sign-out","aria-hidden"=>"true"}

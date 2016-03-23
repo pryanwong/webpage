@@ -76,6 +76,7 @@ class UsersController < ApplicationController
        redirect_to root_path
        return
     end
+    @showdrawing = true;
     @listdrawings = false;
     @privacies = Drawing.privacies
     @divs = @user.divisions.to_a

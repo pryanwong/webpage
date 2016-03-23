@@ -28,7 +28,7 @@ class Ability
          end
          can [:productconfig], Price, :company_id => user.company.id
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
-         #can [:create, :updateBackground, :deleteBackground, :editdrawingdetails, :update, :edit,:show_image, :getimage, :displayimage, :send_image_form, :send_image], Drawing, :user_id => user.id, :company_id => user.company_id
+         can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
        end
     #

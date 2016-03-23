@@ -206,7 +206,11 @@ class DrawingsController < ApplicationController
          redirect_to root_path
          return
       end
-      @png = drawing.png
+      if (drawing.png == "")
+        @png = "none"
+      else
+        @png = drawing.png
+      end
       @companyid = params[:company_id]
       @userid = params[:user_id]
       @drawingid = params[:id]
