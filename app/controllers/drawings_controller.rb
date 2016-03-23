@@ -85,7 +85,8 @@ class DrawingsController < ApplicationController
       end
       if @drawing.update_attributes(drawing_params)
         flash[:notice] = "Edit Saved"
-        redirect_to edit_company_user_drawing_path(@company.id, @user.id, @drawing.id)
+        #redirect_to edit_company_user_drawing_path(@company.id, @user.id, @drawing.id)
+        redirect_to company_user_path(@company.id, @user.id)
         return
       else
         render 'editdrawingdetails'
@@ -206,7 +207,7 @@ class DrawingsController < ApplicationController
          redirect_to root_path
          return
       end
-      if (drawing.png == "")
+      if (drawing.png == "" || drawing.drawing == "")
         @png = "none"
       else
         @png = drawing.png
