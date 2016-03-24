@@ -37,11 +37,17 @@
                      %td{:class=>"hidden-sm hidden-xs"}= drawing.user.email
                      %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at
                      %td
-                        =link_to show_image_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
-                           %span{:class=>"fa fa-picture-o","aria-hidden"=>"true"}
+                        - if (drawing.png == "" || drawing.drawing == "")
+                           %i{:class=>"fa fa-ban"}
+                        - else
+                           =link_to show_image_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
+                              %span{:class=>"fa fa-picture-o","aria-hidden"=>"true"}
                      %td
-                        = link_to send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
-                           %i{:class=>"fa fa-envelope"}
+                        - if (drawing.png == "" || drawing.drawing == "")
+                           %i{:class=>"fa fa-ban"}
+                        - else
+                           = link_to send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
+                              %i{:class=>"fa fa-envelope"}
                      %td
                         = link_to editdrawingdetails_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-pencil-square-o"}
