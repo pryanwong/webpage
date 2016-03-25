@@ -1,0 +1,31 @@
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  Home
+            %li
+               = link_to edit_company_user_drawing_path(session[:company_id] ,session[:user_id], params[:id]) do
+                  Drawing
+            %li Bill of Materials
+            %li{:class=>"pull-right"}
+               = link_to 'CSV', bom_company_user_drawing_path(session[:company_id] ,session[:user_id], params[:id], {:format => :csv })
+
+%div{:class=>"container"}
+   %div{:class=>"row row-content-no-padding"}
+      %div
+         %table{:class=>"table table-bordered table-hover"}
+            %thead
+               %tr
+                  %th Quantity
+                  %th Model
+                  %th Configuration
+                  %th Unit Price
+            %tbody
+               -@valsArray.each do |val|
+                  %tr
+                     %td= val[:qty]
+                     %td= val[:model]
+                     %td= val[:config]
+                     %td= val[:price]

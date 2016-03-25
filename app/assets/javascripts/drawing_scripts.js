@@ -61,6 +61,7 @@ function onSave(company_id, user_id, id) {
               alert(textStatus);
               }
       });
+  canvas.renderAll();
 }
 
 function handleDragStart(e) {
@@ -681,6 +682,10 @@ function handleDrop(e) {
          if(img.hasAttribute('data-config')) {
            newImage.configdbid = img.getAttribute('data-config')
          }
+         console.log("Has data-model: " + img.hasAttribute('data-model'))
+         if(img.hasAttribute('data-model')) {
+           newImage.model = img.getAttribute('data-model')
+         }
          //console.log(newImage);
          newImage.id = itemId
 
@@ -763,6 +768,60 @@ function backgroundModal() {
   $('#backgroundSection').modal('show');
 }
 
+function loadConfigScreen( data, selectChoices, splitVals ) { jsondata = data;
+   console.log("Ajax output:" + jsondata)
+   console.log(jsondata)
+   console.log(jsondata.error)
+
+   if (jsondata.error == "Data Not Found") {
+     document.getElementById('data').innerHTML += '<br>' + jsondata.error;
+   }
+   else {
+     console.log("Parsing JSON data")
+     console.log(jsondata);
+     jsondata = JSON.parse(jsondata.price);
+     console.log(jsondata);
+   document.getElementById('data').innerHTML += '<br>' + jsondata.product.name;
+   for (i=0; i< jsondata.product.options.length; i++) {
+      document.getElementById('data').innerHTML += '<br>' + jsondata.product.options[i].opname
+      var selectHTML = "";
+      var selectid = 'select' + i
+      selectHTML='<select id="' + selectid + '">';
+      for (j=0; j< jsondata.product.options[i].selections.length; j++) {
+         selectHTML += '<option value=\'{"code":"'
+         selectHTML += jsondata.product.options[i].selections[j].code
+         selectHTML += '","price":"'
+         selectHTML += jsondata.product.options[i].selections[j].price
+         selectHTML +='"}\''
+         if (selectChoices) {
+             if (jsondata.product.options[i].selections[j].code == splitVals[i+1]) {
+                selectHTML +=' selected="selected" '
+             }
+         }
+         selectHTML += '>'
+         selectHTML +=jsondata.product.options[i].selections[j].description
+         selectHTML +='</option>'
+      }
+      selectHTML += "</select>";
+      document.getElementById('data').innerHTML += selectHTML
+    }
+    configString(jsondata,searchId)
+    console.log("Adding Listeners: Before For Loop")
+    for (i=0; i< jsondata.product.options.length; i++) {
+      var selectid = 'select' + i
+      console.log("Adding Listeners: " + selectid)
+      document.getElementById(selectid).onchange = function() {
+            var index = this.selectedIndex;
+            var inputText = this.children[index].innerHTML.trim();
+            console.log(inputText);
+            configString(jsondata,searchId)
+      }
+      console.log(document.getElementById(selectid))
+    }
+  }
+    $('#gifspinner').fadeOut( 400 )
+}
+
 function configuratorProduct2(productId, companyId, searchId) {
    $('#configsection').modal('show');
    $('#gifspinner').show();
@@ -777,55 +836,27 @@ function configuratorProduct2(productId, companyId, searchId) {
    //var jsontext= #{@price.price};
    //console.log(JSON.stringify(json_data))
    var json_url = "/companies/" + companyId + "/prices/" + productId + "/productconfig.json"
-   //console.log(json_data);
+   console.log(json_url);
    var jsondata = "";
-
-   $.getJSON( json_url, function( data ) { jsondata = data;
-      console.log("Ajax output:" + jsondata)
-      console.log(jsondata)
-      jsonstring = jsondata.price;
-      console.log(jsonstring)
-      jsontext = JSON.parse(jsonstring)
-      console.log(jsontext)
-      document.getElementById('data').innerHTML += '<br>' + jsontext.product.name;
-      for (i=0; i< jsontext.product.options.length; i++) {
-         document.getElementById('data').innerHTML += '<br>' + jsontext.product.options[i].opname
-         var selectHTML = "";
-         var selectid = 'select' + i
-         selectHTML='<select id="' + selectid + '">';
-         for (j=0; j< jsontext.product.options[i].selections.length; j++) {
-            selectHTML += '<option value=\'{"code":"'
-            selectHTML += jsontext.product.options[i].selections[j].code
-            selectHTML += '","price":"'
-            selectHTML += jsontext.product.options[i].selections[j].price
-            selectHTML +='"}\''
-            if (selectChoices) {
-                if (jsontext.product.options[i].selections[j].code == splitVals[i+1]) {
-                   selectHTML +=' selected="selected" '
+   $.ajax({
+           url: json_url, // Route to the Script Controller method
+          type: "GET",
+      dataType: "json",
+          data: jsondata,
+   contentType: "application/json",
+       timeout: 3000, // sets timeout to 3 seconds
+      complete: function() {
+                  $('#gifspinner').fadeOut( 400 );
+                },
+       success: function(data, textStatus, xhr) {
+                   loadConfigScreen( data, selectChoices, splitVals );
+                },
+         error: function(data, textStatus) {
+                console.log(data);
+                alert(textStatus);
                 }
-            }
-            selectHTML += '>'
-            selectHTML +=jsontext.product.options[i].selections[j].description
-            selectHTML +='</option>'
-         }
-         selectHTML += "</select>";
-         document.getElementById('data').innerHTML += selectHTML
-       }
-       configString(jsontext,searchId)
-       console.log("Adding Listeners: Before For Loop")
-       for (i=0; i< jsontext.product.options.length; i++) {
-         var selectid = 'select' + i
-         console.log("Adding Listeners: " + selectid)
-         document.getElementById(selectid).onchange = function() {
-               var index = this.selectedIndex;
-               var inputText = this.children[index].innerHTML.trim();
-               console.log(inputText);
-               configString(jsontext,searchId)
-         }
-         console.log(document.getElementById(selectid))
-       }
-       $('#gifspinner').fadeOut( 400 )
-   });
+        });
+
 }
 
 function configString(jsontext,searchId) {
@@ -843,7 +874,7 @@ function configString(jsontext,searchId) {
        console.log(values.code)
   }
   document.getElementById('prodconfig').innerHTML = configurationString
-  document.getElementById('listconfig').innerHTML = listPrice
+  document.getElementById('price').innerHTML = listPrice
   SetConfig(searchId)
 }
 
@@ -852,7 +883,7 @@ function SetConfig(searchId) {
      //if (window.opener != null && !window.opener.closed) {
          //canvas = document.getElementById("demoCanvas2").fabric
          canvas.item(searchId).config = document.getElementById('prodconfig').innerHTML
-         canvas.item(searchId).price = document.getElementById('listconfig').innerHTML
+         canvas.item(searchId).price = document.getElementById('price').innerHTML
          console.log(canvas.item(searchId))
          canvas.renderAll();
      //}

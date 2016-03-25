@@ -1,3 +1,5 @@
+require 'csv'
+
 class DrawingsController < ApplicationController
   before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
@@ -92,6 +94,69 @@ class DrawingsController < ApplicationController
         render 'editdrawingdetails'
       end
 
+  end
+
+  def bom
+    @company_id = params[:company_id]
+    @drawing = Drawing.new
+    if (User.exists?(params[:user_id]))
+       @user = User.find(params[:user_id]);
+    else
+       flash[:error] = "User not Found"
+       redirect_to root_path
+       return
+    end
+    if (Drawing.exists?(params[:id]))
+       @drawing = Drawing.find(params[:id]);
+    else
+       flash[:error] = "Drawing not Found"
+       redirect_to root_path
+    end
+    if (@drawing.drawing == "")
+       flash[:error] = "No drawing made yet"
+       redirect_to company_user_path(@company.id, @user.id)
+    else
+      obj = JSON.parse(@drawing.drawing)
+      allObjects = obj["objects"]
+      valhash = Hash.new
+      modelHash = Hash.new
+      configHash = Hash.new
+      allObjects.each_with_index { |val, index|
+        if (val["type"] == "custom-image")
+		       if ( valhash.has_key?(val["model"]))
+		          modelHash = valhash[val["model"]]
+	         else
+		          modelHash = Hash.new
+	         end
+		       if (modelHash.has_key?(val["config"]))
+		         configHash = modelHash[val["config"]];
+		         configHash[:qty] = configHash[:qty] + 1;
+		       else
+		         configHash = {:qty => 1, :price => val["price"]}
+		       end
+		       modelHash[val["config"]] = configHash;
+		       valhash[val["model"]] = modelHash;
+		    end
+     }
+     @valsArray = []
+     counter = 0;
+     valhash.each do |keyv, modelhash|
+        modelhash.each do |keym, confighash|
+           #valsArray[counter] = Array[confighash[:qty], keyv, keym, confighash[:price]]
+           h = {:qty    =>confighash[:qty],
+                :model  => keyv,
+                :config => keym,
+                :price  => confighash[:price]
+              }
+           @valsArray[counter] = h;
+	         counter = counter+1;
+        end
+     end
+     respond_to do |format|
+        format.csv { send_data export_csv(@valsArray) }
+        format.html
+     end
+   end
   end
 
   def create
@@ -288,5 +353,14 @@ class DrawingsController < ApplicationController
           else
              "application"
           end
+       end
+    end
+
+    def export_csv(records, options = {})
+      CSV.generate(options) do |csv|
+        csv << ["Quantity", "Model", "Configuration", "Unit Price"]
+        records.each do |record|
+          csv << record.values
+        end
       end
-   end
+    end

@@ -37,10 +37,10 @@
                %table
                   %tr
                      %td
-                        = image_tag "IED.png", :img_val=>"IED.png",  :"data-config"=>"2", :draggable=>"true", :width=>"71", :height => "34"
+                        = image_tag "IED.png", :img_val=>"IED.png",  :"data-config"=>"2", :"data-model"=>"IED", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption IED
                      %td
-                        = image_tag "esprit_cam.png", :"data-config"=>"1", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
+                        = image_tag "esprit_cam.png", :"data-config"=>"1", :"data-model"=>"Esprit PTZ", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption Esprit Cam
          %h3 Networking
          %div{:style=>"margin:0px;padding:0px;"}
@@ -105,14 +105,16 @@
          type: 'custom-image',
          initialize: function(element, options) {
              this.callSuper('initialize', element, options);
+             options && this.set('model', options.model);
              options && this.set('config', options.config);
              options && this.set('price', options.price);
-             options && this.set('price', options.configdbid);
+             options && this.set('configdbid', options.configdbid);
          },
          toObject: function() {
              return fabric.util.object.extend(this.callSuper('toObject'),
                                               {config: this.config,
                                                price:  this.price,
+                                               model:  this.model,
                                                configdbid: this.configdbid});
          },
 

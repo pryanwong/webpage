@@ -4,10 +4,22 @@ class PricesController < ApplicationController
   #before_filter :check_for_cancel, :only => [:create, :update]
   layout :pages_layout
   def productconfig
-    if (Price.exists?(product_id: params[:product_id]))
-       @price   = Price.find_by_product_id(params[:product_id])
-       logger.fatal @price
+    logger.fatal "In Product Config"
+    logger.fatal "Product Id: #{params[:id]}"
+    if(params.has_key?(:id))
+       logger.fatal "Record exists"
+       if (Price.exists?(product_id: params[:id]))
+          logger.fatal "productconfig Price Id: #{params[:id]}"
+          @price   = Price.find_by_product_id(params[:id])
+          logger.fatal @price.inspect
+       else
+          flash[:error] = "Product Config Could Not Be Found"
+          @price   = Price.New
+       end
+    else
+      @price   = Price.New
     end
+    logger.fatal "Leaving Product Config"
     render :json => @price
   end
 

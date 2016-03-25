@@ -46,6 +46,7 @@ Rails.application.routes.draw do
             post 'updatedrawingdetails'
             post 'updateBackground'
             get 'deleteBackground'
+            get 'bom'
           end
         end
 

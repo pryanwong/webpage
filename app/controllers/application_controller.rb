@@ -15,8 +15,15 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from  ActiveRecord::RecordNotFound do |exception|
-    flash[:notice] = exception.message
-    redirect_to recordnotfound_path
+    respond_to do |format|
+      format.html {
+         flash[:notice] = exception.message
+         redirect_to recordnotfound_path
+      }
+      format.json {
+         render :text => '{"error": "Data Not Found"}'
+      }
+    end
   end
 
   rescue_from CanCan::AccessDenied do |exception|
