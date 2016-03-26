@@ -18,6 +18,12 @@ class PagesController < ApplicationController
   def recordnotfound
   end
 
+  def not_found
+    status_code = params[:code] || 500
+    flash.alert = "Status #{status_code}"
+    render status_code.to_s, status: status_code
+  end
+
   private
    def pages_layout
      "longpages"

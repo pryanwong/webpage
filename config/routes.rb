@@ -78,6 +78,10 @@ Rails.application.routes.draw do
     post 'contact', to: 'messages#create'
 
     get 'auth/failure', to: 'pages#show'
+
+    %w( 404 422 500 503 ).each do |code|
+       get code, :to => "pages#not_found", :code => code
+    end
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
