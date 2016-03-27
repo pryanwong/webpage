@@ -20,9 +20,9 @@
       = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :onclick=>"canvas.backgroundImage = ""; return true;"
    - else
       = link_to "<button>Background</button>".html_safe, "", :onClick=>"onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}'); backgroundModal(); return false;"
-   =image_tag "paint_bucket.png"
+   =image_tag "common/paint_bucket.png"
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
-   =image_tag "FastText.png"
+   =image_tag "common/FastText.png"
    %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    Customer:
    = @drawing.customer
@@ -37,10 +37,10 @@
                %table
                   %tr
                      %td
-                        = image_tag "IED.png", :img_val=>"IED.png",  :"data-config"=>"2", :"data-model"=>"IED", :draggable=>"true", :width=>"71", :height => "34"
+                        = image_tag "GE/IED.png", :img_val=>"IED.png",  :"data-config"=>"2", :"data-model"=>"IED", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption IED
                      %td
-                        = image_tag "esprit_cam.png", :"data-config"=>"1", :"data-model"=>"Esprit PTZ", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
+                        = image_tag "GE/esprit_cam.png", :"data-config"=>"1", :"data-model"=>"Esprit PTZ", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
                         %figcaption Esprit Cam
          %h3 Networking
          %div{:style=>"margin:0px;padding:0px;"}
@@ -48,10 +48,10 @@
                %table
                   %tr
                      %td
-                        = image_tag "Switch.png", :img_val=>"Switch.png", :draggable=>"true", :width=>"108", :height => "75"
+                        = image_tag "GE/Switch.png", :img_val=>"Switch.png", :draggable=>"true", :width=>"108", :height => "75"
                         %figcaption Switch
                      %td
-                        = image_tag "GE_WiYZ.png", :img_val=>"GE_WiYZ.png", :draggable=>"true", :width=>"72", :height => "83"
+                        = image_tag "GE/GE_WiYZ.png", :img_val=>"GE_WiYZ.png", :draggable=>"true", :width=>"72", :height => "83"
                         %figcaption WiYZ
          %h3 Shapes
          %div{:style=>"margin:0px;padding:0px;"}
@@ -59,21 +59,21 @@
                %table
                   %tr
                      %td
-                        = image_tag "line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
+                        = image_tag "common/line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
                         %figcaption Line
                      %td
-                        = image_tag "textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
+                        = image_tag "common/textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
                         %figcaption Text Box
                   %tr
                      %td
-                        = image_tag "circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
+                        = image_tag "common/circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
                         %figcaption Circle
                      %td
-                        = image_tag "ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
+                        = image_tag "common/ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
                         %figcaption Ellipse
                   %tr
                      %td
-                        = image_tag "rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
+                        = image_tag "common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
                         %figcaption Rectangle
    %div{:id=>"div2", :style=>"position:absolute;left:230px"}
       %div{:id=>"canvas-container"}

@@ -10,6 +10,7 @@
  */
 
 
+
 var jscolor = {
 
 
@@ -786,12 +787,12 @@ var jscolor = {
 
 			// load images in optimal order
 			switch(modeID) {
-				case 0: var padImg = "<%= asset_path 'common/hs.png' %>"; break;
-				case 1: var padImg = "<%= asset_path 'common/hv.png' %>"; break;
+				case 0: var padImg = 'common/hs.png'; break;
+				case 1: var padImg = 'common/hv.png'; break;
 			}
-			p.padM.style.backgroundImage = "url('"+jscolor.getDir()+"<%= asset_path 'common/cross.gif' %>')";
+			p.padM.style.backgroundImage = "url('"+jscolor.getDir()+"common/cross.gif')";
 			p.padM.style.backgroundRepeat = "no-repeat";
-			p.sldM.style.backgroundImage = "url('"+jscolor.getDir()+"<%= asset_path 'common/arrow.gif' %>')";
+			p.sldM.style.backgroundImage = "url('"+jscolor.getDir()+"common/arrow.gif')";
 			p.sldM.style.backgroundRepeat = "no-repeat";
 			p.pad.style.backgroundImage = "url('"+jscolor.getDir()+padImg+"')";
 			p.pad.style.backgroundRepeat = "no-repeat";
@@ -1011,3 +1012,6 @@ var jscolor = {
 
 
 jscolor.install();
+
+jscolor.dir = '/assets/';
+jscolor.addEvent(document, 'page:load', jscolor.init);
