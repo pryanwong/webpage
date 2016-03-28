@@ -19,6 +19,14 @@ class DrawingsController < ApplicationController
        if @drawing.drawing == nil || @drawing.drawing.length == 0
           @drawing.drawing = "{}"
        end
+       company = Drawing.new
+       if (Company.exists?(params[:company_id]))
+          company = Company.find(params[:company_id]);
+       else
+          flash[:error] = "Drawing not Found"
+          redirect_to root_path
+       end
+       render "drawings/portals/#{company.portal}"
   end
 
 

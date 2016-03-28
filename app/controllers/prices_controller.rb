@@ -5,12 +5,13 @@ class PricesController < ApplicationController
   layout :pages_layout
   def productconfig
     logger.fatal "In Product Config"
-    logger.fatal "Product Id: #{params[:id]}"
-    if(params.has_key?(:id))
+    logger.fatal "#{params.inspect}"
+    logger.fatal "Product Id: #{params[:product_id]}"
+    if(params.has_key?(:product_id) && params.has_key?(:company_id))
        logger.fatal "Record exists"
-       if (Price.exists?(product_id: params[:id]))
-          logger.fatal "productconfig Price Id: #{params[:id]}"
-          @price   = Price.find_by_product_id(params[:id])
+       if (Price.where(company_id: params[:company_id],product_id: params[:product_id]).count>0)
+          logger.fatal "productconfig Price Id: #{params[:product_id]}"
+          @price   = Price.where(company_id: params[:company_id],product_id: params[:product_id]).take
           logger.fatal @price.inspect
        else
           flash[:error] = "Product Config Could Not Be Found"
@@ -78,13 +79,15 @@ class PricesController < ApplicationController
     if (!Company.exists?(id: params[:company_id]))
       flash[:error] = "Company ID not valid"
       redirect_to user_path(session[:user_id])
+      return
     end
-    if (!Price.exists?(id: params[:id]))
+    if (!Price.exists?(id: params[:product_id]))
       flash[:error] = "Price ID not valid"
       redirect_to company_path(session[:company_id])
+      return
     end
     @company = Company.find(params[:company_id])
-    @price = Price.find(params[:id])
+    @price = Price.find_by_id(params[:product_id])
   end
 
   def update
@@ -94,14 +97,14 @@ class PricesController < ApplicationController
       redirect_to user_path(session[:user_id])
       return
     end
-    if (!Price.exists?(id: params[:id]))
+    if (!Price.exists?(id: params[:product_id]))
       flash[:error] = "Product Price ID not valid"
       redirect_to company_path(params[:company_id])
       return
     end
 
     @company = Company.find(params[:company_id])
-    @price = Price.find(params[:id])
+    @price = Price.find_by_id(params[:product_id])
     @price.update(name: params[:price][:name], price: params[:price][:price], product_id: params[:price][:product_id])
 
     addErrorsToFlash(@price.errors)

@@ -22,9 +22,7 @@ Rails.application.routes.draw do
        get 'show'
     end
     resources :companies do
-
-      resources :prices do
-
+      resources :prices, param: :product_id do
         member do
           get 'productconfig'
         end

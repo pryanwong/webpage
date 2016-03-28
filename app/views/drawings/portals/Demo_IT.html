@@ -1,0 +1,571 @@
+= javascript_include_tag 'jquery-ui'
+%div{ :class=>"hide", :id=>"info"}
+%div{ :class=>"hide", :id=>"TextFormDiv"}
+   %form{:id=>"TextForm", :autocomplete=>"off"}
+      %TEXTAREA {:id=>"textBoxMultiline", :COLS=>40, :ROWS=>2}
+      %input.activeTextObjectId
+      %br
+      %input {:type=>"submit", :value=>"Submit"}
+      %input {:type=>"button", :name=>"cancel" :value=>"Cancel" :onClick=>"textcancel()"}
+%div{:class=>"hide", :id=>"LabelFormDiv"}
+   %form{ :id=>"LabelForm", :autocomplete=>"off"}
+      %input{ :id=>"textBox", :placeholder=>"your text", :autocomplete=>"off"}
+      %input{ :id=>"activeObjectId"}
+      %br
+      %input{ :type=>"submit", :value=>"Submit"}
+      %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
+%div#inputs
+%div#menubar
+   - if !(@drawing.background_file_name.nil?)
+      = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :onclick=>"canvas.backgroundImage = ""; return true;"
+   - else
+      = link_to "<button>Background</button>".html_safe, "", :onClick=>"onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}'); backgroundModal(); return false;"
+   =image_tag "common/paint_bucket.png"
+   %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
+   =image_tag "common/FastText.png"
+   %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
+   Customer:
+   = @drawing.customer
+   Opportunity:
+   = @drawing.opportunity
+%div{:id=>"accordian-canvas-wrapper", :style=>"height:1000px;width:100%;"}
+   %div{:id=>"accordian-container"}
+      %div{ :id=>"accordion" }
+         %h3 Cameras
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
+                  %tr
+                     %td
+                        = image_tag "GE/IED.png", :img_val=>"IED.png",  :"data-config"=>"2", :"data-model"=>"IED", :draggable=>"true", :width=>"71", :height => "34"
+                        %figcaption IED
+                     %td
+                        = image_tag "GE/esprit_cam.png", :"data-config"=>"1", :"data-model"=>"Esprit PTZ", :img_val=>"esprit_cam.png", :draggable=>"true", :width=>"71", :height => "34"
+                        %figcaption Esprit Cam
+         %h3 Networking
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
+                  %tr
+                     %td
+                        = image_tag "GE/Switch.png", :img_val=>"Switch.png", :draggable=>"true", :width=>"108", :height => "75"
+                        %figcaption Switch
+                     %td
+                        = image_tag "GE/GE_WiYZ.png", :img_val=>"GE_WiYZ.png", :draggable=>"true", :width=>"72", :height => "83"
+                        %figcaption WiYZ
+         %h3 Shapes
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
+                  %tr
+                     %td
+                        = image_tag "common/line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
+                        %figcaption Line
+                     %td
+                        = image_tag "common/textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
+                        %figcaption Text Box
+                  %tr
+                     %td
+                        = image_tag "common/circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
+                        %figcaption Circle
+                     %td
+                        = image_tag "common/ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
+                        %figcaption Ellipse
+                  %tr
+                     %td
+                        = image_tag "common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
+                        %figcaption Rectangle
+   %div{:id=>"div2", :style=>"position:absolute;left:230px"}
+      %div{:id=>"canvas-container"}
+         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
+
+:javascript
+     var handler = "";
+     var c = new Array();
+     var objId_var = 0;
+     var itemId = 0;
+     var contextmenuon = false;
+     var activeObject = false;
+     var activeObjectVal = "";
+     var activeLineGroup = null;
+     var objectName = "";
+     var _curX, _curY;
+     var lastScrollY = 0;
+     var lastScrollX = 0;
+     var canvas = new fabric.CanvasEx('demoCanvas2');
+     document.getElementById("demoCanvas2").fabric = canvas;
+     var fabric = fabric || { version: "1.4.13" };
+     var motionInbounds = true;
+     var lineActive = true;
+     var lineSelected = false;
+
+     $(".spinner").show();
+    canvas.backgroundColor="";
+     fabric.CustomImage = fabric.util.createClass(fabric.Image, {
+         type: 'custom-image',
+         initialize: function(element, options) {
+             this.callSuper('initialize', element, options);
+             options && this.set('model', options.model);
+             options && this.set('config', options.config);
+             options && this.set('price', options.price);
+             options && this.set('configdbid', options.configdbid);
+         },
+         toObject: function() {
+             return fabric.util.object.extend(this.callSuper('toObject'),
+                                              {config: this.config,
+                                               price:  this.price,
+                                               model:  this.model,
+                                               configdbid: this.configdbid});
+         },
+
+         _render: function(ctx) {
+            this.callSuper('_render', ctx);
+            if (this.config != 'undefined') {
+              ctx.font = '12px Helvetica';
+              ctx.fillStyle = '#333';
+              ctx.fillText(this.config, -this.width/2, this.height)
+            }
+         }
+     });
+     fabric.CustomImage.fromObject = function(object, callback) {
+       fabric.util.loadImage(object.src, function(img) {
+         callback && callback(new fabric.CustomImage(img, object));
+       });
+     };
+     fabric.CustomImage.async = true;
+
+     if(!window.location.hash) {
+         window.location = window.location + '#loaded';
+         window.location.reload();
+     }else{
+         $( "#accordion" ).accordion();
+         console.log( "ready!" );
+         var data_drawing = "";
+         if (parseInt("#{@drawing.drawing.length}") > 0) {
+              data_drawing = #{ raw(@drawing.drawing) }
+         } else {
+              data_drawing = ""
+         }
+         objId_var = 1;
+         if (data_drawing != "") {
+             canvas.loadFromJSON(data_drawing, function () {
+                //first render
+                canvas.renderAll.bind(canvas);
+                var objs = canvas.getObjects().map(function(o) {
+                  return o.set('active', false);
+                });
+                console.log(objs)
+                for(i = 0; i < objs.length; i++ ) {
+                   console.log(objs[i].type)
+                   objs[i].id = itemId
+                   itemId = itemId + 1;
+                   if (objs[i].type == "line") {
+                      var objId_var = objs[i].objId
+                      c[objId_var] = makeCircle(objs[i]);
+                      x1 = objs[i].left + objs[i].width/2 + objs[i].x1
+                      x2 = objs[i].left + objs[i].width/2 + objs[i].x2
+                      y1 = objs[i].getTop() + objs[i].height/2 + objs[i].y1
+                      y2 = objs[i].getTop() + objs[i].height/2 +  objs[i].y2
+                      c[objId_var][0].top =  y1
+                      c[objId_var][0].left = x1
+                      c[objId_var][0].setCoords();
+                      c[objId_var][1].top =  y2
+                      c[objId_var][1].left = x2
+                      c[objId_var][1].setCoords();
+                      objs[i].hasControls = objs[i].hasBorders = false
+                      objs[i].c1 = c[objId_var][0]
+                      objs[i].c2 = c[objId_var][1]
+                      objs[i].set('x1', x1)
+                      objs[i].set('y1', y1)
+                      objs[i].set('x2', x2)
+                      objs[i].set('y2', y2)
+                      objs[i].setCoords();
+                      canvas.add(c[objId_var][0],c[objId_var][1]);
+                      c[objId_var][0].bringToFront();
+                      c[objId_var][1].bringToFront();
+                      canvas.renderAll.bind(canvas);
+                      console.log("Circles")
+                      console.log(c[objId_var][0])
+                      console.log(c[objId_var][1])
+                      console.log(objs[i])
+                   }
+                }
+                canvas.renderAll();
+             },
+             function(o, object) {
+
+               if (object.type == "custom-image") {
+                 object.on("mousedown", function(data, index) { imageDown(data,index)   });
+               }
+               if (object.type == "circle") {
+                 object.fill = undefined
+                 object.on("mousedown", function(data, index) { circleDown(data,index)   });
+               }
+
+               if (object.type == "ellipse") {
+                 object.fill = undefined
+                 object.on("mousedown", function(data, index) { ellipseDown(data,index)   });
+               }
+
+               if (object.type == "rect") {
+                 object.fill = undefined
+                 object.on("mousedown", function(data, index) { rectangleDown(data,index)   });
+               }
+
+               if (object.type == "line") {
+                 //object.hasBorders = object.hasControls = false;
+                 object.objId = objId_var;
+                 object.on("mousedown", function(data, index) { lineDown(data,index); });
+                 console.log("added line to canvas")
+                 console.log(object)
+
+               }
+
+               if (object.type == "i-text") {
+                 object.on("mousedown", function(data, index) { textDown(data,index)   });
+               }
+
+
+            });
+
+         }
+         var center = canvas.getCenter();
+         console.log("Background Exists?: ")
+         console.log(#{@drawing.background.exists?})
+         if (#{@drawing.background.exists?}) {
+            var img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = '#{asset_url(@drawing.background.url(:original))}'
+            img.onload = function(){
+              canvas.setBackgroundImage(new fabric.Image(img, {
+              scaleX:1,
+              scaleY:1,
+              top: center.top,
+              left: center.left,
+              originX: 'center',
+              originY: 'center'
+            }), canvas.renderAll.bind(canvas));
+            };
+
+         } else {
+           canvas.background = "";
+           canvas.backgroundImage = "";
+         }
+
+         console.log( "Drawing should be loaded ");
+         $(".spinner").fadeOut( 400 );
+
+     }
+
+     canvas.on('mouse:over', function(e) {
+        console.log("In mouse:over")
+        console.log(e.target)
+        e.target.setOpacity(0.5);
+        activeObjectVal = e.target
+        if (e.target.type) {
+            console.log("e.target.type: " + e.target.type)
+            if (e.target.type == "line") {
+              searchId = getItemIndex(e.target)
+              canvas.setActiveObject(canvas.item(searchId))
+            }
+        }
+
+     });
+
+     canvas.on('mouse:out', function(e) {
+        console.log("In mouse:out")
+        e.target.setOpacity(1);
+        canvas.renderAll();
+        if (e.target.type) {
+           console.log("e.target type and class")
+           console.log("e.target.type: " + e.target.type)
+           console.log(e.target)
+           console.log("lineActive: " + lineActive)
+        }
+        if (e.target.type == "lineGroup" && lineActive) {
+           console.log("Group Top: " + e.target.top)
+           console.log("Group Left: " + e.target.left)
+           console.log(e.target)
+           var items = e.target._objects;
+           e.target._restoreObjectsState();
+           searchId = getItemIndex(e.target)
+           canvas.setActiveObject(canvas.item(searchId))
+           if(canvas.getActiveGroup()){
+              canvas.getActiveGroup().forEachObject(function(o){ canvas.remove(o) });
+              canvas.discardActiveGroup().renderAll();
+           } else {
+              canvas.remove(canvas.getActiveObject());
+           }
+           console.log("Line Group added back seperately")
+           for(var i = 0; i < items.length; i++) {
+              items[i].hasBorders = items[i].hasControls = false
+              console.log(items[i])
+              canvas.add(items[i]);
+           }
+           items[2].c1 = items[0]
+           items[2].c2 = items[1]
+           items[0].bringToFront();
+           items[1].bringToFront();
+           items[2].sendBackwards();
+           canvas.renderAll();
+           items[2].on("mousedown", function(data, index) { lineDown(data,index); });
+        }
+     });
+
+     canvas.on('object:selected', function(e) {
+        console.log("In object:selected")
+        activeObject = true;
+        activeObjectVal = e.target;
+        var objType = e.target.get('type');
+        console.log("activeObject: " + activeObject)
+        console.log(activeObjectVal)
+        console.log("Leaving object:selected")
+        if (e.target.type == "line") {
+           console.log("Adding LineGroup *******************")
+           newGroup = new fabric.Group();
+           newGroup.addWithUpdate(e.target.c1)
+           newGroup.addWithUpdate(e.target.c2)
+           newGroup.addWithUpdate(e.target)
+           newGroup.type = "lineGroup"
+           newGroup.hasControls = false;
+           newGroup.id = itemId
+           itemId = itemId + 1;
+           canvas.add(newGroup)
+           e.target.c1.remove();
+           e.target.c2.remove();
+           e.target.remove();
+           newGroup.on("mousedown", function(data, index) { lineDown(data,index); });
+        }
+        lineSelected = true;
+        console.log("lineSelected: " + lineSelected)
+        console.log("Out object:selected")
+     });
+
+     canvas.on('mouse:up', function(e) {
+         console.log("In mouse:up")
+         console.log(e.target)
+     })
+
+     canvas.on('mouse:down', function(e) {
+         console.log("In Canvas On Mouse:down")
+         $('#glossymenu').remove();
+         contextmenuon = false;
+         console.log("mouse:down")
+         console.log(e.target)
+
+     });
+
+
+     canvas.on('selection:cleared', function(e) {
+
+        console.log("In selection:cleared")
+        lineActive = true
+        lineSelected = false
+        console.log("lineSelected: " + lineSelected)
+        /*
+        console.log("Object Type: " + activeObjectVal)
+        console.log("LineActive: " + lineActive)
+        activeObjectVal.setOpacity(1);
+        canvas.renderAll();
+
+        objectName ="";
+        if (activeObjectVal.type == "lineGroup" && lineActive  && !lineSelected) {
+           console.log("Group Top: " + activeObjectVal.top)
+           console.log("Group Left: " + activeObjectVal.left)
+           console.log(activeObjectVal)
+           var items = activeObjectVal._objects;
+           activeObjectVal._restoreObjectsState();
+           canvas.remove(activeObjectVal);
+           console.log("Line Group added back seperately")
+           for(var i = 0; i < items.length; i++) {
+              items[i].hasBorders = items[i].hasControls = false
+              console.log(items[i])
+              canvas.add(items[i]);
+           }
+
+           items[2].c1 = items[0]
+           items[2].c2 = items[1]
+           items[0].bringToFront();
+           items[1].bringToFront();
+           items[2].sendBackwards();
+           canvas.renderAll()
+
+
+
+           items[2].on("mousedown", function(data, index) { lineDown(data,index); });
+        }
+        lineActive = true
+
+        */
+     });
+
+     canvas.on('object:scaling', objectResize)
+     function objectResize(e) {
+        if(e.target.type == "circle") {
+           newWidth = e.target.width * e.target.scaleX
+           newRadius = e.target.radius * e.target.scaleX
+           e.target.set({ width: newWidth, radius: newRadius, height: newWidth, scaleX: 1, scaleY: 1, });
+        } else if(e.target.type == "ellipse") {
+           newWidth = e.target.width * e.target.scaleX
+           newHeight = e.target.height * e.target.scaleY
+           newRadiusX = newWidth/2
+           newRadiusY = newHeight/2
+           e.target.set({ rx: newRadiusX, ry: newRadiusY, scaleX: 1, scaleY: 1, });
+        } else if(e.target.type == "rect") {
+           console.log("In Rectangle Scaling")
+           newWidth = e.target.width * e.target.scaleX;
+           newHeight = e.target.height * e.target.scaleY;
+           e.target.set({ height: newHeight, width: newWidth, scaleX: 1, scaleY: 1, });
+        }
+        objectBoundaryCheck(e)
+     }
+
+     canvas.on('object:moving', boundaryInspectorCircle)
+     function boundaryInspectorCircle(e) {
+        e.target.setCoords()
+        var p = e.target;
+        console.log("object:moving starting")
+        console.log(e.target)
+        console.log("_curX: " + _curX);
+        console.log("_curY: " +_curY);
+        bounds = {tl: {x: 0, y:0}, br: {x: canvas.width , y: canvas.height } };
+        if(p.type == 'circle1' || p.type == 'circle0') {
+           console.log("p.top  > bounds.br.y: " + (p.top > bounds.br.y))
+           console.log("p.left > bounds.br.x: " + (p.left > bounds.br.x))
+           if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
+             e.target.setTop(Math.max('0', e.target.top))
+             e.target.left = Math.max('0', e.target.left)
+           }  else if ((p.top + 2*p.radius) > bounds.br.y || (p.left + 2*p.radius) > bounds.br.x ) {
+              e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
+              e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
+              console.log("Setting left: " + e.target.left + " Vs: " + bounds.br.x)
+           }
+           if (p.type == "circle1")  {
+              p.line && p.line.set({ 'x1': p.line.c1.left, 'y1': p.line.c1.top, 'x2': p.left, 'y2': p.top });
+           } else {
+              p.line && p.line.set({ 'x1': p.left, 'y1': p.top, 'x2': p.line.c2.left, 'y2': p.line.c2.top });
+           }
+
+           p.line.setCoords();
+           e.target.setCoords();
+           canvas.renderAll();
+        }
+        console.log(e.target)
+     }
+
+     // canvas moving limit
+
+     canvas.observe("object:moving", objectBoundaryCheck)
+     function objectBoundaryCheck(e){
+       e.target.setCoords();
+       if (e.target.type != "circle0" && e.target.type != "circle1") {
+          var obj = e.target;
+          var posBottom = e.target.getBoundingRect().top + e.target.getBoundingRect().height;
+          var posRight = e.target.getBoundingRect().left + e.target.getBoundingRect().width;
+          var boundRect = obj.getBoundingRect();
+          var x1Delta = -(boundRect.left - obj.left)
+          var y1Delta = -(boundRect.top - obj.top)
+
+          bounds = {tl: {x: 0, y: 0}, br: {x: canvas.width , y: canvas.height } };
+
+
+          // top-left  corner
+
+          console.log("y1Delta: " + y1Delta)
+          if((e.target.getBoundingRect().top <= bounds.tl.y || e.target.getBoundingRect().left <= bounds.tl.x) ){
+            console.log("In Top section")
+            console.log("y1Delta: " + y1Delta)
+            console.log("e.target.top: " + e.target.top)
+            e.target.setTop(Math.max(e.target.top  , y1Delta  ));
+            e.target.left = Math.max(e.target.left , x1Delta );
+            e.target.setCoords();
+            canvas.renderAll();
+
+          }
+
+
+
+          // bot-right corner
+          console.log("e.target.top: " + e.target.top)
+          console.log("e.target.height: " + e.target.height)
+          console.log("e.target.getBoundingRect().top : " +  e.target.getBoundingRect().top)
+          console.log("e.target.getBoundingRect().height: " +  e.target.getBoundingRect().height)
+          console.log("posBottom: " + posBottom)
+          console.log("Angle: " + e.target.angle)
+
+          if((posBottom >= bounds.br.y || posRight >= bounds.br.x )){
+
+             console.log("Actual Left: " + e.target.left)
+             console.log("In Bottom Right if area")
+             if (posBottom >= bounds.br.y) {
+                if (e.target.angle >= 270 && e.target.angle < 360) {
+                   console.log("e.target.angle > 270 && e.target.angle.angle < 360")
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height + y1Delta;
+                   console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height + y1Delta))
+                } else if (e.target.angle >= 90 && e.target.angle <= 180){
+                   console.log("e.target.angle >= 90 && e.target.angle <= 180")
+                   //e.target.left = bounds.br.y - e.target.getBoundingRect().width;
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height + y1Delta
+                   console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height + y1Delta))
+                   //e.target.left = bounds.br.x
+                } else if (e.target.angle > 180 && e.target.angle < 270){
+                   console.log("e.target.angle > 180 && e.target.angle < 270")
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height +y1Delta
+                   console.log("Calculated top: " + (bounds.br.y -  e.target.getBoundingRect().height +y1Delta))
+                } else if (e.target.angle >= 0 && e.target.angle < 90){
+                   console.log("e.target.angle >= 0 && e.target.angle < 90")
+                   e.target.top = bounds.br.y -  e.target.getBoundingRect().height +y1Delta ;
+                   console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height +y1Delta))
+                }
+             }
+             if (posRight >= bounds.br.x) {
+                //e.target.left = Math.min( (posRight - Math.max(adjustCos, adjustSin)) , (bounds.br.x - Math.max(adjustCos, adjustSin)) )
+                if (e.target.angle >= 270 && e.target.angle < 360) {
+                   console.log("e.target.angle > 270 && e.target.angle.angle < 360")
+                   e.target.left = bounds.br.x -  e.target.getBoundingRect().width;
+                   console.log("Calculated Left: " + (bounds.br.x -  e.target.getBoundingRect().width))
+                } else if (e.target.angle >= 90 && e.target.angle <= 180){
+                   console.log("e.target.angle >= 90 && e.target.angle <= 180")
+                   //e.target.left = bounds.br.x - e.target.getBoundingRect().width;
+                   e.target.left = bounds.br.x
+                   console.log("Calculated Left: " + (bounds.br.x))
+                   //e.target.left = bounds.br.x
+                } else if (e.target.angle > 180 && e.target.angle < 270){
+                   console.log("e.target.angle > 180 && e.target.angle < 270")
+                   e.target.left = bounds.br.x -  e.target.getBoundingRect().width +x1Delta
+                   console.log("Calculated Left: " + (bounds.br.x -  e.target.getBoundingRect().width +x1Delta))
+                } else if (e.target.angle >= 0 && e.target.angle < 90){
+                   console.log("e.target.angle >= 0 && e.target.angle < 90")
+                   e.target.left = bounds.br.x -  e.target.getBoundingRect().width +x1Delta ;
+                   console.log("Calculated Left: " + (bounds.br.x -  e.target.getBoundingRect().width +x1Delta))
+                }
+             }
+             obj.setCoords();
+
+         }
+
+
+       }
+     };
+
+     if (Modernizr.draganddrop) {
+       // Browser supports HTML5 DnD.
+
+       // Bind the event listeners for the image elements
+       var images = document.querySelectorAll('#images img');
+       [].forEach.call(images, function (img) {
+          img.addEventListener('dragstart', handleDragStart, false);
+          img.addEventListener('dragend', handleDragEnd, false);
+       });
+       // Bind the event listeners for the canvas
+       var canvasContainer = document.getElementById('canvas-container');
+       canvasContainer.addEventListener('dragenter', handleDragEnter, false);
+       canvasContainer.addEventListener('dragover', handleDragOver, false);
+       canvasContainer.addEventListener('dragleave', handleDragLeave, false);
+       canvasContainer.addEventListener('drop', handleDrop, false);
+     } else {
+       // Replace with a fallback to a library solution.
+       alert("This browser doesn't support the HTML5 Drag and Drop API.");
+     }
+
+     canvas.observe("object:rotating", objectBoundaryCheck);
