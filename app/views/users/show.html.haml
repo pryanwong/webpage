@@ -6,7 +6,7 @@
                = link_to company_user_path(session[:company_id] ,session[:user_id]) do
                   Home
             %li Drawings
-            %form{:id=>"searchbread", :class=>"pull-right navbar-form"}
+            = form_tag user_searchshow_path(session[:user_id]), class: "pull-right navbar-form searchbread", method: :get do
                %div.input-group
                   %input{:type=>"text", :class=>"form-control", :placeholder=>"Search", :name=>"srch-term", :id=>"srch-term"}
                      %div{:class=>"input-group-btn"}
