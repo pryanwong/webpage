@@ -46,7 +46,7 @@ gem 'puma'
 gem 'omniauth'
 gem 'omniauth-oauth2', '1.3.1'
 gem 'omniauth-google'
-gem "omniauth-google-oauth2"
+gem "omniauth-google-oauth2", '~>0.4.1'
 gem 'omniauth-linkedin-oauth2'
 gem 'cancancan', '~> 1.10'
 gem "jscolor-rails"
