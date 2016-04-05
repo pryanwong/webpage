@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   #before_filter(:only => [:index, :show]) { unauthorized! if cannot? :read, :user }
-  helper_method :sort_column, :sort_column_user, :sort_direction
+  helper_method :sort_column, :sort_column_user, :sort_direction, :sort_search
   load_and_authorize_resource :user
   #load_and_authorize_resource :drawing
   #before_filter :check_for_cancel, :only => [:newdrawingproc, :create, :update]
@@ -106,12 +106,19 @@ class UsersController < ApplicationController
     @listdrawings = false;
     @privacies = Drawing.privacies
     @divs = @user.divisions.to_a
+    searchterm = ""
+    @placeholder_val = ""
+    @placeholder     = ""
+    if (params.has_key?("srch_term"))
+      searchterm = params["srch_term"].downcase
+      @searchVal = params["srch_term"]
+    end
     if @user.admin?
-         @userdrawings = Drawing.includes(:user).where("lower(customer) LIKE :query OR lower(opportunity) LIKE :query OR lower(description) LIKE :query", query: "%#{params["srch-term"].downcase}%").order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+         @userdrawings = Drawing.includes(:user).where("lower(customer) LIKE :query OR lower(opportunity) LIKE :query OR lower(description) LIKE :query", query: "%#{searchterm}%").order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     elsif @user.moderator?
-         @userdrawings = Drawing.moderator_access(@user).where("lower(customer) LIKE :query OR lower(opportunity) LIKE :query OR lower(description) LIKE :query", query: "%#{params["srch-term"].downcase}%").order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+         @userdrawings = Drawing.moderator_access(@user).where("lower(customer) LIKE :query OR lower(opportunity) LIKE :query OR lower(description) LIKE :query", query: "%#{searchterm}%").order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     elsif @user.user?
-         @userdrawings = Drawing.user_access(@user).where("lower(customer) LIKE :query OR lower(opportunity) LIKE :query OR lower(description) LIKE :query", query: "%#{params["srch-term"].downcase}%").order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
+         @userdrawings = Drawing.user_access(@user).where("lower(customer) LIKE :query OR lower(opportunity) LIKE :query OR lower(description) LIKE :query", query: "%#{searchterm}%").order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
     end
     if (@userdrawings.count > 0 )
        @listdrawings = true;
@@ -370,6 +377,14 @@ class UsersController < ApplicationController
 
     def sort_direction
        %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
+    end
+
+    def sort_search
+       returnval = ""
+       if params.has_key?("srch_term")
+          returnval = params["srch_term"]
+       end
+       returnval
     end
 
     def check_for_cancel
