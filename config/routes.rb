@@ -20,7 +20,6 @@ Rails.application.routes.draw do
     resources :users do
        get 'showall'
        get 'show'
-       get 'searchshow'
     end
     resources :companies do
       resources :prices, param: :product_id do

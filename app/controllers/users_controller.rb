@@ -81,31 +81,6 @@ class UsersController < ApplicationController
     @listdrawings = false;
     @privacies = Drawing.privacies
     @divs = @user.divisions.to_a
-    if @user.admin?
-         @userdrawings = Drawing.includes(:user).all.order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-    elsif @user.moderator?
-         @userdrawings = Drawing.moderator_access(@user).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-    elsif @user.user?
-         @userdrawings = Drawing.user_access(@user).order(sort_column + " " + sort_direction).paginate(page: params[:page], per_page: 10)
-    end
-    if (@userdrawings.count > 0 )
-       @listdrawings = true;
-    end
-  end
-
-  def searchshow
-    logger.fatal "#{params.inspect}"
-    if (User.exists?(params[:user_id]))
-       @user = User.find(params[:user_id]);
-    else
-       flash[:error] = "User not Found"
-       redirect_to root_path
-       return
-    end
-    @showdrawing = true;
-    @listdrawings = false;
-    @privacies = Drawing.privacies
-    @divs = @user.divisions.to_a
     searchterm = ""
     @placeholder_val = ""
     @placeholder     = ""
@@ -123,7 +98,6 @@ class UsersController < ApplicationController
     if (@userdrawings.count > 0 )
        @listdrawings = true;
     end
-    render 'show'
   end
 
   def drawsearch
