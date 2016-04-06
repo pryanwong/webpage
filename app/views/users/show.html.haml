@@ -2,12 +2,12 @@
    %div
       %div
          %ol{:class=>"breadcrumb"}
-            %li
+            %li{:class=>"hidden-sm hidden-xs"}
                = link_to company_user_path(session[:company_id] ,session[:user_id]) do
                   Home
-            %li Drawings
+            %li{:class=>"hidden-sm hidden-xs"} Drawings
             = form_tag company_user_path(session[:company_id] ,session[:user_id]), class: "pull-right navbar-form searchbread", method: :get do
-               %div.input-group
+               %div{:class=>"input-group"}
                   %input{:type=>"text", :class=>"form-control", :placeholder=> "Search", :name=>"srch_term", :id=>"srch-term", :value => "#{@searchVal}"}
                      %div{:class=>"input-group-btn"}
                         %button{:class=>"btn btn-default", :type=>"submit"}
