@@ -98,31 +98,31 @@
                %table
                   %tr
                      %td
-                        = image_tag "common/osa_cloud.svg", :img_val=>"osa_cloud.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_cloud.svg", :img_val=>"osa_cloud.svg",:"data-model"=>"Cloud", :draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Cloud
                      %td
-                        = image_tag "common/osa_database.svg", :img_val=>"osa_database.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_database.svg", :img_val=>"osa_database.svg", :"data-model"=>"Database",:draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Database
                   %tr
                      %td
-                        = image_tag "common/osa_firewall.svg", :img_val=>"osa_firewall.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_firewall.svg", :img_val=>"osa_firewall.svg",:"data-model"=>"Firewall", :draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Firewall
                      %td
-                        = image_tag "common/osa_server.svg", :img_val=>"osa_server.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_server.svg", :img_val=>"osa_server.svg", :"data-model"=>"Server",:draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Server
                   %tr
                      %td
-                        = image_tag "common/osa_device-wireless-router.svg", :img_val=>"osa_device-wireless-router.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_device-wireless-router.svg", :img_val=>"osa_device-wireless-router.svg",:"data-model"=>"Wifi", :draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Wifi
                      %td
-                        = image_tag "common/osa_ics_drive.svg", :img_val=>"osa_ics_drive.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_ics_drive.svg", :img_val=>"osa_ics_drive.svg", :"data-model"=>"Cog",:draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Cog
                   %tr
                      %td
-                        = image_tag "common/osa_wireless_network.svg", :img_val=>"osa_wireless_network.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_wireless_network.svg", :img_val=>"osa_wireless_network.svg",:"data-model"=>"Antenna", :draggable=>"true", :width=>"64", :height => "64"
                         %figcaption Antenna
                      %td
-                        = image_tag "common/osa_vpn.svg", :img_val=>"osa_vpn.svg", :draggable=>"true", :width=>"64", :height => "64"
+                        = image_tag "common/osa_vpn.svg", :img_val=>"osa_vpn.svg", :"data-model"=>"VPN",:draggable=>"true", :width=>"64", :height => "64"
                         %figcaption VPN
          %h3 Shapes
          %div{:style=>"margin:0px;padding:0px;"}
@@ -146,6 +146,32 @@
                      %td
                         = image_tag "common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
                         %figcaption Rectangle
+         %h3 Places/People
+         %div{:style=>"margin:0px;padding:0px;"}
+            %div{:id=>"images"}
+               %table
+                  %tr
+                     %td
+                        = image_tag "common/osa_home.svg", :img_val=>"osa_home.svg",:"data-model"=>"Home", :draggable=>"true", :width=>"64", :height => "64"
+                        %figcaption Home
+                     %td
+                        = image_tag "common/osa_site-branch.svg", :img_val=>"osa_site-branch.svg",:"data-model"=>"Branch", :draggable=>"true", :width=>"64", :height => "64"
+                        %figcaption Branch
+                  %tr
+                     %td
+                        = image_tag "common/osa_site-factory.svg", :img_val=>"osa_site-factory.svg",:"data-model"=>"Factory", :draggable=>"true", :width=>"64", :height => "64"
+                        %figcaption Factory
+                     %td
+                        = image_tag "common/osa_site-head-office.svg", :img_val=>"osa_site-head-office.svg",:"data-model"=>"Office", :draggable=>"true", :width=>"64", :height => "64"
+                        %figcaption Office
+                  %tr
+                     %td
+                        = image_tag "common/osa_site-neighbourhood.svg", :img_val=>"osa_site-neighbourhood.svg",:"data-model"=>"Homes", :draggable=>"true", :width=>"64", :height => "64"
+                        %figcaption Homes
+                     %td
+                        = image_tag "common/osa_user_blue.svg", :img_val=>"osa_user_blue.svg", :"data-model"=>"User",:draggable=>"true", :width=>"64", :height => "64"
+                        %figcaption User
+
    %div{:id=>"div2", :style=>"position:absolute;left:230px"}
       %div{:id=>"canvas-container"}
          %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
