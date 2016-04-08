@@ -1,4 +1,5 @@
 function modernizerFunction(Mod, doc ) {
+  log.info( "Entering  modernizerFunction");
   if (Mod.draganddrop) {
      // Browser supports HTML5 DnD.
      // Bind the event listeners for the image elements
@@ -17,10 +18,13 @@ function modernizerFunction(Mod, doc ) {
     // Replace with a fallback to a library solution.
     alert("This browser doesn't support the HTML5 Drag and Drop API.");
   }
+  log.info( "Leaving  modernizerFunction");
 };
 
 function objectBoundaryCheck(e){
+  log.info( "Entering  objectBoundaryCheck");
   e.target.setCoords();
+  log.debug( "Checking to see if the end points of a line are being dragged ");
   if (e.target.type != "circle0" && e.target.type != "circle1") {
      var obj = e.target;
      var posBottom = e.target.getBoundingRect().top + e.target.getBoundingRect().height;
@@ -32,7 +36,9 @@ function objectBoundaryCheck(e){
 
 
      // top-left  corner
+     log.debug( "Checking to see if we hit the top-left corner");
      if((e.target.getBoundingRect().top <= bounds.tl.y || e.target.getBoundingRect().left <= bounds.tl.x) ){
+       log.debug( "hit the top-left corner");
        e.target.setTop(Math.max(e.target.top  , y1Delta  ));
        e.target.left = Math.max(e.target.left , x1Delta );
        e.target.setCoords();
@@ -40,13 +46,14 @@ function objectBoundaryCheck(e){
      }
 
      // bot-right corner
+     log.debug( "Checking to see if we hit the bot-right corner");
      if((posBottom >= bounds.br.y || posRight >= bounds.br.x )){
         if (posBottom >= bounds.br.y) {
            if (e.target.angle >= 270 && e.target.angle < 360) {
               e.target.top = bounds.br.y -  e.target.getBoundingRect().height + y1Delta;
            } else if (e.target.angle >= 90 && e.target.angle <= 180){
               e.target.top = bounds.br.y -  e.target.getBoundingRect().height + y1Delta
-              console.log("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height + y1Delta))
+              log.debug("Calculated Top: " + (bounds.br.y -  e.target.getBoundingRect().height + y1Delta))
            } else if (e.target.angle > 180 && e.target.angle < 270){
               e.target.top = bounds.br.y -  e.target.getBoundingRect().height +y1Delta
            } else if (e.target.angle >= 0 && e.target.angle < 90){
@@ -67,9 +74,11 @@ function objectBoundaryCheck(e){
         obj.setCoords();
     }
   }
+  log.info( "Leaving objectBoundaryCheck");
 };
 
 function boundaryInspectorCircle(e) {
+   log.info( "Entering boundaryInspectorCircle");
    e.target.setCoords()
    var p = e.target;
    bounds = {tl: {x: 0, y:0}, br: {x: canvas.width , y: canvas.height } };
@@ -91,9 +100,11 @@ function boundaryInspectorCircle(e) {
       e.target.setCoords();
       canvas.renderAll();
    }
+   log.info( "Leaving boundaryInspectorCircle");
 };
 
 function objectResize(e) {
+   log.info( "Entering objectResize");
    if(e.target.type == "circle") {
       newWidth = e.target.width * e.target.scaleX
       newRadius = e.target.radius * e.target.scaleX
@@ -110,23 +121,35 @@ function objectResize(e) {
       e.target.set({ height: newHeight, width: newWidth, scaleX: 1, scaleY: 1, });
    }
    objectBoundaryCheck(e)
+   log.info( "Leaving objectResize");
 };
 
 function selectionCleared(e)  {
+   log.info( "Entering selectionCleared");
    lineActive = true
    lineSelected = false
+   log.debug( "lineActive: ", lineActive);
+   log.debug( "lineSelected: ", lineSelected);
+   log.info( "Leaving selectionCleared");
 };
 
 function mouseDown(e)  {
+    log.info( "Entering mouseDown");
     $('#glossymenu').remove();
     contextmenuon = false;
+    log.debug( "contextmenuon: ", contextmenuon);
+    log.info( "Leaving mouseDown");
 };
 
 function objectSelected(e) {
+   log.info( "Entering objectSelected");
    activeObject = true;
    activeObjectVal = e.target;
    var objType = e.target.get('type');
+   log.trace( "activeObject: ", activeObject);
+   log.trace( "activeObjectVal: ", activeObjectVal);
    if (e.target.type == "line") {
+      log.debug( "Line Selected ");
       newGroup = new fabric.Group();
       newGroup.addWithUpdate(e.target.c1)
       newGroup.addWithUpdate(e.target.c2)
@@ -142,13 +165,13 @@ function objectSelected(e) {
       newGroup.on("mousedown", function(data, index) { lineDown(data,index); });
    }
    lineSelected = true;
+   log.info( "Leaving objectSelected");
 };
 
 function mouseOut(e) {
+   log.info( "Entering mouseOut");
    e.target.setOpacity(1);
    canvas.renderAll();
-   if (e.target.type) {
-   }
    if (e.target.type == "lineGroup" && lineActive) {
       var items = e.target._objects;
       e.target._restoreObjectsState();
@@ -172,52 +195,64 @@ function mouseOut(e) {
       canvas.renderAll();
       items[2].on("mousedown", function(data, index) { lineDown(data,index); });
    }
+   log.info( "Leaving mouseOut");
 };
 
 function mouseOver(e) {
+  log.info( "Entering mouseOver");
+  log.debug( "Set Opacity to 0.5");
   e.target.setOpacity(0.5);
   activeObjectVal = e.target
   if (e.target.type) {
        if (e.target.type == "line") {
-         searchId = getItemIndex(e.target)
+         log.debug( "Target is line");
+         searchId = getItemIndex(e.target);
+         log.trace( e.target);
          canvas.setActiveObject(canvas.item(searchId))
        }
    }
+   log.info( "Leaving mouseOver");
 };
 
 function postProcessLoading(o, object) {
-
+  log.info( "Entering postProcessLoading");
   if (object.type == "custom-image") {
+    log.debug( "Processing custom-image");
     object.on("mousedown", function(data, index) { imageDown(data,index)   });
   }
   if (object.type == "circle") {
+    log.debug( "Processing circle");
     object.fill = undefined
     object.on("mousedown", function(data, index) { circleDown(data,index)   });
   }
 
   if (object.type == "ellipse") {
+    log.debug( "Processing ellipse");
     object.fill = undefined
     object.on("mousedown", function(data, index) { ellipseDown(data,index)   });
   }
 
   if (object.type == "rect") {
+    log.debug( "Processing rect");
     object.fill = undefined
     object.on("mousedown", function(data, index) { rectangleDown(data,index)   });
   }
 
   if (object.type == "line") {
+    log.debug( "Processing line");
     object.objId = objId_var;
     object.on("mousedown", function(data, index) { lineDown(data,index); });
   }
   if (object.type == "i-text") {
+    log.debug( "Processing i-text");
     object.on("mousedown", function(data, index) { textDown(data,index)   });
   }
-
+  log.info( "Leaving postProcessLoading");
 
 };
 
 function onSave(company_id, user_id, id) {
-
+ log.info( "Entering onSave");
  // Remove circle0 and circle1 from image
  $(".spinner").show();
  objects = canvas.getObjects();
@@ -225,10 +260,13 @@ function onSave(company_id, user_id, id) {
 
  if (canvas.background === "") {
    canvas.backgroundImage = "";
+   log.debug( "Setting background image to blank");
  }
  var len = objects.length;
+ log.debug( "Number of objects to process: ", len);
  for (index=len -1; index > -1; index--) {
    if (objects[index].type == "lineGroup") {
+      log.debug( "Processing a line object");
       var items = objects[index]._objects;
       objects[index]._restoreObjectsState();
       canvas.remove(objects[index]);
@@ -236,6 +274,7 @@ function onSave(company_id, user_id, id) {
    }
 
    if (objects[index].type == "circle0" || objects[index].type == "circle1") {
+     log.debug( "Removing circles associated with a line group");
      canvas.remove(objects[index]);
    }
  }
@@ -272,16 +311,20 @@ function onSave(company_id, user_id, id) {
               }
       });
   canvas.renderAll();
+  log.info( "Leaving onSave");
 }
 
 function handleDragStart(e) {
+ log.info( "Entering handleDragStart");
  [].forEach.call(images, function (img) {
    img.classList.remove('img_dragging');
  });
  this.classList.add('img_dragging');
+ log.info( "Leaving handleDragStart");
 }
 
 function makeLine(coords, id) {
+   log.info( "Entering makeLine");
    //console.log("Inside Makeline objId: " + id)
    return new fabric.Line(coords, {
      fill: 'red',
@@ -291,9 +334,11 @@ function makeLine(coords, id) {
      objId: id,
      perPixelTargetFind: true,
    });
+   log.info( "Leaving makeLine");
  }
 
  function makeCircleShape(coords, id) {
+   log.info( "Entering makeCircleShape");
    return new fabric.Circle({ top: coords[1],
                               left: coords[0],
                               radius: 15,
@@ -302,9 +347,11 @@ function makeLine(coords, id) {
                               lockUniScaling: true,
                               hasRotatingPoint : false,
                               strokeWidth : 5 })
+   log.info( "Leaving makeCircleShape");
  }
 
  function makeEllipseShape(coords, id) {
+   log.info( "Entering makeEllipseShape");
    return new fabric.Ellipse({ top: coords[1],
                               left: coords[0],
                               rx: 15,
@@ -314,9 +361,11 @@ function makeLine(coords, id) {
                               lockUniScaling: false,
                               hasRotatingPoint : true,
                               strokeWidth : 5 })
+   log.info( "Leaving makeEllipseShape");
  }
 
  function makeRectangleShape(coords, id) {
+    log.info( "Entering makeRectangleShape");
     return new fabric.Rect({ top: coords[1],
                              left: coords[0],
                              width: 67,
@@ -325,43 +374,57 @@ function makeLine(coords, id) {
                              stroke : 'red',
                              hasRotatingPoint : true,
                              strokeWidth : 5 })
-
+    log.info( "Leaving makeRectangleShape");
  }
 
  function activateColorPicker(e) {
+      log.info( "Entering activateColorPicker");
       var activeObjectVal = canvas.getActiveObject();
       document.getElementById('myColor').color.showPicker();
+      log.info( "Leaving activateColorPicker");
  }
 
  function colorPickerChange(newLineColor) {
+      log.info( "Entering colorPickerChange");
+      log.debug( "newLineColor: ", newLineColor);
       if (activeObjectVal) {
+        log.trace( "activeObjectVal: ", activeObjectVal);
         if (activeObjectVal.type) {
+          log.trace( "activeObjectVal.type: ", activeObjectVal.type);
           if (activeObjectVal.type == "line") {
+            log.debug( "colorPickerChange on line type");
             activeObjectVal.fill = newLineColor;
             activeObjectVal.stroke = newLineColor;
           }
           if (activeObjectVal.type == "lineGroup") {
+            log.debug( "colorPickerChange on lineGroup type");
             activeObjectVal._objects[2].stroke = newLineColor;
           }
           if (activeObjectVal.type == "circle") {
+            log.debug( "colorPickerChange on circle type");
             activeObjectVal.stroke = newLineColor;
           }
           if (activeObjectVal.type == "ellipse") {
+            log.debug( "colorPickerChange on ellipse type");
             activeObjectVal.stroke = newLineColor;
           }
           if (activeObjectVal.type == "rect") {
+            log.debug( "colorPickerChange on rect type");
             activeObjectVal.stroke = newLineColor;
           }
           if (activeObjectVal.type == "i-text") {
+            log.debug( "colorPickerChange on i-text type");
             activeObjectVal.stroke = newLineColor;
             //activeObjectVal.setColor(newLineColor);
           }
         }
       }
       canvas.renderAll();
+      log.info( "Leaving colorPickerChange");
  }
 
  function makeCircle(line) {
+     log.info( "Entering makeCircle");
      //console.log("Line Passed In")
      //console.log(line)
      var c1 = new fabric.Circle({
@@ -399,30 +462,37 @@ function makeLine(coords, id) {
      //console.log("Done Circles");
      var c = new Array(c1, c2);
      //console.log(c);
+     log.info( "Leaving makeCircle");
      return c;
  }
 
 function handleDragOver(e) {
+   log.info( "Entering handleDragOver");
    if (e.preventDefault) {
       e.preventDefault(); // Necessary. Allows us to drop.
    }
 
    e.dataTransfer.dropEffect = 'copy'; // See the section on the DataTransfer object.
    // NOTE: comment above refers to the article (see top) -natchiketa
-
+   log.info( "Leaving handleDragOver");
    return false;
 }
 
 function handleDragEnter(e) {
+   log.info( "Entering handleDragEnter");
    // this / e.target is the current hover target.
    this.classList.add('over');
+   log.info( "Leaving handleDragEnter");
 }
 
 function handleDragLeave(e) {
+    log.info( "Entering handleDragLeave");
     this.classList.remove('over'); // this / e.target is previous target element.
+    log.info( "Leaving handleDragLeave");
 }
 
 function sendBackward() {
+   log.info( "Entering sendBackward");
    var activeObjectVal = canvas.getActiveObject();
    if (activeObjectVal) {
       canvas.sendBackwards(activeObjectVal);
@@ -430,9 +500,11 @@ function sendBackward() {
    $('#glossymenu').remove();
    contextmenuon = false;
    activeObject = false;
+   log.info( "Leaving sendBackward");
 }
 
 function sendToBack() {
+   log.info( "Entering sendToBack");
    var activeObjectVal = canvas.getActiveObject();
    if (activeObjectVal) {
       canvas.sendToBack(activeObjectVal);
@@ -440,9 +512,11 @@ function sendToBack() {
    $('#glossymenu').remove();
    contextmenuon = false;
    activeObject = false;
+   log.info( "Leaving sendToBack");
 }
 
 function bringFoward() {
+   log.info( "Entering bringFoward");
    var activeObjectVal = canvas.getActiveObject();
    if (activeObjectVal) {
       canvas.bringForward(activeObjectVal);
@@ -450,9 +524,11 @@ function bringFoward() {
    $('#glossymenu').remove();
    contextmenuon = false;
    activeObject = false;
+   log.info( "Leaving bringFoward");
 }
 
 function bringToFront() {
+   log.info( "Entering bringToFront");
    var activeObjectVal = canvas.getActiveObject();
    if (activeObjectVal) {
       canvas.bringToFront(activeObjectVal);
@@ -460,9 +536,11 @@ function bringToFront() {
    $('#glossymenu').remove();
    contextmenuon = false;
    activeObject = false;
+   log.info( "Leaving bringToFront");
 }
 
 function lineDown(data,index) {
+   log.info( "Entering lineDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -513,10 +591,11 @@ function lineDown(data,index) {
       }
       document.addEventListener('contextmenu', handler, false);
    }
-
+   log.info( "Leaving lineDown");
 }
 
 function ellipseDown(data,index) {
+   log.info( "Entering ellipseDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -531,9 +610,9 @@ function ellipseDown(data,index) {
             e.preventDefault();
             var items = ["Delete Ellipse", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("ellipseDown: In Delete");
+            $('a:contains("Delete")').click(  function() {log.debug("ellipseDown: In Delete");
                                              activeObjectVal = canvas.getActiveObject();
-                                             console.log(activeObjectVal);
+                                             log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
@@ -551,10 +630,11 @@ function ellipseDown(data,index) {
       }
       document.addEventListener('contextmenu', handler, false);
    }
-
+   log.info( "Leaving ellipseDown");
 }
 
 function circleDown(data,index) {
+   log.info( "Entering circleDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -569,9 +649,9 @@ function circleDown(data,index) {
             e.preventDefault();
             var items = ["Delete Circle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("circleDown: In Delete");
+            $('a:contains("Delete")').click(  function() {log.debug("circleDown: In Delete");
                                              activeObjectVal = canvas.getActiveObject();
-                                             console.log(activeObjectVal);
+                                             log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
@@ -589,10 +669,11 @@ function circleDown(data,index) {
       }
       document.addEventListener('contextmenu', handler, false);
    }
-
+   log.info( "Leaving circleDown");
 }
 
 function rectangleDown(data,index) {
+   log.info( "Entering rectangleDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -607,9 +688,9 @@ function rectangleDown(data,index) {
             e.preventDefault();
             var items = ["Delete Rectangle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("rectangleDown: In Delete");
+            $('a:contains("Delete")').click(  function() {log.debug("rectangleDown: In Delete");
                                              activeObjectVal = canvas.getActiveObject();
-                                             console.log(activeObjectVal);
+                                             log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
@@ -627,10 +708,11 @@ function rectangleDown(data,index) {
       }
       document.addEventListener('contextmenu', handler, false);
    }
-
+   log.info( "Leaving rectangleDown");
 }
 
 function textDown(data,index) {
+   log.info( "Entering textDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -642,9 +724,9 @@ function textDown(data,index) {
             e.preventDefault();
             var items = ["Delete Text", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
-            $('a:contains("Delete")').click(  function() {console.log("textDown: In Delete");
+            $('a:contains("Delete")').click(  function() {log.debug("textDown: In Delete");
                                              activeObjectVal = canvas.getActiveObject();
-                                             console.log(activeObjectVal);
+                                             log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#glossymenu').remove();
                                              contextmenuon = false;
@@ -662,11 +744,11 @@ function textDown(data,index) {
        }
    }
    document.addEventListener('contextmenu', handler, false);
-
+   log.info( "Leaving textDown");
 }
 
 function imageDown(data,index) {
-
+   log.info( "Entering imageDown");
    //handle right click
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
@@ -680,9 +762,8 @@ function imageDown(data,index) {
          if (contextmenuon == false &&  activeObject == true) {
             //activeObjectVal = canvas.getActiveObject();
             e.preventDefault();
-            console.log("ActiveObjectVal")
-            console.log(activeObjectVal)
-            console.log(activeObjectVal.hasOwnProperty('configdbid'))
+            log.trace("ActiveObjectVal: ", activeObjectVal);
+            log.trace("Has configdbid property: ", activeObjectVal.hasOwnProperty('configdbid'));
             if (activeObjectVal.configdbid != false) {
                var items = ["Configure","Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
             } else {
@@ -700,8 +781,8 @@ function imageDown(data,index) {
                                                    contextmenuon = false;
                                                    activeObject = true;
                                                 });
-            $('a:contains("Delete")').click(  function() {console.log("imageDown: In Delete");
-                                               console.log(activeObjectVal);
+            $('a:contains("Delete")').click(  function() {log.debug("imageDown: In Delete");
+                                               log.trace(activeObjectVal);
                                                canvas.remove(activeObjectVal);
                                                $('#glossymenu').remove();
                                                contextmenuon = false;
@@ -716,13 +797,14 @@ function imageDown(data,index) {
      };
    };
    document.addEventListener('contextmenu', handler, false);
+   log.info( "Leaving imageDown");
 }
 
 
 function handleDrop(e) {
+   log.info( "Entering handleDrop");
    var img = document.querySelector('#images img.img_dragging');
-   console.log("Draggable Stage:")
-   console.log(img)
+   log.trace("Draggable Stage:", img);
    var draggy = "";
    //console.log(img);
 
@@ -736,10 +818,12 @@ function handleDrop(e) {
       //console.log('event: ', e);
       //console.log("Image Variable")
       var imgsrc_val = img.getAttribute("img_val");
+      log.debug("imgsrc_val: ", imgsrc_val)
       //console.log(imgsrc_val)
       //console.log(img);
       if (imgsrc_val == "line.png")
       {
+         log.debug("In line.png section");
          objectName = "line";
          var xpos1 = e.layerX;
          var ypos1 = e.layerY;
@@ -761,6 +845,7 @@ function handleDrop(e) {
          canvas.add(c[id][0],c[id][1]);
          line.on("mousedown", function(data, index) { lineDown(data,index); });
       } else if (imgsrc_val == "circle_icon.png") {
+        log.debug("In circle_icon.png section");
         objectName = "circle";
         var xpos1 = e.layerX;
         var ypos1 = e.layerY;
@@ -775,6 +860,7 @@ function handleDrop(e) {
         //circleShape.hasBorders = circleShape.hasControls = true
         canvas.add(circleShape)
       } else if (imgsrc_val == "ellipse_icon.png") {
+        log.debug("In ellipse_icon.png section");
         objectName = "circle";
         var xpos1 = e.layerX;
         var ypos1 = e.layerY;
@@ -787,6 +873,7 @@ function handleDrop(e) {
         itemId = itemId + 1;
         canvas.add(ellipseShape)
       } else if (imgsrc_val == "rectangle-icon.png") {
+        log.debug("In rectangle-icon.png section");
         objectName = "rectangle";
         var xpos1 = e.layerX;
         var ypos1 = e.layerY;
@@ -799,7 +886,7 @@ function handleDrop(e) {
         itemId = itemId + 1;
         canvas.add(rectangleShape)
       } else if (imgsrc_val == "textbox_icon.png") {
-         //console.log("Hello!!!")
+         log.debug("In textbox_icon.png section");
          var textbox = new fabric.IText('Tap and Type', {
              fontFamily: 'arial black',
              fontSize: 12,
@@ -813,7 +900,7 @@ function handleDrop(e) {
          //console.log(textbox);
          textbox.on("mousedown", function(data, index) { textDown(data,index); });
       } else {
-         console.log("In drag down else category")
+         log.debug("In drag down else category")
          var newImage = new fabric.CustomImage(img, {
             width: img.width,
             height: img.height,
@@ -822,14 +909,16 @@ function handleDrop(e) {
             config: 'undefined'
          });
          if(img.hasAttribute('data-config')) {
-           console.log("Has data-config")
+           log.debug("Has data-config")
            newImage.configdbid = img.getAttribute('data-config')
+           log.debug("data-config: ", newImage.configdbid);
          } else {
            newImage.configdbid = false;
          }
          if(img.hasAttribute('data-model')) {
-           console.log("Has data-model")
+           log.debug("Has data-model")
            newImage.model = img.getAttribute('data-model')
+           log.debug("data-model: ", newImage.model);
          } else {
            newImage.model = false;
          }
@@ -843,9 +932,11 @@ function handleDrop(e) {
       this.classList.remove('over');
       return false;
    }
+   log.info( "Leaving handleDrop");
 }
 
 function contextMenu(env) {
+   log.info( "Entering contextMenu");
    var x = env.offsetX;
    var y = env.offsetY;
    $.each (canvas._objects, function(i, e) {
@@ -860,10 +951,12 @@ function contextMenu(env) {
         }
      }
    });
+   log.info( "Leaving contextMenu");
    return false; //stops the event propigation
 }
 
 function menus(items, event) {
+   log.info( "Entering menus");
    $('body').append("<div id='glossymenu' class='glossymenu'>");
    $('#glossymenu').append("<ul id='ulglossymenu'>");
    for (index=0; index < items.length; index++) {
@@ -877,22 +970,28 @@ function menus(items, event) {
    //console.log("PosY : " + event.layerY);
    $('#glossymenu').css('top',posY);
    $('#glossymenu').css('left',posX);
+   log.info( "Leaving menus");
 };
 
 function handleDragEnd(e) {
+   log.info( "Entering handleDragEnd");
    // this/e.target is the source node.
    [].forEach.call(images, function (img) {    img.classList.remove('img_dragging');  });
+   log.info( "Leaving handleDragEnd");
 };
 
 function drawAsPNG(){
+    log.info( "Entering drawAsPNG");
     canvas.isDrawingMode = false;
 
     if(!window.localStorage){alert("This function is not supported by your browser."); return;}
     // to PNG
     window.open(canvas.toDataURL('png'));
+    log.info( "Leaving drawAsPNG");
 };
 
 function getItemIndex(object) {
+     log.info( "Entering getItemIndex");
      id = object.id;
      index = 0;
      objectList = canvas.getObjects();
@@ -901,21 +1000,26 @@ function getItemIndex(object) {
          index = i
        }
      }
+     log.info( "Leaving getItemIndex");
      return index;
 }
 
 var popup;
 function configuratorProduct(productId, companyId, searchId) {
+   log.info( "Entering configuratorProduct");
    popup = window.open("/companies/" + companyId + "/prices/" + productId + "/productconfig.html?searchId=" + searchId, "Popup", "width=300,height=500");
    popup.focus();
+   log.info( "Leaving configuratorProduct");
 }
 
 function backgroundModal() {
+  log.info( "Entering backgroundModal");
   $('#backgroundSection').modal('show');
+  log.info( "Leaving backgroundModal");
 }
 
 function loadConfigScreen( data, selectChoices, splitVals ) { jsondata = data;
-
+   log.info( "Entering loadConfigScreen");
    if (jsondata.error == "Data Not Found") {
      document.getElementById('data').innerHTML += '<br>' + jsondata.error;
    }
@@ -955,21 +1059,23 @@ function loadConfigScreen( data, selectChoices, splitVals ) { jsondata = data;
       document.getElementById('data').appendChild(newNode);
     }
     configString(jsondata,searchId)
-    console.log("Adding Listeners: Before For Loop")
+    log.debug("Adding Listeners: Before For Loop")
     for (i=0; i< jsondata.product.options.length; i++) {
       var selectid = 'select' + i
       document.getElementById(selectid).onchange = function() {
             var index = this.selectedIndex;
             var inputText = this.children[index].innerHTML.trim();
-            console.log(inputText);
+            log.trace(inputText);
             configString(jsondata,searchId)
       }
     }
   }
     $('#gifspinner').fadeOut( 400 )
+    log.info( "Leaving loadConfigScreen");
 }
 
 function configuratorProduct2(productId, companyId, searchId) {
+   log.info( "Entering configuratorProduct2");
    $('#configsection').modal('show');
    $('#gifspinner').show();
    document.getElementById('data').innerHTML = "";
@@ -999,14 +1105,15 @@ function configuratorProduct2(productId, companyId, searchId) {
                     configString(data,searchId);
                 },
          error: function(data, textStatus) {
-                console.log(data);
+                log.trace(data);
                 alert(textStatus);
                 }
         });
-
+   log.info( "Leaving configuratorProduct2");
 }
 
 function configString(jsontext,searchId) {
+  log.info( "Entering configString");
   var configurationString = jsontext.product.name;
   var priceString = "List Price: $";
   var listPrice = jsontext.product.basePrice;
@@ -1021,15 +1128,18 @@ function configString(jsontext,searchId) {
   document.getElementById('prodconfig').innerHTML = configurationString
   document.getElementById('price').innerHTML = listPrice
   SetConfig(searchId)
+  log.info( "Leaving configString");
 }
 
 function SetConfig(searchId) {
+         log.info( "Entering SetConfig");
      //var canvas = "";
      //if (window.opener != null && !window.opener.closed) {
          //canvas = document.getElementById("demoCanvas2").fabric
          canvas.item(searchId).config = document.getElementById('prodconfig').innerHTML
          canvas.item(searchId).price = document.getElementById('price').innerHTML
          canvas.renderAll();
+         log.info( "Leaving SetConfig");
      //}
      //window.close();
  }

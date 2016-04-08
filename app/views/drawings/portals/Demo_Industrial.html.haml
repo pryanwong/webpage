@@ -193,8 +193,17 @@
    var lineActive = true;
    var lineSelected = false;
 
+   var log = log4javascript.getDefaultLogger();
+   log4javascript.setEnabled(false);
+   log.setLevel(log4javascript.Level.DEBUG);
+   //var log = log4javascript.getNullLogger();
+   log.info("Executing javascript in edit.html");
+
+    log.debug("Executing spinner");
     $(".spinner").show();
     canvas.backgroundColor="";
+
+    log.debug("Create Custom Image Class");
     fabric.CustomImage = fabric.util.createClass(fabric.Image, {
        type: 'custom-image',
        initialize: function(element, options) {
@@ -228,19 +237,24 @@
    };
    fabric.CustomImage.async = true;
 
+   log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
    if(!window.location.hash) {
        window.location = window.location + '#loaded';
        window.location.reload();
    }else{
+       log.debug("Create accordian");
        $( "#accordion" ).accordion();
-       console.log( "ready!" );
+       log.debug("Load Drawing");
        var data_drawing = "";
        if (parseInt("#{@drawing.drawing.length}") > 0) {
+            log.debug("drawing loaded");
             data_drawing = #{ raw(@drawing.drawing) }
        } else {
+            log.debug("no drawing loaded");
             data_drawing = ""
        }
        objId_var = 1;
+       log.debug("load objects onto canvas");
        if (data_drawing != "") {
            canvas.loadFromJSON(data_drawing, function () {
               //first render
@@ -283,8 +297,10 @@
            postProcessLoading);
 
        }
+       log.debug("load background object onto canvas");
        var center = canvas.getCenter();
        if (#{@drawing.background.exists?}) {
+            log.trace("background exists");
             var img = new Image();
             img.crossOrigin = "anonymous";
             img.src = '#{asset_url(@drawing.background.url(:original))}'
@@ -300,14 +316,17 @@
              canvas.renderAll.bind(canvas));
           };
        } else {
+         log.debug("no background exists");
          canvas.background = "";
          canvas.backgroundImage = "";
        }
-       console.log( "Drawing should be loaded ");
+       log.info( "Drawing should be loaded ");
+       log.info( "Fade spinner out ");
        $(".spinner").fadeOut( 400 );
 
    }
 
+   log.info( "Loading all observers and listeners ");
    canvas.on('mouse:over', mouseOver);
    canvas.on('mouse:out', mouseOut);
    canvas.on('object:selected', objectSelected);
@@ -321,6 +340,7 @@
    if (Modernizr.draganddrop) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements
+      log.info( "Binding event listeners to images ");
       var images = document.querySelectorAll('#images img');
       [].forEach.call(images, function (img) {
          img.addEventListener('dragstart', handleDragStart, false);
@@ -328,11 +348,14 @@
       });
       // Bind the event listeners for the canvas
       var canvasContainer = document.getElementById('canvas-container');
+      log.info( "Binding event listeners to canvas ");
       canvasContainer.addEventListener('dragenter', handleDragEnter, false);
       canvasContainer.addEventListener('dragover', handleDragOver, false);
       canvasContainer.addEventListener('dragleave', handleDragLeave, false);
       canvasContainer.addEventListener('drop', handleDrop, false);
    } else {
      // Replace with a fallback to a library solution.
+     log.error( " This browser doesn't support the HTML5 Drag and Drop API ");
      alert("This browser doesn't support the HTML5 Drag and Drop API.");
    }
+   log.info( "Done Demo_Industrial Javascript ");

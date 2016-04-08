@@ -22,3 +22,4 @@
 //= require jquery.turbolinks
 //= require drawing_scripts
 //= require bootstrap.min
+//= require log4javascript
