@@ -29,6 +29,7 @@ module Optecture
     config.action_mailer.raise_delivery_errors = true
     config.action_mailer.perform_deliveries = true
     config.action_mailer.delivery_method = :smtp
+    config.assets.paths << "#{Rails.root}/app/assets/fonts"
     config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z/
 
     #config.action_mailer.smtp_settings = {
@@ -66,6 +67,7 @@ module Optecture
    }
 
    config.action_dispatch.perform_deep_munge = false
+   config.assets.enabled = true
    config.assets.initialize_on_precompile = false
 
    config.exceptions_app = self.routes
