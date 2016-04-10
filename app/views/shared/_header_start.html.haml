@@ -22,7 +22,7 @@
                %a{:href=>'/contact.html'}
                   %span Contact
          %ul{:class=>"nav navbar-nav navbar-right"}
-            - if current_user
+            - if (current_user)
                %li
                   =link_to company_user_path(session[:company_id] ,session[:user_id]) do
                      %span{:class=>"fa fa-user","aria-hidden"=>"true"}

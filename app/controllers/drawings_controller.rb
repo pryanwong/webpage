@@ -343,6 +343,7 @@ class DrawingsController < ApplicationController
   end
 
   def show_image
+      logger.info "Entering Drawing#show_image"
       if (Drawing.exists?(params[:id]))
          drawing = Drawing.find(params[:id]);
       else
@@ -359,6 +360,7 @@ class DrawingsController < ApplicationController
       @userid = params[:user_id]
       @drawingid = params[:id]
       @viewpng = true
+      logger.info "Leaving Drawing#show_image"
   end
 
   def send_image_form
