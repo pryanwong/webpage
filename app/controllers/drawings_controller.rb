@@ -345,15 +345,19 @@ class DrawingsController < ApplicationController
   def show_image
       logger.info "Entering Drawing#show_image"
       if (Drawing.exists?(params[:id]))
+         logger.debug "Drawing exists: #{params[:id]}"
          drawing = Drawing.find(params[:id]);
       else
+         logger.debug "Drawing not Found: #{params[:id]}"
          flash[:error] = "Drawing not Found"
          redirect_to root_path
          return
       end
       if (drawing.png == "" || drawing.drawing == "")
+        logger.debug "drawing.png not found"
         @png = "none"
       else
+        logger.debug "drawing.png found"
         @png = drawing.png
       end
       @companyid = params[:company_id]
@@ -364,22 +368,25 @@ class DrawingsController < ApplicationController
   end
 
   def send_image_form
-      logger.fatal "Inspect Params"
-      logger.fatal "#{params.inspect}"
+      logger.info "Entering Drawing#send_image_form"
+      logger.debug "Inspect Params"
+      logger.debug "#{params.inspect}"
       session.delete(:return_to)
       session[:return_to] ||= request.referer
-      logger.fatal "In Send Image Form"
-      logger.fatal "#{session.inspect}"
+      logger.debug "In Send Image Form"
+      logger.debug "#{session.inspect}"
       @message = MessageImage.new
       @message.company_id = params[:company_id]
       @message.user_id = params[:user_id]
       @message.drawing_id = params[:id]
+      logger.info "Leaving Drawing#send_image_form"
   end
 
   def send_image
-    logger.fatal "Inspect Params"
-    logger.fatal "#{params.inspect}"
-    #if params[:commit].to_s == "Send"
+       logger.info "Entering Drawing#send_image"
+       logger.debug "Inspect Params"
+       logger.debug "#{params.inspect}"
+
        @message = MessageImage.new
        @message.company_id = params[:company_id]
        @message.user_id = params[:user_id]
@@ -389,26 +396,28 @@ class DrawingsController < ApplicationController
        @message.email3 = params[:message_image][:email3]
        @message.email4 = params[:message_image][:email4]
        @message.content = params[:message_image][:content]
-       logger.fatal "Inspect Message"
-       logger.fatal "#{@message.inspect}"
+       logger.debug "Inspect Message"
+       logger.debug "#{@message.inspect}"
        if @message.valid?
          MessageImageMailer.new_message(@message).deliver
          redirect_to company_user_path(session[:company_id] ,session[:user_id]), notice: "Your messages has been sent."
        else
+         logger.debug "An error occurred while delivering this message."
          flash[:alert] = "An error occurred while delivering this message."
          redirect_to company_user_path(session[:company_id] ,session[:user_id])
        end
-    #else
-    #   redirect_to company_user_path(session[:company_id] ,session[:user_id])
-    #end
+       logger.info "Leaving Drawing#send_image"
   end
 
   private
 
     def addErrorsToFlash(errors)
+      logger.info "Entering Drawing#addErrorsToFlash"
       errors.each do |key, val|
+        logger.debug "#{key} : #{val}"
         flash[key] = val;
       end
+      logger.info "Leaving Drawing#addErrorsToFlash"
     end
 
     def drawing_params

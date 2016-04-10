@@ -416,10 +416,13 @@ class UsersController < ApplicationController
     end
 
     def sort_search
+       logger.info "Entering Users Controller:sort_search"
        returnval = ""
        if params.has_key?("srch_term")
           returnval = params["srch_term"]
        end
+       logger.debug "srch_term: #{returnval}"
+       logger.info "Leaving Users Controller:sort_search"
        returnval
     end
 
@@ -431,9 +434,12 @@ class UsersController < ApplicationController
     end
 
     def addErrorsToFlash(errors)
+      logger.info "Entering Users Controller:addErrorsToFlash"
       errors.each do |key, val|
+        logger.debug "key: #{key}, val: #{val}"
         flash[key] = val;
       end
+      logger.info "Leaving Users Controller:addErrorsToFlash"
     end
 
 end

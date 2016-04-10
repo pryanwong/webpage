@@ -4,100 +4,121 @@ class PricesController < ApplicationController
   #before_filter :check_for_cancel, :only => [:create, :update]
   layout :pages_layout
   def productconfig
-    logger.fatal "In Product Config"
-    logger.fatal "#{params.inspect}"
-    logger.fatal "Product Id: #{params[:product_id]}"
+    logger.info "Entering PricesController#productconfig"
+    logger.debug "In Product Config"
+    logger.debug "#{params.inspect}"
+    logger.debug "Product Id: #{params[:product_id]}"
     if(params.has_key?(:product_id) && params.has_key?(:company_id))
-       logger.fatal "Record exists"
+       logger.debug "Record exists: #{params[:product_id]}"
        if (Price.where(company_id: params[:company_id],product_id: params[:product_id]).count>0)
-          logger.fatal "productconfig Price Id: #{params[:product_id]}"
+          logger.debug "productconfig Price Id: #{params[:product_id]}"
           @price   = Price.where(company_id: params[:company_id],product_id: params[:product_id]).take
-          logger.fatal @price.inspect
+          logger.debug "#{@price.inspect}"
        else
+          logger.error "Product Config Could Not Be Found"
           flash[:error] = "Product Config Could Not Be Found"
           @price   = Price.New
        end
     else
       @price   = Price.New
     end
-    logger.fatal "Leaving Product Config"
+    logger.info "Leaving PricesController#productconfig"
     render :json => @price
   end
 
   def new
+    logger.info "Entering PricesController#new"
+    logger.debug "Params: #{params.inspect}"
     session.delete(:return_to)
     session[:return_to] ||= request.referer
     #logger.fatal "Session Vals in New: #{session.inspect}"
     if (Company.exists?(id: params[:company_id]))
+      logger.debug "Company Exists: #{params[:company_id]}"
       @company = Company.find(params[:company_id])
       @price   = Price.new
     else
+       logger.error "Company Could Not Be Found: #{params[:company_id]}"
        flash[:error] = "Company Could Not Be Found"
        redirect_to company_path(session[:company_id])
     end
+    logger.info "Leaving PricesController#new"
   end
 
   def create
-    logger.fatal "Create New Price"
-    logger.fatal params
+    logger.info "Entering PricesController#create"
+    logger.debug "params: #{params.inspect}"
     @price = Price.new(price_params)
     @price.company_id = params[:company_id]
     @price.version = 1
     if @price.save
-          # Handle a successful update.
+      logger.debug "New Product Pricing Saved"
       flash[:notice] = "New Product Pricing Saved"
     else
       addErrorsToFlash(@price.errors)
+      logger.error "Product Pricing Could Not Be Added"
       flash[:error] = "Product Pricing Could Not Be Added"
     end
-
+    logger.info "Leaving PricesController#create"
     redirect_to company_path(session[:company_id])
   end
 
   def destroy
-    logger.fatal "Product Price DESTROY Params: #{params.inspect}"
+    logger.info "Entering PricesController#destroy"
+    logger.debug "Params: #{params.inspect}"
     if Price.exists?(id: params[:id])
+       logger.debug "Price Found: #{params[:id]}"
        @price = Price.find(params[:id])
     else
+       logger.error "Price Not Deleted, Price Not Found"
        flash[:error] = "Price Not Deleted, Price Not Found"
+       logger.info "Leaving PricesController#destroy"
        redirect_to company_path(params[:company_id])
        return
     end
     @price.destroy
     if @price.destroyed?
+      logger.debug "Price Removed"
       flash[:notice] = "Price Removed"
     else
       addErrorsToFlash(@price.errors)
     end
+    logger.info "Leaving PricesController#destroy"
     redirect_to company_path(params[:company_id])
   end
 
   def edit
-    logger.fatal "Product Price Edit Parameters: #{params.inspect}"
+    logger.info "Entering PricesController#edit"
+    logger.debug "Parameters: #{params.inspect}"
     session.delete(:return_to)
     session[:return_to] ||= request.referer
     if (!Company.exists?(id: params[:company_id]))
+      logger.error "Company ID not valid: #{params[:company_id]}"
       flash[:error] = "Company ID not valid"
       redirect_to user_path(session[:user_id])
       return
     end
     if (!Price.exists?(id: params[:product_id]))
+      logger.error "Price ID not valid: #{params[:product_id]}"
       flash[:error] = "Price ID not valid"
       redirect_to company_path(session[:company_id])
       return
     end
+    logger.info "Leaving PricesController#edit"
     @company = Company.find(params[:company_id])
     @price = Price.find_by_id(params[:product_id])
   end
 
   def update
-    logger.fatal "Product Price update Parameters: #{params.inspect}"
+    logger.info "Entering PricesController#update"
+    logger.debug "Parameters: #{params.inspect}"
     if (!Company.exists?(id: params[:company_id]))
+      logger.error "Company ID not valid: #{params[:company_id]}"
       flash[:error] = "Company ID not valid"
       redirect_to user_path(session[:user_id])
       return
     end
     if (!Price.exists?(id: params[:product_id]))
+      logger.error "Product Price ID not valid: #{params[:product_id]}"
       flash[:error] = "Product Price ID not valid"
       redirect_to company_path(params[:company_id])
       return
@@ -108,6 +129,7 @@ class PricesController < ApplicationController
     @price.update(name: params[:price][:name], price: params[:price][:price], product_id: params[:price][:product_id])
 
     addErrorsToFlash(@price.errors)
+    logger.info "Leaving PricesController#update"
     redirect_to company_path(params[:company_id]), :method => :show
   end
 
@@ -135,6 +157,7 @@ class PricesController < ApplicationController
 
    def addErrorsToFlash(errors)
      errors.each do |key, val|
+       logger.debug "#{key} : #{val}"
        flash[key] = val;
      end
    end
