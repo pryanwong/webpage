@@ -7,11 +7,17 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def current_user
+     logger.info "Entering ApplicationController:current_user"
      @current_user ||= User.find(session[:user_id]) if session[:user_id]
+     logger.debug "current_user #{@current_user.inspect}"
+     logger.info "Leaving ApplicationController:current_user"
   end
 
   def current_ability
+     logger.info "Entering ApplicationController:current_ability"
      @current_ability ||= Ability.new(current_user)
+     logger.debug "current_ability #{@current_ability.inspect}"
+     logger.info "Leaving ApplicationController:current_ability"
   end
 
   rescue_from  ActiveRecord::RecordNotFound do |exception|
