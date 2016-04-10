@@ -192,13 +192,12 @@
    var motionInbounds = true;
    var lineActive = true;
    var lineSelected = false;
-
    var log = log4javascript.getDefaultLogger();
-   log4javascript.setEnabled(true);
-   log.setLevel(log4javascript.Level.DEBUG);
-   //var log = log4javascript.getNullLogger();
+   log4javascript.setEnabled(false);
+   var debugOn = GetDebugParameter('debug');
+   log4javascript.setEnabled(debugOn);
+   log.setLevel(log4javascript.Level.TRACE);
    log.info("Executing javascript in edit.html");
-
     log.debug("Executing spinner");
     $(".spinner").show();
     canvas.backgroundColor="";

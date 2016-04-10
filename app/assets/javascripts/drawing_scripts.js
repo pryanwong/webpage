@@ -21,6 +21,35 @@ function modernizerFunction(Mod, doc ) {
   log.info( "Leaving  modernizerFunction");
 };
 
+function GetDebugParameter(sParam){
+    log.info( "Entering  GetDebugParameter");
+    var sPageURL = window.location.hash;
+    log.debug("sPageURL:");
+    log.debug( sPageURL);
+    sPageURL = sPageURL.split("?");
+    if (sPageURL.length > 1) {
+       var sURLVariables = sPageURL[1].split('&');
+       log.debug("sURLVariables:");
+       log.debug( sURLVariables);
+       for (var i = 0; i < sURLVariables.length; i++)
+       {
+          var sParameterName = sURLVariables[i].split('=');
+          log.debug("sParameterName:")
+          log.debug(sParameterName);
+          if (sParameterName[0] == sParam)
+          {
+            log.debug("sParameterName[1]:")
+            log.debug(sParameterName[1]);
+            log.info( "Leaving GetDebugParameter");
+            return sParameterName[1];
+          }
+       }
+    } else {
+      log.info( "Leaving GetDebugParameter returning false");
+      return false;
+    }
+};
+
 function objectBoundaryCheck(e){
   log.info( "Entering  objectBoundaryCheck");
   e.target.setCoords();
@@ -283,16 +312,13 @@ function onSave(company_id, user_id, id) {
  canvas.backgroundColor = '#FFFFFF';
  var png_file = canvas.toDataURL('png');
  canvas.backgroundColor = "";
- //console.log("Token: " + token)
  var json_data = { company_id: company_id,
                    user_id:  user_id,
                    id: id,
                    authenticity_token: token,
                    png: png_file,
                    drawing: canvas  }
- //console.log(JSON.stringify(json_data))
  var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + id +".json"
- //console.log(json_data);
  $.ajax({
          url: json_url, // Route to the Script Controller method
         type: "patch",
@@ -325,7 +351,6 @@ function handleDragStart(e) {
 
 function makeLine(coords, id) {
    log.info( "Entering makeLine");
-   //console.log("Inside Makeline objId: " + id)
    return new fabric.Line(coords, {
      fill: 'red',
      stroke: 'red',
@@ -425,8 +450,6 @@ function makeLine(coords, id) {
 
  function makeCircle(line) {
      log.info( "Entering makeCircle");
-     //console.log("Line Passed In")
-     //console.log(line)
      var c1 = new fabric.Circle({
        left: line.get('x1'),
        top: line.get('y1'),
@@ -459,9 +482,7 @@ function makeLine(coords, id) {
      c2.line = line;
      line.c1 = c1;
      line.c2 = c2;
-     //console.log("Done Circles");
      var c = new Array(c1, c2);
-     //console.log(c);
      log.info( "Leaving makeCircle");
      return c;
  }
@@ -601,11 +622,7 @@ function ellipseDown(data,index) {
    }
 
    if (data.e.which == 3) {
-      //console.log("In mouse down Image")
       handler = function(e) {
-         //console.log("Entering handler function");
-         //console.log("contextmenuon =" + contextmenuon);
-         //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
             var items = ["Delete Ellipse", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
@@ -640,11 +657,7 @@ function circleDown(data,index) {
    }
 
    if (data.e.which == 3) {
-      //console.log("In mouse down Image")
       handler = function(e) {
-         //console.log("Entering handler function");
-         //console.log("contextmenuon =" + contextmenuon);
-         //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
             var items = ["Delete Circle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
@@ -679,11 +692,7 @@ function rectangleDown(data,index) {
    }
 
    if (data.e.which == 3) {
-      //console.log("In mouse down Image")
       handler = function(e) {
-         //console.log("Entering handler function");
-         //console.log("contextmenuon =" + contextmenuon);
-         //console.log(activeObjectVal)
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
             var items = ["Delete Rectangle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
@@ -718,7 +727,6 @@ function textDown(data,index) {
    }
 
    if (data.e.which == 3) {
-      //console.log("In mouse down Image")
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true) {
             e.preventDefault();
@@ -755,12 +763,8 @@ function imageDown(data,index) {
    }
 
    if (data.e.which == 3) {
-      //console.log("In mouse down Image")
       handler = function(e) {
-         //console.log("Entering handler function");
-         //console.log("contextmenuon =" + contextmenuon);
          if (contextmenuon == false &&  activeObject == true) {
-            //activeObjectVal = canvas.getActiveObject();
             e.preventDefault();
             log.trace("ActiveObjectVal: ", activeObjectVal);
             log.trace("Has configdbid property: ", activeObjectVal.hasOwnProperty('configdbid'));
@@ -775,7 +779,6 @@ function imageDown(data,index) {
                                                    var companyId = 1
                                                    searchId = getItemIndex(activeObjectVal)
                                                    canvas.setActiveObject(canvas.item(searchId))
-                                                   //configuratorProduct(productId, companyId, searchId);
                                                    configuratorProduct2(productId, companyId, searchId);
                                                    $('#glossymenu').remove();
                                                    contextmenuon = false;
@@ -806,21 +809,13 @@ function handleDrop(e) {
    var img = document.querySelector('#images img.img_dragging');
    log.trace("Draggable Stage:", img);
    var draggy = "";
-   //console.log(img);
-
-   // this / e.target is current target element.
-
    if (e.stopPropagation) {
       e.stopPropagation(); // stops the browser from redirecting.
    }
 
    if (!(img == null)) {
-      //console.log('event: ', e);
-      //console.log("Image Variable")
       var imgsrc_val = img.getAttribute("img_val");
       log.debug("imgsrc_val: ", imgsrc_val)
-      //console.log(imgsrc_val)
-      //console.log(img);
       if (imgsrc_val == "line.png")
       {
          log.debug("In line.png section");
@@ -832,8 +827,6 @@ function handleDrop(e) {
          var id = objId_var + 3;
          objId = id;
          var line = makeLine([ xpos1, ypos1, xpos2, ypos2 ], id)
-         //console.log("Line before makecircle")
-         //console.log(line)
          line.hasBorders = line.hasControls = false
          canvas.add(line)
          c[id] = makeCircle(line);
@@ -856,8 +849,6 @@ function handleDrop(e) {
         circleShape.on("mousedown", function(data, index) { circleDown(data,index); });
         circleShape.id = itemId
         itemId = itemId + 1;
-        //console.log(line)
-        //circleShape.hasBorders = circleShape.hasControls = true
         canvas.add(circleShape)
       } else if (imgsrc_val == "ellipse_icon.png") {
         log.debug("In ellipse_icon.png section");
@@ -897,7 +888,6 @@ function handleDrop(e) {
          textbox.id = itemId
          itemId = itemId + 1;
          canvas.add(textbox);
-         //console.log(textbox);
          textbox.on("mousedown", function(data, index) { textDown(data,index); });
       } else {
          log.debug("In drag down else category")
@@ -922,7 +912,6 @@ function handleDrop(e) {
          } else {
            newImage.model = false;
          }
-         //console.log(newImage);
          newImage.id = itemId
 
          itemId = itemId + 1;
@@ -945,8 +934,6 @@ function contextMenu(env) {
      var h = e.height / 2;
      if (x >= (e.left - d) && x <= (e.left+d)) {
         if(y >= (e.top - h) && y <= (e.top+h)) {
-           //console.log("clicked canvas obj #"+i);
-           //TODO show custom menu at x, y
            return false; //in case the icons are stacked only take action on one.
         }
      }
@@ -966,8 +953,6 @@ function menus(items, event) {
    $('#body').append("</div>");
    var posY = event.layerY + "px";
    var posX = event.layerX + "px";
-   //console.log("PosX : " + event.layerX);
-   //console.log("PosY : " + event.layerY);
    $('#glossymenu').css('top',posY);
    $('#glossymenu').css('left',posX);
    log.info( "Leaving menus");
@@ -1018,39 +1003,41 @@ function backgroundModal() {
   log.info( "Leaving backgroundModal");
 }
 
-function loadConfigScreen( data, selectChoices, splitVals ) { jsondata = data;
+function loadConfigScreen( data, selectChoices, splitVals ) {
+   jsondata = data;
    log.info( "Entering loadConfigScreen");
+   log.trace("jsondata: ", jsondata)
    if (jsondata.error == "Data Not Found") {
      document.getElementById('data').innerHTML += '<br>' + jsondata.error;
    }
    else {
-     jsondata = JSON.parse(jsondata.price);
-   document.getElementById('data').innerHTML += '<br>' + jsondata.product.name;
-   for (i=0; i< jsondata.product.options.length; i++) {
+     jsondataprice = JSON.parse(jsondata.price);
+   document.getElementById('data').innerHTML += '<br>' + jsondata['name'];
+   for (i=0; i< jsondataprice.product.options.length; i++) {
       var newNode = document.createElement('div');
       newNode.className = 'row';
       var newNode2 = document.createElement('div');
       newNode2.className = 'col-sm-3';
-      newNode2.innerHTML += jsondata.product.options[i].opname
+      newNode2.innerHTML += jsondataprice.product.options[i].opname
       newNode.appendChild(newNode2)
       var newNode3 = document.createElement('div');
       newNode3.className = 'col-sm-9';
       var selectHTML = "";
       var selectid = 'select' + i
       selectHTML='<select id="' + selectid + '">';
-      for (j=0; j< jsondata.product.options[i].selections.length; j++) {
+      for (j=0; j< jsondataprice.product.options[i].selections.length; j++) {
          selectHTML += '<option value=\'{"code":"'
-         selectHTML += jsondata.product.options[i].selections[j].code
+         selectHTML += jsondataprice.product.options[i].selections[j].code
          selectHTML += '","price":"'
-         selectHTML += jsondata.product.options[i].selections[j].price
+         selectHTML += jsondataprice.product.options[i].selections[j].price
          selectHTML +='"}\''
          if (selectChoices) {
-             if (jsondata.product.options[i].selections[j].code == splitVals[i+1]) {
+             if (jsondataprice.product.options[i].selections[j].code == splitVals[i+1]) {
                 selectHTML +=' selected="selected" '
              }
          }
          selectHTML += '>'
-         selectHTML +=jsondata.product.options[i].selections[j].description
+         selectHTML +=jsondataprice.product.options[i].selections[j].description
          selectHTML +='</option>'
       }
       selectHTML += "</select>";
@@ -1060,7 +1047,7 @@ function loadConfigScreen( data, selectChoices, splitVals ) { jsondata = data;
     }
     configString(jsondata,searchId)
     log.debug("Adding Listeners: Before For Loop")
-    for (i=0; i< jsondata.product.options.length; i++) {
+    for (i=0; i< jsondataprice.product.options.length; i++) {
       var selectid = 'select' + i
       document.getElementById(selectid).onchange = function() {
             var index = this.selectedIndex;
@@ -1087,8 +1074,6 @@ function configuratorProduct2(productId, companyId, searchId) {
       selectChoices = true;
       splitVals = objectConfig.split("-")
    }
-   //var jsontext= #{@price.price};
-   //console.log(JSON.stringify(json_data))
    var json_url = "/companies/" + companyId + "/prices/" + productId + "/productconfig.json"
    var jsondata = "";
    $.ajax({
@@ -1103,9 +1088,12 @@ function configuratorProduct2(productId, companyId, searchId) {
                   log.info( "Ajax Call is Complete");
                 },
        success: function(data, textStatus, xhr) {
+                   log.trace("configuratorProduct2: In Ajax Success")
                    loadConfigScreen( data, selectChoices, splitVals );
+                   log.trace(data)
                     configString(data,searchId);
                    log.info( "Ajax Call is Success");
+                   log.trace( "Ajax Call is Success");
                 },
          error: function(data, textStatus) {
                 log.trace(data);
@@ -1118,10 +1106,13 @@ function configuratorProduct2(productId, companyId, searchId) {
 
 function configString(jsontext,searchId) {
   log.info( "Entering configString");
-  var configurationString = jsontext.product.name;
+  log.trace ("configString:jasontext", jsontext);
+  jsondataprice = JSON.parse(jsontext.price);
+  log.trace("configString:jsondataprice", jsondataprice);
+  var configurationString = jsondataprice.product.name;
   var priceString = "List Price: $";
-  var listPrice = jsontext.product.basePrice;
-  for (i=0; i< jsontext.product.options.length; i++) {
+  var listPrice = jsondataprice.product.basePrice;
+  for (i=0; i< jsondataprice.product.options.length; i++) {
        selectid = 'select' + i
        var index = document.getElementById(selectid).selectedIndex
        configurationString += '-'
