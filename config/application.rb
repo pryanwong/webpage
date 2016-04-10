@@ -22,11 +22,11 @@ module Optecture
     # config.i18n.default_locale = :de
     config.before_configuration do
      env_file = File.join(Rails.root, 'config', 'local_env.yml')
-     puts "Env File: #{env_file}"
-     puts "Exists: #{File.exists?(env_file)}"
-     puts "YAML: #{YAML.load(File.open(env_file))[Rails.env].inspect}"
+     # puts "Env File: #{env_file}"
+     # puts "Exists: #{File.exists?(env_file)}"
+     # puts "YAML: #{YAML.load(File.open(env_file))[Rails.env].inspect}"
      YAML.load(File.open(env_file))[Rails.env].each do |key, value|
-       puts "YAML key: #{key}, value: #{value}"
+       # puts "YAML key: #{key}, value: #{value}"
        ENV[key.to_s] = value.to_s
      end if File.exists?(env_file)
     end
