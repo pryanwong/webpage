@@ -36,7 +36,9 @@ Rails.application.configure do
   # Set Log Level
   config.log_level = :debug
 
-
+  # Minify Javascript and CSS
+  config.assets.js_compressor = :uglifier
+  config.assets.css_compressor = :sass
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

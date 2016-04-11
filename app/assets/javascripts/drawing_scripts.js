@@ -1008,7 +1008,7 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
    log.info( "Entering loadConfigScreen");
    log.trace("jsondata: ", jsondata)
    if (jsondata.error == "Data Not Found") {
-     document.getElementById('data').innerHTML += '<br>' + jsondata.error;
+      document.getElementById('data').innerHTML += '<br>' + jsondata.error;
    }
    else {
      jsondataprice = JSON.parse(jsondata.price);
