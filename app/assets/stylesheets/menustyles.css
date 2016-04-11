@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:700);
 #wrapper_head{position: absolute;}
 #cssmenu {
   float: left;
@@ -9,7 +9,7 @@
   width: 100%;
   z-index: 1000;
 }
- 
+
 #wrapper {
   float: left;
   position: relative;
