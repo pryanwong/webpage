@@ -61,6 +61,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard', '2.11.1'
   gem 'factory_girl_rails'
+  gem 'derailed'
 end
 
 group :test do
