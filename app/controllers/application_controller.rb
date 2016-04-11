@@ -9,10 +9,15 @@ class ApplicationController < ActionController::Base
   def current_user
      logger.info "Entering ApplicationController:current_user"
      logger.fatal "#{session[:user_id]}"
-     @current_user = false
-     if (User.exists?(session[:user_id]))
-        logger.fatal "User Found"
-        @current_user ||= User.find(session[:user_id])
+     @current_user ="";
+     if (session[:user_id])
+         @current_user = User.new
+         @current_user.id = session[:user_id]
+         @current_user.role = session[:role]
+         @current_user.email = session[:email]
+         @current_user.company_id = session[:company_id]
+     else
+         @current_user = false;
      end
      logger.fatal "Current User: #{@current_user.inspect}"
      logger.info "Leaving ApplicationController:current_user"
