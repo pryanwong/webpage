@@ -35,7 +35,7 @@ module Optecture
     config.action_mailer.delivery_method = :smtp
 
     config.assets.enabled = true
-    config.assets.paths << Rails.root.join("assets", "fonts")
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
     config.assets.precompile += %w( .svg .eot .woff .ttf )
     #config.assets.paths << "#{Rails.root}/app/assets/fonts"
     #config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z/
