@@ -275,7 +275,7 @@ list-style: none;
 }
 
 .glossymenu li a{
-background: white url(media/glossyback.gif) repeat-x bottom left;
+background: white url(asset-path("glossyback.gif")) repeat-x bottom left;
 font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
 color: white;
 display: block;
