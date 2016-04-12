@@ -175,6 +175,8 @@ GEM
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     nokogiri (1.6.7.2-java)
+    non-stupid-digest-assets (1.0.8)
+      sprockets (>= 2.0)
     notiffany (0.0.8)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -332,6 +334,7 @@ DEPENDENCIES
   jscolor-rails
   launchy
   minitest
+  non-stupid-digest-assets
   omniauth
   omniauth-google
   omniauth-google-oauth2 (~> 0.4.1)
