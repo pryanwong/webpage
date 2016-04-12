@@ -13,7 +13,7 @@
 #pagewrapper{
   min-height: 100%;
 }
- 
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -290,7 +290,7 @@ list-style: none;
 
 
 * html .glossymenu li a{ /*IE only. Actual menu width minus left padding of A element (10px) */
-background: white url(image_path("glossyback.gif")) repeat-x bottom left;
+background: white  url(asset-path("glossyback.gif")) repeat-x bottom left;
 font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
 color: white;
 display: block;
@@ -305,7 +305,7 @@ color: white;
 }
 
 .glossymenu li a:hover{
-background-image: url(image_path("glossyback2.gif"));
+background-image:  url(asset-path("glossyback2.gif"));
 }
 
 .LabelFormDiv {

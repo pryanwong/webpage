@@ -9,7 +9,7 @@
     list-style-type: none;
     list-style: none;
 }
- 
+
 .hide {
     display: none;
 }
@@ -28,7 +28,7 @@ border-bottom-width: 0;
 }
 
 .glossymenu li a{
-background: white url(media/glossyback.gif) repeat-x bottom left;
+background: white url(asset-path("glossyback.gif")) repeat-x bottom left;
 font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
 color: white;
 display: block;
@@ -49,7 +49,7 @@ color: white;
 }
 
 .glossymenu li a:hover{
-background-image: url(media/glossyback2.gif);
+background-image: url(asset-path("glossyback2.gif"));
 }
 
 .ui-accordion .ui-accordion-header {
