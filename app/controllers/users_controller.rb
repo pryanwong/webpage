@@ -27,11 +27,17 @@ class UsersController < ApplicationController
        session[:switched]  = true;
        session[:adminuser] = session[:user_id]
        session[:admincompany] = session[:company_id]
+       session[:adminrole] = session[:role]
+       session[:adminemail] = session[:email]
        @current_user = @user
        session.delete(:user_id)
        session.delete(:company_id)
+       session.delete(:role)
+       session.delete(:email)
        session[:user_id]  = @user.id
        session[:company_id] = @user.company_id
+       session[:role]  = @user.role
+       session[:email] = @user.email
        redirect_to company_user_path(@user.company_id , @user.id)
        return
     else
@@ -57,10 +63,16 @@ class UsersController < ApplicationController
        @current_user = @user
        session.delete(:adminuser)
        session.delete(:admincompany)
+       session.delete(:adminrole)
+       session.delete(:adminemail)
        session.delete(:user_id)
        session.delete(:company_id)
+       session.delete(:role)
+       session.delete(:email)
        session[:user_id]  = @user.id
        session[:company_id] = @user.company_id
+       session[:role]  = @user.role
+       session[:email] = @user.email
     end
     logger.info "Leaving Users Controller:switchback"
     redirect_to company_user_path(session[:company_id] , session[:user_id])
