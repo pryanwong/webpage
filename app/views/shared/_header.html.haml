@@ -31,10 +31,6 @@
                   %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
                      %span{:class=>"fa fa-save","aria-hidden"=>"true"}
                      Save
-               %li
-                  =link_to bom_company_user_drawing_path(session[:company_id], session[:user_id], params[:id]) do
-                     %span{:class=>"fa fa-file-text-o","aria-hidden"=>"true"}
-                     BOM
             -if current_user.admin? && !session[:switched] == true
                %li
                   = link_to user_showall_path(session[:user_id]) do

@@ -33,6 +33,7 @@
                   %th PNG
                   %th Send
                   %th Desc
+                  %th BOM
                   %th Edit
             %tbody
                -@userdrawings.each do |drawing|
@@ -57,6 +58,9 @@
                      %td
                         = link_to editdrawingdetails_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-pencil-square-o"}
+                     %td
+                        = link_to bom_company_user_drawing_path(@user.company.id, @user.id, drawing.id) do
+                           %i{:class=>"fa fa-file-text-o"}
                      %td
                         = link_to edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-pencil-square-o"}
