@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 company = Company.create(name: 'Demo', licenses: 5, portal: 'Demo_Industrial' )
-adminuser = User.create(email: 'sferenci2@gmail.com', role: 3, company_id: company.id, provider: 0)
+adminuser = User.create(email: 'sferenci1@gmail.com', role: 3, company_id: company.id, provider: 0)
 
 epm6000json = ' {"product": {"name":"PL6000","basePrice":"1036","options":
           [ {"opname":"Enclosure", "selections":[ {"description":"none", "code":"XXX", "price":"0"},
