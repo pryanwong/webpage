@@ -82,11 +82,15 @@ Rails.application.configure do
   # Amazon Web Services - S3
   config.paperclip_defaults = {
     :storage => :s3,
+    :s3_protocol => :https,
     :url => "https://s3-us-west-1.amazonaws.com/",
     :s3_credentials => {
-      :bucket => 'productionbackground',
-      :s3_credentials => "#{Rails.root}/config/aws.yml",
+      :bucket => ENV['S3_BUCKET_NAME'],
+      :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+      :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'],
+      :s3_region => ENV['s3_region']
     }
   }
+
    Paperclip.options[:content_type_mappings] = { jpeg: 'image/jpeg', jpg: 'image/jpeg' }
 end

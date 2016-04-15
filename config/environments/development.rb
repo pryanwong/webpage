@@ -47,6 +47,7 @@ Rails.application.configure do
   # Amazon Web Services - S3
   config.paperclip_defaults = {
     :storage => :s3,
+    :s3_protocol => :https,
     :url => "https://s3-us-west-2.amazonaws.com",
     :s3_credentials => {
       :bucket => 'developmentbackground',

@@ -29,12 +29,13 @@ class Drawing < ActiveRecord::Base
   has_attached_file :background,
                   url: ":s3_domain_url",
                   hash_secret: "abc123",
+                  s3_protocol: :https,
                   storage: :s3,
                   default_url: "/system/normal/question-mark.jpg",
                   bucket: ENV['S3_BUCKET_NAME'],
                   access_key_id: ENV['AWS_ACCESS_KEY_ID'],
                   secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-                  s3_region: 'us-west-2',
+                  s3_region: ENV['s3_region'],
                   path: "/system/:path/:hash.:extension"
   validates_presence_of :company, :user
   validates_presence_of :division, :if => :division_testing?
