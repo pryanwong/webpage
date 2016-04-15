@@ -24,7 +24,7 @@ namespace :maintenance do
     when "review"
         run_command_no_app("pipelines:promote -a reviewoptecture --to stagingoptecture")
     when "staging"
-        run_command_no_app("pipelines:promote -a stagingoptecture --to whispering-beach-5923")
+        run_command_no_app("pipelines:promote -a stagingoptecture --to optecture")
     else
         puts "level should be either review or staging"
     end
