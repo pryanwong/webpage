@@ -17,7 +17,7 @@
 %div#inputs
 %div#menubar
    - if !(@drawing.background_file_name.nil?)
-      = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :onclick=>"canvas.backgroundImage = ""; return true;"
+      = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :onclick=>'canvas.backgroundImage = ""; return true;'
    - else
       = link_to "<button>Background</button>".html_safe, "", :onClick=>"onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}'); backgroundModal(); return false;"
    =image_tag "common/paint_bucket.png"
