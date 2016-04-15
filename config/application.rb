@@ -33,7 +33,6 @@ module Optecture
     config.action_mailer.raise_delivery_errors = true
     config.action_mailer.perform_deliveries = true
     config.action_mailer.delivery_method = :smtp
-
     config.assets.enabled = true
     config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif *.svg)
     #config.assets.paths << Rails.root.join("app", "assets", "fonts")
