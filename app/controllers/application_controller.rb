@@ -6,6 +6,13 @@ class ApplicationController < ActionController::Base
   #before_action :authenticate_user!
   helper_method :current_user
 
+  before_filter do
+    logger.fatal "request.ssl #{request.ssl?}"
+    if request.ssl? && Rails.env.production?
+      redirect_to :protocol => 'http://'
+    end
+  end
+
   def current_user
      logger.info "Entering ApplicationController:current_user"
      logger.fatal "#{session[:user_id]}"
