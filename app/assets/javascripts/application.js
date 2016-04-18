@@ -22,3 +22,5 @@
 //= require drawing_scripts
 //= require bootstrap.min
 //= require log4javascript
+//= require jquery.ui.widget
+//= require z.jquery.fileupload

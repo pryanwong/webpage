@@ -32,6 +32,32 @@ class DrawingsController < ApplicationController
           flash[:error] = "Company not Found"
           redirect_to root_path
        end
+
+       #Aws.config.update({
+       #   region: ENV['s3_region'],
+       #   credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+       # })
+
+       # S3_BUCKET = Aws::S3::Resource.new.bucket(ENV['S3_BUCKET_NAME'])
+
+       creds = Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
+       s3 = Aws::S3::Resource.new(region: ENV['s3_region'], credentials: creds)
+       logger.fatal "s3.inspect"
+       logger.fatal "#{s3.inspect}"
+       obj = s3.bucket(ENV['S3_BUCKET_NAME']).object("system/#{@drawing.company_id}/#{@drawing.id}/#{SecureRandom.uuid}/${filename}")
+       logger.fatal "obj.inspect"
+       logger.fatal "#{obj.inspect}"
+       logger.fatal "#{obj.methods}"
+       options = { acl: 'public-read',
+                success_action_status: '201',
+                acl: 'public-read'}
+       @presigned_post = obj.presigned_post(options)
+       @public_url = obj.public_url
+       logger.fatal "presigned_post.inspect"
+       logger.fatal "#{@presigned_post.inspect}"
+       logger.fatal "public_url.inspect"
+       logger.fatal "#{@public_url.inspect}"
+
        logger.info "Leaving DrawingsController:edit"
        logger.info "Rendering #{company.portal}"
        render "drawings/portals/#{company.portal}"
@@ -267,27 +293,29 @@ class DrawingsController < ApplicationController
   end
 
   def updateBackground
+
     logger.info "Entering Drawing#updateBackground"
-    @drawing = Drawing.find(params[:id]);
-    logger.debug "Background Vals: #{params.inspect}"
-    logger.debug "Background Present: #{params[:drawing].present?}"
-    logger.debug "#{ENV['s3_region']}"
-    if(params[:drawing].present?)
-       logger.debug "Background Val: #{params[:drawing][:background]}"
-       @drawing.update_attribute(:background, params[:drawing][:background])
-       if @drawing.save
-         logger.debug "The background was added!"
-         flash[:success] = "The background was added!"
-       else
-         logger.debug "The background was not uploaded!"
-         flash[:error] = "The background was not uploaded!"
-       end
-    else
-      logger.debug "The background was not uploaded!"
-      flash[:error] = "The background was not uploaded!"
-    end
-    logger.debug "URL: #{@drawing.background.url}"
-    redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
+    logger.fatal "Params: #{params.inspect}"
+    #@drawing = Drawing.find(params[:id]);
+    #logger.debug "Background Vals: #{params.inspect}"
+    #logger.debug "Background Present: #{params[:drawing].present?}"
+    #logger.debug "#{ENV['s3_region']}"
+    #if(params[:drawing].present?)
+    #   logger.debug "Background Val: #{params[:drawing][:background]}"
+    #   @drawing.update_attribute(:background, params[:drawing][:background])
+    #   if @drawing.save
+    #     logger.debug "The background was added!"
+    #     flash[:success] = "The background was added!"
+    #   else
+    #     logger.debug "The background was not uploaded!"
+    #     flash[:error] = "The background was not uploaded!"
+    #   end
+    #else
+    #  logger.debug "The background was not uploaded!"
+    #  flash[:error] = "The background was not uploaded!"
+    #end
+    #logger.debug "URL: #{@drawing.background.url}"
+    #redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
     logger.info "Leaving Drawing#updateBackground"
   end
 
@@ -430,6 +458,7 @@ class DrawingsController < ApplicationController
     #    redirect_to session.delete(:return_to)
     #  end
     #end
+
 
     def resolve_layout
        case action_name

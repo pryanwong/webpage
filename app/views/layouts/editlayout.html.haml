@@ -35,11 +35,16 @@
                   %h4{:class=>"modal-title"}Background Image
                %div{:class=>"modal-body"}
                   %div{ :id=>"data" }
-                     = form_for(@drawing, :class=>"form-horizontal", url: updateBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), html: { multipart: true },:method => :POST) do |f|
-                        %p Current Value: #{@drawing.background_file_name}
+                     = form_for(@drawing, :id=>"background_form",:url => updateBackground_company_user_drawing_path(params[:company_id], params[:user_id],params[:id]), html: { class: 'directUpload', data: { 'form-data' => (@presigned_post.fields), 'url' => @presigned_post.url, 'host' => URI.parse(@presigned_post.url).host } }) do |f|
                         %div{:class=>"form-group"}
                            = f.file_field :background, :class=>'form-control'
-                        = f.submit 'Upload', :class=>'btn btn-primary', :id=>'upload_button'
+      :javascript
+         var input = document.getElementById('drawing_background');
+         console.log(input)
+         input.onclick = function () {
+            console.log("Clicked");
+            this.value = null;
+         };
 
       %div{ :id=>"spinner", :class=>"spinner"}
          %div{ :class=>"rect1"}

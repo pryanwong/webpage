@@ -285,12 +285,12 @@ function onSave(company_id, user_id, id) {
  // Remove circle0 and circle1 from image
  $(".spinner").show();
  objects = canvas.getObjects();
- var temp = canvas.backgroundImage;
+ //var temp = canvas.backgroundImage;
 
- if (canvas.background === "") {
-   canvas.backgroundImage = "";
-   log.debug( "Setting background image to blank");
- }
+ //if (canvas.background === "") {
+//     canvas.backgroundImage = "";
+//   log.debug( "Setting background image to blank");
+ //}
  var len = objects.length;
  log.debug( "Number of objects to process: ", len);
  for (index=len -1; index > -1; index--) {
@@ -311,6 +311,7 @@ function onSave(company_id, user_id, id) {
  var token = $('meta[name="csrf-token"]').attr('content');
  canvas.backgroundColor = '#FFFFFF';
  var png_file = canvas.toDataURL('png');
+ //var png_file = "";
  canvas.backgroundColor = "";
  var json_data = { company_id: company_id,
                    user_id:  user_id,

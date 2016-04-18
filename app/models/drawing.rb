@@ -19,30 +19,30 @@ class Drawing < ActiveRecord::Base
     self.id.to_s
   end
 
-  Paperclip.interpolates :path do |attachment, style|
-     drawing_company_id = attachment.instance.company_id_val
-     drawing_id = attachment.instance.draw_id_val
-     path_val = "#{drawing_company_id}/#{drawing_id}"
-     return path_val
-  end
+  #Paperclip.interpolates :path do |attachment, style|
+  #   drawing_company_id = attachment.instance.company_id_val
+  #   drawing_id = attachment.instance.draw_id_val
+  #   path_val = "#{drawing_company_id}/#{drawing_id}"
+  #   return path_val
+  #end
 
-  has_attached_file :background,
-                  url: ":s3_domain_url",
-                  hash_secret: "abc123",
-                  s3_protocol: :https,
-                  storage: :s3,
-                  default_url: "/system/normal/question-mark.jpg",
-                  bucket: ENV['S3_BUCKET_NAME'],
-                  access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-                  secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-                  s3_region: ENV['s3_region'],
-                  path: "/system/:path/:hash.:extension"
+  #has_attached_file :background,
+  #                url: ":s3_domain_url",
+  #                hash_secret: "abc123",
+  #                s3_protocol: :https,
+  #                storage: :s3,
+  #                default_url: "/system/normal/question-mark.jpg",
+  #                bucket: ENV['S3_BUCKET_NAME'],
+  #                access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+  #                secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+  #                s3_region: ENV['s3_region'],
+  #                path: "/system/:path/:hash.:extension"
   validates_presence_of :company, :user
   validates_presence_of :division, :if => :division_testing?
   validate :division_belongs_to_user, :if => :division_testing?
   validate :company_belongs_to_user
   validates_inclusion_of :privacy, in: Drawing.privacies.keys
-  validates_attachment :background, content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
+  #validates_attachment :background, content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
   def division_testing?
      val = (self.privacy == "division")

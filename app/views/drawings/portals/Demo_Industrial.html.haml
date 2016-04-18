@@ -23,7 +23,7 @@
    - if !(@drawing.background_file_name.nil?)
       = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :onclick=>'canvas.backgroundImage = 0; onSave(company_id_js, user_id_js,drawing_id_js); return true;'
    - else
-      = link_to "<button>Background</button>".html_safe, "", :onClick=>"onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}'); backgroundModal(); return false;"
+      = link_to "<button>Background</button>".html_safe, "", :onClick=>"runBackground(); backgroundModal(); return false;"
    =image_tag "common/paint_bucket.png"
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "common/FastText.png"
@@ -197,6 +197,8 @@
    var lineActive = true;
    var lineSelected = false;
    var log = log4javascript.getDefaultLogger();
+   var progressBar  = $("<div class='bar'></div>");
+   var barContainer = $("<div class='progress'></div>").append(progressBar);
    log4javascript.setEnabled(false);
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);
@@ -302,11 +304,11 @@
        }
        log.debug("load background object onto canvas");
        var center = canvas.getCenter();
-       if (#{@drawing.background.exists?}) {
-            log.trace("background exists");
+       if (#{@drawing.background_file_name.present?}) {
+            log.trace("background_file_name exists");
             var img = new Image();
             img.crossOrigin = "anonymous";
-            img.src = '#{asset_url(@drawing.background.url(:original))}'
+            img.src = '#{asset_url(@drawing.background_file_name)}'
             img.onload = function(){
             canvas.setBackgroundImage(new fabric.Image(img, {
                scaleX:1,
@@ -362,3 +364,114 @@
      alert("This browser doesn't support the HTML5 Drag and Drop API.");
    }
    log.info( "Done Demo_Industrial Javascript ");
+
+   $(function() {
+      $('.directUpload').find("input:file").each(function(i, elem) {
+        console.log("URL directUpload")
+        console.log(form)
+        var fileInput    = $(elem);
+        console.log("fileInput")
+        console.log(fileInput)
+        var form         = $(fileInput.parents('form:first'));
+        console.log("form")
+        console.log(form)
+        console.log("form:first data")
+        console.log(form.data)
+        console.log("form.data('url')")
+        console.log(form.data('url'))
+        console.log("form.data('form-data')")
+        console.log(form.data('form-data'))
+        console.log("form.data('form-data').key")
+        console.log(form.data('form-data').key)
+        console.log("form.data('host')")
+        console.log(form.data('host'))
+        var URL_dest = form.data('url') + "/" + form.data('form-data').key
+        var submitButton = form.find('input[type="submit"]');
+        fileInput.after(barContainer);
+        fileInput.fileupload({
+        add: function(e, data) {
+                var uploadErrors = [];
+                var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                    uploadErrors.push('Not an accepted file type');
+                }
+                if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 1000000) {
+                    uploadErrors.push('Filesize is too big');
+                }
+                if(uploadErrors.length > 0) {
+                    alert(uploadErrors.join("\n"));
+                } else {
+                    data.submit();
+                }
+        },
+        fileInput:       fileInput,
+        url:             form.data('url'),
+        type:            'POST',
+        autoUpload:       true,
+        formData:         form.data('form-data'),
+        paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+        dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
+        replaceFileInput: false,
+        progressall: function (e, data) {
+           var progress = parseInt(data.loaded / data.total * 100, 10);
+           progressBar.css('width', progress + '%')
+        },
+        start: function (e) {
+           submitButton.prop('disabled', true);
+
+           progressBar.
+             css('background', 'green').
+             css('display', 'block').
+             css('width', '0%').
+             text("Loading...");
+           console.log(form);
+        },
+        done: function(e, data) {
+           submitButton.prop('disabled', false);
+           progressBar.text("Uploading done");
+           $('#upload_button').removeAttr('disabled');
+           // extract key and generate URL from response
+           var key   = $(data.jqXHR.responseXML).find("Key").text();
+           var url   = '//' + form.data('host') + '/' + key;
+           console.log("done:key,url")
+           console.log(key)
+           console.log(url)
+           // create hidden field
+           var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
+           form.append(input);
+           imageURL = "https:" + url;
+           console.log("imageURL");
+           console.log(imageURL);
+           canvas.setBackgroundImage(imageURL,
+                canvas.renderAll.bind(canvas), {
+                   backgroundImageOpacity: 0.5,
+                   backgroundImageStretch: false,
+                   scaleX:1,
+                   scaleY:1,
+                   top: center.top,
+                   left: center.left,
+                   originX: 'center',
+                   originY: 'center',
+                   crossOrigin: 'anonymous'
+                }
+           );
+           console.log("Background Image");
+           console.log(canvas.backgroundImage);
+           $('#backgroundSection').modal('hide')
+         },
+         fail: function(e, data) {
+           submitButton.prop('disabled', false);
+           progressBar.
+             css("background", "red").
+             text("Failed");
+         }
+       });
+     });
+   });
+
+   function runBackground() {
+      progressBar.css('width', '0%').
+      css('color','white').
+      css('display','none').
+      text("");
+   }
