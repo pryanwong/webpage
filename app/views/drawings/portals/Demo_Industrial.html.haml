@@ -16,14 +16,7 @@
       %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
 %div#inputs
 %div#menubar
-   :javascript
-      var company_id_js = #{@drawing.company_id}
-      var drawing_id_js = #{@drawing.id}
-      var user_id_js = #{@drawing.user_id}
-   - if !(@drawing.background_file_name.nil?)
-      = link_to "<button>Remove Background</button>".html_safe, deleteBackground_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :onclick=>'canvas.backgroundImage = 0; onSave(company_id_js, user_id_js,drawing_id_js); return true;'
-   - else
-      = link_to "<button>Background</button>".html_safe, "", :onClick=>"runBackground(); backgroundModal(); return false;"
+   =link_to "<button id='backgroundButtonText'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
    =image_tag "common/paint_bucket.png"
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "common/FastText.png"
@@ -189,6 +182,7 @@
    var activeObject = false;
    var activeObjectVal = "";
    var activeLineGroup = null;
+   var backgroundImageVal = "";
    var objectName = "";
    var canvas = new fabric.CanvasEx('demoCanvas2');
    document.getElementById("demoCanvas2").fabric = canvas;
@@ -268,6 +262,7 @@
                 return o.set('active', false);
               });
               for(i = 0; i < objs.length; i++ ) {
+                 //console.log("Objs[",i,"]", objs[i])
                  objs[i].id = itemId
                  itemId = itemId + 1;
                  if (objs[i].type == "line") {
@@ -298,37 +293,23 @@
                  }
               }
               canvas.renderAll();
+              backgroundImageVal = "";
+              if (canvas.hasOwnProperty('backgroundImage')) {
+                 if ((canvas.backgroundImage).hasOwnProperty('src')) {
+                     backgroundImageVal = canvas.backgroundImage.src;
+                 }
+              }
+              console.log("BackgroundImage Loc: ", backgroundImageVal)
+              backgroundExists(backgroundImageVal);
            },
            postProcessLoading);
 
        }
        log.debug("load background object onto canvas");
        var center = canvas.getCenter();
-       if (#{@drawing.background_file_name.present?}) {
-            log.trace("background_file_name exists");
-            var img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = '#{asset_url(@drawing.background_file_name)}'
-            img.onload = function(){
-            canvas.setBackgroundImage(new fabric.Image(img, {
-               scaleX:1,
-               scaleY:1,
-               top: center.top,
-               left: center.left,
-               originX: 'center',
-               originY: 'center'
-             }),
-             canvas.renderAll.bind(canvas));
-          };
-       } else {
-         log.debug("no background exists");
-         canvas.background = "";
-         canvas.backgroundImage = "";
-       }
        log.info( "Drawing should be loaded ");
        log.info( "Fade spinner out ");
        $(".spinner").fadeOut( 400 );
-
    }
 
    log.info( "Loading all observers and listeners ");
@@ -363,6 +344,7 @@
      log.error( " This browser doesn't support the HTML5 Drag and Drop API ");
      alert("This browser doesn't support the HTML5 Drag and Drop API.");
    }
+
    log.info( "Done Demo_Industrial Javascript ");
 
    $(function() {
@@ -455,9 +437,8 @@
                    crossOrigin: 'anonymous'
                 }
            );
-           console.log("Background Image");
-           console.log(canvas.backgroundImage);
-           $('#backgroundSection').modal('hide')
+           $('#backgroundSection').modal('hide');
+           backgroundButton(true);
          },
          fail: function(e, data) {
            submitButton.prop('disabled', false);
@@ -468,10 +449,71 @@
        });
      });
    });
-
    function runBackground() {
       progressBar.css('width', '0%').
       css('color','white').
       css('display','none').
       text("");
+   }
+
+   function removeBackground() {
+      canvas.backgroundImage = "";
+      canvas.renderAll();
+   }
+
+   function backgroundExists(link) {
+
+      console.log("In background exists")
+      console.log(link)
+      var background_exists = false;
+      if (link === undefined || link === "") {
+         background_exists = false;
+         console.log("Using Background Button")
+         if ( $( "#backgroundButton" ).length ) {
+                 console.log("Found Background Button")
+         }
+         if ( $( "#backgroundButtonText" ).length ) {
+                 console.log("Found backgroundButtonText")
+         }
+         backgroundButton(false);
+      } else {
+         background_exists = true;
+         console.log("Using Remove Background Button")
+         if ( $( "#backgroundButton" ).length ) {
+                 console.log("Found Background Button")
+         }
+         if ( $( "#backgroundButtonText" ).length ) {
+                 console.log("Found backgroundButtonText")
+         }
+         backgroundButton(true);
+      }
+      console.log("Background Exists?")
+      console.log(background_exists)
+      console.log("Leaving Background Exists")
+      return background_exists;
+   }
+
+   function backgroundButton( background )
+   {
+      if (background) {
+        $("#backgroundButton").attr("onclick","removeBackgroundRoutine(); return false;");
+        $("#backgroundButtonText").html('Remove Background');
+      } else {
+        $("#backgroundButton").attr("onclick","addBackgroundRoutine(); return false;");
+        $("#backgroundButtonText").html('Background');
+      }
+   }
+
+   function removeBackgroundRoutine()
+   {
+      removeBackground();
+      backgroundButton(false);
+      return false;
+   }
+
+   function addBackgroundRoutine()
+   {
+      runBackground();
+      backgroundModal();
+      return false;
    }

@@ -280,6 +280,26 @@ function postProcessLoading(o, object) {
 
 };
 
+function checkBackgroundFileExists( link ) {
+  console.log(link);
+  $.ajax({
+    url:link,
+    type:'HEAD',
+    error: function()
+    {
+        console.log("In Error Function checkBackgroundFileExists");
+        console.log("Background File Not Found")
+        return false;
+    },
+    success: function()
+    {
+        console.log("In success Function checkBackgroundFileExists")
+        console.log("Background File Exists")
+        return true;
+    }
+  });
+}
+
 function onSave(company_id, user_id, id) {
  log.info( "Entering onSave");
  // Remove circle0 and circle1 from image
@@ -1138,4 +1158,31 @@ function SetConfig(searchId) {
          log.info( "Leaving SetConfig");
      //}
      //window.close();
+ }
+
+
+ var Inspect = {
+     TYPE_FUNCTION: 'function',
+     // Returns an array of (the names of) all methods
+     methods: function(obj) {
+         var testObj = obj || self;
+         var methods = [];
+         for (prop in testObj) {
+             if (typeof testObj[prop] == Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
+                 methods.push(prop);
+             }
+         }
+         return methods;
+     },
+     // Returns an array of (the names of) all properties
+     properties: function(obj) {
+         var testObj = obj || self;
+         var properties = [];
+         for (prop in testObj) {
+             if (typeof testObj[prop] != Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
+                 properties.push(prop);
+             }
+         }
+         return properties;
+     }
  }
