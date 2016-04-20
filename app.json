@@ -75,6 +75,12 @@
     },
     "SECRET_KEY_BASE": {
       "required": true
+    },
+    "MAINTENANCE_PAGE_URL": {
+      "required":true
+    },
+    "ERROR_PAGE_URL": {
+      "required":true
     }
   },
   "addons": [
