@@ -165,7 +165,6 @@ function selectionCleared(e)  {
 function mouseDown(e)  {
     log.info( "Entering mouseDown");
     $('#glossymenu').remove();
-    contextmenuon = false;
     log.debug( "contextmenuon: ", contextmenuon);
     log.info( "Leaving mouseDown");
 };
@@ -199,6 +198,7 @@ function objectSelected(e) {
 
 function mouseOut(e) {
    log.info( "Entering mouseOut");
+   contextmenuon = true;
    e.target.setOpacity(1);
    canvas.renderAll();
    if (e.target.type == "lineGroup" && lineActive) {
@@ -230,6 +230,7 @@ function mouseOut(e) {
 function mouseOver(e) {
   log.info( "Entering mouseOver");
   log.debug( "Set Opacity to 0.5");
+  contextmenuon = false;
   e.target.setOpacity(0.5);
   activeObjectVal = e.target
   if (e.target.type) {
@@ -965,17 +966,21 @@ function contextMenu(env) {
 
 function menus(items, event) {
    log.info( "Entering menus");
-   $('body').append("<div id='glossymenu' class='glossymenu'>");
-   $('#glossymenu').append("<ul id='ulglossymenu'>");
-   for (index=0; index < items.length; index++) {
-      $('#ulglossymenu').append("<li> <a>" + items[index] + "</a> </li>");
+   if (contextmenuon == false) {
+      $('body').append("<div id='glossymenu' class='glossymenu'>");
+      $('#glossymenu').append("<ul id='ulglossymenu'>");
+      for (index=0; index < items.length; index++) {
+         $('#ulglossymenu').append("<li> <a>" + items[index] + "</a> </li>");
+      }
+      $('#glossymenu').append("</ul>");
+      $('#body').append("</div>");
+      var posY = event.layerY + "px";
+      var posX = event.layerX + "px";
+      $('#glossymenu').css('top',posY);
+      $('#glossymenu').css('left',posX);
+   } else {
+     log.info("Menu Not Displayed contextmenu is true");
    }
-   $('#glossymenu').append("</ul>");
-   $('#body').append("</div>");
-   var posY = event.layerY + "px";
-   var posX = event.layerX + "px";
-   $('#glossymenu').css('top',posY);
-   $('#glossymenu').css('left',posX);
    log.info( "Leaving menus");
 };
 
