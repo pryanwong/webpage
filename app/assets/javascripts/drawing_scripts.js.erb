@@ -918,7 +918,8 @@ function handleDrop(e) {
             height: img.height,
             left: e.layerX,
             top: e.layerY,
-            config: 'undefined'
+            config: 'undefined',
+            origloc: 'undefined'
          });
          if(img.hasAttribute('data-config')) {
            log.debug("Has data-config")
@@ -934,8 +935,19 @@ function handleDrop(e) {
          } else {
            newImage.model = false;
          }
+         if(img.hasAttribute('data-loc')) {
+           log.debug("Has data-loc")
+           newImage.origloc = img.getAttribute('data-loc')
+           log.debug("data-loc: ", newImage.origloc);
+         } else {
+           newImage.origloc = false;
+         }
          newImage.id = itemId
-
+         console.log("--- origloc -------");
+         console.log(newImage.origloc);
+         newImage.setSrc("/assets/" + newImage.origloc);
+         console.log("--- newImage.src ------");
+         console.log(newImage.src);
          itemId = itemId + 1;
          canvas.add(newImage);
          newImage.on("mousedown", function(data, index) { imageDown(data,index); });
