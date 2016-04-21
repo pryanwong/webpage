@@ -200,7 +200,11 @@ function mouseOut(e) {
    log.info( "Entering mouseOut");
    contextmenuon = true;
    e.target.setOpacity(1);
+   log.trace("Viewing target in mouseOut")
+   log.trace(e.target)
+   log.debug("Rendering All")
    canvas.renderAll();
+   log.debug("Done Rendering All")
    if (e.target.type == "lineGroup" && lineActive) {
       var items = e.target._objects;
       e.target._restoreObjectsState();
@@ -282,23 +286,25 @@ function postProcessLoading(o, object) {
 };
 
 function checkBackgroundFileExists( link ) {
-  console.log(link);
+  log.info("Entering checkBackgroundFileExists")
+  log.debug(link);
   $.ajax({
     url:link,
     type:'HEAD',
     error: function()
     {
-        console.log("In Error Function checkBackgroundFileExists");
-        console.log("Background File Not Found")
+        log.debug("In Error Function checkBackgroundFileExists");
+        log.debug("Background File Not Found")
         return false;
     },
     success: function()
     {
-        console.log("In success Function checkBackgroundFileExists")
-        console.log("Background File Exists")
+        log.debug("In success Function checkBackgroundFileExists")
+        log.debug("Background File Exists")
         return true;
     }
   });
+  log.info("Leaving checkBackgroundFileExists")
 }
 
 function onSave(company_id, user_id, id) {
@@ -829,6 +835,8 @@ function imageDown(data,index) {
 function handleDrop(e) {
    log.info( "Entering handleDrop");
    var img = document.querySelector('#images img.img_dragging');
+   img.height = img.height;
+   img.width = img.width;
    log.trace("Draggable Stage:", img);
    var draggy = "";
    if (e.stopPropagation) {
@@ -921,6 +929,7 @@ function handleDrop(e) {
             config: 'undefined',
             origloc: 'undefined'
          });
+
          if(img.hasAttribute('data-config')) {
            log.debug("Has data-config")
            newImage.configdbid = img.getAttribute('data-config')
@@ -943,14 +952,27 @@ function handleDrop(e) {
            newImage.origloc = false;
          }
          newImage.id = itemId
-         console.log("--- origloc -------");
-         console.log(newImage.origloc);
-         newImage.setSrc("/assets/" + newImage.origloc);
-         console.log("--- newImage.src ------");
-         console.log(newImage.src);
+         newImage.setSrc("/assets/" + newImage.origloc,
+                  function(obj) {
+                    log.debug("Object");
+                    log.debug("In callback for setSrc function");
+                    log.debug(obj);
+                    obj.setCoords();
+                  },
+                  {
+                    'height':img.height,
+                    'width':img.width
+                  });
+         newImage.setCoords();
+         log.debug("--- newImage.src ------");
+         log.debug("src:",newImage.getSrc());
+         log.debug("Height",newImage.getHeight());
+         log.debug("Width", newImage.getWidth());
          itemId = itemId + 1;
-         canvas.add(newImage);
          newImage.on("mousedown", function(data, index) { imageDown(data,index); });
+         canvas.add(newImage);
+         canvas.renderAll();
+
       }
       this.classList.remove('over');
       return false;
@@ -1202,4 +1224,73 @@ function SetConfig(searchId) {
          }
          return properties;
      }
+ }
+
+ function runBackground() {
+    progressBar.css('width', '0%').
+    css('color','white').
+    css('display','none').
+    text("");
+ }
+
+ function removeBackground() {
+    canvas.backgroundImage = "";
+    canvas.renderAll();
+ }
+
+ function backgroundExists(link) {
+
+    log.info("In background exists")
+    log.debug(link)
+    var background_exists = false;
+    if (link === undefined || link === "") {
+       background_exists = false;
+       log.debug("Using Background Button")
+       if ( $( "#backgroundButton" ).length ) {
+               log.debug("Found Background Button")
+       }
+       if ( $( "#backgroundButtonText" ).length ) {
+               log.debug("Found backgroundButtonText")
+       }
+       backgroundButton(false);
+    } else {
+       background_exists = true;
+       log.debug("Using Remove Background Button")
+       if ( $( "#backgroundButton" ).length ) {
+               log.debug("Found Background Button")
+       }
+       if ( $( "#backgroundButtonText" ).length ) {
+               log.debug("Found backgroundButtonText")
+       }
+       backgroundButton(true);
+    }
+    log.debug("Background Exists?")
+    log.debug(background_exists)
+    log.info("Leaving Background Exists")
+    return background_exists;
+ }
+
+ function backgroundButton( background )
+ {
+    if (background) {
+      $("#backgroundButton").attr("onclick","removeBackgroundRoutine(); return false;");
+      $("#backgroundButtonText").html('Remove Background');
+    } else {
+      $("#backgroundButton").attr("onclick","addBackgroundRoutine(); return false;");
+      $("#backgroundButtonText").html('Background');
+    }
+ }
+
+ function removeBackgroundRoutine()
+ {
+    removeBackground();
+    backgroundButton(false);
+    return false;
+ }
+
+ function addBackgroundRoutine()
+ {
+    runBackground();
+    backgroundModal();
+    return false;
  }

@@ -225,11 +225,14 @@
        _render: function(ctx) {
           this.callSuper('_render', ctx);
           if (this.config != 'undefined') {
+            console.log("In Call Super Render, ctx")
+            console.log(ctx)
             ctx.font = '12px Helvetica';
             ctx.fillStyle = '#333';
-            console.log("render text");
-            console.log(this);
-            ctx.fillText(this.config, -this.width/2, (this.height/2+10))
+            log.debug("render text");
+            log.trace(this);
+            textwidth = ctx.measureText(this.config).width
+            ctx.fillText(this.config, -textwidth/2, (this.height/2+10))
           }
        }
    });
@@ -266,7 +269,7 @@
                 return o.set('active', false);
               });
               for(i = 0; i < objs.length; i++ ) {
-                 //console.log("Objs[",i,"]", objs[i])
+                 log.trace("Objs[",i,"]", objs[i])
                  objs[i].id = itemId
                  itemId = itemId + 1;
                  if (objs[i].type == "line") {
@@ -303,7 +306,7 @@
                      backgroundImageVal = canvas.backgroundImage.src;
                  }
               }
-              console.log("BackgroundImage Loc: ", backgroundImageVal)
+              log.debug("BackgroundImage Loc: ", backgroundImageVal)
               backgroundExists(backgroundImageVal);
            },
            postProcessLoading);
@@ -353,24 +356,24 @@
 
    $(function() {
       $('.directUpload').find("input:file").each(function(i, elem) {
-        console.log("URL directUpload")
-        console.log(form)
+        log.debug("URL directUpload")
+        log.debug(form)
         var fileInput    = $(elem);
-        console.log("fileInput")
-        console.log(fileInput)
+        log.debug("fileInput")
+        log.debug(fileInput)
         var form         = $(fileInput.parents('form:first'));
-        console.log("form")
-        console.log(form)
-        console.log("form:first data")
-        console.log(form.data)
-        console.log("form.data('url')")
-        console.log(form.data('url'))
-        console.log("form.data('form-data')")
-        console.log(form.data('form-data'))
-        console.log("form.data('form-data').key")
-        console.log(form.data('form-data').key)
-        console.log("form.data('host')")
-        console.log(form.data('host'))
+        log.debug("form")
+        log.debug(form)
+        log.debug("form:first data")
+        log.debug(form.data)
+        log.debug("form.data('url')")
+        log.debug(form.data('url'))
+        log.debug("form.data('form-data')")
+        log.debug(form.data('form-data'))
+        log.debug("form.data('form-data').key")
+        log.debug(form.data('form-data').key)
+        log.debug("form.data('host')")
+        log.debug(form.data('host'))
         var URL_dest = form.data('url') + "/" + form.data('form-data').key
         var submitButton = form.find('input[type="submit"]');
         fileInput.after(barContainer);
@@ -410,7 +413,7 @@
              css('display', 'block').
              css('width', '0%').
              text("Loading...");
-           console.log(form);
+           log.trace(form);
         },
         done: function(e, data) {
            submitButton.prop('disabled', false);
@@ -419,15 +422,15 @@
            // extract key and generate URL from response
            var key   = $(data.jqXHR.responseXML).find("Key").text();
            var url   = '//' + form.data('host') + '/' + key;
-           console.log("done:key,url")
-           console.log(key)
-           console.log(url)
+           log.debug("done:key,url")
+           log.debug(key)
+           log.debug(url)
            // create hidden field
            var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
            form.append(input);
            imageURL = "https:" + url;
-           console.log("imageURL");
-           console.log(imageURL);
+           log.debug("imageURL");
+           log.debug(imageURL);
            canvas.setBackgroundImage(imageURL,
                 canvas.renderAll.bind(canvas), {
                    backgroundImageOpacity: 0.5,
@@ -453,71 +456,3 @@
        });
      });
    });
-   function runBackground() {
-      progressBar.css('width', '0%').
-      css('color','white').
-      css('display','none').
-      text("");
-   }
-
-   function removeBackground() {
-      canvas.backgroundImage = "";
-      canvas.renderAll();
-   }
-
-   function backgroundExists(link) {
-
-      console.log("In background exists")
-      console.log(link)
-      var background_exists = false;
-      if (link === undefined || link === "") {
-         background_exists = false;
-         console.log("Using Background Button")
-         if ( $( "#backgroundButton" ).length ) {
-                 console.log("Found Background Button")
-         }
-         if ( $( "#backgroundButtonText" ).length ) {
-                 console.log("Found backgroundButtonText")
-         }
-         backgroundButton(false);
-      } else {
-         background_exists = true;
-         console.log("Using Remove Background Button")
-         if ( $( "#backgroundButton" ).length ) {
-                 console.log("Found Background Button")
-         }
-         if ( $( "#backgroundButtonText" ).length ) {
-                 console.log("Found backgroundButtonText")
-         }
-         backgroundButton(true);
-      }
-      console.log("Background Exists?")
-      console.log(background_exists)
-      console.log("Leaving Background Exists")
-      return background_exists;
-   }
-
-   function backgroundButton( background )
-   {
-      if (background) {
-        $("#backgroundButton").attr("onclick","removeBackgroundRoutine(); return false;");
-        $("#backgroundButtonText").html('Remove Background');
-      } else {
-        $("#backgroundButton").attr("onclick","addBackgroundRoutine(); return false;");
-        $("#backgroundButtonText").html('Background');
-      }
-   }
-
-   function removeBackgroundRoutine()
-   {
-      removeBackground();
-      backgroundButton(false);
-      return false;
-   }
-
-   function addBackgroundRoutine()
-   {
-      runBackground();
-      backgroundModal();
-      return false;
-   }
