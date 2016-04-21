@@ -5,6 +5,7 @@ class MessageImageMailer < ActionMailer::Base
 
   def new_message(message)
     @message = message
+    @sender  = current_user.email
     #email_list = [message.email1,message.email2,message.email3,message.email4]
     if (Drawing.exists?(@message.drawing_id))
        drawing = Drawing.find(@message.drawing_id);
