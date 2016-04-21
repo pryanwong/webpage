@@ -424,6 +424,7 @@ class DrawingsController < ApplicationController
        @message.email3 = params[:message_image][:email3]
        @message.email4 = params[:message_image][:email4]
        @message.content = params[:message_image][:content]
+       @message.from = current_user.email
        logger.debug "Inspect Message"
        logger.debug "#{@message.inspect}"
        if @message.valid?

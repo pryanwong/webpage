@@ -8,7 +8,6 @@ class MessagesController < ApplicationController
   def create
     logger.info "Entering MessagesController#create"
     @message = Message.new(message_params)
-    @message.from = current_user.email
 
     if @message.valid?
       MessageMailer.new_message(@message).deliver
