@@ -1,7 +1,7 @@
 class MessageImageMailer < ActionMailer::Base
 
-  default from: "SaleSketch <sferenci@fiveforces.ca>"
-  default to: "Sean Ferenci <sferenci@fiveforces.ca>"
+  default from: "Optecture No Reply <no-reply@optecture.com>"
+  default to: "Support <support@optecture.com>"
 
   def new_message(message)
     @message = message
