@@ -41,17 +41,17 @@
                         %figcaption EPM6000
                   %tr
                      %td
-                        = image_tag "companies/GE/EPM9000.gif", :img_val=>"EPM9650.gif",  :"data-config"=>"6", :"data-loc"=>"companies/GE/EPM9650.gif", :"data-model"=>"EPM9650", :draggable=>"true", :width=>"82", :height => "52"
+                        = image_tag "companies/GE/EPM9000.gif", :img_val=>"EPM9650.gif",  :"data-config"=>"6", :"data-loc"=>"companies/GE/EPM9000.gif", :"data-model"=>"EPM9650", :draggable=>"true", :width=>"82", :height => "52"
                         %figcaption EPM9650
                      %td
                         = image_tag "companies/GE/EPM9800.gif", :img_val=>"EPM9800.gif", :"data-config"=>"7", :"data-loc"=>"companies/GE/EPM9800.gif", :"data-model"=>"EPM9800", :draggable=>"true", :width=>"71", :height => "64"
                         %figcaption EPM9800
                   %tr
                      %td
-                        = image_tag "companies/GE/epm4600.jpg", :img_val=>"EPM4600.jpg",  :"data-config"=>"8", :"data-loc"=>"companies/GE/EPM4600.jpg", :"data-model"=>"EPM4600", :draggable=>"true", :width=>"82", :height => "53"
+                        = image_tag "companies/GE/epm4600.jpg", :img_val=>"EPM4600.jpg",  :"data-config"=>"8", :"data-loc"=>"companies/GE/epm4600.jpg", :"data-model"=>"EPM4600", :draggable=>"true", :width=>"82", :height => "53"
                         %figcaption EPM4600
                      %td
-                        = image_tag "companies/GE/epm9900.jpg", :img_val=>"EPM9900.jpg", :"data-config"=>"9", :"data-loc"=>"companies/GE/EPM9900.jpg", :"data-model"=>"EPM9900", :draggable=>"true", :width=>"82", :height => "52"
+                        = image_tag "companies/GE/epm9900.jpg", :img_val=>"EPM9900.jpg", :"data-config"=>"9", :"data-loc"=>"companies/GE/epm9900.jpg", :"data-model"=>"EPM9900", :draggable=>"true", :width=>"82", :height => "52"
                         %figcaption EPM9900
                   %tr
                      %td
@@ -65,7 +65,7 @@
                         = image_tag "companies/GE/epm6100-7100.jpg", :img_val=>"epm7100.jpg", :"data-config"=>"12", :"data-loc"=>"companies/GE/epm6100-7100.jpg", :"data-model"=>"EPM7100", :draggable=>"true", :width=>"68", :height => "65"
                         %figcaption EPM7100
                      %td
-                        = image_tag "companies/GE/EPM-Enclosure.png", :img_val=>"EPM-Enclosure.png", :"data-config"=>"13", :"data-model"=>"EPM-Enclosure", :draggable=>"true", :width=>"60", :height => "71"
+                        = image_tag "companies/GE/EPM-Enclosure.png", :img_val=>"EPM-Enclosure.png", :"data-config"=>"13", :"data-loc"=>"companies/GE/EPM-Enclosure.png", :"data-model"=>"EPM-Enclosure", :draggable=>"true", :width=>"60", :height => "71"
                         %figcaption EPM-Enclosure
          %h3 Networking
          %div{:style=>"margin:0px;padding:0px;"}
@@ -229,7 +229,7 @@
             ctx.fillStyle = '#333';
             console.log("render text");
             console.log(this);
-            ctx.fillText(this.config, -this.width/2, (this.height/2+5))
+            ctx.fillText(this.config, -this.width/2, (this.height/2+10))
           }
        }
    });

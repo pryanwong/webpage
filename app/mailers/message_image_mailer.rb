@@ -1,6 +1,6 @@
 class MessageImageMailer < ActionMailer::Base
 
-  default from: "Optecture No Reply <no-reply@optecture.com>"
+  default from: "Optecture No-Reply <no-reply@optecture.com>"
   default to: "Support <support@optecture.com>"
 
   def new_message(message)
