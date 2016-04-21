@@ -321,13 +321,13 @@ class DrawingsController < ApplicationController
 
   def deleteBackground
     logger.info "Entering Drawing#deleteBackground"
-    @drawing = Drawing.find(params[:id]);
-    logger.debug "Drawing URL: #{@drawing.background.url}"
-    logger.debug "Drawing URL: #{@drawing.background}"
-    @drawing.background.destroy;
-    @drawing.background = nil;
-    @drawing.save;
-    redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
+    #@drawing = Drawing.find(params[:id]);
+    #logger.debug "Drawing URL: #{@drawing.background.url}"
+    #logger.debug "Drawing URL: #{@drawing.background}"
+    #@drawing.background.destroy;
+    #@drawing.background = nil;
+    #@drawing.save;
+    #redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
     logger.info "Leaving Drawing#deleteBackground"
   end
 
@@ -449,7 +449,7 @@ class DrawingsController < ApplicationController
     end
 
     def drawing_params
-      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id, :background)
+      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
     end
 
     #def check_for_cancel
