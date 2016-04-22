@@ -186,7 +186,7 @@ class DrawingsController < ApplicationController
        logger.debug "No drawing made yet"
        flash[:error] = "No drawing made yet"
        logger.info "Leaving DrawingsController:bom"
-       redirect_to company_user_path(@company.id, @user.id)
+       redirect_to company_user_path(@company_id, @user.id)
     else
       logger.debug "Counting Objects"
       obj = JSON.parse(@drawing.drawing)
