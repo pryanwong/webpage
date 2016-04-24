@@ -42,19 +42,4 @@ Rails.application.configure do
   config.assets.css_compressor = :sass
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-
-  #Paperclip S3 development
-  # Amazon Web Services - S3
-  config.paperclip_defaults = {
-    :storage => :s3,
-    :s3_protocol => :https,
-    :url => "https://s3-us-west-2.amazonaws.com",
-    :s3_credentials => {
-      :bucket => 'developmentbackground',
-      :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-      :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'],
-      :s3_region => 'us-west-2'
-    }
-  }
-   Paperclip.options[:content_type_mappings] = { jpeg: 'image/jpeg', jpg: 'image/jpeg' }
 end
