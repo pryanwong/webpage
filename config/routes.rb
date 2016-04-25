@@ -70,8 +70,8 @@ Rails.application.routes.draw do
     match '/recordnotfound' => 'pages#recordnotfound', via: [:get]
     match '/accessdenied' => 'pages#accessdenied', via: [:get]
 
-    get 'contact', to: 'messages#new', as: 'contact'
-    post 'contact', to: 'messages#create'
+    #get 'contact', to: 'messages#new', as: 'contact'
+    #post 'contact', to: 'messages#create'
 
     get 'auth/failure', to: 'pages#show'
 

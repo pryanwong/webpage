@@ -1,27 +1,27 @@
 %nav{:class=>'navbar navbar-inverse navbar-fixed-top', :role=>'navigation'}
    %div{:class=>"container"}
-      %div{:class=>"navbar-header"}
+      %div{:class=>"navbar-header" }
          %button{"type"=>"button",:class=>"navbar-toggle", "data-toggle"=>"collapse", "data-target"=>"#starterNavbar"}
             %span{:class=>"icon-bar"}
             %span{:class=>"icon-bar"}
             %span{:class=>"icon-bar"}
-         %a{:class=>"pull-left"}
-            =image_tag 'Logo_no_text_sm.gif', :width=>"50", :height => "50"
+         %a{:class=>"pull-left", :href=>'/', :style=>"PADDING-right: 15px"}
+            =image_tag 'Logo_no_text_sm.gif', :width=>"50", :height => "49"
       %div{:id=>"starterNavbar", :class=>"navbar-collapse collapse"}
          %ul{:class=>"nav navbar-nav"}
             %li{:class=>"active"}
                %a{:href=>"/"}
                   %span{:class=>"glyphicon glyphicon-home", "aria-hidden" =>"true"}
                   Home
-            %li
-               %a{:href=>'#blackwhite'}
-                  %span Products
-            %li
-               %a{:href=>'#sepia'}
-                  %span Company
-            %li
-               %a{:href=>'/contact.html'}
-                  %span Contact
+            -#%li
+            -#   %a{:href=>'#blackwhite'}
+            -#      %span Products
+            -#%li
+            -#   %a{:href=>'#sepia'}
+            -#      %span Company
+            -#%li
+            -#   %a{:href=>'/contact.html'}
+            -#      %span Contact
          %ul{:class=>"nav navbar-nav navbar-right"}
             - if (current_user)
                %li
