@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
      end
   end
 
-  def self.from_omniauth(auth)
+  def self.from_omniauth(auth, remote_ip)
       logger.fatal "In User from_omniauth"
       logger.fatal "#{auth}"
       if (auth.info.email).blank?
@@ -63,9 +63,13 @@ class User < ActiveRecord::Base
       else
          if User.exists?(:email => auth.info.email, :provider => User.providers[auth.provider])
             user = User.where(email: auth.info.email, provider: User.providers[auth.provider]).first
-            user.uid = auth.uid
-            user.reset_password_token = auth.credentials.token
+            user.uid                    = auth.uid
+            user.reset_password_token   = auth.credentials.token
             user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
+            user.last_sign_in_at        = user.current_sign_in_at
+            user.current_sign_in_at     = Time.new
+            user.last_sign_in_ip        = user.current_sign_in_ip
+            user.current_sign_in_ip     = remote_ip
             #user.setrole(user.role_id)
             user.save!
          end
