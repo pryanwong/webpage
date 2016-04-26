@@ -55,8 +55,9 @@ gem "jscolor-rails"
 gem 'jquery-turbolinks' #adding turbo
 gem 'haml' #haml gem
 gem 'will_paginate'
-gem 'paperclip', :git=> 'https://github.com/thoughtbot/paperclip', :ref => '523bd46c768226893f23889079a7aa9c73b57d68'
+#gem 'paperclip', :git=> 'https://github.com/thoughtbot/paperclip', :ref => '523bd46c768226893f23889079a7aa9c73b57d68'
 gem 'aws-sdk'
+gem 'remote_ip_proxy_scrubber'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'

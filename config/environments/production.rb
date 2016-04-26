@@ -80,17 +80,46 @@ Rails.application.configure do
 
   #Paperclip S3 development
   # Amazon Web Services - S3
-  config.paperclip_defaults = {
-    :storage => :s3,
-    :s3_protocol => :https,
-    :url => "https://s3-us-west-1.amazonaws.com/",
-    :s3_credentials => {
-      :bucket => ENV['S3_BUCKET_NAME'],
-      :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-      :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'],
-      :s3_region => ENV['s3_region']
-    }
-  }
+  #config.paperclip_defaults = {
+  #  :storage => :s3,
+  #  :s3_protocol => :https,
+  #  :url => "https://s3-us-west-1.amazonaws.com/",
+  #  :s3_credentials => {
+  #    :bucket => ENV['S3_BUCKET_NAME'],
+  #    :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+  #    :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'],
+  #    :s3_region => ENV['s3_region']
+  #  }
+  #}
 
-   Paperclip.options[:content_type_mappings] = { jpeg: 'image/jpeg', jpg: 'image/jpeg' }
+   #Paperclip.options[:content_type_mappings] = { jpeg: 'image/jpeg', jpg: 'image/jpeg' }
+
+   # Make sure CloudFlare IP addresses are
+   # removed from the X-Forwarded-For header
+   # before our app sees them
+   config.middleware.insert_before(Rails::Rack::Logger,
+      RemoteIpProxyScrubber.filter_middleware,
+        %w{
+          103.21.244.0/22
+          103.22.200.0/22
+          103.31.4.0/22
+          104.16.0.0/12
+          108.162.192.0/18
+          131.0.72.0/22
+          141.101.64.0/18
+          162.158.0.0/15
+          172.64.0.0/13
+          173.245.48.0/20
+          188.114.96.0/20
+          190.93.240.0/20
+          197.234.240.0/22
+          198.41.128.0/17
+          199.27.128.0/21
+        })
+
+   # Make sure the customer's real IP address (remote_ip)
+   # is used in our Rails logs.
+   config.middleware.insert_before(Rails::Rack::Logger, RemoteIpProxyScrubber.patched_logger)
+   config.middleware.delete(Rails::Rack::Logger)
+
 end
