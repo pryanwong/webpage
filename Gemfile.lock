@@ -1,15 +1,3 @@
-GIT
-  remote: https://github.com/thoughtbot/paperclip
-  revision: 523bd46c768226893f23889079a7aa9c73b57d68
-  ref: 523bd46c768226893f23889079a7aa9c73b57d68
-  specs:
-    paperclip (4.3.1)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
-      cocaine (~> 0.5.5)
-      mime-types
-      mimemagic (= 0.3.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -69,10 +57,6 @@ GEM
       xpath (~> 2.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    climate_control (0.0.3)
-      activesupport (>= 3.0)
-    cocaine (0.5.8)
-      climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.1)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -165,7 +149,6 @@ GEM
     mime-types (3.0)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0221)
-    mimemagic (0.3.0)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
     multi_json (1.11.2)
@@ -248,6 +231,7 @@ GEM
       ffi (>= 0.5.0)
     rdoc (4.2.2)
       json (~> 1.4)
+    remote_ip_proxy_scrubber (0.1.1)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -340,10 +324,10 @@ DEPENDENCIES
   omniauth-google-oauth2 (~> 0.4.1)
   omniauth-linkedin-oauth2
   omniauth-oauth2 (= 1.3.1)
-  paperclip!
   puma
   rails (= 4.1.8)
   rails_12factor
+  remote_ip_proxy_scrubber
   rspec-rails (~> 3.0)
   sass-rails
   sdoc (~> 0.4.0)
