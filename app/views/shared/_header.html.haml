@@ -28,10 +28,10 @@
                      %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
                      New Drawing
             - if @editdetails == true
-               %li
-                  %a{:href=>'#', :onclick => "onSave( '#{params[:company_id]}', '#{params[:user_id]}', '#{params[:id]}')"}
-                     %span{:class=>"fa fa-save","aria-hidden"=>"true"}
-                     Save
+               -# %li
+               -#    %a{:href=>'#', :onclick => "onSave()"}
+               -#       %span{:class=>"fa fa-save","aria-hidden"=>"true"}
+               -#       Save
             -if current_user.admin? && !session[:switched] == true
                %li
                   = link_to user_showall_path(session[:user_id]) do

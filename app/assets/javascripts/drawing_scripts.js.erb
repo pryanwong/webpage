@@ -21,6 +21,25 @@ function modernizerFunction(Mod, doc ) {
   log.info( "Leaving  modernizerFunction");
 };
 
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
 function GetDebugParameter(sParam){
     log.info( "Entering  GetDebugParameter");
     var sPageURL = window.location.hash;
@@ -52,6 +71,7 @@ function GetDebugParameter(sParam){
 
 function objectBoundaryCheck(e){
   log.info( "Entering  objectBoundaryCheck");
+  $("#saveMessage").text('Changes Made, Save Pending...');
   e.target.setCoords();
   log.debug( "Checking to see if the end points of a line are being dragged ");
   if (e.target.type != "circle0" && e.target.type != "circle1") {
@@ -102,8 +122,17 @@ function objectBoundaryCheck(e){
         }
         obj.setCoords();
     }
+  } else {
+    boundaryInspectorCircle(e)
   }
+  onSave();
   log.info( "Leaving objectBoundaryCheck");
+};
+
+function textChangedEvent(e) {
+  $("#saveMessage").text('Changes Made, Save Pending...');
+  log.debug('text:changed', e.target, e);
+  onSave();
 };
 
 function boundaryInspectorCircle(e) {
@@ -233,9 +262,9 @@ function mouseOut(e) {
 
 function mouseOver(e) {
   log.info( "Entering mouseOver");
-  log.debug( "Set Opacity to 0.5");
+  //log.debug( "Set Opacity to 0.5");
   contextmenuon = false;
-  e.target.setOpacity(0.5);
+  //e.target.setOpacity(0.5);
   activeObjectVal = e.target
   if (e.target.type) {
        if (e.target.type == "line") {
@@ -307,66 +336,65 @@ function checkBackgroundFileExists( link ) {
   log.info("Leaving checkBackgroundFileExists")
 }
 
-function onSave(company_id, user_id, id) {
- log.info( "Entering onSave");
- // Remove circle0 and circle1 from image
- $(".spinner").show();
- objects = canvas.getObjects();
- //var temp = canvas.backgroundImage;
+var onSave  =  debounce(function() {
+    log.info( "Entering onSave");
+    // Remove circle0 and circle1 from image
+    //$(".spinner").show();
+    $(".saveMessage").text('Save In Progress...');
+    objects = canvas.getObjects();
 
- //if (canvas.background === "") {
-//     canvas.backgroundImage = "";
-//   log.debug( "Setting background image to blank");
- //}
- var len = objects.length;
- log.debug( "Number of objects to process: ", len);
- for (index=len -1; index > -1; index--) {
-   if (objects[index].type == "lineGroup") {
-      log.debug( "Processing a line object");
-      var items = objects[index]._objects;
-      objects[index]._restoreObjectsState();
-      canvas.remove(objects[index]);
-      canvas.add(items[2])
-   }
+    var len = objects.length;
+    log.debug( "Number of objects to process: ", len);
+    for (index=len -1; index > -1; index--) {
+      if (objects[index].type == "lineGroup") {
+         log.debug( "Processing a line object");
+         var items = objects[index]._objects;
+         objects[index]._restoreObjectsState();
+         canvas.remove(objects[index]);
+         canvas.add(items[2])
+      }
 
-   if (objects[index].type == "circle0" || objects[index].type == "circle1") {
-     log.debug( "Removing circles associated with a line group");
-     canvas.remove(objects[index]);
-   }
- }
- //var data_drawing2 = JSON.stringify(canvas);
- var token = $('meta[name="csrf-token"]').attr('content');
- canvas.backgroundColor = '#FFFFFF';
- var png_file = canvas.toDataURL('png');
- //var png_file = "";
- canvas.backgroundColor = "";
- var json_data = { company_id: company_id,
+      if (objects[index].type == "circle0" || objects[index].type == "circle1") {
+         log.debug( "Removing circles associated with a line group");
+         canvas.remove(objects[index]);
+      }
+    }
+    var token = $('meta[name="csrf-token"]').attr('content');
+    canvas.backgroundColor = '#FFFFFF';
+    var png_file = canvas.toDataURL('png');
+    //var png_file = "";
+    canvas.backgroundColor = "";
+    var json_data = { company_id: company_id,
                    user_id:  user_id,
-                   id: id,
+                   id: drawing_id,
                    authenticity_token: token,
                    png: png_file,
                    drawing: canvas  }
- var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + id +".json"
- $.ajax({
-         url: json_url, // Route to the Script Controller method
-        type: "patch",
-    dataType: "json",
- contentType: "application/json",
-        data: JSON.stringify(json_data), // This goes to Controller in params hash, i.e. params[:file_name]
-     timeout: 3000, // sets timeout to 3 seconds
-    complete: function() {
-                $(".spinner").fadeOut( 400 );
-              },
-     success: function(data, textStatus, xhr) {
-
-              },
-       error: function(data, textStatus) {
-              alert(textStatus);
-              }
+    log.trace(json_data)
+    var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +".json"
+    $.ajax({
+            url: json_url, // Route to the Script Controller method
+           type: "patch",
+       dataType: "json",
+    contentType: "application/json",
+           data: JSON.stringify(json_data), // This goes to Controller in params hash, i.e. params[:file_name]
+        timeout: 3000, // sets timeout to 3 seconds
+       complete: function() {
+                   //$(".spinner").fadeOut( 400 );
+                   $("#saveMessage").text('Current');
+                 },
+        success: function(data, textStatus, xhr) {
+                   $("#saveMessage").text('Current');
+                 },
+          error: function(data, textStatus) {
+                 //alert(textStatus);
+                   msg = "Error: " + textStatus;
+                   $("#saveMessage").text(msg);
+                 }
       });
-  canvas.renderAll();
-  log.info( "Leaving onSave");
-}
+     canvas.renderAll();
+     log.info( "Leaving onSave");
+}, 3000);
 
 function handleDragStart(e) {
  log.info( "Entering handleDragStart");
@@ -834,6 +862,7 @@ function imageDown(data,index) {
 
 function handleDrop(e) {
    log.info( "Entering handleDrop");
+   $("#saveMessage").text('Changes Made, Save Pending...');
    var img = document.querySelector('#images img.img_dragging');
    img.height = img.height;
    img.width = img.width;
@@ -956,8 +985,7 @@ function handleDrop(e) {
                   function(obj) {
                     log.debug("Object");
                     log.debug("In callback for setSrc function");
-                    log.debug(obj);
-                    obj.setCoords();
+                    log.trace(obj);
                   },
                   {
                     'height':img.height,
@@ -975,8 +1003,10 @@ function handleDrop(e) {
 
       }
       this.classList.remove('over');
+      onSave();
       return false;
    }
+   onSave();
    log.info( "Leaving handleDrop");
 }
 
@@ -1117,7 +1147,7 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
       }
     }
   }
-    $('#gifspinner').fadeOut( 400 )
+    $('#gifspinner').fadeOut( 400 );
     log.info( "Leaving loadConfigScreen");
 }
 
@@ -1151,9 +1181,8 @@ function configuratorProduct2(productId, companyId, searchId) {
                    log.trace("configuratorProduct2: In Ajax Success")
                    loadConfigScreen( data, selectChoices, splitVals );
                    log.trace(data)
-                    configString(data,searchId);
+                   //configString(data,searchId);
                    log.info( "Ajax Call is Success");
-                   log.trace( "Ajax Call is Success");
                 },
          error: function(data, textStatus) {
                 log.trace(data);
@@ -1191,7 +1220,9 @@ function SetConfig(searchId) {
      //var canvas = "";
      //if (window.opener != null && !window.opener.closed) {
          //canvas = document.getElementById("demoCanvas2").fabric
-         canvas.item(searchId).config = document.getElementById('prodconfig').innerHTML
+         //console.log(canvas.item(searchId))
+         //canvas.item(searchId).config = document.getElementById('prodconfig').innerHTML
+         canvas.item(searchId).setConfig(document.getElementById('prodconfig').innerHTML)
          canvas.item(searchId).price = document.getElementById('price').innerHTML
          canvas.renderAll();
          log.info( "Leaving SetConfig");
@@ -1234,8 +1265,9 @@ function SetConfig(searchId) {
  }
 
  function removeBackground() {
-    canvas.backgroundImage = "";
-    canvas.renderAll();
+    $("#saveMessage").text('Changes Made, Save Pending...');
+    canvas.setBackgroundImage(0, canvas.renderAll.bind(canvas));
+    onSave();
  }
 
  function backgroundExists(link) {

@@ -40,9 +40,8 @@
                            = f.file_field :background, :class=>'form-control'
       :javascript
          var input = document.getElementById('drawing_background');
-         console.log(input)
          input.onclick = function () {
-            console.log("Clicked");
+            log.debug("Drawing Background Button Clicked");
             this.value = null;
          };
 

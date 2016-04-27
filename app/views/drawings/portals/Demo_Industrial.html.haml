@@ -21,10 +21,13 @@
    %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
    =image_tag "common/FastText.png"
    %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
-   Customer:
-   = @drawing.customer
-   Opportunity:
-   = @drawing.opportunity
+   -# Customer:
+   -# = @drawing.customer
+   -# Opportunity:
+   -# = @drawing.opportunity
+   Save Status:
+   %span{:id=>'saveMessage'}
+      Current
 %div{:id=>"accordian-canvas-wrapper", :style=>"height:1000px;width:100%;"}
    %div{:id=>"accordian-container"}
       %div{ :id=>"accordion" }
@@ -182,10 +185,13 @@
 
    ga('create', 'UA-76942309-1', 'auto');
    ga('send', 'pageview');
-   
+
    var handler = "";
    var c = new Array();
    var objId_var = 0;
+   var company_id ='#{params[:company_id]}'
+   var user_id= '#{params[:user_id]}'
+   var drawing_id = '#{params[:id]}'
    var itemId = 0;
    var contextmenuon = false;
    var activeObject = false;
@@ -230,16 +236,18 @@
                                           origloc: this.origloc,
                                           configdbid: this.configdbid});
        },
-
+       setConfig: function(configString) {
+          this.config = configString;
+          canvas.trigger('custom-image:textChange');
+       },
        _render: function(ctx) {
           this.callSuper('_render', ctx);
           if (this.config != 'undefined') {
-            console.log("In Call Super Render, ctx")
-            console.log(ctx)
+            log.debug("In Call Super Render, ctx")
+            log.trace(ctx)
             ctx.font = '12px Helvetica';
             ctx.fillStyle = '#333';
             log.debug("render text");
-            log.trace(this);
             textwidth = ctx.measureText(this.config).width
             ctx.fillText(this.config, -textwidth/2, (this.height/2+10))
           }
@@ -336,9 +344,10 @@
    canvas.on('mouse:down', mouseDown);
    canvas.on('selection:cleared', selectionCleared);
    canvas.on('object:scaling', objectResize);
-   canvas.on('object:moving', boundaryInspectorCircle);
    canvas.observe("object:moving", objectBoundaryCheck);
    canvas.observe("object:rotating", objectBoundaryCheck);
+   canvas.on('object.modified', function(e) {console.log("object.modified: ",e)})
+   canvas.on('custom-image:textChange', textChangedEvent);
    if (Modernizr.draganddrop) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements
@@ -369,20 +378,20 @@
         log.debug(form)
         var fileInput    = $(elem);
         log.debug("fileInput")
-        log.debug(fileInput)
+        log.trace(fileInput)
         var form         = $(fileInput.parents('form:first'));
-        log.debug("form")
-        log.debug(form)
-        log.debug("form:first data")
-        log.debug(form.data)
-        log.debug("form.data('url')")
-        log.debug(form.data('url'))
-        log.debug("form.data('form-data')")
-        log.debug(form.data('form-data'))
-        log.debug("form.data('form-data').key")
-        log.debug(form.data('form-data').key)
-        log.debug("form.data('host')")
-        log.debug(form.data('host'))
+        log.trace("form")
+        log.trace(form)
+        log.trace("form:first data")
+        log.trace(form.data)
+        log.trace("form.data('url')")
+        log.trace(form.data('url'))
+        log.trace("form.data('form-data')")
+        log.trace(form.data('form-data'))
+        log.trace("form.data('form-data').key")
+        log.trace(form.data('form-data').key)
+        log.trace("form.data('host')")
+        log.trace(form.data('host'))
         var URL_dest = form.data('url') + "/" + form.data('form-data').key
         var submitButton = form.find('input[type="submit"]');
         fileInput.after(barContainer);
@@ -425,6 +434,7 @@
            log.trace(form);
         },
         done: function(e, data) {
+           $("#saveMessage").text('Changes Made, Save Pending...');
            submitButton.prop('disabled', false);
            progressBar.text("Uploading done");
            $('#upload_button').removeAttr('disabled');
@@ -455,6 +465,7 @@
            );
            $('#backgroundSection').modal('hide');
            backgroundButton(true);
+           onSave();
          },
          fail: function(e, data) {
            submitButton.prop('disabled', false);
