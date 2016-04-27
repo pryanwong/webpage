@@ -361,9 +361,58 @@ var onSave  =  debounce(function() {
     }
     var token = $('meta[name="csrf-token"]').attr('content');
     canvas.backgroundColor = '#FFFFFF';
+    activeInstance = canvas.getActiveObject();
+    activeGroupInstance = canvas.getActiveGroup();
+    tempId = 0;
+    if (activeInstance!=null){
+        tempId = activeInstance.id
+        console.log("ID: ", tempId)
+        console.log(activeInstance)
+        canvas.deactivateAll();
+
+    }
+    tempIdArray = new Array(0);
+    if (activeGroupInstance!=null){
+        objs = activeGroupInstance.getObjects();
+        for (index = 0; index < objs.length; index++) {
+          tempIdArray.push(objs[index].id)
+        }
+        canvas.deactivateAll();
+    }
     var png_file = canvas.toDataURL('png');
+
+    objects = canvas.getObjects();
+    var len = objects.length;
+    log.debug( "Number of objects to process: ", len);
+    if (activeInstance!=null){
+      //for (index=len -1; index > -1; index--) {
+      notFound = true;
+      index = len -1
+      while(index > -1 && notFound == true) {
+         if (objects[index].id == tempId) {
+            notFound = false
+            canvas.setActiveObject(canvas.item(index));
+         }
+         index = index -1
+      }
+    }
+    if (activeGroupInstance!=null){
+      var objs = activeGroupInstance.getObjects().map(function(o) {
+		     return o.set('active', true);
+	    });
+
+	    var group = new fabric.Group(objs, {
+		    originX: 'center',
+		    originY: 'center'
+	    });
+
+	    canvas._activeObject = null;
+
+	    canvas.setActiveGroup(group.setCoords()).renderAll();
+    }
     //var png_file = "";
     canvas.backgroundColor = "";
+
     var json_data = { company_id: company_id,
                    user_id:  user_id,
                    id: drawing_id,
