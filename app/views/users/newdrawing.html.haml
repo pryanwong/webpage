@@ -15,25 +15,25 @@
       = form_for(@drawing,:class=>"form-horizontal", url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
          %div.col-sm-12
             %h2 New Sketch
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-3"}
+         %div{:class=>"form-group row"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :customer
-            %div{:class=>"control-label col-sm-9"}
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :customer
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-3"}
+         %div{:class=>"form-group row"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :opportunity
-            %div{:class=>"control-label col-sm-9"}
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :opportunity
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-3"}
+         %div{:class=>"form-group row"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :description
-            %div{:class=>"control-label col-sm-9"}
+            %div{:class=>"control-label col-sm-10"}
                = f.text_field :description
-         %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-3"}
+         %div{:class=>"form-group row"}
+            %div{:class=>"control-label col-sm-2"}
                = f.label :privacy
-            %div{:class=>"control-label col-sm-9"}
+            %div{:class=>"control-label col-sm-10"}
                = f.radio_button :privacy, "company"
                = f.label :privacy_company, "within Company", :style => "display:inline"
                %br
