@@ -16,24 +16,24 @@
          %div.col-sm-12
             %h2 New Sketch
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
+            %div{:class=>"control-label col-sm-3"}
                = f.label :customer
-            %div{:class=>"control-label col-sm-10"}
+            %div{:class=>"control-label col-sm-9"}
                = f.text_field :customer
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
+            %div{:class=>"control-label col-sm-3"}
                = f.label :opportunity
-            %div{:class=>"control-label col-sm-10"}
+            %div{:class=>"control-label col-sm-9"}
                = f.text_field :opportunity
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
+            %div{:class=>"control-label col-sm-3"}
                = f.label :description
-            %div{:class=>"control-label col-sm-10"}
+            %div{:class=>"control-label col-sm-9"}
                = f.text_field :description
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
+            %div{:class=>"control-label col-sm-3"}
                = f.label :privacy
-            %div{:class=>"control-label col-sm-10"}
+            %div{:class=>"control-label col-sm-9"}
                = f.radio_button :privacy, "company"
                = f.label :privacy_company, "within Company", :style => "display:inline"
                %br
