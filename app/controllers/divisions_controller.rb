@@ -104,8 +104,9 @@ class DivisionsController < ApplicationController
     logger.info "Entering DivisionsController:create"
     logger.debug "Params: #{params.inspect}"
     @company = Company.new
-    division = Division.new
-
+    logger.debug "Company Id: #{params[:company_id]}"
+    logger.debug "Division: #{params[:division][:name]}"
+    params[:division].merge(:company_id => params[:company_id])
     #Verify that Company id is valid
     if (!Company.exists?(id: params[:company_id]))
       logger.debug "Company ID not valid: #{params[:company_id]}"
@@ -115,8 +116,7 @@ class DivisionsController < ApplicationController
       return
     end
     @company = Company.find(params[:company_id])
-    div_name = params[:division][:name]
-    division.name = div_name
+    division = Division.new(division_params)
     division.company_id = @company.id
     if division.save
        logger.debug "Division Added Successfully"
@@ -158,8 +158,10 @@ class DivisionsController < ApplicationController
 
     def division_params
       logger.info "Entering DivisionsController:division_params"
-      params.require(:division).permit(:name, :share, :company_id)
+      logger.debug "Inspect Params: #{params}"
+      logger.debug "Params: #{params[:division]}"
       logger.info "Leaving DivisionsController:division_params"
+      params.require(:division).permit(:name, :company_id)
     end
 
     def company_valid(id, company)

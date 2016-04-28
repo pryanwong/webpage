@@ -12,7 +12,7 @@
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = render 'shared/error_messages'
-      = form_for([@company,@division],:class=>"form-horizontal") do |f|
+      = form_for([@company,@division], url: {action: "create"},:class=>"form-horizontal") do |f|
          %div.col-sm-12
             %h2 New Division
          %div{:class=>"form-group"}

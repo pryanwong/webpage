@@ -45,14 +45,12 @@
                   %tr
                      %td Divisions
                      %td
+                     %td
                         = link_to new_company_division_path(@company) do
                            %i{:class=>"fa fa-plus-square"}
                      - first = false
-                     %td
-                     %td
                   %tr
                      %th Division
-                     %th
                      %th
                      %th
                %tr
@@ -64,15 +62,12 @@
                   %td
                      =link_to company_division_path(@company, division),  method: :delete , data: { confirm: "Are you sure?" } do
                         %span{:class=>"glyphicon glyphicon-trash"}
-                  %td
    %div{:class=>"container"}
       %div{:class=>"row row-content-no-padding2"}
          %div
             %table{:class=>"table table-bordered table-hover"}
                %tr
                   %th User
-                  %th
-                  %th
                   %th
                -division.users.each do |user|
                   %tr
@@ -82,8 +77,6 @@
                         -if can? :removeuserdiv, User
                            =link_to removeuserdiv_company_division_user_path(@company, division, user) do
                               %span{:class=>"glyphicon glyphicon-trash"}
-                     %td
-                     %td
             - divids = division.users.pluck(:id)
             - compids = @company.users.pluck(:id)
             -if User.where(id: compids).where.not(id: divids).size > 0
@@ -97,19 +90,17 @@
          %table{:class=>"table table-bordered table-hover"}
             %tr
                %td Users
+               %td
                %td New
                %td
                   -if can? :create, current_user
                      = link_to new_company_user_path(@company) do
                         %i{:class=>"fa fa-plus-square"}
-               %td
-               %td
             %tr
                %th Email
                %th Admin
                %th Edit
                %th Remove
-               %th
             -@company.users.each do |user|
                %tr
                   %td= user.email
@@ -122,7 +113,6 @@
                      -if can? :destroy, user
                         = link_to company_user_path(@company, user), method: :delete, data: { confirm: "Are you sure?" } do
                            %span{:class=>"glyphicon glyphicon-trash"}
-                  %td
 
 %div{:class=>"container"}
    %div{:class=>"row row-content-no-padding2"}
@@ -130,6 +120,7 @@
          %table{:class=>"table table-bordered table-hover"}
             %tr
                %td Products
+               %td
                -if can? :create, Price
                   %td  New
                   %td
@@ -138,8 +129,6 @@
                -else
                   %td
                   %td
-               %td
-               %td
             %tr
                %th Product Id
                %th Product Name
@@ -149,7 +138,6 @@
                -else
                   %th
                   %th
-               %th
             -@company.prices.each do |price|
                %tr
                   %td= price.product_id
@@ -162,4 +150,3 @@
                      -if can? :delete, Price
                         =link_to company_price_path(@company, price), method: :delete, data: {confirm: "You sure?"} do
                            %span{:class=>"glyphicon glyphicon-trash"}
-                  %td

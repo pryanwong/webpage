@@ -12,39 +12,36 @@
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = render 'shared/error_messages'
-      = form_for(@drawing, :class=>"form-horizontal", url: updatedrawingdetails_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :method => :POST) do |f|
-         %div.col-sm-12
+      = form_for(@drawing, :html => {:class => "form-horizontal"}, url: updatedrawingdetails_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :method => :POST) do |f|
+         %div{:class=>"col-sm-12 col-sm-offset-1"}
             %h2 Edit Sketch
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :customer
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :customer, :required => true
+            = f.label :customer, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_field :customer, :required => true, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :opportunity
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :opportunity, :required => true
+            = f.label :opportunity, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_field :opportunity, :required => true, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :description
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :description
+            = f.label :description, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_field :description, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :privacy
-            %div{:class=>"control-label col-sm-10"}
-               = f.radio_button :privacy, "company"
-               = f.label :privacy_company, "within Company", :style => "display:inline"
-               %br
+            = f.label :privacy, :class=>"control-label col-sm-2"
+            %div{:class=>"controls col-sm-5"}
+               = f.label :privacy_company, "within Company", :class=>"radio" do
+                  = f.radio_button :privacy, "company"
+                  within Company
                -if @divcount > 0
-                  = f.radio_button :privacy, "division"
-                  = f.label :privacy_division, "within Division", :style => "display:inline"
-                  =f.collection_select :division, @divisions,:id,:name, include_blank: false, :selected =>  [Drawing.find(@drawing.id).division_id]
-               %br
-               = f.radio_button :privacy, "user"
-               = f.label :privacy_division, "Only for User", :style => "display:inline"
+                  = f.label :privacy_division, "within Division", :class=>"radio" do
+                     = f.radio_button :privacy, "division"
+                     within Division
+                     = f.collection_select :division, @divisions,:id,:name, include_blank: false
+                  = f.label :privacy_division, "Only for User", :class=>"radio" do
+                     = f.radio_button :privacy, "user"
+                     Only for User
          %div.row
-            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
+            %div{:class=>"col-sm-12 col-sm-offset-1"}
                = f.submit "Save"
                = link_to "<button>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])

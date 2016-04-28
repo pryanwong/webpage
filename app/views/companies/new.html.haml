@@ -12,21 +12,18 @@
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = render 'shared/error_messages'
-      = form_for(@company , :class=>"form-horizontal") do |f|
-         %div.col-sm-12
+      = form_for(@company , :html => {:class => "form-horizontal"}) do |f|
+         %div{:class=>"col-sm-12 col-sm-offset-1"}
             %h2 New Company
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :name
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :name
+            = f.label :name, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_field :name, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :licenses
-            %div{:class=>"control-label col-sm-2"}
-               = f.number_field :licenses, :min => 1, :step => 1, placeholder:"1"
-            %div{:class=>"control-label col-sm-8"}
+            = f.label :licenses, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.number_field :licenses, :min => 1, :step => 1, placeholder:"1", :class=>"form-control"
          %div.row
-            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
+            %div{:class=>"col-sm-12 col-sm-offset-1"}
                = f.submit "Save"
-               = link_to "<button>Cancel</button>".html_safe, company_path
+               = link_to "<button>Cancel</button>".html_safe, companies_path

@@ -11,25 +11,22 @@
             %li New Price
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
-      = form_for([@company,@price]) do |f|
-         %div.col-sm-12
+      = form_for([@company,@price],:html => {:class => "form-horizontal"}) do |f|
+         %div{:class=>"col-sm-12 col-sm-offset-1"}
             %h2 New Product
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :name
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :name
+            = f.label :name, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_field :name, :required => true, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label "Product Id"
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_field :product_id
+            = f.label "Product Id", :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_field :product_id, :required => true, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label  :price
-            %div{:class=>"control-label col-sm-10"}
-               = f.text_area :price, :cols => "25", :rows => "10"
+            = f.label  :price, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.text_area :price, :rows => "10", :required => true, :class=>"form-control"
          %div.row
-            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
+            %div{:class=>"col-sm-12 col-sm-offset-1"}
                = f.submit "Save"
                = link_to "<button>Cancel</button>".html_safe, company_path(session[:company_id])
