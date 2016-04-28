@@ -38,9 +38,9 @@
                      = f.radio_button :privacy, "division"
                      within Division
                      = f.collection_select :division, @divisions,:id,:name, include_blank: false
-                  = f.label :privacy_division, "Only for User", :class=>"radio" do
-                     = f.radio_button :privacy, "user"
-                     Only for User
+               = f.label :privacy_division, "Only for User", :class=>"radio" do
+                  = f.radio_button :privacy, "user"
+                  Only for User
          %div.row
             %div{:class=>"col-sm-12 col-sm-offset-1"}
                = f.submit "Save"
