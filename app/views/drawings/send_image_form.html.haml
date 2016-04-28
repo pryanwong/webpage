@@ -42,7 +42,7 @@
                = message_form.label :content
             %div{:class=>"control-label col-sm-10"}
                = message_form.text_area :content, placeholder: "Message"
-               = message_form.hidden_field :imageData
+               = message_form.hidden_field :imageData, id: "PNG"
          %div.row
             %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
                = message_form.submit "Send"
@@ -190,6 +190,7 @@
                           backgroundExists(backgroundImageVal);
                           image.src = canvas.toDataURL("image/png");
                           $('#canvasholder').replaceWith(image);
+                          $('#PNG').val(image.src);
                        },
                        postProcessLoading);
 

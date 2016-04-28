@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
      else
          @current_user = false;
      end
-     logger.fatal "Current User: #{@current_user.inspect}"
+     logger.debug "Current User: #{@current_user.inspect}"
      logger.info "Leaving ApplicationController:current_user"
      @current_user
   end
@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
       request.remote_ip
     end
   end
-  
+
   rescue_from  ActiveRecord::RecordNotFound do |exception|
     respond_to do |format|
       format.html {

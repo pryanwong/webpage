@@ -26,20 +26,20 @@ class User < ActiveRecord::Base
   validate :validate_only_one_email_per_provider
 
   def validate_only_one_email_per_provider_new
-    logger.fatal "validate_only_one_email_per_provider_new"
-    logger.fatal "#{self.email} , #{self.provider}"
+    logger.debug "validate_only_one_email_per_provider_new"
+    logger.debug "#{self.email} , #{self.provider}"
     count = User.where(:email => self.email, :provider => User.providers[self.provider]).count
-    logger.fatal "count: #{count}"
+    logger.debug "count: #{count}"
     if (count > 0)
       errors.add(:licenses, "Duplicate new record, already exists")
     end
   end
 
   def validate_only_one_email_per_provider
-    logger.fatal "validate_only_one_email_per_provider"
-    logger.fatal "#{self.email} , #{self.provider}"
+    logger.debug "validate_only_one_email_per_provider"
+    logger.debug "#{self.email} , #{self.provider}"
     count = User.where(:email => self.email, :provider => User.providers[self.provider]).where.not(id: self.id).count
-    logger.fatal "count: #{count}"
+    logger.debug "count: #{count}"
     if (count > 0)
       errors.add(:licenses, "Duplicate, error in edit, record exists")
     end
@@ -56,8 +56,8 @@ class User < ActiveRecord::Base
   end
 
   def self.from_omniauth(auth, remote_ip)
-      logger.fatal "In User from_omniauth"
-      logger.fatal "#{auth}"
+      logger.debug "In User from_omniauth"
+      logger.debug "#{auth}"
       if (auth.info.email).blank?
         user = nil
       else
