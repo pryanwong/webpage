@@ -15,22 +15,19 @@
       = form_for(@drawing,:class=>"form-horizontal", url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
          %div.col-sm-12
             %h2 New Sketch
-         %div{:class=>"form-group row"}
+         %div{:class=>"form-group row", :style=>"padding-left:30px"}
             %div{:class=>"control-label col-sm-2"}
                = f.label :customer
             %div{:class=>"control-label col-sm-10"}
                = f.text_field :customer
-         %div{:class=>"form-group row"}
             %div{:class=>"control-label col-sm-2"}
                = f.label :opportunity
             %div{:class=>"control-label col-sm-10"}
                = f.text_field :opportunity
-         %div{:class=>"form-group row"}
             %div{:class=>"control-label col-sm-2"}
                = f.label :description
             %div{:class=>"control-label col-sm-10"}
                = f.text_field :description
-         %div{:class=>"form-group row"}
             %div{:class=>"control-label col-sm-2"}
                = f.label :privacy
             %div{:class=>"control-label col-sm-10"}
@@ -40,8 +37,8 @@
                -if @divcount > 0
                   = f.radio_button :privacy, "division"
                   = f.label :privacy_division, "within Division", :style => "display:inline"
-                  =f.collection_select :division, @divisions,:id,:name, include_blank: false
-                  %br
+                  = f.collection_select :division, @divisions,:id,:name, include_blank: false
+               %br
                = f.radio_button :privacy, "user"
                = f.label :privacy_division, "Only for User", :style => "display:inline"
          %div.row

@@ -42,21 +42,21 @@ class DrawingsController < ApplicationController
 
        creds = Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
        s3 = Aws::S3::Resource.new(region: ENV['s3_region'], credentials: creds)
-       logger.fatal "s3.inspect"
-       logger.fatal "#{s3.inspect}"
+       logger.debug "s3.inspect"
+       logger.debug "#{s3.inspect}"
        obj = s3.bucket(ENV['S3_BUCKET_NAME']).object("system/#{@drawing.company_id}/#{@drawing.id}/#{SecureRandom.uuid}/${filename}")
-       logger.fatal "obj.inspect"
-       logger.fatal "#{obj.inspect}"
-       logger.fatal "#{obj.methods}"
+       logger.debug "obj.inspect"
+       logger.debug "#{obj.inspect}"
+       logger.debug "#{obj.methods}"
        options = { acl: 'public-read',
                 success_action_status: '201',
                 acl: 'public-read'}
        @presigned_post = obj.presigned_post(options)
        @public_url = obj.public_url
-       logger.fatal "presigned_post.inspect"
-       logger.fatal "#{@presigned_post.inspect}"
-       logger.fatal "public_url.inspect"
-       logger.fatal "#{@public_url.inspect}"
+       logger.debug "presigned_post.inspect"
+       logger.debug "#{@presigned_post.inspect}"
+       logger.debug "public_url.inspect"
+       logger.debug "#{@public_url.inspect}"
 
        logger.info "Leaving DrawingsController:edit"
        logger.info "Rendering #{company.portal}"
@@ -381,12 +381,12 @@ class DrawingsController < ApplicationController
          redirect_to root_path
          return
       end
-      if (drawing.png == "" || drawing.drawing == "")
+      if (drawing.drawing == "")
         logger.debug "drawing.png not found"
         @png = "none"
       else
         logger.debug "drawing.png found"
-        @png = drawing.png
+        @png = drawing.drawing
       end
       @companyid = params[:company_id]
       @userid = params[:user_id]
@@ -403,6 +403,25 @@ class DrawingsController < ApplicationController
       session[:return_to] ||= request.referer
       logger.debug "In Send Image Form"
       logger.debug "#{session.inspect}"
+      @drawing = "";
+      if (Drawing.exists?(params[:id]))
+         logger.debug "Drawing exists: #{params[:id]}"
+         drawing = Drawing.find(params[:id]);
+      else
+         logger.debug "Drawing not Found: #{params[:id]}"
+         flash[:error] = "Drawing not Found"
+         redirect_to root_path
+         return
+      end
+      if (drawing.drawing == "")
+        logger.debug "drawing.png not found"
+        flash[:error] = "Drawing not Found"
+        redirect_to root_path
+        return
+      else
+        logger.debug "drawing.drawing found"
+        @drawing = drawing
+      end
       @message = MessageImage.new
       @message.company_id = params[:company_id]
       @message.user_id = params[:user_id]
@@ -424,6 +443,7 @@ class DrawingsController < ApplicationController
        @message.email3 = params[:message_image][:email3]
        @message.email4 = params[:message_image][:email4]
        @message.content = params[:message_image][:content]
+       @message.imageData = params[:message_image][:imageData]
        @message.from = current_user.email
        logger.debug "Inspect Message"
        logger.debug "#{@message.inspect}"
@@ -450,7 +470,7 @@ class DrawingsController < ApplicationController
     end
 
     def drawing_params
-      params.permit(:customer, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
+      params.permit(:customer, :imageData, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
     end
 
     #def check_for_cancel

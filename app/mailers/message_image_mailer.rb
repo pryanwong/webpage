@@ -11,7 +11,7 @@ class MessageImageMailer < ActionMailer::Base
        if (drawing.png == "" || drawing.drawing == "")
          attachments['image.svg'] = File.read("#{Rails.root}/app/assets/images/none/No_image_available.svg")
        else
-         png = drawing.png
+         png = @message.imageData;
          justpngdata = png.slice(png.index(",")+1..-1)
          decodedImage = Base64.decode64(justpngdata)
          attachments['image.png'] = decodedImage

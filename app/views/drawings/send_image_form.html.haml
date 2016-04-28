@@ -1,3 +1,10 @@
+%div{ :id=>"spinner", :class=>"spinner"}
+   %div{ :class=>"rect1"}
+   %div{ :class=>"rect2"}
+   %div{ :class=>"rect3"}
+   %div{ :class=>"rect4"}
+   %div{ :class=>"rect5"}
+
 %div{:id=>"breadcrumbs", :class=>"container"}
    %div
       %div
@@ -35,7 +42,161 @@
                = message_form.label :content
             %div{:class=>"control-label col-sm-10"}
                = message_form.text_area :content, placeholder: "Message"
+               = message_form.hidden_field :imageData
          %div.row
             %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
                = message_form.submit "Send"
                = link_to "<button>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])
+%div{:class=>"container", :style=>"padding-top: 20px"}
+   %div{:id=>"canvasholder", :class=>"row row-content-no-padding2"}
+      %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
+
+:javaScript
+                  var handler = "";
+                  var c = new Array();
+                  var objId_var = 0;
+                  var company_id ='#{params[:company_id]}'
+                  var user_id= '#{params[:user_id]}'
+                  var drawing_id = '#{params[:id]}'
+                  var itemId = 0;
+                  var contextmenuon = false;
+                  var activeObject = false;
+                  var activeObjectVal = "";
+                  var activeLineGroup = null;
+                  var backgroundImageVal = "";
+                  var objectName = "";
+                  var canvas = new fabric.CanvasEx('demoCanvas2');
+                  document.getElementById("demoCanvas2").fabric = canvas;
+                  var fabric = fabric || { version: "1.4.13" };
+                  var motionInbounds = true;
+                  var lineActive = true;
+                  var lineSelected = false;
+                  var log = log4javascript.getDefaultLogger();
+                  var image = new Image();
+                  log4javascript.setEnabled(false);
+                  var debugOn = GetDebugParameter('debug');
+                  log4javascript.setEnabled(debugOn);
+                  log.setLevel(log4javascript.Level.TRACE);
+                  log.info("Executing javascript in edit.html");
+                  log.debug("Executing spinner");
+                  $(".spinner").show();
+                  canvas.backgroundColor="#FFFFFF";
+
+                  log.debug("Create Custom Image Class");
+                  fabric.CustomImage = fabric.util.createClass(fabric.Image, {
+                       type: 'custom-image',
+                       initialize: function(element, options) {
+                         this.callSuper('initialize', element, options);
+                         options && this.set('model', options.model);
+                         options && this.set('config', options.config);
+                         options && this.set('origloc', options.origloc);
+                         options && this.set('price', options.price);
+                         options && this.set('configdbid', options.configdbid);
+                     },
+                     toObject: function() {
+                         return fabric.util.object.extend(this.callSuper('toObject'),
+                                                     {config: this.config,
+                                                      price:  this.price,
+                                                      model:  this.model,
+                                                      origloc: this.origloc,
+                                                      configdbid: this.configdbid});
+                     },
+                     setConfig: function(configString) {
+                        this.config = configString;
+                        canvas.trigger('custom-image:textChange');
+                     },
+                     _render: function(ctx) {
+                        this.callSuper('_render', ctx);
+                        if (this.config != 'undefined') {
+                           log.debug("In Call Super Render, ctx")
+                           log.trace(ctx)
+                           ctx.font = '12px Helvetica';
+                           ctx.fillStyle = '#333';
+                           log.debug("render text");
+                           textwidth = ctx.measureText(this.config).width
+                           ctx.fillText(this.config, -textwidth/2, (this.height/2+10))
+                        }
+                     }
+                  });
+                  fabric.CustomImage.fromObject = function(object, callback) {
+                     fabric.util.loadImage(object.src, function(img) {
+                       callback && callback(new fabric.CustomImage(img, object));
+                  });
+                  };
+                  fabric.CustomImage.async = true;
+
+                  log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
+                  if(!window.location.hash) {
+                      window.location = window.location + '#loaded';
+                      window.location.reload();
+                  }else{
+                     log.debug("Load Drawing");
+                     var data_drawing = "";
+                     if (parseInt("#{@drawing.drawing.length}") > 0) {
+                        log.debug("drawing loaded");
+                        data_drawing = #{ raw(@drawing.drawing) }
+                     } else {
+                        log.debug("no drawing loaded");
+                        data_drawing = ""
+                     }
+                     objId_var = 1;
+                     log.debug("load objects onto canvas");
+                     if (data_drawing != "") {
+                         canvas.loadFromJSON(data_drawing, function () {
+                          //first render
+                          canvas.renderAll.bind(canvas);
+                          var objs = canvas.getObjects().map(function(o) {
+                            return o.set('active', false);
+                          });
+                          for(i = 0; i < objs.length; i++ ) {
+                             log.trace("Objs[",i,"]", objs[i])
+                             objs[i].id = itemId
+                             itemId = itemId + 1;
+                             if (objs[i].type == "line") {
+                                var objId_var = objs[i].objId
+                                c[objId_var] = makeCircle(objs[i]);
+                                x1 = objs[i].left + objs[i].width/2 + objs[i].x1
+                                x2 = objs[i].left + objs[i].width/2 + objs[i].x2
+                                y1 = objs[i].getTop() + objs[i].height/2 + objs[i].y1
+                                y2 = objs[i].getTop() + objs[i].height/2 +  objs[i].y2
+                                c[objId_var][0].top =  y1
+                                c[objId_var][0].left = x1
+                                c[objId_var][0].setCoords();
+                                c[objId_var][1].top =  y2
+                                c[objId_var][1].left = x2
+                                c[objId_var][1].setCoords();
+                                objs[i].hasControls = objs[i].hasBorders = false
+                                objs[i].c1 = c[objId_var][0]
+                                objs[i].c2 = c[objId_var][1]
+                                objs[i].set('x1', x1)
+                                objs[i].set('y1', y1)
+                                objs[i].set('x2', x2)
+                                objs[i].set('y2', y2)
+                                objs[i].setCoords();
+                                canvas.add(c[objId_var][0],c[objId_var][1]);
+                                c[objId_var][0].bringToFront();
+                                c[objId_var][1].bringToFront();
+                                canvas.renderAll.bind(canvas);
+                             }
+                          }
+                          canvas.renderAll();
+                          backgroundImageVal = "";
+                          if (canvas.hasOwnProperty('backgroundImage')) {
+                             if ((canvas.backgroundImage).hasOwnProperty('src')) {
+                                 backgroundImageVal = canvas.backgroundImage.src;
+                             }
+                          }
+                          log.debug("BackgroundImage Loc: ", backgroundImageVal)
+                          backgroundExists(backgroundImageVal);
+                          image.src = canvas.toDataURL("image/png");
+                          $('#canvasholder').replaceWith(image);
+                       },
+                       postProcessLoading);
+
+                   }
+                   log.debug("load background object onto canvas");
+                   var center = canvas.getCenter();
+                   log.info( "Drawing should be loaded ");
+                   log.info( "Fade spinner out ");
+                   $(".spinner").fadeOut( 400 );
+                  }
