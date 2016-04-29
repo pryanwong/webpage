@@ -8,7 +8,7 @@ class MessageImageMailer < ActionMailer::Base
     #email_list = [message.email1,message.email2,message.email3,message.email4]
     if (Drawing.exists?(@message.drawing_id))
        drawing = Drawing.find(@message.drawing_id);
-       if (drawing.png == "" || drawing.drawing == "")
+       if (drawing.drawing == "")
          attachments['image.svg'] = File.read("#{Rails.root}/app/assets/images/none/No_image_available.svg")
        else
          png = @message.imageData;
