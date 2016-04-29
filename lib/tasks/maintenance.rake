@@ -13,8 +13,17 @@ namespace :maintenance do
 
   desc "Maintenance status of App"
   task :status, [:app] => :environment do |task, args|
-    puts "Maintenance status of #{args.app}"
-    run_command("maintenance", args.app)
+    if (args.app == nil)
+      puts "Status of Heroku Environments"
+      puts "Optecture.com"
+      args = ["optecture","stagingoptecture"]
+      run_command("maintenance",args[0])
+      puts "Staging.Optecture.com"
+      run_command("maintenance",args[1])
+    else
+      puts "Maintenance status of #{args.app}"
+      run_command("maintenance", args.app)
+    end
   end
 
   desc "Promote in Pipeline"
