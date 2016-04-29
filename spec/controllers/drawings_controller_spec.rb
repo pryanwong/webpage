@@ -290,49 +290,6 @@ describe DrawingsController, :type => :controller do
       end
     end
 
-    describe "GET 'displayimage'" do
-        it "renders image" do
-          allow(Drawing).to receive(:new).and_return(drawing)
-          allow(Drawing).to receive(:where).and_return([drawing])
-          allow(Drawing).to receive(:find).and_return(drawing)
-          allow(Drawing).to receive(:exists?).and_return(true)
-          allow(drawing).to receive(:png).and_return("png")
-          get :displayimage, :company_id => 1, :user_id => 1, :id => 1
-          expect(response.status).to eq(200)
-        end
-
-        it "fails to render image" do
-          allow(Drawing).to receive(:new).and_return(drawing)
-          allow(Drawing).to receive(:where).and_return([drawing])
-          allow(Drawing).to receive(:find).and_return(drawing)
-          allow(Drawing).to receive(:exists?).and_return(false)
-          get :displayimage, :company_id => 1, :user_id => 1, :id => 1
-          expect(response).to redirect_to(root_path)
-        end
-    end
-
-    describe "GET 'getimage'" do
-        xit "renders image" do
-          allow(Drawing).to receive(:new).and_return(drawing)
-          allow(Drawing).to receive(:where).and_return([drawing])
-          allow(Drawing).to receive(:find).and_return(drawing)
-          allow(Drawing).to receive(:exists?).and_return(true)
-          allow(drawing).to receive(:png).and_return("png")
-          get :getimage, :company_id => 1, :user_id => 1, :id => 1
-          expect(response.status).to eq(200)
-          expect(response.header['Content-Type']).to eql('image/png')
-        end
-
-        it "fails to render image" do
-          allow(Drawing).to receive(:new).and_return(drawing)
-          allow(Drawing).to receive(:where).and_return([drawing])
-          allow(Drawing).to receive(:find).and_return(drawing)
-          allow(Drawing).to receive(:exists?).and_return(false)
-          get :getimage, :company_id => 1, :user_id => 1, :id => 1
-          expect(response).to redirect_to(root_path)
-        end
-    end
-
     describe "GET 'show_image'" do
         it "renders image" do
           allow(Drawing).to receive(:new).and_return(drawing)

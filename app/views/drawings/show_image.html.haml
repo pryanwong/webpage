@@ -18,12 +18,6 @@
 %div{:class=>"container", :style=>"padding-top: 20px"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
-   -#%div{:class=>"row row-content-no-padding2"}
-   -#    %div
-   -#       - if @png == "none"
-   -#          = image_tag "none/No_image_available.svg"
-   -#      - else
-   -#          = image_tag url_for(:controller => "drawings", :action => "getimage", :id => params[:id])
 
 :javaScript
    var handler = "";
