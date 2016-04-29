@@ -248,7 +248,6 @@ class DrawingsController < ApplicationController
     @drawing.division_id = params[:division_id]
     @drawing.privacy = params[:privacy]
     @drawing.drawing = ""
-    @drawing.png = ""
     logger.debug "Drawing Object in drawings_controller create #{@drawing.inspect}"
     if @drawing.save
       # Handle a successful update.
@@ -279,9 +278,7 @@ class DrawingsController < ApplicationController
        return
     end
     @drawing.drawing = params[:drawing].to_json
-    @drawing.png     = params[:png]
     logger.debug "Drawing Vals: #{@drawing.drawing}"
-    logger.debug "Drawing png: #{@drawing.png}"
     if @drawing.save
          render :json => [ @drawing ].to_json
          return
@@ -336,10 +333,10 @@ class DrawingsController < ApplicationController
          return
       end
       if (drawing.drawing == "")
-        logger.debug "drawing.png not found"
+        logger.debug "drawing.drawing not found"
         @png = "none"
       else
-        logger.debug "drawing.png found"
+        logger.debug "drawing.drawing found"
         @png = drawing.drawing
       end
       @companyid = params[:company_id]
@@ -368,7 +365,7 @@ class DrawingsController < ApplicationController
          return
       end
       if (drawing.drawing == "")
-        logger.debug "drawing.png not found"
+        logger.debug "drawing.drawing not found"
         flash[:error] = "Drawing not Found"
         redirect_to root_path
         return
@@ -424,7 +421,7 @@ class DrawingsController < ApplicationController
     end
 
     def drawing_params
-      params.permit(:customer, :imageData, :opportunity, :description, :company_id, :division_id, :privacy, :png, :user_id, :id)
+      params.permit(:customer, :imageData, :opportunity, :description, :company_id, :division_id, :privacy, :user_id, :id)
     end
 
     #def check_for_cancel
