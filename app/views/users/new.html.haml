@@ -13,30 +13,29 @@
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = render 'shared/error_messages'
-      = form_for([@company, @user],:class=>"form-horizontal") do |f|
-         %div.col-sm-12
+      = form_for([@company, @user] ,:html => {:class => "form-horizontal"}) do |f|
+         %div{:class=>"col-sm-12 col-sm-offset-1"}
             %h2 New User
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :email
-            %div{:class=>"control-label col-sm-10"}
-               = f.email_field :email
+            = f.label :email, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.email_field :email, :required => true, :class=>"form-control"
          %div{:class=>"form-group"}
-            %div{:class=>"control-label col-sm-2"}
-               = f.label :role, :style => "display:inline"
-            %div{:class=>"control-label col-sm-10"}
+            = f.label :role, :class=>"control-label col-sm-2"
+            %div{:class=>"controls col-sm-5"}
                - User.roles.slice(:user,:moderator).each do |key, val|
-                  -if key=="moderator" then key_show="Admin" else key_show=key end
-                  = f.radio_button :role, key, :checked => (key == "user")
-                  = key_show
-            %div{:class=>"form-group"}
-               %div{:class=>"control-label col-sm-2"}
-                  = f.label :provider, :style => "display:inline"
-               %div{:class=>"control-label col-sm-10"}
-                  - User.providers.each do |key, val|
+                  = f.label :role, :class=>"radio" do
+                     -if key=="moderator" then key_show="Admin" else key_show=key end
+                     = f.radio_button :role, key, :checked => (key == "user")
+                     = key_show
+         %div{:class=>"form-group"}
+            = f.label :provider, :class=>"control-label col-sm-2"
+            %div{:class=>"controls col-sm-5"}
+               - User.providers.each do |key, val|
+                  = f.label :provider, :class=>"radio" do
                      = f.radio_button :provider, key, :checked => (key == "google_oauth2")
                      = key
             %div.row
-               %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
+               %div{:class=>"col-sm-12 col-sm-offset-1"}
                   = f.submit "Save"
-                  = link_to "<button>Cancel</button>".html_safe, company_path(session[:company_id])
+                  = link_to "<button>Cancel</button>".html_safe, company_path(@company)

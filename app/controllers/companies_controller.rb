@@ -102,9 +102,12 @@
     if Company.exists?(id: params[:id])
        logger.debug "Company exists: #{params[:id]}"
        @company = Company.find(params[:id])
-       @company.destroy
-       logger.debug "errors: #{@company.inspect}"
-       addErrorsToFlash(@company.errors)
+       if @company.destroy
+         flash[:notice] = "Company has been removed"
+       else
+         logger.debug "errors: #{@company.inspect}"
+         addErrorsToFlash(@company.errors)
+       end
     else
        logger.error "Company ID not found"
        flash[:error] = "Company ID not found"
@@ -116,7 +119,7 @@
   private
 
     def company_params
-      params.require(:company).permit(:name, :licenses)
+      params.require(:company).permit(:name, :licenses, :portal)
     end
 
     def check_for_cancel
@@ -138,6 +141,7 @@
         flash[key] = val;
       end
       logger.info "Leaving CompaniesController:addErrorsToFlash"
+      flash
     end
 
 end

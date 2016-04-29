@@ -4,6 +4,7 @@ class Company < ActiveRecord::Base
     has_many :prices, :dependent => :restrict_with_error
     validates :name, presence: true, uniqueness: true, :case_sensitive => false
     validates :licenses, presence: true, numericality: { only_integer: true, :greater_than_or_equal_to => 0  }
+    validates :portal, presence: true
 
     def additionalUserLicensed
         flashval = {}

@@ -36,6 +36,23 @@
                         = link_to @company, method: :delete, data: { confirm: "Are you sure?" } do
                            %span{:class=>"glyphicon glyphicon-trash"}
 - first = true
+- if @company.divisions.count == 0
+   %div{:class=>"container"}
+      %div{:class=>"row row-content-no-padding2"}
+         %div
+            %table{:class=>"table table-bordered table-hover"}
+               %thead
+                  %tr
+                     %td Divisions
+                     %td
+                     %td
+                        = link_to new_company_division_path(@company) do
+                           %i{:class=>"fa fa-plus-square"}
+                     - first = false
+                  %tr
+                     %th Division
+                     %th
+                     %th
 - @company.divisions.each do |division|
    %div{:class=>"container"}
       %div{:class=>"row row-content-no-padding2"}
