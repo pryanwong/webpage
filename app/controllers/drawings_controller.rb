@@ -321,54 +321,8 @@ class DrawingsController < ApplicationController
 
   def deleteBackground
     logger.info "Entering Drawing#deleteBackground"
-    #@drawing = Drawing.find(params[:id]);
-    #logger.debug "Drawing URL: #{@drawing.background.url}"
-    #logger.debug "Drawing URL: #{@drawing.background}"
-    #@drawing.background.destroy;
-    #@drawing.background = nil;
-    #@drawing.save;
-    #redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
     logger.info "Leaving Drawing#deleteBackground"
   end
-
-  #def displayimage
-  #  logger.info "Entering Drawing#displayimage"
-  #  if (Drawing.exists?(params[:id]))
-  #     logger.debug "Drawing exists: #{params[:id]}"
-  #     @drawing = Drawing.find(params[:id]);
-  #     @png = @drawing.png
-  #  else
-  #     logger.error "Drawing not Found: #{params[:id]}"
-  #     flash[:error] = "Drawing not Found"
-  #     logger.info "Leaving Drawing#displayimage"
-  #     redirect_to root_path
-  #     return
-  #  end
-  #  logger.info "Leaving Drawing#displayimage"
-  #end
-
-  #def getimage
-  #   logger.info "Entering Drawing#getimage"
-  #   logger.fatal "Looking at drawing #{params[:id]}"
-  #   if (Drawing.exists?(params[:id]))
-  #      logger.debug "Drawing exists: #{params[:id]}"
-  #      drawing = Drawing.find(params[:id]);
-  #   else
-  #      logger.error "Drawing not Found: #{params[:id]}"
-  #      flash[:error] = "Drawing not Found"
-  #      logger.info "Leaving Drawing#getimage"
-  #      redirect_to root_path
-  #      return
-  #   end
-  #   logger.debug "#{drawing.inspect}"
-  #   logger.debug "Looking at png #{drawing.png}"
-  #   justpngdata = drawing.png.slice(drawing.png.index(",")+1..-1)
-  #   logger.debug "Made it past justpngdata"
-  #   decodedImage = Base64.decode64(justpngdata)
-  #   logger.debug "decoded Image"
-  #   send_data decodedImage, :type => 'image/png',:disposition => 'inline'
-  #   logger.info "Leaving Drawing#getimage"
-  #end
 
   def show_image
       logger.info "Entering Drawing#show_image"
