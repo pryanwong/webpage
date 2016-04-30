@@ -3,7 +3,8 @@ require 'rails_helper'
 
 describe Division do
 
-  let(:company) { FactoryGirl.create(:company,:name,:license_rand)}
+  let(:company) { FactoryGirl.create(:company,:name,:license_rand,:portal)}
+  let(:company2) { FactoryGirl.create(:company,:name,:license_rand,:portal)}
 
   it "has a valid name" do
      record = FactoryGirl.create(:division, :company_id => company.id)
@@ -24,6 +25,11 @@ describe Division do
      expect{FactoryGirl.create(:division, :name=>"bob", :company_id => company.id)}.to raise_error(ActiveRecord::RecordInvalid)
   end
 
+  it "is valid to create two divisions with the same name for two seperate companies" do
+     record = FactoryGirl.create(:division, :name=>"bob", :company_id => company.id)
+     record2 = FactoryGirl.create(:division, :name=>"bob", :company_id => company2.id)
+     expect(record2).to be_valid
+  end
 
 
 

@@ -24,4 +24,8 @@ FactoryGirl.define do
     role  User.roles["admin"]
   end
 
+  trait :provider do
+    provider User.providers["google_oauth2"]
+  end
+
 end

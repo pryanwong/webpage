@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe UserMembership do
 
-  let(:company) { FactoryGirl.create(:company,:name,:license_rand, :with_divisions)}
-  let(:user) {FactoryGirl.create(:user, :user,:company_id => company.id)}
+  let(:company) { FactoryGirl.create(:company,:name,:license_rand, :portal, :with_divisions)}
+  let(:user) {FactoryGirl.create(:user, :user,:provider, :company_id => company.id)}
 
 
   it "has a valid user_id and division_id" do
@@ -43,7 +43,7 @@ describe UserMembership do
   end
 
   it "has an invalid division_id that does not belong to the user" do
-     @company2 = FactoryGirl.create(:company,:name,:license_rand, :with_divisions)
+     @company2 = FactoryGirl.create(:company,:name,:license_rand,:portal, :with_divisions)
      div2_id = @company2.divisions[0].id
      record = FactoryGirl.build(:user_membership, :user_id => user.id ,:division_id => div2_id)
      expect(record.save).to eq(false)

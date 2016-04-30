@@ -1,4 +1,5 @@
  class CompaniesController < ApplicationController
+  #before_filter(:only => [:new]) { authorize if can? :create, :company }
   load_and_authorize_resource :company, :raise_on_record_not_found => false
   #before_filter :check_for_cancel, :only => [:create, :update]
   def new
@@ -9,6 +10,7 @@
     @company = Company.new
     logger.debug "New company: #{@company.inspect}"
     logger.info "Leaving CompaniesController:new"
+    authorize! :new, @company
   end
 
   def index

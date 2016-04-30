@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   #attr_reader :role
   enum role: [ :guest, :user, :moderator, :admin]
   enum provider: [ :google_oauth2, :linkedin]
-  validates :email, presence: true
+  validates :email, presence: true, email: true
   has_many :user_memberships, :class_name => 'UserMembership', :dependent => :destroy
   has_many :divisions, :through => :user_memberships
   has_many :drawings, :dependent => :restrict_with_error

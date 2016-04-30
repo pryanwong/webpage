@@ -41,6 +41,14 @@ FactoryGirl.define do
        licenses -1
     end
 
+    trait :portal do
+      portal {Faker::Lorem.word}
+    end
+
+    trait :noportal do
+      portal ""
+    end
+
     trait :with_divisions do
       after :create do |company|
         FactoryGirl.create_list :division, 3, :company_id => company.id

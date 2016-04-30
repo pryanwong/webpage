@@ -293,26 +293,6 @@ class DrawingsController < ApplicationController
 
     logger.info "Entering Drawing#updateBackground"
     logger.fatal "Params: #{params.inspect}"
-    #@drawing = Drawing.find(params[:id]);
-    #logger.debug "Background Vals: #{params.inspect}"
-    #logger.debug "Background Present: #{params[:drawing].present?}"
-    #logger.debug "#{ENV['s3_region']}"
-    #if(params[:drawing].present?)
-    #   logger.debug "Background Val: #{params[:drawing][:background]}"
-    #   @drawing.update_attribute(:background, params[:drawing][:background])
-    #   if @drawing.save
-    #     logger.debug "The background was added!"
-    #     flash[:success] = "The background was added!"
-    #   else
-    #     logger.debug "The background was not uploaded!"
-    #     flash[:error] = "The background was not uploaded!"
-    #   end
-    #else
-    #  logger.debug "The background was not uploaded!"
-    #  flash[:error] = "The background was not uploaded!"
-    #end
-    #logger.debug "URL: #{@drawing.background.url}"
-    #redirect_to edit_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id)
     logger.info "Leaving Drawing#updateBackground"
   end
 

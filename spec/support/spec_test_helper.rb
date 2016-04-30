@@ -5,6 +5,9 @@ module SpecTestHelper
     user = User.where(:email => user_name).first
     request.session[:user_id] = user.id
     request.session[:company_id] = user.company_id
+    request.session[:role] = user.role
+    request.session[:email] = user.email
+    request.session[:company_id] = user.company_id
   end
 
   #def login(user_double)
@@ -13,7 +16,16 @@ module SpecTestHelper
   #end
 
   def current_user
-    User.find(request.session[:user_id])
+    @current_user ="";
+    if (session[:user_id])
+        @current_user = User.new
+        @current_user.id = session[:user_id]
+        @current_user.role = session[:role]
+        @current_user.email = session[:email]
+        @current_user.company_id = session[:company_id]
+    else
+        @current_user = false;
+    end
   end
 
   def current_ability

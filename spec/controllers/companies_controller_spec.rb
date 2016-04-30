@@ -2,22 +2,29 @@ require 'rails_helper'
 
 describe CompaniesController, :type => :controller do
 
-    let(:company1) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 1)}
-    let(:company2) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 2)}
-    let(:company3) { double("company3", update_attributes: {name: "batman", licenses: "3"}, errors: {})}
-    let(:company4) { double("company4", update_attributes: {name: "batman", licenses: "3"}, errors: {}, save: true, :id => 1)}
+    let(:company1) { FactoryGirl.build(:company,:name,:license_rand, :portal, :with_divisions, :id => 1)}
+    let(:company2) { FactoryGirl.build(:company,:name,:license_rand, :portal,:with_divisions, :id => 2)}
+    let(:company3) { double("company3", update_attributes: {name: "batman", licenses: "3", portal: "TestPortal"}, errors: {})}
+    let(:company4) { double("company4", update_attributes: {name: "batman", licenses: "3", portal: "TestPortal"}, errors: {}, save: true, :id => 1)}
     let(:user) {double("user") }
     #let(:user_admin) { FactoryGirl.create(:user, :admin,:company_id => company2.id) }
 
     describe "GET 'index'" do
 
       it "renders the index page because user was logged in as admin" do
-         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :provider=> 0, :email => "sf@test.com", :company_id => 1, :company => company1)
+         allow(@current_user).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :provider=> 0, :email => "sf@test.com", :company_id => 1, :company => company1)
          allow(User).to receive(:where).and_return([user])
          allow(User).to receive(:find).and_return(user)
+         allow(User).to receive(:new).and_return(user)
+         allow(user).to receive(:id).and_return(1)
+         allow(user).to receive(:role).and_return(3)
+         allow(user).to receive(:admin?).and_return(true)
+         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
          allow(Company).to receive(:all).and_return([company1, company2])
          allow(Company).to receive(:where).and_return([company1, company2])
          login(user.email)
+         puts "Login as Admin: #{user.admin?}"
          get :index
          expect(response).to render_template("layouts/application")
          expect(response).to render_template("index")
@@ -33,6 +40,11 @@ describe CompaniesController, :type => :controller do
           allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => true, :user? => false, :email => "sf@test.com", :company_id => 1, :company => company1)
           allow(User).to receive(:where).and_return([user])
           allow(User).to receive(:find).and_return(user)
+          allow(user).to receive(:id).and_return(1)
+          allow(user).to receive(:role).and_return(3)
+          allow(user).to receive(:admin?).and_return(false)
+          allow(user).to receive(:moderator?).and_return(true)
+          allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
           login(user.email)
           get :index
           expect(response).to render_template("layouts/application")
@@ -44,6 +56,11 @@ describe CompaniesController, :type => :controller do
           allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
           allow(User).to receive(:where).and_return([user])
           allow(User).to receive(:find).and_return(user)
+          allow(user).to receive(:id).and_return(1)
+          allow(user).to receive(:role).and_return(3)
+          allow(user).to receive(:admin?).and_return(false)
+          allow(user).to receive(:moderator?).and_return(false)
+          allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
           login(user.email)
           get :index
           expect(response).to redirect_to("/accessdenied")
@@ -60,9 +77,21 @@ describe CompaniesController, :type => :controller do
          allow(user).to receive_messages(:id => 1, :admin? => false, :moderator? => false, :user? => true, :email => "sf@test.com", :company_id => 1, :company => company1)
          allow(User).to receive(:where).and_return([user])
          allow(User).to receive(:find).and_return(user)
+         allow(user).to receive(:id).and_return(1)
+         allow(user).to receive(:role).and_return(3)
+         allow(user).to receive(:admin?).and_return(false)
+         allow(user).to receive(:moderator?).and_return(false)
          login(user.email)
+         puts "What is happening here?"
+         puts "user:  #{user.inspect}"
+         ability = Ability.new(user)
+         permit  = ability.can? :new, company1
+         puts "Permissions can new: #{permit}"
          get :new
+         puts "Inspect Response:  #{response.inspect}"
          expect(response).to redirect_to("/accessdenied")
+         #expect(response).to render_template("layouts/application")
+         #expect(response).to render_template("companies/new")
        end
 
        it "renders the accessdenied page because user (moderator role) was logged in" do

@@ -30,6 +30,7 @@ class Ability
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
+         can [], Company, :id => user.company_id
        end
     #
     # The first argument to `can` is the action you are giving the user

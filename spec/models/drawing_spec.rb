@@ -2,13 +2,13 @@ require 'rails_helper'
 
 describe Drawing do
 
-  let(:company1) { FactoryGirl.create(:company,:name,:license_rand, :with_divisions)}
-  let(:company2) { FactoryGirl.create(:company,:name,:license_rand, :with_divisions)}
-  let(:user) { FactoryGirl.create(:user, :user,:company_id => company1.id)}
+  let(:company1) { FactoryGirl.create(:company,:name,:license_rand, :portal, :with_divisions)}
+  let(:company2) { FactoryGirl.create(:company,:name,:license_rand, :portal, :with_divisions)}
+  let(:user) { FactoryGirl.create(:user, :user,:provider, :company_id => company1.id)}
 
 
   it "is invalid, raises error because of invalid privacy" do
-     expect { FactoryGirl.build(:drawing, :privacy => "blahblah", :division_id => company1.divisions[0].id, :user_id => user.id,:company_id => company1.id) }.to raise_error
+     expect { FactoryGirl.build(:drawing, :privacy => "blahblah", :division_id => company1.divisions[0].id, :user_id => user.id,:company_id => company1.id) }.to raise_error(ArgumentError)
   end
 
   it "is valid" do
