@@ -1,7 +1,6 @@
 require 'csv'
 
 class DrawingsController < ApplicationController
-  before_filter(:only => [:index, :show]) { authorize if can? :read, :drawing }
   respond_to :json, :html
   load_and_authorize_resource :drawing
   #before_filter :check_for_cancel, :only => [:updatedrawingdetails, :send_image, :send_image_form]
@@ -17,6 +16,7 @@ class DrawingsController < ApplicationController
           logger.error "Drawing not Found"
           flash[:error] = "Drawing not Found"
           redirect_to root_path
+          return
        end
        @editdetails = true;
        if @drawing.drawing == nil || @drawing.drawing.length == 0
@@ -31,6 +31,7 @@ class DrawingsController < ApplicationController
           logger.error "No Company found"
           flash[:error] = "Company not Found"
           redirect_to root_path
+          return
        end
 
        #Aws.config.update({

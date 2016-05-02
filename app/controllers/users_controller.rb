@@ -313,10 +313,10 @@ class UsersController < ApplicationController
        logger.debug "User role not blank"
        if params[:user][:role] == "moderator"
           @user.role = User.roles["moderator"]
-          logger.debug "User role is moderator}"
+          logger.debug "User role is moderator"
        else
           @user.role = User.roles["user"]
-          logger.debug "User role is user}"
+          logger.debug "User role is user"
        end
     end
 

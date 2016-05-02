@@ -4,17 +4,17 @@ describe UsersController, :type => :controller do
 
     let(:company1) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 1)}
     let(:company2) { FactoryGirl.build(:company,:name,:license_rand, :with_divisions, :id => 2)}
-    let(:drawing) { FactoryGirl.build(:drawing, :privacy_company, :png=>"png", :drawing=>"", :user_id=> 1, :company_id=>1, :id=> 1)}
-    let(:drawings) { FactoryGirl.build_list(:drawing, 5, :privacy_company, :png=>"png", :drawing=>"", :user_id=> 1, :company_id=>1, :id=> 1)}
+    let(:drawing) { FactoryGirl.build(:drawing, :privacy_company, :drawing=>"", :user_id=> 1, :company_id=>1, :id=> 1)}
+    let(:drawings) { FactoryGirl.build_list(:drawing, 5, :privacy_company, :drawing=>"", :user_id=> 1, :company_id=>1, :id=> 1)}
     let(:company4) { double("company4", update_attributes: {name: "batman", licenses: "3"}, errors: {}, save: true, :id => 1)}
     let(:user) { FactoryGirl.build(:user, :admin, :company_id => 1 )}
     let(:user2) { double("user2", :role => 2, :admin? => true, :email => 'sf@optecture.ca', :id => 1, :company_id => 1)}
-    let(:user3) { double("user2", :role => 2, :admin? => true, :email => 'sf@optecture.ca', :id => 2, :company_id => 1)}
+    let(:user3) { double("user3", :role => 2, :admin? => true, :email => 'sf@optecture.ca', :id => 2, :company_id => 1)}
     let(:users) { FactoryGirl.build_list(:user, 5,:admin, :company_id => 1 )}
     let(:divisions) { FactoryGirl.build_list(:division, 5)}
     let(:user_mem) { double("userMem", :errors => [], :destroy! => true, :length => 0)}
     before { allow_any_instance_of(CanCan::ControllerResource).to receive(:load_and_authorize_resource){ nil } }
-    before { allow_any_instance_of(SpecTestHelper).to receive(:current_user){ user2 } }
+    before { allow_any_instance_of(SpecTestHelper).to receive(:current_user){ user3 } }
     #let(:user_admin) { FactoryGirl.create(:user, :admin,:company_id => company2.id) }
 
     describe "GET 'showall'" do
@@ -35,8 +35,8 @@ describe UsersController, :type => :controller do
     describe "GET 'switchuser'" do
 
       it "renders the company_user page and switches user" do
-        allow(user2).to receive_messages(:id => 1, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
-        allow(user3).to receive_messages(:id => 2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(user2).to receive_messages(:id => 1, :role=>3, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(user3).to receive_messages(:id => 2, :role=>3, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
         allow(User).to receive(:where).and_return([user3])
         allow(User).to receive(:find).and_return(user3)
         allow(User).to receive(:exists?).and_return(true)
@@ -82,7 +82,7 @@ describe UsersController, :type => :controller do
         allow(User).to receive(:where).and_return([user3])
         allow(User).to receive(:find).and_return(user3)
         allow(User).to receive(:exists?).and_return(true)
-        session[:switched] = false
+        session[:switched] = true
         login(user3.email)
         get :switchuser, :company_id => 1, :user_id => 1
         expect(response).to redirect_to company_user_path(1,2)
@@ -167,7 +167,7 @@ describe UsersController, :type => :controller do
         allow(User).to receive(:exists?).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
-        allow(Drawing).to receive_message_chain(:includes, :all, :order, :paginate => drawings)
+        allow(Drawing).to receive_message_chain(:includes, :where,  :order, :paginate => drawings)
         login(user2.email)
         get :show, :company_id => 1, :id => 1
         expect(response).to render_template("users/show")
@@ -183,7 +183,7 @@ describe UsersController, :type => :controller do
         allow(User).to receive(:exists?).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
-        allow(Drawing).to receive_message_chain(:includes, :all, :order, :paginate => [])
+        allow(Drawing).to receive_message_chain(:includes, :where, :order, :paginate => [])
         login(user2.email)
         get :show, :company_id => 1, :id => 1
         expect(response).to render_template("users/show")
@@ -199,7 +199,7 @@ describe UsersController, :type => :controller do
         allow(User).to receive(:exists?).and_return(false)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
-        allow(Drawing).to receive_message_chain(:includes, :all, :order, :paginate => [])
+        allow(Drawing).to receive_message_chain(:includes, :where, :order, :paginate => [])
         login(user2.email)
         get :show, :company_id => 1, :id => 1
         expect(response).to redirect_to(root_path)
@@ -213,7 +213,7 @@ describe UsersController, :type => :controller do
         allow(User).to receive(:exists?).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
-        allow(Drawing).to receive_message_chain(:moderator_access, :order, :paginate => drawings)
+        allow(Drawing).to receive_message_chain(:moderator_access, :where, :order, :paginate => drawings)
         login(user2.email)
         get :show, :company_id => 1, :id => 1
         expect(response).to render_template("users/show")
@@ -229,7 +229,7 @@ describe UsersController, :type => :controller do
         allow(User).to receive(:exists?).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
-        allow(Drawing).to receive_message_chain(:user_access, :order, :paginate => drawings)
+        allow(Drawing).to receive_message_chain(:user_access, :where, :order, :paginate => drawings)
         login(user2.email)
         get :show, :company_id => 1, :id => 1
         expect(response).to render_template("users/show")
@@ -463,11 +463,18 @@ describe UsersController, :type => :controller do
     describe "POST 'update'" do
 
       it "redirects to company_path " do
-        allow(user2).to receive_messages(:id => 1, :save => true, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
-        allow(user3).to receive_messages(:id => 2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
-        allow(User).to receive(:where).and_return([user2])
-        allow(User).to receive(:find).and_return(user2)
+        #allow(user2).to receive_messages(:id => 1, :save => true, :role=> 2, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
+        #allow(user3).to receive_messages(:id => 2, :admin? => true, :role=> 2, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(user2).to receive_messages(:id => 1, :role=>2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(user3).to receive_messages(:id => 2, :role=>2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(User).to receive(:where).and_return([user3])
+        allow(User).to receive(:find).and_return(user3)
         allow(User).to receive(:exists?).and_return(true)
+        allow(User).to receive(:new).and_return(user3)
+        allow(user3).to receive(:role=).with(2)
+        allow(user3).to receive(:provider=).with(0)
+        allow(user3).to receive(:email=).with("sf@sf.com")
+        allow(user3).to receive(:save).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
         login(user2.email)
@@ -476,11 +483,16 @@ describe UsersController, :type => :controller do
       end
 
       it "redirects to root_path, company_id not given " do
-        allow(user2).to receive_messages(:id => 1, :save => true, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
-        allow(user3).to receive_messages(:id => 2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
-        allow(User).to receive(:where).and_return([user2])
-        allow(User).to receive(:find).and_return(user2)
+        allow(user2).to receive_messages(:id => 1, :role=>2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(user3).to receive_messages(:id => 2, :role=>2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(User).to receive(:where).and_return([user3])
+        allow(User).to receive(:find).and_return(user3)
         allow(User).to receive(:exists?).and_return(true)
+        allow(User).to receive(:new).and_return(user3)
+        allow(user3).to receive(:role=).with(2)
+        allow(user3).to receive(:provider=).with(0)
+        allow(user3).to receive(:email=).with("sf@sf.com")
+        allow(user3).to receive(:save).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(false)
         login(user2.email)
@@ -492,11 +504,13 @@ describe UsersController, :type => :controller do
     describe "POST 'create'" do
 
       it "redirects to company_path " do
-        allow(user2).to receive_messages(:id => 1, :save => true, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
-        allow(user3).to receive_messages(:id => 2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
-        allow(User).to receive(:where).and_return([user2])
-        allow(User).to receive(:find).and_return(user2)
+        allow(user2).to receive_messages(:id => 1, :save => true, :role=> 2, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
+        allow(user3).to receive_messages(:id => 2, :role=> 3, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
+        allow(User).to receive(:where).and_return([user3])
+        allow(User).to receive(:find).and_return(user3)
         allow(User).to receive(:exists?).and_return(true)
+        allow(User).to receive(:new).and_return(user2)
+        allow(user2).to receive_message_chain(:save).and_return(true)
         allow(Company).to receive(:find).and_return(company1)
         allow(Company).to receive(:exists?).and_return(true)
         login(user2.email)
@@ -505,7 +519,7 @@ describe UsersController, :type => :controller do
       end
 
       it "redirects to root_path " do
-        allow(user2).to receive_messages(:id => 1, :save => true, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
+        allow(user2).to receive_messages(:id => 2, :save => true, :user! => true, :moderator! => true, :email= => true, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1, :divisions => divisions)
         allow(user3).to receive_messages(:id => 2, :admin? => true, :moderator? => false, :user? => false, :email => "sf@test.com", :company_id => 1)
         allow(User).to receive(:where).and_return([user2])
         allow(User).to receive(:find).and_return(user2)

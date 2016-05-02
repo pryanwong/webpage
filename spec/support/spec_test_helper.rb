@@ -29,6 +29,9 @@ module SpecTestHelper
   end
 
   def current_ability
-    User.find(request.session[:user_id])
+    #User.find(request.session[:user_id])
+    puts "current_user: #{current_user}"
+    puts "#{Ability.new(current_user)}"
+    Ability.new(current_user)
   end
 end

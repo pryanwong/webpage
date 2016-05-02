@@ -9,14 +9,6 @@ describe PagesController do
        end
   end
 
-  describe "GET 'about'" do
-     it "renders the about template" do
-       get :about
-       expect(response).to render_template("layouts/longpages")
-       expect(response).to render_template("about")
-     end
-   end
-
    describe "GET 'failed'" do
       it "renders the failed template" do
         get :failed
