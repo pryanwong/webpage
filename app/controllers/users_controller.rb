@@ -91,6 +91,16 @@ class UsersController < ApplicationController
       redirect_to root_path
       return
     end
+    tzall = ActiveSupport::TimeZone.us_zones()
+    @timezone_array = []
+    tzall.each_with_index { |val, index|
+      logger.fatal "Timezone: #{val.inspect}"
+      logger.fatal "Timezone Name: #{val.name}"
+      tmp = val.name
+      tmparray = [val.to_s, tmp]
+      @timezone_array.push(tmparray)
+    }
+    logger.fatal "#{@timezone_array}"
     @user = User.new
     @user.company = @company
     logger.info "Leaving Users Controller:new"
@@ -115,6 +125,7 @@ class UsersController < ApplicationController
     searchterm = ""
     @placeholder_val = ""
     @placeholder     = ""
+    @timezone = @user.timezone
     logger.debug "Checking if search term is present"
     if (params.has_key?("srch_term"))
       logger.debug "Searching for: #{params["srch_term"]}"
@@ -163,6 +174,16 @@ class UsersController < ApplicationController
        redirect_to root_path
        return
     end
+    tzall = ActiveSupport::TimeZone.us_zones()
+    @timezone_array = []
+    tzall.each_with_index { |val, index|
+      logger.fatal "Timezone: #{val.inspect}"
+      logger.fatal "Timezone Name: #{val.name}"
+      tmp = val.name
+      tmparray = [val.to_s, tmp]
+      @timezone_array.push(tmparray)
+    }
+    logger.fatal "#{@timezone_array}"
     logger.info "Leaving Users Controller:edit"
   end
 
@@ -297,6 +318,7 @@ class UsersController < ApplicationController
 
   def update
     logger.info "Entering Users Controller:update"
+    logger.fatal "Params: #{params.inspect}"
     @user = User.new
     if (User.exists?(id: params[:id]))
        logger.debug "User Exists #{params[:id]}"
@@ -331,6 +353,14 @@ class UsersController < ApplicationController
     if (!params[:user][:email].blank?)
        logger.debug "User email is not blank"
        @user.email = params[:user][:email]
+    end
+
+    if (!params[:user][:timezone].blank?)
+       logger.debug "User timezone is not blank"
+       @user.timezone =params[:user][:timezone]
+    else
+       logger.debug "User timezone is blank, set to EST"
+       @user.timezone = "Eastern Time (US & Canada)";
     end
 
     logger.debug "User is being saved"
@@ -416,7 +446,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id, :provider)
+      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id, :provider, :timezone)
     end
 
     def sort_column

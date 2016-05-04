@@ -14,6 +14,47 @@
   min-height: 100%;
 }
 
+.pagination-wrapper {
+   text-align: center;
+}
+/*
+#pagination-wrapper .pagination>li>a,
+#pagination-wrapper .pagination>li>span {
+  border: 1px solid purple;
+  color: #000000
+}
+#pagination-wrapper .pagination>li.active>a,
+#pagination-wrapper .pagination>li>span {
+  background: purple;
+  background-color: #303F9F;
+  color: #ffffff;
+}
+
+#pagination-wrapper .pagination>li.next,
+#pagination-wrapper .pagination>li>span {
+  background: purple;
+  background-color: #ffffff;
+  color: #000000;
+}
+*/
+
+#pagination-wrapper .pagination > li > a,
+#pagination-wrapper .pagination > li > span {
+    border: 1px solid black;
+    background: #ffffff;
+    color: #000000
+}
+#pagination-wrapper .pagination > li > a:hover,
+#pagination-wrapper .pagination > li > a:focus,
+#pagination-wrapper .pagination > li > span:hover,
+#pagination-wrapper .pagination > li > span:focus,
+#pagination-wrapper .pagination > li.active > a,
+#pagination-wrapper .pagination > li.active > span {
+    background: #303F9F;
+    border: 1px solid #303F9F;
+    color: #000
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,

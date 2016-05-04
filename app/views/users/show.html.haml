@@ -42,7 +42,12 @@
                      %td{:class=>"hidden-sm hidden-xs"}= drawing.description
                      %td{:class=>"hidden-sm hidden-xs"}= drawing.customer
                      %td{:class=>"hidden-sm hidden-xs"}= drawing.user.email
-                     %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at
+                     - if drawing.updated_at.to_date == Date.today
+                        %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at.in_time_zone(@timezone).strftime("Today, %H:%M %Z")
+                     - elsif drawing.updated_at.to_date > Date.today.days_ago(7)
+                        %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at.in_time_zone(@timezone).strftime("%A, %H:%M %Z")
+                     - else
+                        %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at.in_time_zone(@timezone).strftime("%Y-%m-%d %H:%M %Z")
                      %td
                         - if (drawing.drawing == "")
                            %i{:class=>"fa fa-ban"}
@@ -56,7 +61,7 @@
                            = link_to send_image_form_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                               %i{:class=>"fa fa-envelope"}
                      %td
-                        - if (drawing.drawing == "")
+                        - if !((drawing.user_id == @user.id) || (@user.admin?) || (@user.moderator?))
                            %i{:class=>"fa fa-ban"}
                         - else
                            = link_to editdrawingdetails_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
@@ -70,4 +75,5 @@
                      %td
                         = link_to edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-pencil-square-o"}
-         =will_paginate @userdrawings
+         %div{:id=>"pagination-wrapper", :class=>"pagination-wrapper"}
+            =will_paginate @userdrawings, renderer: BootstrapPagination::Rails

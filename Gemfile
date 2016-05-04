@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 ruby '2.2.2', :engine => 'jruby', :engine_version => '9.0.0.0'
 
-gem 'cowsay'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.8'
 # Use postgresql as the database for Active Record
@@ -59,12 +58,18 @@ gem 'will_paginate'
 gem 'aws-sdk'
 gem 'remote_ip_proxy_scrubber'
 
+#will_paginate_bootstrap is added to provide bootstrap formatting to will_paginate
+gem 'will_paginate-bootstrap'
+
 group :development, :test do
+  # gem 'guard-jruby-minitest'
+  # gem 'guard-jruby-rspec'
   gem 'rspec-rails', '~> 3.0'
-  gem 'guard-rspec'
-  gem 'guard', '2.11.1'
+  gem 'guard-rspec', '4.6.5'
+  gem 'guard', '2.11.0'
   gem 'factory_girl_rails'
   gem 'derailed'
+  # gem 'guard'
 end
 
 group :test do

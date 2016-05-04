@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
      session[:company_id] = user.company_id
      session[:role] = user.role
      session[:email] = user.email
+     session[:timezone] = user.timezone
      logger.debug "User Role #{user_path(user.id)}"
      logger.info "Leaving SessionsController#create"
      redirect_to user_path(user.id)
@@ -26,6 +27,7 @@ class SessionsController < ApplicationController
    session[:company_id] = nil
    session[:role] = nil
    session[:email] = nil
+   session[:timezone] = nil
    cookies.delete('_optecture_session')
    reset_session
    logger.info "Leaving SessionsController#destroy"

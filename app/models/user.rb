@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   has_many :divisions, :through => :user_memberships
   has_many :drawings, :dependent => :restrict_with_error
   belongs_to :company
-  validates_presence_of :company
+  validates_presence_of :company, :timezone
   validates :role, presence: true, inclusion: { in: User.roles.keys }
   validates :provider, presence: true, inclusion: { in: User.providers.keys }
   validate :validate_license_available, :only => :new

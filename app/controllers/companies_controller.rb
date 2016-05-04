@@ -9,7 +9,7 @@
     #logger.fatal "Session Vals in New: #{session.inspect}"
     @company = Company.new
     logger.debug "New company: #{@company.inspect}"
-    logger.info "Leaving CompaniesController:new"
+    logger.info "Leaving  CompaniesController:new"
     authorize! :new, @company
   end
 
@@ -27,7 +27,7 @@
     end
     logger.info "Leaving CompaniesController:index"
   end
-
+ 
   def show
     logger.info "Entering CompaniesController:show"
     if (Company.exists?(id: params[:id]))
