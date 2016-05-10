@@ -299,56 +299,6 @@ div.padded {
     display: inline;
 }
 
-.glossymenu {
-   position: absolute;
-}
-
-.glossymenu ul{
-position: absolute;
-list-style-type: none;
-margin: 5px 0;
-padding: 0;
-width: 250px;
-border: 1px solid #9A9A9A;
-border-bottom-width: 0;
-list-style-type: none;
-list-style: none;
-}
-
-.glossymenu li a{
-background: white url(asset-path("glossyback.gif")) repeat-x bottom left;
-font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
-color: white;
-display: block;
-width: auto;
-padding: 3px 0;
-padding-left: 10px;
-text-decoration: none;
-list-style-type: none;
-list-style: none;
-
-}
-
-
-* html .glossymenu li a{ /*IE only. Actual menu width minus left padding of A element (10px) */
-background: white  url(asset-path("glossyback.gif")) repeat-x bottom left;
-font: bold 13px "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, sans-serif;
-color: white;
-display: block;
-width: auto;
-padding: 0px 0;
-padding-left: 0px;
-text-decoration: none;
-}
-
-.glossymenu li a:visited, .glossymenu li a:active{
-color: white;
-}
-
-.glossymenu li a:hover{
-background-image:  url(asset-path("glossyback2.gif"));
-}
-
 .LabelFormDiv {
 display: none;
 }
@@ -369,6 +319,16 @@ html, body, div, canvas {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+#contextMenu {
+  position: absolute;
+  display:none;
+}
+
+#contextMenu .dropdown-menu>li>a:hover {
+    background: #303F9F;
+    color:#ffffff;
+  }
 
 #accordian-container {
   position: absolute;

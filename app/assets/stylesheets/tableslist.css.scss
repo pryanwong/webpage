@@ -5,20 +5,28 @@ th {
    text-align: left;
 }
 
+th .asc:after{
+  content:"\e253";
+  font-family:"Glyphicons Halflings";
+  margin:5px;
+
+}
+
 th .asc {
-   background-image:  url(asset-path("common/arrows_up_5.png"));
-   background-position: right center; /*Positioning*/
-   background-repeat: no-repeat;
    box-sizing: border-box;
    padding-right: 20px;
    font-size: 12pt;
    text-align: left;
 }
 
+th .desc:after{
+  content:"\e252";
+  font-family:"Glyphicons Halflings";
+  margin:5px;
+
+}
+
 th .desc {
-   background-image:  url(asset-path("common/arrows_down_5.png"));
-   background-position: right center; /*Positioning*/
-   background-repeat: no-repeat;
    padding-right: 20px;
    box-sizing: border-box;
    font-size: 12pt;

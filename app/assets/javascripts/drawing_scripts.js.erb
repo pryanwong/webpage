@@ -315,7 +315,12 @@ function selectionCleared(e)  {
 
 function mouseDown(e)  {
     log.info( "Entering mouseDown");
-    $('#glossymenu').remove();
+    if (e.preventDefault) {
+       e.preventDefault(); // Necessary. Allows us to drop.
+    }
+    $('#contextMenu').remove();
+    contextmenuon = false;
+    activeObject = false;
     log.debug( "contextmenuon: ", contextmenuon);
     log.info( "Leaving mouseDown");
 };
@@ -889,7 +894,7 @@ function sendBackward() {
    if (activeObjectVal) {
       canvas.sendBackwards(activeObjectVal);
    }
-   $('#glossymenu').remove();
+   $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
    log.info( "Leaving sendBackward");
@@ -901,7 +906,7 @@ function sendToBack() {
    if (activeObjectVal) {
       canvas.sendToBack(activeObjectVal);
    }
-   $('#glossymenu').remove();
+   $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
    log.info( "Leaving sendToBack");
@@ -913,7 +918,7 @@ function bringFoward() {
    if (activeObjectVal) {
       canvas.bringForward(activeObjectVal);
    }
-   $('#glossymenu').remove();
+   $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
    log.info( "Leaving bringFoward");
@@ -925,7 +930,7 @@ function bringToFront() {
    if (activeObjectVal) {
       canvas.bringToFront(activeObjectVal);
    }
-   $('#glossymenu').remove();
+   $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
    log.info( "Leaving bringToFront");
@@ -936,10 +941,17 @@ function lineDown(data,index) {
    log.info( "Entering lineDown");
    console.log( "Entering lineDown");
    console.log("data: ", data)
+
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   /*
    if (canvas.getActiveObject() != null) {
      activeObjectVal = canvas.getActiveObject();
+     activeObject = true;
      console.log("ActiveObjectVal: " , activeObjectVal )
    }
+   */
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -979,12 +991,12 @@ function lineDown(data,index) {
                                                  canvas.renderAll()
                                                }
                                              }
-                                             $('#glossymenu').remove();
+                                             $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;
                                            });
            $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#glossymenu').remove();
+                                                             $('#contextMenu').remove();
                                                              contextmenuon = false;}
                                                 );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
@@ -1004,7 +1016,16 @@ function ellipseDown(data,index) {
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
-
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   /*
+   if (canvas.getActiveObject() != null) {
+     activeObjectVal = canvas.getActiveObject();
+     activeObject = true;
+     console.log("ActiveObjectVal: " , activeObjectVal )
+   }
+   */
    if (data.e.which == 3) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true) {
@@ -1015,12 +1036,13 @@ function ellipseDown(data,index) {
                                              activeObjectVal = canvas.getActiveObject();
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
-                                             $('#glossymenu').remove();
+                                             $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
            $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#glossymenu').remove();
-                                                             contextmenuon = false;}
+                                                             $('#contextMenu').remove();
+                                                             contextmenuon = false;
+                                                             activeObject = false;}
                                                 );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
            $('a:contains("Send To Back")').click(function() {sendToBack();});
@@ -1040,7 +1062,16 @@ function circleDown(data,index) {
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
-
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   /*
+   if (canvas.getActiveObject() != null) {
+     activeObjectVal = canvas.getActiveObject();
+     activeObject = true;
+     console.log("ActiveObjectVal: " , activeObjectVal )
+   }
+   */
    if (data.e.which == 3) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true ) {
@@ -1051,12 +1082,13 @@ function circleDown(data,index) {
                                              activeObjectVal = canvas.getActiveObject();
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
-                                             $('#glossymenu').remove();
+                                             $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
            $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#glossymenu').remove();
-                                                             contextmenuon = false;}
+                                                             $('#contextMenu').remove();
+                                                             contextmenuon = false;
+                                                             activeObject = false;}
                                                 );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
            $('a:contains("Send To Back")').click(function() {sendToBack();});
@@ -1075,7 +1107,16 @@ function rectangleDown(data,index) {
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
-
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   /*
+   if (canvas.getActiveObject() != null) {
+     activeObjectVal = canvas.getActiveObject();
+     activeObject = true;
+     console.log("ActiveObjectVal: " , activeObjectVal )
+   }
+   */
    if (data.e.which == 3) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true) {
@@ -1086,12 +1127,13 @@ function rectangleDown(data,index) {
                                              activeObjectVal = canvas.getActiveObject();
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
-                                             $('#glossymenu').remove();
+                                             $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
            $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#glossymenu').remove();
-                                                             contextmenuon = false;}
+                                                             $('#contextMenu').remove();
+                                                             contextmenuon = false;
+                                                             activeObject = false;}
                                                 );
            $('a:contains("Send Backward")').click(function() {sendBackward();});
            $('a:contains("Send To Back")').click(function() {sendToBack();});
@@ -1110,7 +1152,16 @@ function textDown(data,index) {
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
-
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   /*
+   if (canvas.getActiveObject() != null) {
+     activeObjectVal = canvas.getActiveObject();
+     activeObject = true;
+     console.log("ActiveObjectVal: " , activeObjectVal )
+   }
+   */
    if (data.e.which == 3) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true) {
@@ -1121,12 +1172,13 @@ function textDown(data,index) {
                                              activeObjectVal = canvas.getActiveObject();
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
-                                             $('#glossymenu').remove();
+                                             $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
             $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                              $('#glossymenu').remove();
-                                                              contextmenuon = false;}
+                                                              $('#contextMenu').remove();
+                                                              contextmenuon = false;
+                                                              activeObject = false;}
                                                  );
             $('a:contains("Send Backward")').click(function() {sendBackward();});
             $('a:contains("Send To Back")').click(function() {sendToBack();});
@@ -1146,7 +1198,16 @@ function imageDown(data,index) {
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
-
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   /*
+   if (canvas.getActiveObject() != null) {
+     activeObjectVal = canvas.getActiveObject();
+     activeObject = true;
+     console.log("ActiveObjectVal: " , activeObjectVal )
+   }
+   */
    if (data.e.which == 3) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true) {
@@ -1165,14 +1226,14 @@ function imageDown(data,index) {
                                                    searchId = getItemIndex(activeObjectVal)
                                                    canvas.setActiveObject(canvas.item(searchId))
                                                    configuratorProduct2(productId, companyId, searchId);
-                                                   $('#glossymenu').remove();
+                                                   $('#contextMenu').remove();
                                                    contextmenuon = false;
                                                    activeObject = true;
                                                 });
             $('a:contains("Delete")').click(  function() {log.debug("imageDown: In Delete");
                                                log.trace(activeObjectVal);
                                                canvas.remove(activeObjectVal);
-                                               $('#glossymenu').remove();
+                                               $('#contextMenu').remove();
                                                contextmenuon = false;
                                                activeObject = false;}   );
             $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
@@ -1360,18 +1421,26 @@ function contextMenu(env) {
 
 function menus(items, event) {
    log.info( "Entering menus");
+   var $contextMenu = "";
    if (contextmenuon == false) {
-      $('body').append("<div id='glossymenu' class='glossymenu'>");
-      $('#glossymenu').append("<ul id='ulglossymenu'>");
+      var menucontainer = document.createElement('div');
+      menucontainer.id = 'contextMenu';
+      //menucontainer.className = "dropdown clearfix";
+      //var html = "<ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu' style='display:block;position:static;margin-bottom:5px;'>";
+      var html = "<ul class='dropdown-menu' role='menu' style='display:block;position:static;' >";
       for (index=0; index < items.length; index++) {
-         $('#ulglossymenu').append("<li> <a>" + items[index] + "</a> </li>");
+         html += "<li> <a tabindex=''-1'>" + items[index] + "</a> </li>";
       }
-      $('#glossymenu').append("</ul>");
-      $('#body').append("</div>");
-      var posY = event.layerY + "px";
-      var posX = event.layerX + "px";
-      $('#glossymenu').css('top',posY);
-      $('#glossymenu').css('left',posX);
+      html += "</ul>" ;
+      menucontainer.innerHTML = html;
+      $('body').append(menucontainer);
+      $contextMenu = $("#contextMenu");
+      $contextMenu.css({
+         display: "block",
+         left: event.pageX,
+         top: event.pageY
+       });
+
    } else {
      log.info("Menu Not Displayed contextmenu is true");
    }
