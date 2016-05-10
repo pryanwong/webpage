@@ -189,6 +189,7 @@
    var handler = "";
    var c = new Array();
    var objId_var = 0;
+   var saveInProgress = false;
    var company_id ='#{params[:company_id]}'
    var user_id= '#{params[:user_id]}'
    var drawing_id = '#{params[:id]}'
@@ -196,10 +197,12 @@
    var contextmenuon = false;
    var activeObject = false;
    var activeObjectVal = "";
-   var activeLineGroup = null;
+   var activeObjectValCP = "";
    var backgroundImageVal = "";
    var objectName = "";
-   var canvas = new fabric.CanvasEx('demoCanvas2');
+   var _curX, _curY;
+   var canvas = new fabric.CanvasEx('demoCanvas2', {selection: true});
+   fabric.Group.prototype.hasControls = false
    document.getElementById("demoCanvas2").fabric = canvas;
    var fabric = fabric || { version: "1.4.13" };
    var motionInbounds = true;
@@ -260,6 +263,90 @@
    };
    fabric.CustomImage.async = true;
 
+   log.debug("Create Custom Line Class");
+   fabric.Customline = fabric.util.createClass(fabric.Line, {
+      type: 'customline',
+      initialize: function(coords, options) {
+          options || (options = {});
+          this.callSuper('initialize', coords ,options);
+          options && this.set('objId', options.objId);
+          options && this.set('cone', options.cone);
+          options && this.set('ctwo', options.ctwo);
+      },
+      toObject: function() {
+          return fabric.util.object.extend(this.callSuper('toObject'),
+                                        {objId: this.objId,
+                                         cone:    this.cone,
+                                         ctwo:    this.ctwo});
+      },
+      setObjId: function(objIdString) {
+         this.objId = objIdString;
+      },
+      getObjId: function() {
+         return this.objId;
+      },
+      setCone: function(c1String) {
+         this.cone = c1String;
+      },
+      setCtwo: function(c2String) {
+         this.ctwo = c2String;
+      },
+       _render: function(ctx) {
+          this.callSuper('_render', ctx);
+       }
+   });
+   fabric.Customline.fromObject = function (object) {
+      return new fabric.Customline([object.x1,object.y1,object.x2,object.y2], object);
+   };
+   fabric.Customline.async = false;
+
+   log.debug("Create Custom Circlezero Class");
+   fabric.Circlezero = fabric.util.createClass(fabric.Circle, {
+     type: 'circlezero',
+     initialize: function(element, options) {
+         this.callSuper('initialize', element, options);
+         options && this.set('belongsTo', options.belongsTo);
+     },
+     toObject: function() {
+         return fabric.util.object.extend(this.callSuper('toObject'),
+                                       {belongsTo: this.belongsTo});
+     },
+     setBelongsTo: function(belongsToString) {
+        this.belongsTo = belongsToString;
+     },
+     _render: function(ctx) {
+        this.callSuper('_render', ctx);
+     }
+   });
+   fabric.Circlezero.fromObject = function(object) {
+      return new fabric.Circlezero(object);
+   };
+   fabric.Circlezero.async = false;
+
+   log.debug("Create Custom Circleone Class");
+   fabric.Circleone = fabric.util.createClass(fabric.Circle, {
+    type: 'circleone',
+    initialize: function(element, options) {
+        this.callSuper('initialize', element, options);
+        options && this.set('belongsTo', options.belongsTo);
+    },
+    toObject: function() {
+        return fabric.util.object.extend(this.callSuper('toObject'),
+                                      {belongsTo: this.belongsTo});
+    },
+    setBelongsTo: function(belongsToString) {
+       this.belongsTo = belongsToString;
+    },
+    _render: function(ctx) {
+       this.callSuper('_render', ctx);
+    }
+   });
+   fabric.Circleone.fromObject = function(object) {
+      return new fabric.Circleone(object);
+   };
+   fabric.Circleone.async = false;
+
+
    log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
    if(!window.location.hash) {
        window.location = window.location + '#loaded';
@@ -278,43 +365,63 @@
        }
        objId_var = 1;
        log.debug("load objects onto canvas");
+
        if (data_drawing != "") {
+           log.debug("data_drawing not blank")
            canvas.loadFromJSON(data_drawing, function () {
               //first render
               canvas.renderAll.bind(canvas);
               var objs = canvas.getObjects().map(function(o) {
                 return o.set('active', false);
               });
+              log.debug("Entering loop for objects")
+              log.debug("Loop size: ", objs.length)
+              var foundCircle = 0;
+              var itemId = 0;
               for(i = 0; i < objs.length; i++ ) {
-                 log.trace("Objs[",i,"]", objs[i])
+                 log.debug("Objs Type: ", objs[i].type)
                  objs[i].id = itemId
-                 itemId = itemId + 1;
-                 if (objs[i].type == "line") {
-                    var objId_var = objs[i].objId
-                    c[objId_var] = makeCircle(objs[i]);
-                    x1 = objs[i].left + objs[i].width/2 + objs[i].x1
-                    x2 = objs[i].left + objs[i].width/2 + objs[i].x2
-                    y1 = objs[i].getTop() + objs[i].height/2 + objs[i].y1
-                    y2 = objs[i].getTop() + objs[i].height/2 +  objs[i].y2
-                    c[objId_var][0].top =  y1
-                    c[objId_var][0].left = x1
-                    c[objId_var][0].setCoords();
-                    c[objId_var][1].top =  y2
-                    c[objId_var][1].left = x2
-                    c[objId_var][1].setCoords();
-                    objs[i].hasControls = objs[i].hasBorders = false
-                    objs[i].c1 = c[objId_var][0]
-                    objs[i].c2 = c[objId_var][1]
-                    objs[i].set('x1', x1)
-                    objs[i].set('y1', y1)
-                    objs[i].set('x2', x2)
-                    objs[i].set('y2', y2)
-                    objs[i].setCoords();
-                    canvas.add(c[objId_var][0],c[objId_var][1]);
-                    c[objId_var][0].bringToFront();
-                    c[objId_var][1].bringToFront();
-                    canvas.renderAll.bind(canvas);
+                 if (objs[i].type == "customline")  {
+                   console.log("customline: ", objs[i])
+                   console.log("Item Id of line set to: ", objs[i].getObjId())
+                   canvas.forEachObject(function(circleProspect){
+                     log.debug("Object Type: ", circleProspect.type)
+                     if (circleProspect.type == "circlezero" || circleProspect.type == "circleone") {
+                        log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
+                        log.debug("objs[1].objId: ", objs[i].objId)
+                     }
+                     if (circleProspect.type == "circlezero" && circleProspect.belongsTo == objs[i].objId) {
+                        circleProspect.hasBorders = circleProspect.hasControls = false;
+                        circleProspect.line = objs[i]
+                        circleProspect.belongsTo = itemId;
+                        objs[i].cone = circleProspect
+                        circleProspect.set('hoverCursor','crosshair')
+                        console.log("found circlezero")
+                        foundCircle = foundCircle + 1;
+
+                     }
+                     if (circleProspect.type == "circleone" && circleProspect.belongsTo == objs[i].objId) {
+                       circleProspect.hasBorders = circleProspect.hasControls = false;
+                       circleProspect.line = objs[i]
+                       circleProspect.belongsTo = itemId;
+                       objs[i].ctwo = circleProspect
+                       circleProspect.set('hoverCursor','crosshair')
+                       console.log("found circleone")
+                       foundCircle = foundCircle + 1;
+                     }
+                     if (foundCircle == 2) {
+                       console.log("objId: ", objs[i].get('objId'))
+                       objs[i].setObjId(itemId)
+                       itemId = itemId + 1;
+                       objs[i].cone.id = itemId;
+                       itemId = itemId + 1;
+                       objs[i].ctwo.id = itemId;
+                       foundCircle = 0;
+                     }
+                   });
+                   objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
                  }
+                 itemId = itemId + 1;
               }
               canvas.renderAll();
               backgroundImageVal = "";
@@ -329,6 +436,7 @@
            postProcessLoading);
 
        }
+
        log.debug("load background object onto canvas");
        var center = canvas.getCenter();
        log.info( "Drawing should be loaded ");
@@ -344,10 +452,12 @@
    canvas.on('mouse:down', mouseDown);
    canvas.on('selection:cleared', selectionCleared);
    canvas.on('object:scaling', objectResize);
-   canvas.observe("object:moving", objectBoundaryCheck);
-   canvas.observe("object:rotating", objectBoundaryCheck);
+   canvas.on("object:moving", objectBoundaryCheck);
+   canvas.on("object:rotating", objectBoundaryCheck);
    canvas.on('object.modified', function(e) {console.log("object.modified: ",e)})
    canvas.on('custom-image:textChange', textChangedEvent);
+   canvas.on('object:removed', objectDeletedEvent);
+
    if (Modernizr.draganddrop) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements

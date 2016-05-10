@@ -69,12 +69,116 @@ function GetDebugParameter(sParam){
     }
 };
 
+function setLinePositions(e) {
+  var p = e.target;
+  var objType = p.get('type');
+  if (objType == 'customline') {
+      var objId = p.get('objId')
+      var _curXm = (_curX - e.e.clientX);
+      var _curYm = (_curY - e.e.clientY);
+      //console.log("moved: " + _curXm);
+      //console.log("moved: " + _curYm);
+
+      //loop all circles and if some contains the line - move it
+      for (var i = 0; i < canvas.getObjects().length; i++) {
+        var currentObj = canvas.getObjects()[i];
+        if (currentObj.type == "circleone" && currentObj.get('belongsTo') == objId) {
+          _c2Top = currentObj.getTop();
+          _c2Left = currentObj.getLeft();
+          currentObj.set({
+            'left': (currentObj.left - _curXm),
+            'top': (currentObj.top - _curYm)
+          });
+
+          currentObj.setCoords();
+
+          currentObj.line && currentObj.line.set({
+              'x2': currentObj.left,
+              'y2': currentObj.top
+            });
+
+          currentObj.line.setCoords();
+        }
+
+        if (currentObj.type == "circlezero" && currentObj.get('belongsTo') == objId) {
+          _c1Top = currentObj.getTop();
+          _c1Left = currentObj.getLeft();
+          currentObj.set({
+            'left': (currentObj.left - _curXm) ,
+            'top': (currentObj.top - _curYm)
+          });
+
+          currentObj.setCoords();
+
+          currentObj.line && currentObj.line.set({
+              'x1': currentObj.left,
+              'y1': currentObj.top
+            });
+
+          currentObj.line.setCoords();
+        }
+
+
+      }
+      _curX = e.e.clientX;
+      _curY = e.e.clientY;
+    }
+}
+
+function setLineCirclePositionsBoundary(e) {
+  var p = e.target;
+  var objType = p.get('type');
+      var objId = p.get('objId')
+      var _curXm = (_curX - e.e.clientX);
+      var _curYm = (_curY - e.e.clientY);
+      _circleOne = p.cone;
+      _circleTwo = p.ctwo;
+
+          _circleTwo && _circleTwo.set({
+            'left': _c2Left,
+            'top': _c2Top
+          });
+
+          _circleTwo.setCoords();
+
+          _circleTwo.line && _circleTwo.line.set({
+              'x2': _circleTwo.left,
+              'y2': _circleTwo.top
+            });
+
+          _circleTwo.line.setCoords();
+
+
+          _circleOne && _circleOne.set({
+            'left': _c1Left,
+            'top': _c1Top
+          });
+
+          _circleOne.setCoords();
+          //setCircleLineAtBoundary(currentObj,p)
+
+          _circleOne.line && _circleOne.line.set({
+              'x1': _circleOne.left,
+              'y1': _circleOne.top
+            });
+
+          _circleOne.line.setCoords();
+      p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
+      p.setCoords();
+      _curX = e.e.clientX;
+      _curY = e.e.clientY;
+
+}
 function objectBoundaryCheck(e){
+  var boundaryHit = false;
+  setLinePositions(e);
   log.info( "Entering  objectBoundaryCheck");
   $("#saveMessage").text('Changes Made, Save Pending...');
   e.target.setCoords();
+  console.log("Object in boundary check: ", e.target)
+
   log.debug( "Checking to see if the end points of a line are being dragged ");
-  if (e.target.type != "circle0" && e.target.type != "circle1") {
+  if (e.target.type != "circlezero" && e.target.type != "circleone") {
      var obj = e.target;
      var posBottom = e.target.getBoundingRect().top + e.target.getBoundingRect().height;
      var posRight = e.target.getBoundingRect().left + e.target.getBoundingRect().width;
@@ -90,8 +194,13 @@ function objectBoundaryCheck(e){
        log.debug( "hit the top-left corner");
        e.target.setTop(Math.max(e.target.top  , y1Delta  ));
        e.target.left = Math.max(e.target.left , x1Delta );
+       if (e.target.type == "customline") {
+          setLineCirclePositionsBoundary(e);
+          canvas.deactivateAll();
+       }
+       boundaryHit = true;
        e.target.setCoords();
-       canvas.renderAll();
+       //canvas.renderAll();
      }
 
      // bot-right corner
@@ -108,6 +217,7 @@ function objectBoundaryCheck(e){
            } else if (e.target.angle >= 0 && e.target.angle < 90){
               e.target.top = bounds.br.y -  e.target.getBoundingRect().height +y1Delta ;
            }
+
         }
         if (posRight >= bounds.br.x) {
            if (e.target.angle >= 270 && e.target.angle < 360) {
@@ -120,7 +230,13 @@ function objectBoundaryCheck(e){
               e.target.left = bounds.br.x -  e.target.getBoundingRect().width +x1Delta ;
            }
         }
-        obj.setCoords();
+        boundaryHit = true;
+        if (e.target.type == "customline") {
+           setLineCirclePositionsBoundary(e);
+           canvas.deactivateAll();
+        }
+        e.target.setCoords();
+
     }
   } else {
     boundaryInspectorCircle(e)
@@ -135,12 +251,18 @@ function textChangedEvent(e) {
   onSave();
 };
 
+function objectDeletedEvent(e) {
+  $("#saveMessage").text('Changes Made, Save Pending...');
+  log.debug('lineDeletedEvent', e.target, e);
+  onSave();
+};
+
 function boundaryInspectorCircle(e) {
    log.info( "Entering boundaryInspectorCircle");
    e.target.setCoords()
    var p = e.target;
    bounds = {tl: {x: 0, y:0}, br: {x: canvas.width , y: canvas.height } };
-   if(p.type == 'circle1' || p.type == 'circle0') {
+   if((p.type == 'circleone' || p.type == 'circlezero')) {
       if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
          e.target.setTop(Math.max('0', e.target.top))
          e.target.left = Math.max('0', e.target.left)
@@ -148,15 +270,15 @@ function boundaryInspectorCircle(e) {
          e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
          e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
       }
-      if (p.type == "circle1")  {
-         p.line && p.line.set({ 'x1': p.line.c1.left, 'y1': p.line.c1.top, 'x2': p.left, 'y2': p.top });
+      if (p.type == "circleone")  {
+         p.line && p.line.set({ 'x1': p.line.cone.left, 'y1': p.line.cone.top, 'x2': p.left, 'y2': p.top });
       } else {
-         p.line && p.line.set({ 'x1': p.left, 'y1': p.top, 'x2': p.line.c2.left, 'y2': p.line.c2.top });
+         p.line && p.line.set({ 'x1': p.left, 'y1': p.top, 'x2': p.line.ctwo.left, 'y2': p.line.ctwo.top });
       }
 
       p.line.setCoords();
       e.target.setCoords();
-      canvas.renderAll();
+      //canvas.renderAll();
    }
    log.info( "Leaving boundaryInspectorCircle");
 };
@@ -202,30 +324,170 @@ function objectSelected(e) {
    log.info( "Entering objectSelected");
    activeObject = true;
    activeObjectVal = e.target;
+   console.log("objectSelected: ", activeObjectVal);
    var objType = e.target.get('type');
-   log.trace( "activeObject: ", activeObject);
-   log.trace( "activeObjectVal: ", activeObjectVal);
-   if (e.target.type == "line") {
-      log.debug( "Line Selected ");
-      newGroup = new fabric.Group();
-      newGroup.addWithUpdate(e.target.c1)
-      newGroup.addWithUpdate(e.target.c2)
-      newGroup.addWithUpdate(e.target)
-      newGroup.type = "lineGroup"
-      newGroup.hasControls = false;
-      newGroup.id = itemId
-      itemId = itemId + 1;
-      canvas.add(newGroup)
-      e.target.c1.remove();
-      e.target.c2.remove();
-      e.target.remove();
-      newGroup.on("mousedown", function(data, index) { lineDown(data,index); });
+    if (objType == 'customline') {
+      console.log("custom line selected");
+      _curX = e.e.clientX;
+      _curY = e.e.clientY;
+      _c1Top = e.target.cone.getTop();
+      _c1Left =  e.target.cone.getLeft();
+      _c2Top = e.target.ctwo.getTop();
+      _c2Left = e.target.ctwo.getLeft();
    }
-   lineSelected = true;
+   var activeGroupCollection = canvas.getActiveGroup();
+   var circleZeroInCollection = new Array();
+   var circleOneInCollection = new Array();
+   var customLineInCollection = new Array();
+   if (activeGroupCollection)
+   {
+     //iterate through objects to see if it contains lineSelected
+     groupObjectsCircleOne = activeGroupCollection.getObjects('circleone');
+     for ( i=0; i < groupObjectsCircleOne.length; i++) {
+       circleOneInCollection.push(groupObjectsCircleOne[i].belongsTo)
+     }
+     groupObjectsCircleZero = activeGroupCollection.getObjects('circlezero');
+     for ( i=0; i < groupObjectsCircleZero.length; i++) {
+       circleZeroInCollection.push(groupObjectsCircleZero[i].belongsTo)
+     }
+     groupObjectsCustomLine = activeGroupCollection.getObjects('customline');
+     for ( i=0; i < groupObjectsCustomLine.length; i++) {
+       customLineInCollection.push(groupObjectsCustomLine[i].objId)
+     }
+     console.log("circleOneInCollection:", circleOneInCollection)
+     console.log("circleZeroInCollection:", circleZeroInCollection)
+     console.log("customLineInCollection:", customLineInCollection)
+
+     allObjects = canvas.getObjects();
+     for (i=0; i< circleZeroInCollection.length; i++) {
+       //Is the belongsTo found in circleOneInCollection
+       if ($.inArray(circleZeroInCollection[i], circleOneInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'circleone') {
+                 if (allObjects[j].belongsTo == circleZeroInCollection[i]) {
+                     circleOneInCollection.push( circleZeroInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     console.log("Found circleone for circlezero", circleOneInCollection)
+                     notFound = false
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+       if ($.inArray(circleZeroInCollection[i], customLineInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'customline') {
+                 if (allObjects[j].objId == circleZeroInCollection[i]) {
+                     customLineInCollection.push( circleZeroInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false
+                     console.log("Found customline for circlezero", customLineInCollection)
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+     }
+
+     for (i=0; i< circleOneInCollection.length; i++) {
+       //Is the belongsTo found in circleOneInCollection
+       if ($.inArray(circleOneInCollection[i], circleZeroInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'circlezero') {
+                 if (allObjects[j].belongsTo == circleOneInCollection[i]) {
+                     circleZeroInCollection.push( circleOneInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false
+                     console.log("Found circlezero for circleone", circleZeroInCollection)
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+       if ($.inArray(circleOneInCollection[i], customLineInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'customline') {
+                 if (allObjects[j].objId == circleOneInCollection[i]) {
+                     customLineInCollection.push( circleOneInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false
+                     console.log("Found customline for circleone", customLineInCollection)
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+     }
+
+     for (i=0; i< customLineInCollection.length; i++) {
+       //Is the belongsTo found in circleOneInCollection
+       if ($.inArray(customLineInCollection[i], circleZeroInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'circlezero') {
+                 if (allObjects[j].belongsTo == customLineInCollection[i]) {
+                     circleZeroInCollection.push( customLineInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false
+                     console.log("Found circlezero for customline", circleZeroInCollection)
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+       if ($.inArray(customLineInCollection[i], circleOneInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'circleone') {
+                 if (allObjects[j].belongsTo == customLineInCollection[i]) {
+                     circleOneInCollection.push( customLineInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false
+                      console.log("Found circleone for customline", circleOneInCollection)
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+     }
+     console.log("circleOneInCollection:", circleOneInCollection)
+     console.log("circleZeroInCollection:", circleZeroInCollection)
+     console.log("customLineInCollection:", customLineInCollection)
+     canvas.renderAll();
+
+   }
    log.info( "Leaving objectSelected");
 };
 
-function mouseOut(e) {
+function mouseOut(e){
    log.info( "Entering mouseOut");
    contextmenuon = true;
    e.target.setOpacity(1);
@@ -234,29 +496,6 @@ function mouseOut(e) {
    log.debug("Rendering All")
    canvas.renderAll();
    log.debug("Done Rendering All")
-   if (e.target.type == "lineGroup" && lineActive) {
-      var items = e.target._objects;
-      e.target._restoreObjectsState();
-      searchId = getItemIndex(e.target)
-      canvas.setActiveObject(canvas.item(searchId))
-      if(canvas.getActiveGroup()){
-         canvas.getActiveGroup().forEachObject(function(o){ canvas.remove(o) });
-         canvas.discardActiveGroup().renderAll();
-      } else {
-         canvas.remove(canvas.getActiveObject());
-      }
-      for(var i = 0; i < items.length; i++) {
-         items[i].hasBorders = items[i].hasControls = false
-         canvas.add(items[i]);
-      }
-      items[2].c1 = items[0]
-      items[2].c2 = items[1]
-      items[0].bringToFront();
-      items[1].bringToFront();
-      items[2].sendBackwards();
-      canvas.renderAll();
-      items[2].on("mousedown", function(data, index) { lineDown(data,index); });
-   }
    log.info( "Leaving mouseOut");
 };
 
@@ -266,13 +505,15 @@ function mouseOver(e) {
   contextmenuon = false;
   //e.target.setOpacity(0.5);
   activeObjectVal = e.target
-  if (e.target.type) {
-       if (e.target.type == "line") {
+  if (e.target.type && !saveInProgress) {
+       if (e.target.type == "line" && !saveInProgress) {
          log.debug( "Target is line");
          searchId = getItemIndex(e.target);
          log.trace( e.target);
          canvas.setActiveObject(canvas.item(searchId))
        }
+   } else if (saveInProgress) {
+     log.debug("Save Was In Progress MouseOver skipped")
    }
    log.info( "Leaving mouseOver");
 };
@@ -289,6 +530,16 @@ function postProcessLoading(o, object) {
     object.on("mousedown", function(data, index) { circleDown(data,index)   });
   }
 
+  if (object.type == "circleone") {
+    log.debug( "Processing circleone");
+    object.hasBorders = object.hasControls = false;
+  }
+
+  if (object.type == "circlezero") {
+    log.debug( "Processing circleone");
+    object.hasBorders = object.hasControls = false;
+  }
+
   if (object.type == "ellipse") {
     log.debug( "Processing ellipse");
     object.fill = undefined
@@ -301,9 +552,9 @@ function postProcessLoading(o, object) {
     object.on("mousedown", function(data, index) { rectangleDown(data,index)   });
   }
 
-  if (object.type == "line") {
-    log.debug( "Processing line");
-    object.objId = objId_var;
+  if (object.type == "customline") {
+    log.debug( "Processing customline");
+    object.hasControls = false;
     object.on("mousedown", function(data, index) { lineDown(data,index); });
   }
   if (object.type == "i-text") {
@@ -338,79 +589,22 @@ function checkBackgroundFileExists( link ) {
 
 var onSave  =  debounce(function() {
     log.info( "Entering onSave");
+
     // Remove circle0 and circle1 from image
     //$(".spinner").show();
     $(".saveMessage").text('Save In Progress...');
+
+
+    saveInProgress = true;
+
     objects = canvas.getObjects();
 
     var len = objects.length;
     log.debug( "Number of objects to process: ", len);
-    for (index=len -1; index > -1; index--) {
-      if (objects[index].type == "lineGroup") {
-         log.debug( "Processing a line object");
-         var items = objects[index]._objects;
-         objects[index]._restoreObjectsState();
-         canvas.remove(objects[index]);
-         canvas.add(items[2])
-      }
-
-      if (objects[index].type == "circle0" || objects[index].type == "circle1") {
-         log.debug( "Removing circles associated with a line group");
-         canvas.remove(objects[index]);
-      }
-    }
+    console.log( "Number of objects to process: ", len);
+    canvas.renderAll();
     var token = $('meta[name="csrf-token"]').attr('content');
-    //canvas.backgroundColor = '#FFFFFF';
-    //activeInstance = canvas.getActiveObject();
-    //activeGroupInstance = canvas.getActiveGroup();
-    //tempId = 0;
-    //if (activeInstance!=null){
-        //tempId = activeInstance.id
-        //console.log("ID: ", tempId)
-        //console.log(activeInstance)
-      //  canvas.deactivateAll();
 
-    //}
-    //tempIdArray = new Array(0);
-    //if (activeGroupInstance!=null){
-        //objs = activeGroupInstance.getObjects();
-        //for (index = 0; index < objs.length; index++) {
-          //tempIdArray.push(objs[index].id)
-        //}
-      //  canvas.deactivateAll();
-    //}
-    //var png_file = canvas.toDataURL('png');
-    //console.log("Png File: ", png_file);
-
-    //objects = canvas.getObjects();
-    //var len = objects.length;
-    //log.debug( "Number of objects to process: ", len);
-    //if (activeInstance!=null){
-      //notFound = true;
-      //index = len -1
-      //while(index > -1 && notFound == true) {
-         //if (objects[index].id == tempId) {
-          //  notFound = false
-          //  canvas.setActiveObject(canvas.item(index));
-         //}
-        // index = index -1
-      //}
-    //}
-    //if (activeGroupInstance!=null){
-      //var objs = activeGroupInstance.getObjects().map(function(o) {
-		    // return o.set('active', true);
-	    //});
-
-	    //var group = new fabric.Group(objs, {
-		    //originX: 'center',
-		    //originY: 'center'
-	    //});
-
-	  //  canvas._activeObject = null;
-
-	  //  canvas.setActiveGroup(group.setCoords()).renderAll();
-    //}
-    //var png_file = "";
     canvas.backgroundColor = "";
 
     var json_data = { company_id: company_id,
@@ -442,7 +636,77 @@ var onSave  =  debounce(function() {
                    $("#saveMessage").text(msg);
                  }
       });
-     canvas.renderAll();
+
+     objs = canvas.getObjects();
+     var len = objs.length;
+     for (i=0; i < len; i++) {
+       if (objs[i].type == "line") {
+         /*
+         line = objs[i]
+         line.setCoords();
+         origWidth = line.getWidth();
+         origLeft  = line.getLeft();
+         origHeight = line.getHeight();
+         origTop    = line.getTop();
+         origX1 = line.x1;
+         origX2 = line.x2;
+         origY1 = line.y1;
+         origY2 = line.y2;
+         var x1, x2, y1, y2 = 0;
+         objs[i].hasBorders = objs[i].hasControls = false
+         c[line.objId] = makeCircle(line);
+         c[line.objId][0].setOriginX('left')
+         c[line.objId][1].setOriginX('left')
+         c[line.objId][0].setOriginY('top')
+         c[line.objId][1].setOriginY('top')
+
+         if (origX1 < origX2) {
+           x1 = origLeft;
+           x2 = origLeft + origWidth;
+         } else if ( origX1 > origX2) {
+           x1 = origLeft + origWidth;
+           x2 = origLeft;
+         } else {
+           x1 = origLeft;
+           x2 = origLeft;
+         }
+         if (origY1 < origY2) {
+           y1 = origTop;
+           y2 = origTop + origHeight;
+         } else if ( origY1 > origY2) {
+           y1 = origTop + origHeight;
+           y2 = origTop;
+         } else {
+           y1 = origTop;
+           y2 = origTop;
+         }
+
+
+         c[line.objId][0].setLeft(x1)
+         c[line.objId][1].setLeft(x2)
+         c[line.objId][0].setTop(y1)
+         c[line.objId][1].setTop(y2)
+         c[line.objId][0].setCoords();
+         c[line.objId][1].setCoords();
+         objs[i].c1 = c[line.objId][0];
+         objs[i].c2 = c[line.objId][1];
+         canvas.forEachObject(function(o) {
+            o.selectable = true;
+         });
+         console.log("line:")
+         console.log(line)
+         console.log("circle0:")
+         console.log(c[line.objId][0])
+         console.log("circle1:")
+         console.log(c[line.objId][1])
+         canvas.add(c[line.objId][0],c[line.objId][1]);
+         console.log(canvas)
+         objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
+         */
+       }
+     }
+     saveInProgress = false;
+     //canvas.renderAll.bind(canvas);
      log.info( "Leaving onSave");
 }, 3000);
 
@@ -457,7 +721,12 @@ function handleDragStart(e) {
 
 function makeLine(coords, id) {
    log.info( "Entering makeLine");
-   return new fabric.Line(coords, {
+   log.debug("Coords are: ", coords);
+   line =  new fabric.Customline(coords, {
+     x1: coords[0],
+     y1: coords[1],
+     x2: coords[2],
+     y2: coords[3],
      fill: 'red',
      stroke: 'red',
      strokeWidth: 5,
@@ -465,7 +734,9 @@ function makeLine(coords, id) {
      objId: id,
      perPixelTargetFind: true,
    });
+   line.hasControls = false;
    log.info( "Leaving makeLine");
+   return line;
  }
 
  function makeCircleShape(coords, id) {
@@ -510,7 +781,8 @@ function makeLine(coords, id) {
 
  function activateColorPicker(e) {
       log.info( "Entering activateColorPicker");
-      var activeObjectVal = canvas.getActiveObject();
+      console.log("activateColorPicker: ", e)
+      activeObjectValCP = activeObjectVal;
       document.getElementById('myColor').color.showPicker();
       log.info( "Leaving activateColorPicker");
  }
@@ -518,34 +790,30 @@ function makeLine(coords, id) {
  function colorPickerChange(newLineColor) {
       log.info( "Entering colorPickerChange");
       log.debug( "newLineColor: ", newLineColor);
-      if (activeObjectVal) {
-        log.trace( "activeObjectVal: ", activeObjectVal);
-        if (activeObjectVal.type) {
-          log.trace( "activeObjectVal.type: ", activeObjectVal.type);
-          if (activeObjectVal.type == "line") {
+      if (activeObjectValCP) {
+        log.trace( "activeObjectVal: ", activeObjectValCP);
+        if (activeObjectValCP.type) {
+          log.trace( "activeObjectVal.type: ", activeObjectValCP.type);
+          if (activeObjectValCP.type == "customline") {
             log.debug( "colorPickerChange on line type");
-            activeObjectVal.fill = newLineColor;
-            activeObjectVal.stroke = newLineColor;
+            activeObjectValCP.fill = newLineColor;
+            activeObjectValCP.stroke = newLineColor;
           }
-          if (activeObjectVal.type == "lineGroup") {
-            log.debug( "colorPickerChange on lineGroup type");
-            activeObjectVal._objects[2].stroke = newLineColor;
-          }
-          if (activeObjectVal.type == "circle") {
+          if (activeObjectValCP.type == "circle") {
             log.debug( "colorPickerChange on circle type");
-            activeObjectVal.stroke = newLineColor;
+            activeObjectValCP.stroke = newLineColor;
           }
-          if (activeObjectVal.type == "ellipse") {
+          if (activeObjectValCP.type == "ellipse") {
             log.debug( "colorPickerChange on ellipse type");
-            activeObjectVal.stroke = newLineColor;
+            activeObjectValCP.stroke = newLineColor;
           }
-          if (activeObjectVal.type == "rect") {
+          if (activeObjectValCP.type == "rect") {
             log.debug( "colorPickerChange on rect type");
-            activeObjectVal.stroke = newLineColor;
+            activeObjectValCP.stroke = newLineColor;
           }
-          if (activeObjectVal.type == "i-text") {
+          if (activeObjectValCP.type == "i-text") {
             log.debug( "colorPickerChange on i-text type");
-            activeObjectVal.stroke = newLineColor;
+            activeObjectValCP.stroke = newLineColor;
             //activeObjectVal.setColor(newLineColor);
           }
         }
@@ -556,38 +824,35 @@ function makeLine(coords, id) {
 
  function makeCircle(line) {
      log.info( "Entering makeCircle");
-     var c1 = new fabric.Circle({
-       left: line.get('x1'),
-       top: line.get('y1'),
-       strokeWidth: 2,
+     var c1 = new fabric.Circlezero({
+       left: line.get('x1')-2.5,
+       top: line.get('y1')-2.5,
+       visible: 'true',
+       hoverCursor: 'crosshair',
+       strokeWidth:  2,
+       stroke: '#000',
        radius: 5,
-       fill: '#fff',
-       stroke: '#666',
-       belongsTo: line.objId,
-       type: 'circle0'
+       fill: '#fff'
      });
-     c1.hasControls = c1.hasBorders = false;
-     c1.visible = true;
-     c1.hoverCursor = 'crosshair'
-     var c2 = new fabric.Circle({
-       left: line.get('x2'),
-       top: line.get('y2'),
-       strokeWidth: 2,
+     c1.setBelongsTo(line.objId);
+     var c2 = new fabric.Circleone({
+       left: line.get('x2')-2.5,
+       top: line.get('y2')-2.5,
+       visible: 'true',
+       hoverCursor: 'crosshair',
+       strokeWidth:  2,
+       stroke: '#000',
        radius: 5,
-       fill: '#fff',
-       stroke: '#666',
-       belongsTo: line.objId,
-       type: 'circle1'
+       fill: '#fff'
      });
-     c2.hasControls = c2.hasBorders = false;
-     c2.visible = true;
-     c2.hoverCursor = 'crosshair'
-     c1.belongsTo = line.objId;
-     c2.belongsTo = line.objId;
+     c2.setBelongsTo(line.objId);
+     c1.hasBorders = c1.hasControls = false;
+     c2.hasBorders = c2.hasControls = false;
+
      c1.line = line;
      c2.line = line;
-     line.c1 = c1;
-     line.c2 = c2;
+     line.cone = c1;
+     line.ctwo = c2;
      var c = new Array(c1, c2);
      log.info( "Leaving makeCircle");
      return c;
@@ -666,8 +931,15 @@ function bringToFront() {
    log.info( "Leaving bringToFront");
 }
 
+
 function lineDown(data,index) {
    log.info( "Entering lineDown");
+   console.log( "Entering lineDown");
+   console.log("data: ", data)
+   if (canvas.getActiveObject() != null) {
+     activeObjectVal = canvas.getActiveObject();
+     console.log("ActiveObjectVal: " , activeObjectVal )
+   }
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -678,25 +950,31 @@ function lineDown(data,index) {
             var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
             $('a:contains("Delete")').click(  function() {
-                                             if (canvas.getActiveObject() != null) {
-                                                activeObjectVal = canvas.getActiveObject();
-                                             }
                                              if (activeObjectVal.type) {
-                                               if (activeObjectVal.type == "line") {
-                                                 canvas.remove(activeObjectVal.c1)
-                                                 canvas.remove(activeObjectVal.c2)
+                                               if (activeObjectVal.type == "customline") {
+                                                 canvas.remove(activeObjectVal.cone)
+                                                 canvas.remove(activeObjectVal.ctwo)
                                                  canvas.remove(activeObjectVal);
-                                               } else if(activeObjectVal.type == "lineGroup") {
-                                                 searchId = getItemIndex(activeObjectVal)
-                                                 canvas.setActiveObject(canvas.item(searchId))
-
-                                                 if(canvas.getActiveGroup()){
-                                                    canvas.getActiveGroup().forEachObject(function(o){ canvas.remove(o) });
-                                                    canvas.discardActiveGroup().renderAll();
-                                                    lineActive = false;
-                                                 } else {
-                                                    canvas.remove(canvas.getActiveObject());
-                                                    lineActive = false;
+                                               } else if(activeObjectVal.hasOwnProperty('belongsTo')) {
+                                                 console.log("removing belongTo object")
+                                                 var objs = canvas.getObjects()
+                                                 // find line with belongsTo value
+                                                 var searchVal = activeObjectVal.get('belongsTo')
+                                                 var found = false;
+                                                 var i = 0;
+                                                 while (!found && i < objs.length) {
+                                                   if (objs[i].type == "customline") {
+                                                     if (objs[i].objId == searchVal) {
+                                                       found= true;
+                                                     }
+                                                   }
+                                                   i = i + 1;
+                                                 }
+                                                 if (found) {
+                                                   i = i -1;
+                                                   canvas.remove(objs[i].cone)
+                                                   canvas.remove(objs[i].ctwo)
+                                                   canvas.remove(objs[i]);
                                                  }
                                                  canvas.renderAll()
                                                }
@@ -757,6 +1035,7 @@ function ellipseDown(data,index) {
 }
 
 function circleDown(data,index) {
+   console.log("Data: ", data)
    log.info( "Entering circleDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
@@ -764,7 +1043,7 @@ function circleDown(data,index) {
 
    if (data.e.which == 3) {
       handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
+         if (contextmenuon == false &&  activeObject == true ) {
             e.preventDefault();
             var items = ["Delete Circle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
@@ -863,7 +1142,7 @@ function textDown(data,index) {
 
 function imageDown(data,index) {
    log.info( "Entering imageDown");
-   //handle right click
+   console.log("data", data)
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }
@@ -928,23 +1207,24 @@ function handleDrop(e) {
       if (imgsrc_val == "line.png")
       {
          log.debug("In line.png section");
-         objectName = "line";
+         objectName = "customline";
          var xpos1 = e.layerX;
          var ypos1 = e.layerY;
          var xpos2 = xpos1 + 25;
          var ypos2 = ypos1 + 25;
-         var id = objId_var + 3;
          objId = id;
          var line = makeLine([ xpos1, ypos1, xpos2, ypos2 ], id)
-         line.hasBorders = line.hasControls = false
+         line.hasControls = false
+         itemId = itemId + 1;
+         line.id = itemId
+         line.objId = itemId;
          canvas.add(line)
          c[id] = makeCircle(line);
-         line.c1 = c[id][0];
-         line.c2 = c[id][1];
-
-         line.id = itemId
-         itemId = itemId + 1;
+         line.cone = c[id][0];
+         line.ctwo = c[id][1];
+         console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'))
          canvas.add(c[id][0],c[id][1]);
+         canvas.renderAll();
          line.on("mousedown", function(data, index) { lineDown(data,index); });
       } else if (imgsrc_val == "circle_icon.png") {
         log.debug("In circle_icon.png section");
