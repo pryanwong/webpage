@@ -260,11 +260,11 @@ body {
 
 #canvas-container {
     position: absolute;
-    width: 1000px;
-    height: 800px;
-    box-shadow: 0 0 5px 1px black;
-    margin: 10px auto;
-    border: 5px solid transparent;
+    width: 1001px;
+    height: 801px;
+    box-shadow: 0 0 0px 1px black;
+    margin: 1px auto;
+    border: 1px solid transparent;
 }
 #canvas-container.over {
     border: 5px dashed cyan;
