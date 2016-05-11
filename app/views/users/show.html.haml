@@ -44,7 +44,7 @@
                      %td{:class=>"hidden-sm hidden-xs"}= drawing.user.email
                      - if drawing.updated_at.to_date == Date.today
                         %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at.in_time_zone(@timezone).strftime("Today, %H:%M %Z")
-                     - elsif drawing.updated_at.to_date > Date.today.days_ago(7)
+                     - elsif drawing.updated_at.to_date > Date.today.days_ago(6)
                         %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at.in_time_zone(@timezone).strftime("%A, %H:%M %Z")
                      - else
                         %td{:class=>"hidden-sm hidden-xs"}= drawing.updated_at.in_time_zone(@timezone).strftime("%Y-%m-%d %H:%M %Z")
