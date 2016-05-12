@@ -1,64 +1,184 @@
-.show {
-    z-index:1000;
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+    cursor: move;
+}
+
+#pagewrapper{
+  min-height: 100%;
+}
+
+.pagination-wrapper {
+   text-align: center;
+}
+
+#pagination-wrapper .pagination > li > a,
+#pagination-wrapper .pagination > li > span {
+    border: 1px solid black;
+    background: #ffffff;
+    color: #000000
+}
+#pagination-wrapper .pagination > li > a:hover,
+#pagination-wrapper .pagination > li > a:focus,
+#pagination-wrapper .pagination > li > span:hover,
+#pagination-wrapper .pagination > li > span:focus,
+#pagination-wrapper .pagination > li.active > a,
+#pagination-wrapper .pagination > li.active > span {
+    background: #303F9F;
+    border: 1px solid #303F9F;
+    color: #ffffff
+}
+
+.pull-right.navbar-form.searchbread {margin-top:-7px;padding:0px}
+/*
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+  display: block; }
+
+body {
+  margin: 0;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height:100%;
+}
+*/
+  body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    height:100%;
+}
+
+#page-container {
+   position: relative;
+   top:40px;
+   height:1800px;
+   width:100%;
+}
+
+#accordian-canvas-wrapper {
+    position:relative;
+    padding-top:10px;
+    height:1000px;
+    width:100%;
+}
+
+#canvas-container {
     position: absolute;
-    background-color:#C0C0C0;
-    border: 1px solid blue;
-    padding: 2px;
-    display: block;
-    margin: 0;
-    list-style-type: none;
-    list-style: none;
+    width: 1001px;
+    height: 801px;
+    margin: 1px auto;
+    border: 1px solid;
+}
+#canvas-container.over {
+    border: 3px dashed cyan;
+}
+#images img.img_dragging {
+    opacity: 0.4;
+}
+
+#menubar {
+  position: relative;
+  padding-top: 10px;
 }
 
 .hide {
     display: none;
 }
 
-.show li{ list-style: none; }
-.show a { border: 0 !important; text-decoration: none; }
-.show a:hover { text-decoration: underline !important; }
+textarea  {
+  resize: none;
+  font-family: Consolas, Courier New, monospace;
+  font-size:14px;
+}
 
-.ui-accordion .ui-accordion-header {
-  cursor: pointer;
-  position: relative;
-  margin-top: 1px;
-  zoom: 1;
+div.padded {
+      padding-top: 0px;
+      padding-right: 0px;
+      padding-bottom: 0px;
+      padding-left: 0px;
+    }
+
+.show {
+    display: inline;
 }
-.ui-accordion .ui-accordion-li-fix {
-  display: inline;
+
+.LabelFormDiv {
+display: none;
 }
-.ui-accordion .ui-accordion-header-active {
-  border-bottom: 0 !important;
+
+.foo {
+    position: absolute;
+    left: 110px;
+    top: 10px;
 }
-.ui-accordion .ui-accordion-header a {
-  display: block;
-  font-size: 1em;
-  padding: .5em .5em .5em .7em;
+
+html, body, div, canvas {
+    margin: 0;
+    padding: 0;
 }
-/* IE7-/Win - Fix extra vertical space in lists */
-.ui-accordion a {
-  zoom: 1;
+
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
-.ui-accordion-icons .ui-accordion-header a {
-  padding-left: 2.2em;
-}
-.ui-accordion .ui-accordion-header .ui-icon {
+
+#contextMenu {
   position: absolute;
-  left: .5em;
-  top: 50%;
-  margin-top: -8px;
+  display:none;
 }
-.ui-accordion .ui-accordion-content {
-  padding: 1em 2.2em;
-  border-top: 0;
-  margin-top: -2px;
-  position: relative;
-  top: 1px;
-  margin-bottom: 2px;
-  overflow: auto;
-  display: none;
-  zoom: 1;
+
+#contextMenu .dropdown-menu>li>a:hover {
+    background: #303F9F;
+    color:#ffffff;
+  }
+
+#accordian-container {
+  position: absolute;
+  width: 200px;
 }
-.ui-accordion .ui-accordion-content-active {
-  display: block;
+
+#accordion .ui-accordion-content {
+    font-size: 10pt;
+}
+
+#accordion .ui-accordion-content > * {
+    margin: 0;
+}
+
+#accordion .ui-accordion-header {
+    line-height: 10px;   //reduces height of the header box
+    font-size: 8pt;
+    text-indent: 10px;
+}
+
+accordion .ui-accordion-header h3 {
+    font-size: 8pt;
 }

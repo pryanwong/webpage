@@ -23,7 +23,6 @@
    var handler = "";
    var c = new Array();
    var objId_var = 0;
-   var saveInProgress = false;
    var company_id ='#{params[:company_id]}'
    var user_id= '#{params[:user_id]}'
    var drawing_id = '#{params[:id]}'
@@ -31,12 +30,10 @@
    var contextmenuon = false;
    var activeObject = false;
    var activeObjectVal = "";
-   var activeObjectValCP = "";
+   var activeLineGroup = null;
    var backgroundImageVal = "";
    var objectName = "";
-   var _curX, _curY;
-   var canvas = new fabric.CanvasEx('demoCanvas2', {selection: true});
-   fabric.Group.prototype.hasControls = false
+   var canvas = new fabric.CanvasEx('demoCanvas2');
    document.getElementById("demoCanvas2").fabric = canvas;
    var fabric = fabric || { version: "1.4.13" };
    var motionInbounds = true;
@@ -45,11 +42,15 @@
    var log = log4javascript.getDefaultLogger();
    var progressBar  = $("<div class='bar'></div>");
    var barContainer = $("<div class='progress'></div>").append(progressBar);
+   var image = new Image();
    log4javascript.setEnabled(false);
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);
    log.setLevel(log4javascript.Level.TRACE);
    log.info("Executing javascript in edit.html");
+   log.debug("Executing spinner");
+   $(".spinner").show();
+   canvas.backgroundColor="#FFFFFF";
 
    log.debug("Create Custom Image Class");
    fabric.CustomImage = fabric.util.createClass(fabric.Image, {
@@ -260,6 +261,8 @@
               }
               log.debug("BackgroundImage Loc: ", backgroundImageVal)
               backgroundExists(backgroundImageVal);
+              image.src = canvas.toDataURL("image/png");
+              $('#demoCanvas2').replaceWith(image);
            },
            postProcessLoading);
 

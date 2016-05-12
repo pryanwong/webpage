@@ -12,8 +12,10 @@
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = form_for([@company,@price],:html => {:class => "form-horizontal"}) do |f|
-         %div{:class=>"col-sm-12 col-sm-offset-1"}
-            %h2 New Product
+         %div.page-header
+            %div.container
+               %div.row-fluid
+                  %h2 New Product
          %div{:class=>"form-group"}
             = f.label :name, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
@@ -26,7 +28,7 @@
             = f.label  :price, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.text_area :price, :rows => "10", :required => true, :class=>"form-control"
-         %div.row
-            %div{:class=>"col-sm-12 col-sm-offset-1"}
-               = f.submit "Save"
-               = link_to "<button>Cancel</button>".html_safe, company_path(session[:company_id])
+         %div{:class=>"form-group"}
+            %div{:class=>"col-sm-12 col-sm-offset-2"}
+               = f.submit "Save", :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_path(session[:company_id])

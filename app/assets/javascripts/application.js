@@ -16,7 +16,7 @@
 //= require turbolinks
 //= require_tree .
 //= require jscolor
-//= require fabric
+//= require fabric.min
 //= require fabric.canvasex
 //= require jquery.turbolinks
 //= require drawing_scripts

@@ -17,9 +17,10 @@
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = render 'shared/error_messages'
       = form_for @message, :html => {:class => "form-horizontal"}, url: send_image_company_user_drawing_path do |message_form|
-         %div{:class=>"col-sm-12 col-sm-offset-1"}
-            %h2 Send Image
-            Let's share our work
+         %div.page-header
+            %div.container
+               %div.row-fluid
+                  %h2 Email Drawing
          %div{:class=>"form-group"}
             = message_form.label :email1, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
@@ -41,10 +42,10 @@
             %div{:class=>"control-label col-sm-5"}
                = message_form.text_area :content, placeholder: "Message", :class=>"form-control"
                = message_form.hidden_field :imageData, id: "PNG"
-         %div.row
-            %div{:class=>"col-sm-11 col-sm-offset-1", :style=>"padding-left:30px"}
-               = message_form.submit "Send"
-               = link_to "<button>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])
+         %div{:class=>"form-group"}
+            %div{:class=>"col-sm-offset-2 col-sm-5"}
+               = message_form.submit "Send", :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])
 %div{:class=>"container", :style=>"padding-top: 20px"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
@@ -291,6 +292,8 @@
                                 }
                                 log.debug("BackgroundImage Loc: ", backgroundImageVal)
                                 backgroundExists(backgroundImageVal);
+                                image.src = canvas.toDataURL("image/png");
+                                $('#demoCanvas2').replaceWith(image);
                              },
                              postProcessLoading);
 

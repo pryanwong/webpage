@@ -97,9 +97,12 @@
             - divids = division.users.pluck(:id)
             - compids = @company.users.pluck(:id)
             -if User.where(id: compids).where.not(id: divids).size > 0
-               = form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), method: "post" do |f|
-                  = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, include_blank: false
-                  = f.submit "Add User"
+               = form_for [@company, division], :url => adduserdiv_company_division_path(@company, division), :html => {:class => "form-inline"}, method: "post" do |f|
+                  %div{:class=>"form-group"}
+                     %div{:class=>"control-label col-sm-5"}
+                        = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, {include_blank: false}, {:class=>"form-control"}
+                  %div{:class=>"form-group"}
+                     = f.submit "Add User", :class=>"btn btn-default"
 
 %div{:class=>"container"}
    %div{:class=>"row row-content-no-padding2"}

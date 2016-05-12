@@ -13,8 +13,10 @@
 %div{:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = form_for(@drawing, :html => {:class => "form-horizontal"}, url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
-         %div{:class=>"col-sm-12 col-sm-offset-1"}
-            %h2 New Sketch
+         %div.page-header
+            %div.container
+               %div.row-fluid
+                  %h2 New Drawing
          %div{:class=>"form-group"}
             = f.label :customer, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
@@ -41,7 +43,7 @@
                = f.label :privacy_division, "Only for User", :class=>"radio" do
                   = f.radio_button :privacy, "user"
                   Only for User
-         %div.row
-            %div{:class=>"col-sm-12 col-sm-offset-1"}
-               = f.submit "Save"
-               = link_to "<button>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])
+         %div{:class=>"form-group"}
+            %div{:class=>"col-sm-5 col-sm-offset-2"}
+               = f.submit "Save", :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(session[:company_id] ,session[:user_id])
