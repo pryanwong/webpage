@@ -495,7 +495,6 @@ function objectSelected(e) {
 function mouseOut(e){
    log.info( "Entering mouseOut");
    contextmenuon = true;
-   e.target.setOpacity(1);
    log.trace("Viewing target in mouseOut")
    log.trace(e.target)
    log.debug("Rendering All")
@@ -506,19 +505,15 @@ function mouseOut(e){
 
 function mouseOver(e) {
   log.info( "Entering mouseOver");
-  //log.debug( "Set Opacity to 0.5");
   contextmenuon = false;
-  //e.target.setOpacity(0.5);
   activeObjectVal = e.target
-  if (e.target.type && !saveInProgress) {
-       if (e.target.type == "line" && !saveInProgress) {
+  if (e.target.type) {
+       if (e.target.type == "line") {
          log.debug( "Target is line");
          searchId = getItemIndex(e.target);
          log.trace( e.target);
          canvas.setActiveObject(canvas.item(searchId))
        }
-   } else if (saveInProgress) {
-     log.debug("Save Was In Progress MouseOver skipped")
    }
    log.info( "Leaving mouseOver");
 };
@@ -599,9 +594,6 @@ var onSave  =  debounce(function() {
     //$(".spinner").show();
     $(".saveMessage").text('Save In Progress...');
 
-
-    saveInProgress = true;
-
     objects = canvas.getObjects();
 
     var len = objects.length;
@@ -620,7 +612,8 @@ var onSave  =  debounce(function() {
                    drawing: canvas  }
     log.trace(json_data)
     //console.log(json_data)
-    var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +".json"
+    var json_url          = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +".json"
+    var json_url_for_time = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +"/getlastsavetime.json"
     $.ajax({
             url: json_url, // Route to the Script Controller method
            type: "patch",
@@ -629,88 +622,15 @@ var onSave  =  debounce(function() {
            data: JSON.stringify(json_data), // This goes to Controller in params hash, i.e. params[:file_name]
         timeout: 3000, // sets timeout to 3 seconds
        complete: function() {
-                   //$(".spinner").fadeOut( 400 );
-                   $("#saveMessage").text('Current');
                  },
         success: function(data, textStatus, xhr) {
-                   $("#saveMessage").text('Current');
+                   $("#saveMessage").text(data[0]);
                  },
           error: function(data, textStatus) {
-                 //alert(textStatus);
                    msg = "Error: " + textStatus;
                    $("#saveMessage").text(msg);
                  }
       });
-
-     objs = canvas.getObjects();
-     var len = objs.length;
-     for (i=0; i < len; i++) {
-       if (objs[i].type == "line") {
-         /*
-         line = objs[i]
-         line.setCoords();
-         origWidth = line.getWidth();
-         origLeft  = line.getLeft();
-         origHeight = line.getHeight();
-         origTop    = line.getTop();
-         origX1 = line.x1;
-         origX2 = line.x2;
-         origY1 = line.y1;
-         origY2 = line.y2;
-         var x1, x2, y1, y2 = 0;
-         objs[i].hasBorders = objs[i].hasControls = false
-         c[line.objId] = makeCircle(line);
-         c[line.objId][0].setOriginX('left')
-         c[line.objId][1].setOriginX('left')
-         c[line.objId][0].setOriginY('top')
-         c[line.objId][1].setOriginY('top')
-
-         if (origX1 < origX2) {
-           x1 = origLeft;
-           x2 = origLeft + origWidth;
-         } else if ( origX1 > origX2) {
-           x1 = origLeft + origWidth;
-           x2 = origLeft;
-         } else {
-           x1 = origLeft;
-           x2 = origLeft;
-         }
-         if (origY1 < origY2) {
-           y1 = origTop;
-           y2 = origTop + origHeight;
-         } else if ( origY1 > origY2) {
-           y1 = origTop + origHeight;
-           y2 = origTop;
-         } else {
-           y1 = origTop;
-           y2 = origTop;
-         }
-
-
-         c[line.objId][0].setLeft(x1)
-         c[line.objId][1].setLeft(x2)
-         c[line.objId][0].setTop(y1)
-         c[line.objId][1].setTop(y2)
-         c[line.objId][0].setCoords();
-         c[line.objId][1].setCoords();
-         objs[i].c1 = c[line.objId][0];
-         objs[i].c2 = c[line.objId][1];
-         canvas.forEachObject(function(o) {
-            o.selectable = true;
-         });
-         console.log("line:")
-         console.log(line)
-         console.log("circle0:")
-         console.log(c[line.objId][0])
-         console.log("circle1:")
-         console.log(c[line.objId][1])
-         canvas.add(c[line.objId][0],c[line.objId][1]);
-         console.log(canvas)
-         objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
-         */
-       }
-     }
-     saveInProgress = false;
      //canvas.renderAll.bind(canvas);
      log.info( "Leaving onSave");
 }, 3000);
@@ -1764,4 +1684,14 @@ function SetConfig(searchId) {
     runBackground();
     backgroundModal();
     return false;
+ }
+
+ function toggle_versions_pane()
+ {
+    var effect = 'slide';
+    // Set the options for the effect type chosen
+    var options = { direction: 'right' };
+    // Set the duration (default: 400 milliseconds)
+    var duration = 500;
+    $('#versionspanel').toggle(effect, options, duration);
  }

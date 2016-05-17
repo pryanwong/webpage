@@ -159,26 +159,3 @@ html, body, div, canvas {
     background: #303F9F;
     color:#ffffff;
   }
-
-#accordian-container {
-  position: absolute;
-  width: 200px;
-}
-
-#accordion .ui-accordion-content {
-    font-size: 10pt;
-}
-
-#accordion .ui-accordion-content > * {
-    margin: 0;
-}
-
-#accordion .ui-accordion-header {
-    line-height: 10px;   //reduces height of the header box
-    font-size: 8pt;
-    text-indent: 10px;
-}
-
-accordion .ui-accordion-header h3 {
-    font-size: 8pt;
-}

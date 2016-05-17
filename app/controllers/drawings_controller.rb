@@ -8,6 +8,15 @@ class DrawingsController < ApplicationController
 
   def edit
        logger.info "Entering DrawingsController:edit"
+       if (User.exists?(params[:user_id]))
+          logger.debug "User exists: #{params[:user_id]}"
+          @user = User.find(params[:user_id]);
+       else
+          logger.debug "User not Found"
+          flash[:error] = "User not Found"
+          redirect_to root_path
+          return
+       end
        @drawing = Drawing.new
        if (Drawing.exists?(params[:id]))
           logger.debug "Drawing exists: #{params[:id]}"
@@ -34,6 +43,21 @@ class DrawingsController < ApplicationController
           return
        end
 
+       @lastedit = ""
+       if @drawing.updated_at.to_date == Date.today
+          @lastedit =  @drawing.updated_at.in_time_zone(@user.timezone).strftime("Today, %H:%M %Z")
+       elsif @drawing.updated_at.to_date > Date.today.days_ago(6)
+          @lastedit =  @drawing.updated_at.in_time_zone(@user.timezone).strftime("%A, %H:%M %Z")
+       else
+          @lastedit = @drawing.updated_at.in_time_zone(@user.timezone).strftime("%Y-%m-%d %H:%M %Z")
+       end
+       drawingvers = @drawing.drawingvers
+       @timestamps_readable = Array.new
+       drawingvers.each do |item|
+         item.drawingtext = "";
+         @timestamps_readable.push [item.id, item.ver_updated_at.in_time_zone(@user.timezone).strftime("%Y-%m-%d %H:%M %Z")]
+       end
+       @timestamps_readable = @timestamps_readable.to_json
        #Aws.config.update({
        #   region: ENV['s3_region'],
        #   credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
@@ -263,6 +287,7 @@ class DrawingsController < ApplicationController
        redirect_to company_user_path(params[:company_id], params[:user_id])
        logger.info "Leaving Drawing#create"
      end
+     @lastedit =  @drawing.updated_at.in_time_zone(@user.timezone).strftime("Today, %H:%M %Z")
      logger.info "Leaving Drawing#create"
   end
 
@@ -278,10 +303,46 @@ class DrawingsController < ApplicationController
        redirect_to root_path
        return
     end
+    if (User.exists?(params[:user_id]))
+       logger.debug "User Exists: #{params[:user_id]}"
+    else
+       logger.error "User not Found: #{params[:user_id]}"
+       flash[:error] = "User not Found"
+       redirect_to root_path
+       return
+    end
+
+    # Save older version
+    # if (@drawing.updated_at < 5.minutes.ago)
+       logger.debug "drawing was last updated more than one hour ago"
+       logger.debug "Drawing #{@drawing.inspect}"
+       logger.debug "Drawing to be copied: #{@drawing.drawing}"
+       @drawingver = Drawingver.new
+       @drawingver.drawing_id = @drawing.id.to_i
+       @drawingver.ver_updated_at = @drawing.updated_at
+       @drawingver.ver_created_at = @drawing.created_at
+       @drawingver.drawingtext = @drawing.drawing
+       @drawingver.save
+       logger.debug "Old version of drawing has been archived"
+    # else
+    #    logger.debug "Old version discarded, no need to archive"
+    # end
+
     @drawing.drawing = params[:drawing].to_json
     logger.debug "Drawing Vals: #{@drawing.drawing}"
+
     if @drawing.save
-         render :json => [ @drawing ].to_json
+         user = User.find(params[:user_id]);
+         timezone = user.timezone
+         timeSaved = ""
+         if @drawing.updated_at.to_date == Date.today
+            timeSaved = @drawing.updated_at.in_time_zone(timezone).strftime("Today, %H:%M %Z")
+         elsif @drawing.updated_at.to_date > Date.today.days_ago(6)
+            timeSaved = @drawing.updated_at.in_time_zone(timezone).strftime("%A, %H:%M %Z")
+         else
+            timeSaved = @drawing.updated_at.in_time_zone(timezone).strftime("%Y-%m-%d %H:%M %Z")
+         end
+         render :json => [ timeSaved ].to_json
          return
     else
          logger.error "An error was encountered while processing your photos. Please try again."

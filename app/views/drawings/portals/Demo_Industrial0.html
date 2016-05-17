@@ -1,3 +1,4 @@
+= javascript_include_tag 'jquery-ui'
 %div{ :class=>"hide", :id=>"info"}
 %div{ :class=>"hide", :id=>"TextFormDiv"}
    %form{:id=>"TextForm", :autocomplete=>"off"}
@@ -28,15 +29,13 @@
       Last Saved:
       %span{:id=>'saveMessage'}
          = @lastedit
-      %a{href: '#', onclick: 'toggle_versions_pane(); return false;'} Archived Versions
-   %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
-      %div{:class=>"panel-group", :id=>"accordiontools"}
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
-            %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
-               %div{:id=>"images", :class=>"panel-body"}
+         %a{href: '#', onclick: 'toggle_versions_pane(); return false;'} Archived Versions
+   %div{:id=>"accordian-canvas-wrapper", :style=>"float:left;height:1000px;width:230px;"}
+      %div{:id=>"accordian-container"}
+         %div{ :id=>"accordion" }
+            %h3 Meters
+            %div{:style=>"margin:0px;padding:0px;"}
+               %div{:id=>"images"}
                   %table
                      %tr
                         %td
@@ -73,12 +72,9 @@
                         %td
                            = image_tag "companies/GE/EPM-Enclosure.png", :img_val=>"EPM-Enclosure.png", :"data-config"=>"13", :"data-loc"=>"companies/GE/EPM-Enclosure.png", :"data-model"=>"EPM-Enclosure", :draggable=>"true", :width=>"60", :height => "71"
                            %figcaption EPM-Enclosure
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse2"} Networking
-            %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
+            %h3 Networking
+            %div{:style=>"margin:0px;padding:0px;"}
+               %div{:id=>"images"}
                   %table
                      %tr
                         %td
@@ -98,12 +94,9 @@
                         %td
                            = image_tag "companies/GE/ML600.gif", :img_val=>"ML600.gif", :"data-loc"=>"companies/GE/ML600.gif", :"data-config"=>"18", :"data-model"=>"ML600", :draggable=>"true", :width=>"52", :height => "64"
                            %figcaption ML600
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse3"} Computing
-            %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
+            %h3 Computing
+            %div{:style=>"margin:0px;padding:0px;"}
+               %div{:id=>"images"}
                   %table
                      %tr
                         %td
@@ -133,12 +126,9 @@
                         %td
                            = image_tag "companies/common/osa_vpn.svg", :img_val=>"osa_vpn.svg", :"data-loc"=>"companies/common/osa_vpn.svg", :"data-model"=>"VPN",:draggable=>"true", :width=>"64", :height => "64"
                            %figcaption VPN
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse4"} Shapes
-            %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
+            %h3 Shapes
+            %div{:style=>"margin:0px;padding:0px;"}
+               %div{:id=>"images"}
                   %table
                      %tr
                         %td
@@ -158,12 +148,9 @@
                         %td
                            = image_tag "common/rectangle-icon.png", :"data-loc"=>"common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
                            %figcaption Rectangle
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse5"} Places/People
-            %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
+            %h3 Places/People
+            %div{:style=>"margin:0px;padding:0px;"}
+               %div{:id=>"images"}
                   %table
                      %tr
                         %td
@@ -191,20 +178,14 @@
    %div{:id=>"div2", :style=>"float:left;width:1000px;height:800px;padding-top:10px;"}
       %div{:id=>"canvas-container"}
          %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
-   %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;height:800px;display:none;margin-top:10px;"}
-      %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
+   %div{:id=>"versionspanel", :class=>"panel panel-default",:style=>"position:absolute;right:0;float:right;height:800px;display:none;margin-top:10px;"}
+      %div{:class=>"panel-heading"}
          Versions
          %button{:type=>"button", :class=>"close", onclick: 'toggle_versions_pane(); return false;'}
             %span &times;
             %span{:class=>"sr-only"} Close
       %div{:id=>"versionslist", :class=>"panel-body"}
-         %p Previous Versions of Drawing
-      %table{:class=>"table table-bordered table-hover"}
-         %thead
-            %tr
-               %th ID
-               %th Date and Time
-            %tbody{:id=>"versionslisttab"}
+         %p test to see where stuff appears
 
 :javascript
 
@@ -223,7 +204,6 @@
    var company_id ='#{params[:company_id]}'
    var user_id= '#{params[:user_id]}'
    var drawing_id = '#{params[:id]}'
-   var timestamps   = '#{@timestamps_readable}'
    var itemId = 0;
    var contextmenuon = false;
    var activeObject = false;
@@ -383,6 +363,8 @@
        window.location = window.location + '#loaded';
        window.location.reload();
    }else{
+       log.debug("Create accordian");
+       $( "#accordion" ).accordion();
        log.debug("Load Drawing");
        var data_drawing = "";
        if (parseInt("#{@drawing.drawing.length}") > 0) {
@@ -393,17 +375,6 @@
             data_drawing = ""
        }
        objId_var = 1;
-
-       log.debug("Load versions into table")
-       timestampsObj = JSON.parse(timestamps)
-       var arrayLength = timestampsObj.length;
-       console.log("Array Length:", arrayLength)
-
-       for (var i = 0; i < arrayLength; i++) {
-           console.log("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
-           tr = '<tr> <td>' + timestampsObj[i][0] + '</td> <td>' + timestampsObj[i][1] + '</td> </tr>'
-           $('#versionslisttab').append(tr);
-        }
        log.debug("load objects onto canvas");
 
        if (data_drawing != "") {
