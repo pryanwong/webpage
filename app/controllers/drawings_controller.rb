@@ -88,6 +88,106 @@ class DrawingsController < ApplicationController
        render "drawings/portals/#{company.portal}"
   end
 
+  def changeversion
+       logger.info "Entering DrawingsController:edit"
+       if (User.exists?(params[:user_id]))
+          logger.debug "User exists: #{params[:user_id]}"
+          @user = User.find(params[:user_id]);
+       else
+          logger.debug "User not Found"
+          flash[:error] = "User not Found"
+          redirect_to root_path
+          return
+       end
+       @drawing = Drawing.new
+       if (Drawing.exists?(params[:id]))
+          logger.debug "Drawing exists: #{params[:id]}"
+          @drawing = Drawing.find(params[:id]);
+       else
+          logger.error "Drawing not Found"
+          flash[:error] = "Drawing not Found"
+          redirect_to root_path
+          return
+       end
+       @editdetails = true;
+       if @drawing.drawing == nil || @drawing.drawing.length == 0
+          logger.error "No drawing found"
+          @drawing.drawing = "{}"
+       end
+       company = Drawing.new
+       if (Company.exists?(params[:company_id]))
+          logger.debug "Company exists: #{params[:company_id]}"
+          company = Company.find(params[:company_id]);
+       else
+          logger.error "No Company found"
+          flash[:error] = "Company not Found"
+          redirect_to root_path
+          return
+       end
+       if (Company.exists?(params[:company_id]))
+          logger.debug "Company exists: #{params[:company_id]}"
+          company = Company.find(params[:company_id]);
+       else
+          logger.error "No Company found"
+          flash[:error] = "Company not Found"
+          redirect_to root_path
+          return
+       end
+       @drawingver = Drawingver.new
+       if (Drawingver.exists?(params[:version]))
+          logger.debug "Drawing version exists: #{params[:version]}"
+          @drawingver = Drawingver.find(params[:version]);
+       else
+          logger.error "No Drawing version found"
+          flash[:error] = "Drawing version not Found"
+          redirect_to root_path
+          return
+       end
+       if (@drawingver.drawing_id == @drawing.id)
+         logger.debug "Drawingver is part of drawing"
+       else
+         logger.error "Drawingver does not belong to drawing"
+         flash[:error] = "Drawingver does not belong to drawing"
+         redirect_to root_path
+       end
+
+       #Create New Version version of drawing
+       if (params.has_key?(:modified))
+          if (params[:modified] == "true")
+             drawingverold = Drawingver.new
+             drawingverold.drawing_id = @drawing.id.to_i
+             drawingverold.ver_updated_at = @drawing.updated_at
+             drawingverold.ver_created_at = @drawing.created_at
+             drawingverold.drawingtext = @drawing.drawing
+             drawingverold.save
+          end
+       end
+
+       #Send Requested Version to View in JSON format for loading
+       @drawing.drawing = @drawingver.drawingtext
+
+       @lastedit = ""
+       if @drawingver.ver_updated_at.to_date == Date.today
+          @lastedit =  @drawingver.ver_updated_at.in_time_zone(@user.timezone).strftime("Today, %H:%M %Z")
+       elsif @drawing.updated_at.to_date > Date.today.days_ago(6)
+          @lastedit =  @drawingver.ver_updated_at.in_time_zone(@user.timezone).strftime("%A, %H:%M %Z")
+       else
+          @lastedit = @drawingver.ver_updated_at.in_time_zone(@user.timezone).strftime("%Y-%m-%d %H:%M %Z")
+       end
+       drawingvers = @drawing.drawingvers
+       @timestamps_readable = Array.new
+       drawingvers.each do |item|
+         item.drawingtext = "";
+         @timestamps_readable.push [item.id, item.ver_updated_at.in_time_zone(@user.timezone).strftime("%Y-%m-%d %H:%M %Z")].to_json
+       end
+       @timestamps_readable = @timestamps_readable.to_json
+
+       logger.info "Leaving DrawingsController:edit"
+       logger.info "Rendering #{company.portal}"
+       render :json => [ @lastedit.to_json, @timestamps_readable, @drawing.drawing ]
+
+     end
+
 
   def editdrawingdetails
        logger.info "Entering DrawingsController:editdrawingdetails"
@@ -304,6 +404,7 @@ class DrawingsController < ApplicationController
        return
     end
     if (User.exists?(params[:user_id]))
+       @user = User.find(params[:user_id])
        logger.debug "User Exists: #{params[:user_id]}"
     else
        logger.error "User not Found: #{params[:user_id]}"
@@ -313,7 +414,7 @@ class DrawingsController < ApplicationController
     end
 
     # Save older version
-    # if (@drawing.updated_at < 5.minutes.ago)
+    if (@drawing.updated_at < 60.minutes.ago)
        logger.debug "drawing was last updated more than one hour ago"
        logger.debug "Drawing #{@drawing.inspect}"
        logger.debug "Drawing to be copied: #{@drawing.drawing}"
@@ -324,9 +425,9 @@ class DrawingsController < ApplicationController
        @drawingver.drawingtext = @drawing.drawing
        @drawingver.save
        logger.debug "Old version of drawing has been archived"
-    # else
-    #    logger.debug "Old version discarded, no need to archive"
-    # end
+    else
+        logger.debug "Old version discarded, no need to archive"
+    end
 
     @drawing.drawing = params[:drawing].to_json
     logger.debug "Drawing Vals: #{@drawing.drawing}"
@@ -342,7 +443,15 @@ class DrawingsController < ApplicationController
          else
             timeSaved = @drawing.updated_at.in_time_zone(timezone).strftime("%Y-%m-%d %H:%M %Z")
          end
-         render :json => [ timeSaved ].to_json
+         drawingvers = @drawing.drawingvers
+         @timestamps_readable = Array.new
+         drawingvers.each do |item|
+           item.drawingtext = "";
+           @timestamps_readable.push [item.id, item.ver_updated_at.in_time_zone(@user.timezone).strftime("%Y-%m-%d %H:%M %Z")].to_json
+         end
+         @timestamps_readable = @timestamps_readable.to_json
+
+         render :json => [[ timeSaved ].to_json, @timestamps_readable]
          return
     else
          logger.error "An error was encountered while processing your photos. Please try again."

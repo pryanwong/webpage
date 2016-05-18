@@ -41,6 +41,7 @@ Rails.application.routes.draw do
             patch  'updateBackground'
             get 'deleteBackground'
             get 'bom'
+            get 'changeversion'
           end
         end
 

@@ -176,3 +176,129 @@
         }
     });
 })();
+
+// log.debug("Create Custom Image Class");
+fabric.CustomImage = fabric.util.createClass(fabric.Image, {
+   type: 'custom-image',
+   initialize: function(element, options) {
+       this.callSuper('initialize', element, options);
+       options && this.set('model', options.model);
+       options && this.set('config', options.config);
+       options && this.set('origloc', options.origloc);
+       options && this.set('price', options.price);
+       options && this.set('configdbid', options.configdbid);
+   },
+   toObject: function() {
+       return fabric.util.object.extend(this.callSuper('toObject'),
+                                     {config: this.config,
+                                      price:  this.price,
+                                      model:  this.model,
+                                      origloc: this.origloc,
+                                      configdbid: this.configdbid});
+   },
+   setConfig: function(configString) {
+      this.config = configString;
+      canvas.trigger('custom-image:textChange');
+   },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+      if (this.config != 'undefined') {
+        //log.debug("In Call Super Render, ctx")
+        log.trace(ctx)
+        ctx.font = '12px Helvetica';
+        ctx.fillStyle = '#333';
+        //log.debug("render text");
+        textwidth = ctx.measureText(this.config).width
+        ctx.fillText(this.config, -textwidth/2, (this.height/2+10))
+      }
+   }
+});
+fabric.CustomImage.fromObject = function(object, callback) {
+ fabric.util.loadImage(object.src, function(img) {
+   callback && callback(new fabric.CustomImage(img, object));
+  });
+};
+fabric.CustomImage.async = true;
+
+//log.debug("Create Custom Line Class");
+fabric.Customline = fabric.util.createClass(fabric.Line, {
+  type: 'customline',
+  initialize: function(coords, options) {
+      options || (options = {});
+      this.callSuper('initialize', coords ,options);
+      options && this.set('objId', options.objId);
+      options && this.set('cone', options.cone);
+      options && this.set('ctwo', options.ctwo);
+  },
+  toObject: function() {
+      return fabric.util.object.extend(this.callSuper('toObject'),
+                                    {objId: this.objId,
+                                     cone:    this.cone,
+                                     ctwo:    this.ctwo});
+  },
+  setObjId: function(objIdString) {
+     this.objId = objIdString;
+  },
+  getObjId: function() {
+     return this.objId;
+  },
+  setCone: function(c1String) {
+     this.cone = c1String;
+  },
+  setCtwo: function(c2String) {
+     this.ctwo = c2String;
+  },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+   }
+});
+fabric.Customline.fromObject = function (object) {
+  return new fabric.Customline([object.x1,object.y1,object.x2,object.y2], object);
+};
+fabric.Customline.async = false;
+
+//log.debug("Create Custom Circlezero Class");
+fabric.Circlezero = fabric.util.createClass(fabric.Circle, {
+ type: 'circlezero',
+ initialize: function(element, options) {
+     this.callSuper('initialize', element, options);
+     options && this.set('belongsTo', options.belongsTo);
+ },
+ toObject: function() {
+     return fabric.util.object.extend(this.callSuper('toObject'),
+                                   {belongsTo: this.belongsTo});
+ },
+ setBelongsTo: function(belongsToString) {
+    this.belongsTo = belongsToString;
+ },
+ _render: function(ctx) {
+    this.callSuper('_render', ctx);
+ }
+});
+fabric.Circlezero.fromObject = function(object) {
+  return new fabric.Circlezero(object);
+};
+fabric.Circlezero.async = false;
+
+//log.debug("Create Custom Circleone Class");
+fabric.Circleone = fabric.util.createClass(fabric.Circle, {
+type: 'circleone',
+initialize: function(element, options) {
+    this.callSuper('initialize', element, options);
+    options && this.set('belongsTo', options.belongsTo);
+},
+toObject: function() {
+    return fabric.util.object.extend(this.callSuper('toObject'),
+                                  {belongsTo: this.belongsTo});
+},
+setBelongsTo: function(belongsToString) {
+   this.belongsTo = belongsToString;
+},
+_render: function(ctx) {
+   this.callSuper('_render', ctx);
+}
+});
+fabric.Circleone.fromObject = function(object) {
+  return new fabric.Circleone(object);
+};
+fabric.Circleone.async = false;

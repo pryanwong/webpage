@@ -14,12 +14,10 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require turbolinks
-//= require_tree .
 //= require jscolor
 //= require fabric.min
 //= require fabric.canvasex
 //= require jquery.turbolinks
-//= require drawing_scripts
 //= require bootstrap.min
 //= require log4javascript
 //= require jquery.ui.widget

@@ -589,7 +589,7 @@ function checkBackgroundFileExists( link ) {
 
 var onSave  =  debounce(function() {
     log.info( "Entering onSave");
-
+    modified = true;
     // Remove circle0 and circle1 from image
     //$(".spinner").show();
     $(".saveMessage").text('Save In Progress...');
@@ -612,8 +612,7 @@ var onSave  =  debounce(function() {
                    drawing: canvas  }
     log.trace(json_data)
     //console.log(json_data)
-    var json_url          = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +".json"
-    var json_url_for_time = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +"/getlastsavetime.json"
+    var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +".json"
     $.ajax({
             url: json_url, // Route to the Script Controller method
            type: "patch",
@@ -624,7 +623,10 @@ var onSave  =  debounce(function() {
        complete: function() {
                  },
         success: function(data, textStatus, xhr) {
-                   $("#saveMessage").text(data[0]);
+                   textMsg = JSON.parse(data[0]);
+                   console.log("Text Msg: ", textMsg)
+                   $("#saveMessage").text(textMsg[0]);
+                   loadVersionsIntoPanel(data[1])
                  },
           error: function(data, textStatus) {
                    msg = "Error: " + textStatus;
@@ -634,6 +636,211 @@ var onSave  =  debounce(function() {
      //canvas.renderAll.bind(canvas);
      log.info( "Leaving onSave");
 }, 3000);
+
+function loadCanvasDrawing(data_drawing) {
+  if (data_drawing != "") {
+      log.debug("data_drawing not blank")
+      canvas.loadFromJSON(data_drawing, function () {
+         //first render
+         canvas.renderAll.bind(canvas);
+         var objs = canvas.getObjects().map(function(o) {
+           return o.set('active', false);
+         });
+         log.debug("Entering loop for objects")
+         log.debug("Loop size: ", objs.length)
+         var foundCircle = 0;
+         var itemId = 0;
+         for(i = 0; i < objs.length; i++ ) {
+            log.debug("Objs Type: ", objs[i].type)
+            objs[i].id = itemId
+            if (objs[i].type == "customline")  {
+              console.log("customline: ", objs[i])
+              console.log("Item Id of line set to: ", objs[i].getObjId())
+              canvas.forEachObject(function(circleProspect){
+                log.debug("Object Type: ", circleProspect.type)
+                if (circleProspect.type == "circlezero" || circleProspect.type == "circleone") {
+                   log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
+                   log.debug("objs[1].objId: ", objs[i].objId)
+                }
+                if (circleProspect.type == "circlezero" && circleProspect.belongsTo == objs[i].objId) {
+                   circleProspect.hasBorders = circleProspect.hasControls = false;
+                   circleProspect.line = objs[i]
+                   circleProspect.belongsTo = itemId;
+                   objs[i].cone = circleProspect
+                   circleProspect.set('hoverCursor','crosshair')
+                   console.log("found circlezero")
+                   foundCircle = foundCircle + 1;
+
+                }
+                if (circleProspect.type == "circleone" && circleProspect.belongsTo == objs[i].objId) {
+                  circleProspect.hasBorders = circleProspect.hasControls = false;
+                  circleProspect.line = objs[i]
+                  circleProspect.belongsTo = itemId;
+                  objs[i].ctwo = circleProspect
+                  circleProspect.set('hoverCursor','crosshair')
+                  console.log("found circleone")
+                  foundCircle = foundCircle + 1;
+                }
+                if (foundCircle == 2) {
+                  console.log("objId: ", objs[i].get('objId'))
+                  objs[i].setObjId(itemId)
+                  itemId = itemId + 1;
+                  objs[i].cone.id = itemId;
+                  itemId = itemId + 1;
+                  objs[i].ctwo.id = itemId;
+                  foundCircle = 0;
+                }
+              });
+              objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
+            }
+            itemId = itemId + 1;
+         }
+         canvas.renderAll();
+         backgroundImageVal = "";
+         if (canvas.hasOwnProperty('backgroundImage')) {
+            if ((canvas.backgroundImage).hasOwnProperty('src')) {
+                backgroundImageVal = canvas.backgroundImage.src;
+            }
+         }
+         log.debug("BackgroundImage Loc: ", backgroundImageVal)
+         backgroundExists(backgroundImageVal);
+      },
+      postProcessLoading);
+
+  }
+}
+
+function loadVersionsIntoPanel(timestamps) {
+   versions = JSON.parse(timestamps)
+   $("tbody#versionslisttab tr").remove()
+   var arrayLength = versions.length;
+
+   for (var i = 0; i < arrayLength; i++) {
+      vararray = JSON.parse(versions[i])
+      log.debug("Timestamp: ", vararray[0], ":", vararray[1])
+      var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + vararray[0];
+      tr = '<tr> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + vararray[1] + '</a></td> </tr>'
+      $('#versionslisttab').append(tr);
+   }
+}
+
+$(function() {
+   $('.directUpload').find("input:file").each(function(i, elem) {
+     log.debug("URL directUpload")
+     log.debug(form)
+     var fileInput    = $(elem);
+     log.debug("fileInput")
+     log.trace(fileInput)
+     var form         = $(fileInput.parents('form:first'));
+     var URL_dest = form.data('url') + "/" + form.data('form-data').key
+     var submitButton = form.find('input[type="submit"]');
+     fileInput.after(barContainer);
+     fileInput.fileupload({
+     add: function(e, data) {
+             var uploadErrors = [];
+             var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+             if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                 uploadErrors.push('Not an accepted file type');
+             }
+             if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 1000000) {
+                 uploadErrors.push('Filesize is too big');
+             }
+             if(uploadErrors.length > 0) {
+                 alert(uploadErrors.join("\n"));
+             } else {
+                 data.submit();
+             }
+     },
+     fileInput:       fileInput,
+     url:             form.data('url'),
+     type:            'POST',
+     autoUpload:       true,
+     formData:         form.data('form-data'),
+     paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+     dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
+     replaceFileInput: false,
+     progressall: function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        progressBar.css('width', progress + '%')
+     },
+     start: function (e) {
+        submitButton.prop('disabled', true);
+
+        progressBar.
+          css('background', 'green').
+          css('display', 'block').
+          css('width', '0%').
+          text("Loading...");
+        log.trace(form);
+     },
+     done: function(e, data) {
+        $("#saveMessage").text('Changes Made, Save Pending...');
+        submitButton.prop('disabled', false);
+        progressBar.text("Uploading done");
+        $('#upload_button').removeAttr('disabled');
+        // extract key and generate URL from response
+        var key   = $(data.jqXHR.responseXML).find("Key").text();
+        var url   = '//' + form.data('host') + '/' + key;
+        log.debug("done:key,url")
+        log.debug(key)
+        log.debug(url)
+        // create hidden field
+        var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
+        form.append(input);
+        imageURL = "https:" + url;
+        log.debug("imageURL");
+        log.debug(imageURL);
+        canvas.setBackgroundImage(imageURL,
+             canvas.renderAll.bind(canvas), {
+                backgroundImageOpacity: 0.5,
+                backgroundImageStretch: false,
+                scaleX:1,
+                scaleY:1,
+                top: center.top,
+                left: center.left,
+                originX: 'center',
+                originY: 'center',
+                crossOrigin: 'anonymous'
+             }
+        );
+        $('#backgroundSection').modal('hide');
+        backgroundButton(true);
+        onSave();
+      },
+      fail: function(e, data) {
+        submitButton.prop('disabled', false);
+        progressBar.
+          css("background", "red").
+          text("Failed");
+      }
+    });
+  });
+});
+
+function loadversion(link) {
+   $(".spinner").show();
+   link = link + '&modified=' + modified;
+   $.ajax({
+       url: link,
+       data: {
+          format: 'json'
+       },
+       error: function(data) {
+          console.log(data)
+          console.log("An error has occurred");
+          $(".spinner").fadeOut( 400 );
+       },
+       success: function(data) {
+          log.trace("Data from AJAX: ", data)
+          log.trace("Last Edit: ", JSON.parse(data[0]))
+          loadVersionsIntoPanel(data[1])
+          loadCanvasDrawing(data[2])
+          modified = false;
+          $(".spinner").fadeOut( 400 );
+       },
+       type: 'GET'
+     });
+}
 
 function handleDragStart(e) {
  log.info( "Entering handleDragStart");

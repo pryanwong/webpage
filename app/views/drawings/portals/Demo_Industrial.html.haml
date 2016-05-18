@@ -28,7 +28,7 @@
       Last Saved:
       %span{:id=>'saveMessage'}
          = @lastedit
-      %a{href: '#', onclick: 'toggle_versions_pane(); return false;'} Archived Versions
+      %a{href: '#', onclick: 'toggle_versions_pane(); return false;', :style=>'text-decoration: underline'} Archived Versions
    %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
       %div{:class=>"panel-group", :id=>"accordiontools"}
          %div{ :class=>"panel panel-default" }
@@ -187,24 +187,22 @@
                            = image_tag "companies/common/osa_user_blue.svg", :"data-loc"=>"companies/common/osa_user_blue.svg", :img_val=>"osa_user_blue.svg", :"data-model"=>"User",:draggable=>"true", :width=>"64", :height => "64"
                            %figcaption User
 
-   -# %div{:id=>"div2", :style=>"position:absolute;left:230px"}
    %div{:id=>"div2", :style=>"float:left;width:1000px;height:800px;padding-top:10px;"}
       %div{:id=>"canvas-container"}
          %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
-   %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;height:800px;display:none;margin-top:10px;"}
+   %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;height:800px;display:none;margin-top:10px;overflow: auto"}
       %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
          Versions
          %button{:type=>"button", :class=>"close", onclick: 'toggle_versions_pane(); return false;'}
             %span &times;
             %span{:class=>"sr-only"} Close
       %div{:id=>"versionslist", :class=>"panel-body"}
-         %p Previous Versions of Drawing
+         %p Previous Versions of Drawing, stored when changes made after 60mins of inactivity
       %table{:class=>"table table-bordered table-hover"}
          %thead
             %tr
-               %th ID
                %th Date and Time
-            %tbody{:id=>"versionslisttab"}
+            %tbody{:id=>"versionslisttab", :style=>"height:400px;overflow-y: scroll;"}
 
 :javascript
 
@@ -223,6 +221,7 @@
    var company_id ='#{params[:company_id]}'
    var user_id= '#{params[:user_id]}'
    var drawing_id = '#{params[:id]}'
+   var modified = false
    var timestamps   = '#{@timestamps_readable}'
    var itemId = 0;
    var contextmenuon = false;
@@ -251,133 +250,6 @@
     $(".spinner").show();
     canvas.backgroundColor="";
 
-    log.debug("Create Custom Image Class");
-    fabric.CustomImage = fabric.util.createClass(fabric.Image, {
-       type: 'custom-image',
-       initialize: function(element, options) {
-           this.callSuper('initialize', element, options);
-           options && this.set('model', options.model);
-           options && this.set('config', options.config);
-           options && this.set('origloc', options.origloc);
-           options && this.set('price', options.price);
-           options && this.set('configdbid', options.configdbid);
-       },
-       toObject: function() {
-           return fabric.util.object.extend(this.callSuper('toObject'),
-                                         {config: this.config,
-                                          price:  this.price,
-                                          model:  this.model,
-                                          origloc: this.origloc,
-                                          configdbid: this.configdbid});
-       },
-       setConfig: function(configString) {
-          this.config = configString;
-          canvas.trigger('custom-image:textChange');
-       },
-       _render: function(ctx) {
-          this.callSuper('_render', ctx);
-          if (this.config != 'undefined') {
-            log.debug("In Call Super Render, ctx")
-            log.trace(ctx)
-            ctx.font = '12px Helvetica';
-            ctx.fillStyle = '#333';
-            log.debug("render text");
-            textwidth = ctx.measureText(this.config).width
-            ctx.fillText(this.config, -textwidth/2, (this.height/2+10))
-          }
-       }
-   });
-   fabric.CustomImage.fromObject = function(object, callback) {
-     fabric.util.loadImage(object.src, function(img) {
-       callback && callback(new fabric.CustomImage(img, object));
-      });
-   };
-   fabric.CustomImage.async = true;
-
-   log.debug("Create Custom Line Class");
-   fabric.Customline = fabric.util.createClass(fabric.Line, {
-      type: 'customline',
-      initialize: function(coords, options) {
-          options || (options = {});
-          this.callSuper('initialize', coords ,options);
-          options && this.set('objId', options.objId);
-          options && this.set('cone', options.cone);
-          options && this.set('ctwo', options.ctwo);
-      },
-      toObject: function() {
-          return fabric.util.object.extend(this.callSuper('toObject'),
-                                        {objId: this.objId,
-                                         cone:    this.cone,
-                                         ctwo:    this.ctwo});
-      },
-      setObjId: function(objIdString) {
-         this.objId = objIdString;
-      },
-      getObjId: function() {
-         return this.objId;
-      },
-      setCone: function(c1String) {
-         this.cone = c1String;
-      },
-      setCtwo: function(c2String) {
-         this.ctwo = c2String;
-      },
-       _render: function(ctx) {
-          this.callSuper('_render', ctx);
-       }
-   });
-   fabric.Customline.fromObject = function (object) {
-      return new fabric.Customline([object.x1,object.y1,object.x2,object.y2], object);
-   };
-   fabric.Customline.async = false;
-
-   log.debug("Create Custom Circlezero Class");
-   fabric.Circlezero = fabric.util.createClass(fabric.Circle, {
-     type: 'circlezero',
-     initialize: function(element, options) {
-         this.callSuper('initialize', element, options);
-         options && this.set('belongsTo', options.belongsTo);
-     },
-     toObject: function() {
-         return fabric.util.object.extend(this.callSuper('toObject'),
-                                       {belongsTo: this.belongsTo});
-     },
-     setBelongsTo: function(belongsToString) {
-        this.belongsTo = belongsToString;
-     },
-     _render: function(ctx) {
-        this.callSuper('_render', ctx);
-     }
-   });
-   fabric.Circlezero.fromObject = function(object) {
-      return new fabric.Circlezero(object);
-   };
-   fabric.Circlezero.async = false;
-
-   log.debug("Create Custom Circleone Class");
-   fabric.Circleone = fabric.util.createClass(fabric.Circle, {
-    type: 'circleone',
-    initialize: function(element, options) {
-        this.callSuper('initialize', element, options);
-        options && this.set('belongsTo', options.belongsTo);
-    },
-    toObject: function() {
-        return fabric.util.object.extend(this.callSuper('toObject'),
-                                      {belongsTo: this.belongsTo});
-    },
-    setBelongsTo: function(belongsToString) {
-       this.belongsTo = belongsToString;
-    },
-    _render: function(ctx) {
-       this.callSuper('_render', ctx);
-    }
-   });
-   fabric.Circleone.fromObject = function(object) {
-      return new fabric.Circleone(object);
-   };
-   fabric.Circleone.async = false;
-
-
    log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
    if(!window.location.hash) {
        window.location = window.location + '#loaded';
@@ -401,81 +273,13 @@
 
        for (var i = 0; i < arrayLength; i++) {
            console.log("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
-           tr = '<tr> <td>' + timestampsObj[i][0] + '</td> <td>' + timestampsObj[i][1] + '</td> </tr>'
+           var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + timestampsObj[i][0];
+           tr = '<tr> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
            $('#versionslisttab').append(tr);
         }
        log.debug("load objects onto canvas");
 
-       if (data_drawing != "") {
-           log.debug("data_drawing not blank")
-           canvas.loadFromJSON(data_drawing, function () {
-              //first render
-              canvas.renderAll.bind(canvas);
-              var objs = canvas.getObjects().map(function(o) {
-                return o.set('active', false);
-              });
-              log.debug("Entering loop for objects")
-              log.debug("Loop size: ", objs.length)
-              var foundCircle = 0;
-              var itemId = 0;
-              for(i = 0; i < objs.length; i++ ) {
-                 log.debug("Objs Type: ", objs[i].type)
-                 objs[i].id = itemId
-                 if (objs[i].type == "customline")  {
-                   console.log("customline: ", objs[i])
-                   console.log("Item Id of line set to: ", objs[i].getObjId())
-                   canvas.forEachObject(function(circleProspect){
-                     log.debug("Object Type: ", circleProspect.type)
-                     if (circleProspect.type == "circlezero" || circleProspect.type == "circleone") {
-                        log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
-                        log.debug("objs[1].objId: ", objs[i].objId)
-                     }
-                     if (circleProspect.type == "circlezero" && circleProspect.belongsTo == objs[i].objId) {
-                        circleProspect.hasBorders = circleProspect.hasControls = false;
-                        circleProspect.line = objs[i]
-                        circleProspect.belongsTo = itemId;
-                        objs[i].cone = circleProspect
-                        circleProspect.set('hoverCursor','crosshair')
-                        console.log("found circlezero")
-                        foundCircle = foundCircle + 1;
-
-                     }
-                     if (circleProspect.type == "circleone" && circleProspect.belongsTo == objs[i].objId) {
-                       circleProspect.hasBorders = circleProspect.hasControls = false;
-                       circleProspect.line = objs[i]
-                       circleProspect.belongsTo = itemId;
-                       objs[i].ctwo = circleProspect
-                       circleProspect.set('hoverCursor','crosshair')
-                       console.log("found circleone")
-                       foundCircle = foundCircle + 1;
-                     }
-                     if (foundCircle == 2) {
-                       console.log("objId: ", objs[i].get('objId'))
-                       objs[i].setObjId(itemId)
-                       itemId = itemId + 1;
-                       objs[i].cone.id = itemId;
-                       itemId = itemId + 1;
-                       objs[i].ctwo.id = itemId;
-                       foundCircle = 0;
-                     }
-                   });
-                   objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
-                 }
-                 itemId = itemId + 1;
-              }
-              canvas.renderAll();
-              backgroundImageVal = "";
-              if (canvas.hasOwnProperty('backgroundImage')) {
-                 if ((canvas.backgroundImage).hasOwnProperty('src')) {
-                     backgroundImageVal = canvas.backgroundImage.src;
-                 }
-              }
-              log.debug("BackgroundImage Loc: ", backgroundImageVal)
-              backgroundExists(backgroundImageVal);
-           },
-           postProcessLoading);
-
-       }
+       loadCanvasDrawing(data_drawing)
 
        log.debug("load background object onto canvas");
        var center = canvas.getCenter();
@@ -521,108 +325,3 @@
    }
 
    log.info( "Done Demo_Industrial Javascript ");
-
-   $(function() {
-      $('.directUpload').find("input:file").each(function(i, elem) {
-        log.debug("URL directUpload")
-        log.debug(form)
-        var fileInput    = $(elem);
-        log.debug("fileInput")
-        log.trace(fileInput)
-        var form         = $(fileInput.parents('form:first'));
-        log.trace("form")
-        log.trace(form)
-        log.trace("form:first data")
-        log.trace(form.data)
-        log.trace("form.data('url')")
-        log.trace(form.data('url'))
-        log.trace("form.data('form-data')")
-        log.trace(form.data('form-data'))
-        log.trace("form.data('form-data').key")
-        log.trace(form.data('form-data').key)
-        log.trace("form.data('host')")
-        log.trace(form.data('host'))
-        var URL_dest = form.data('url') + "/" + form.data('form-data').key
-        var submitButton = form.find('input[type="submit"]');
-        fileInput.after(barContainer);
-        fileInput.fileupload({
-        add: function(e, data) {
-                var uploadErrors = [];
-                var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-                if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-                    uploadErrors.push('Not an accepted file type');
-                }
-                if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 1000000) {
-                    uploadErrors.push('Filesize is too big');
-                }
-                if(uploadErrors.length > 0) {
-                    alert(uploadErrors.join("\n"));
-                } else {
-                    data.submit();
-                }
-        },
-        fileInput:       fileInput,
-        url:             form.data('url'),
-        type:            'POST',
-        autoUpload:       true,
-        formData:         form.data('form-data'),
-        paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
-        dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
-        replaceFileInput: false,
-        progressall: function (e, data) {
-           var progress = parseInt(data.loaded / data.total * 100, 10);
-           progressBar.css('width', progress + '%')
-        },
-        start: function (e) {
-           submitButton.prop('disabled', true);
-
-           progressBar.
-             css('background', 'green').
-             css('display', 'block').
-             css('width', '0%').
-             text("Loading...");
-           log.trace(form);
-        },
-        done: function(e, data) {
-           $("#saveMessage").text('Changes Made, Save Pending...');
-           submitButton.prop('disabled', false);
-           progressBar.text("Uploading done");
-           $('#upload_button').removeAttr('disabled');
-           // extract key and generate URL from response
-           var key   = $(data.jqXHR.responseXML).find("Key").text();
-           var url   = '//' + form.data('host') + '/' + key;
-           log.debug("done:key,url")
-           log.debug(key)
-           log.debug(url)
-           // create hidden field
-           var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
-           form.append(input);
-           imageURL = "https:" + url;
-           log.debug("imageURL");
-           log.debug(imageURL);
-           canvas.setBackgroundImage(imageURL,
-                canvas.renderAll.bind(canvas), {
-                   backgroundImageOpacity: 0.5,
-                   backgroundImageStretch: false,
-                   scaleX:1,
-                   scaleY:1,
-                   top: center.top,
-                   left: center.left,
-                   originX: 'center',
-                   originY: 'center',
-                   crossOrigin: 'anonymous'
-                }
-           );
-           $('#backgroundSection').modal('hide');
-           backgroundButton(true);
-           onSave();
-         },
-         fail: function(e, data) {
-           submitButton.prop('disabled', false);
-           progressBar.
-             css("background", "red").
-             text("Failed");
-         }
-       });
-     });
-   });

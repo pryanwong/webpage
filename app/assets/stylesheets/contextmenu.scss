@@ -14,6 +14,20 @@
   min-height: 100%;
 }
 
+#versionpanelheader {
+    background-image: none;
+    background-color: #303F9F;
+    color: white;
+}
+
+#versionpanelheader > .close {
+    opacity: 1;
+}
+
+#versionpanelheader > .close > span {
+    color: white;
+}
+
 .pagination-wrapper {
    text-align: center;
 }

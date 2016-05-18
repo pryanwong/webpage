@@ -10,7 +10,7 @@ class Drawing < ActiveRecord::Base
   belongs_to :user
   belongs_to :division
   belongs_to :company
-  has_many :drawingvers
+  has_many :drawingvers, -> { order(ver_updated_at: :desc, id: :desc) }
 
   def company_id_val
     self.company_id.to_s
