@@ -10,8 +10,7 @@
       =javascript_include_tag 'drawing_scripts.js', "data-turbolinks-track" => true
       =csrf_meta_tags
    %body
-      - flash.each do |key, value|
-         .alert{:key=> '#{key}'}=value
+      = render "shared/error_messages"
       %div{ :id=>"configsection", :class=>"modal fade", :role=>"dialog"}
          %div{ :class=>"modal-dialog", :id=>"openModal"}
             %div{:class=>"modal-content"}

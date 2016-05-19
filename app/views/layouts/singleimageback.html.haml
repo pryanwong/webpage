@@ -11,8 +11,7 @@
       =javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"
       =csrf_meta_tags
    %body
-      - flash.each do |key, value|
-         .alert{:key=> '#{key}'}=value
+      = render "shared/error_messages", flash: flash
       = render "shared/header_start"
       = yield
       = render "shared/footer"
