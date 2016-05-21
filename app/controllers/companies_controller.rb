@@ -27,7 +27,7 @@
     end
     logger.info "Leaving CompaniesController:index"
   end
- 
+
   def show
     logger.info "Entering CompaniesController:show"
     if (Company.exists?(id: params[:id]))

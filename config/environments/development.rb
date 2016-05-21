@@ -40,6 +40,11 @@ Rails.application.configure do
   # Minify Javascript and CSS
   config.assets.js_compressor = :uglifier
   config.assets.css_compressor = :sass
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  #default mailer for devise
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  
 end

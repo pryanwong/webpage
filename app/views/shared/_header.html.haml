@@ -9,14 +9,14 @@
             =image_tag 'Logo4_no_text_sm.gif', :width=>"50", :height => "49"
       %div{:id=>"operationalNavbar", :class=>"collapse navbar-collapse"}
          %ul{:class=>"nav navbar-nav"}
-            - if (session[:company_id]!= nil) & (session[:user_id] != nil)
+            - if (current_user.company_id!= nil) & (current_user.id != nil)
                %li
-                  = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  = link_to company_user_path(current_user.company_id ,current_user.id) do
                      %span{:class=>"glyphicon glyphicon-home"}
                      User Home
             - if (current_user.admin? || current_user.moderator?)
                %li
-                  = link_to company_path(session[:company_id] ) do
+                  = link_to company_path(current_user.company_id ) do
                      %span CurComp
             -if current_user.admin?
                %li
@@ -24,31 +24,27 @@
                      %span AllComp
             - if @showdrawing == true
                %li
-                  = link_to newdrawing_company_user_path(session[:company_id], session[:user_id]) do
+                  = link_to newdrawing_company_user_path(current_user.company_id ,current_user.id) do
                      %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
                      New Drawing
-            - if @editdetails == true
-               -# %li
-               -#    %a{:href=>'#', :onclick => "onSave()"}
-               -#       %span{:class=>"fa fa-save","aria-hidden"=>"true"}
-               -#       Save
             -if current_user.admin? && !session[:switched] == true
                %li
-                  = link_to user_showall_path(session[:user_id]) do
+                  = link_to user_showall_path(current_user.id) do
                      %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
                      Switch User
-            -if session[:switched] == true
+            -#session[:switched] == true
+            -if false == true
                %li
                   = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
                      %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
                      Switch Back
-         - if current_user
+         - if user_signed_in?
             %ul{:class=>"nav navbar-nav navbar-right"}
                %li{:class=>"hidden-sm hidden-xs"}
                   %span{:class=>"navbar-text",:style=>"color:white"}
                      %span{:class=>"fa fa-user","aria-hidden"=>"true"}
                      #{current_user.email}
                %li{:class=>'align-right'}
-                  =link_to signout_path, :class => 'last' do
+                  =link_to destroy_user_session_path, :method => :delete, :class => 'last' do
                      %span{:class=>"fa fa-sign-out","aria-hidden"=>"true"}
                      Sign out

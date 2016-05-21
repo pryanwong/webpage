@@ -344,7 +344,7 @@ class UsersController < ApplicationController
 
     if (!params[:user][:provider].blank?)
        logger.debug "User provider is not blank"
-       @user.provider = User.providers[params[:user][:provider]]
+       @user.provider = params[:user][:provider]
     else
        logger.debug "User provider is blank, set to 0"
        @user.provider = 0;
@@ -384,7 +384,7 @@ class UsersController < ApplicationController
   def create
     logger.info "Entering Users Controller:create"
     logger.debug "User CREATE Params: #{params.inspect}"
-    provalue = User.providers[params[:user][:provider]]
+    provalue = params[:user][:provider]
     logger.debug "Provider Value: #{provalue}"
     @company = Company.new
     if (!Company.exists?(id: params[:company_id]))
@@ -399,7 +399,7 @@ class UsersController < ApplicationController
        role_val = User.roles[(params[:user][:role])]
        successfullyAdded = false;
        userErrors = {}
-       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id], provider: provalue)
+       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id], provider: provalue, password: 'filler', timezone: params[:user][:timezone])
        successfullyAdded = @user.save
        if !successfullyAdded
          addErrorsToFlash(@user.errors)
@@ -436,6 +436,7 @@ class UsersController < ApplicationController
     end
     if (Company.exists?(params[:company_id]))
       logger.debug "Company Found #{params[:company_id]}"
+      flash[:notice] = "User has been deleted"
       redirect_to company_path(params[:company_id]), :method => :show
       return
     end
@@ -446,7 +447,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id, :provider, :timezone)
+      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id, :provider, :timezone, :password)
     end
 
     def sort_column

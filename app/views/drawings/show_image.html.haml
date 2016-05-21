@@ -10,7 +10,7 @@
       %div
          %ol{:class=>"breadcrumb"}
             %li{:class=>"hidden-sm hidden-xs"}
-               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+               = link_to company_user_path(current_user.company_id ,current_user.id) do
                   Home
             %li{:class=>"hidden-sm hidden-xs"} PNG
 = javascript_include_tag 'jquery-ui'

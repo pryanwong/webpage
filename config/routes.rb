@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  devise_for :users, :controllers => { omniauth_callbacks: "users/omniauth_callbacks" }
+  devise_scope :user do
+     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+  end
+
   resources :widgets
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -9,10 +14,11 @@ Rails.application.routes.draw do
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
-    get 'auth/:provider/callback', to: 'sessions#create'
-    get 'signout', to: 'sessions#destroy', as: 'signout'
+  #Removed the next two lines because Devise should be handling them
+    #get 'auth/:provider/callback', to: 'sessions#create'
+    #get 'signout', to: 'sessions#destroy', as: 'signout'
 
-    resources :sessions, only: [:create, :destroy]
+    #resources :sessions, only: [:create, :destroy]
     resource :home, only: [:show]
     resource :pages
 
@@ -72,7 +78,7 @@ Rails.application.routes.draw do
     #get 'contact', to: 'messages#new', as: 'contact'
     #post 'contact', to: 'messages#create'
 
-    get 'auth/failure', to: 'pages#show'
+    get 'users/auth/failure', to: 'pages#show'
 
     %w( 404 422 500 503 ).each do |code|
        get code, :to => "pages#not_found", :code => code

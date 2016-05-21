@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
   layout :pages_layout
   def home
+    logger.debug "From Pages_Home: #{session.inspect}"
   end
 
   def show

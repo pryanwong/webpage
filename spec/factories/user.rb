@@ -25,7 +25,7 @@ FactoryGirl.define do
   end
 
   trait :provider do
-    provider User.providers["google_oauth2"]
+    provider "google_oauth2"
   end
 
 end

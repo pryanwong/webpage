@@ -7,9 +7,9 @@
             =image_tag "Logo4_blue_front.gif"
             %p{:style=>"padding:10px;"}
             %p Draw It, Plan It, Sell It
-            =link_to "/auth/linkedin", id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
+            =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
                %span{:class=>"fa fa-linkedin"}
                Sign in with LinkedIn
-            =link_to "/auth/google_oauth2", id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
+            =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
                %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
                Sign in with Google

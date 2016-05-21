@@ -3,10 +3,10 @@
       %div
          %ol{:class=>"breadcrumb"}
             %li
-               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+               = link_to company_user_path(current_user.company_id ,current_user.id) do
                   Home
             %li
-               = link_to company_path(session[:company_id] ) do
+               = link_to company_path(current_user.company_id ) do
                   Company
             %li New User
 
@@ -33,7 +33,7 @@
          %div{:class=>"form-group"}
             = f.label :provider, :class=>"control-label col-sm-2"
             %div{:class=>"controls col-sm-5"}
-               - User.providers.each do |key, val|
+               - ['linkedin', 'google_oauth2'].each do |key|
                   = f.label :provider, :class=>"radio" do
                      = f.radio_button :provider, key, :checked => (key == "google_oauth2")
                      = key

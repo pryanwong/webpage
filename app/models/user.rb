@@ -9,10 +9,13 @@ end
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
+  #devise :database_authenticatable, :registerable, :omniauthable, :omniauth_providers => [:google_oauth2], :recoverable, :rememberable, :trackable, :validatable
+  devise :registerable, :omniauthable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:google_oauth2, :linkedin]
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
   #ROLES = {0 => :guest, 1 => :user, 2 => :moderator, 3 => :admin}
   #attr_reader :role
   enum role: [ :guest, :user, :moderator, :admin]
-  enum provider: [ :google_oauth2, :linkedin]
   validates :email, presence: true, email: true
   has_many :user_memberships, :class_name => 'UserMembership', :dependent => :destroy
   has_many :divisions, :through => :user_memberships
@@ -20,7 +23,7 @@ class User < ActiveRecord::Base
   belongs_to :company
   validates_presence_of :company, :timezone
   validates :role, presence: true, inclusion: { in: User.roles.keys }
-  validates :provider, presence: true, inclusion: { in: User.providers.keys }
+  validates_inclusion_of :provider, :in => %w( linkedin google_oauth2 ), presence: true
   validate :validate_license_available, :only => :new
   validate :validate_only_one_email_per_provider_new, :on => :create
   validate :validate_only_one_email_per_provider
@@ -28,7 +31,7 @@ class User < ActiveRecord::Base
   def validate_only_one_email_per_provider_new
     logger.debug "validate_only_one_email_per_provider_new"
     logger.debug "#{self.email} , #{self.provider}"
-    count = User.where(:email => self.email, :provider => User.providers[self.provider]).count
+    count = User.where(:email => self.email, :provider => self.provider).count
     logger.debug "count: #{count}"
     if (count > 0)
       errors.add(:licenses, "Duplicate new record, already exists")
@@ -38,7 +41,7 @@ class User < ActiveRecord::Base
   def validate_only_one_email_per_provider
     logger.debug "validate_only_one_email_per_provider"
     logger.debug "#{self.email} , #{self.provider}"
-    count = User.where(:email => self.email, :provider => User.providers[self.provider]).where.not(id: self.id).count
+    count = User.where(:email => self.email, :provider => self.provider).where.not(id: self.id).count
     logger.debug "count: #{count}"
     if (count > 0)
       errors.add(:licenses, "Duplicate, error in edit, record exists")
@@ -55,26 +58,44 @@ class User < ActiveRecord::Base
      end
   end
 
-  def self.from_omniauth(auth, remote_ip)
-      logger.debug "In User from_omniauth"
-      logger.debug "#{auth}"
-      if (auth.info.email).blank?
-        user = nil
-      else
-         if User.exists?(:email => auth.info.email, :provider => User.providers[auth.provider])
-            user = User.where(email: auth.info.email, provider: User.providers[auth.provider]).first
-            user.uid                    = auth.uid
-            user.reset_password_token   = auth.credentials.token
-            user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
-            user.last_sign_in_at        = user.current_sign_in_at
-            user.current_sign_in_at     = Time.new
-            user.last_sign_in_ip        = user.current_sign_in_ip
-            user.current_sign_in_ip     = remote_ip
-            #user.setrole(user.role_id)
-            user.save!
-         end
+  #def self.from_omniauth(auth, remote_ip)
+  #    logger.debug "In User from_omniauth"
+  #    logger.debug "#{auth}"
+  #    if (auth.info.email).blank?
+  #      user = nil
+  #    else
+  #       if User.exists?(:email => auth.info.email, :provider => User.providers[auth.provider])
+  #          user = User.where(email: auth.info.email, provider: User.providers[auth.provider]).first
+  #          user.uid                    = auth.uid
+  #          user.reset_password_token   = auth.credentials.token
+  #          user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
+  #          user.last_sign_in_at        = user.current_sign_in_at
+  #          user.current_sign_in_at     = Time.new
+  #          user.last_sign_in_ip        = user.current_sign_in_ip
+  #          user.current_sign_in_ip     = remote_ip
+  #          user.save!
+  #       end
+  #    end
+  #    user
+  #end
+
+  def self.from_omniauth(auth)
+    logger.debug "From Omniauth: #{auth.inspect}"
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0,20]
+      user.name = auth.info.name   # assuming the user model has a name
+      user.image = auth.info.image # assuming the user model has an image
+    end
+  end
+
+  def self.new_with_session(params, session)
+    logger.debug "From new_with_session: #{session.inspect}"
+    super.tap do |user|
+      if data = session["devise.google_oauth2_data"] && session["devise.google_oauth2_data"]["extra"]["raw_info"]
+        user.email = data["email"] if user.email.blank?
       end
-      user
+    end
   end
 
 end

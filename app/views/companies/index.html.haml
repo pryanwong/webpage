@@ -3,7 +3,7 @@
       %div
          %ol{:class=>"breadcrumb"}
             %li
-               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+               = link_to company_user_path(current_user.company_id ,current_user.id) do
                   Home
             %li Companies
 %div{:class=>"container"}

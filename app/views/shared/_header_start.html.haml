@@ -23,12 +23,12 @@
             -#   %a{:href=>'/contact.html'}
             -#      %span Contact
          %ul{:class=>"nav navbar-nav navbar-right"}
-            - if (current_user)
+            - if user_signed_in?
                %li
-                  =link_to company_user_path(session[:company_id] ,session[:user_id]) do
+                  =link_to company_user_path(current_user.company_id ,current_user.id) do
                      %span{:class=>"fa fa-user","aria-hidden"=>"true"}
                      #{current_user.email}
                %li
-                  =link_to signout_path, :class => 'last' do
+                  =link_to destroy_user_session_path, :method => :delete, :class => 'last' do
                      %span{:class=>"fa fa-sign-out","aria-hidden"=>"true"}
                      Sign out

@@ -4,31 +4,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   # authenticate_user uses Devise and Omniauth gems
   #before_action :authenticate_user!
-  helper_method :current_user
-
-  def current_user
-     logger.info "Entering ApplicationController:current_user"
-     logger.debug "Session user_id: #{session[:user_id]}"
-     @current_user ="";
-     if (session[:user_id])
-         @current_user = User.new
-         @current_user.id = session[:user_id]
-         @current_user.role = session[:role]
-         @current_user.email = session[:email]
-         @current_user.company_id = session[:company_id]
-     else
-         @current_user = false;
-     end
-     logger.debug "Current User: #{@current_user.inspect}"
-     logger.info "Leaving ApplicationController:current_user"
-     @current_user
-  end
 
   def current_ability
      logger.info "Entering ApplicationController:current_ability"
      @current_ability ||= Ability.new(current_user)
      logger.info "Leaving ApplicationController:current_ability"
      @current_ability
+  end
+
+  def after_sign_in_path_for(resource)
+     company_user_path(current_user.company_id ,current_user.id)
   end
 
   def remote_ip

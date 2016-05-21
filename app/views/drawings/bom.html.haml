@@ -3,14 +3,14 @@
       %div
          %ol{:class=>"breadcrumb"}
             %li
-               = link_to company_user_path(session[:company_id] ,session[:user_id]) do
+               = link_to company_user_path(current_user.company_id ,current_user.id) do
                   Home
             %li
-               = link_to edit_company_user_drawing_path(session[:company_id] ,session[:user_id], params[:id]) do
+               = link_to edit_company_user_drawing_path(current_user.company_id ,current_user.id, params[:id]) do
                   Drawing
             %li Bill of Materials
             %li{:class=>"pull-right"}
-               = link_to 'CSV', bom_company_user_drawing_path(session[:company_id] ,session[:user_id], params[:id], {:format => :csv })
+               = link_to 'CSV', bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id], {:format => :csv })
 
 %div{:class=>"container"}
    %div{:class=>"row row-content-no-padding"}

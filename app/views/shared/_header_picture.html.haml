@@ -19,9 +19,9 @@
             %li
                =link_to company_user_path(session[:company_id] ,session[:user_id]) do
                   %span User Page
-         - if current_user
+         - if user_signed_in?
             %li{:class=>'align-right'}
-               =link_to signout_path, :class => 'last' do
+               =link_to destroy_user_session_path, :method => :delete, :class => 'last' do
                   %span #{current_user.email} Sign out
          - else
             %li
