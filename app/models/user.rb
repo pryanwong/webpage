@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   #devise :database_authenticatable, :registerable, :omniauthable, :omniauth_providers => [:google_oauth2], :recoverable, :rememberable, :trackable, :validatable
-  devise :registerable, :omniauthable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:google_oauth2, :linkedin]
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :confirmable, :omniauthable, :omniauth_providers => [:google_oauth2, :linkedin]
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   #ROLES = {0 => :guest, 1 => :user, 2 => :moderator, 3 => :admin}
@@ -23,13 +23,14 @@ class User < ActiveRecord::Base
   belongs_to :company
   validates_presence_of :company, :timezone
   validates :role, presence: true, inclusion: { in: User.roles.keys }
-  validates_inclusion_of :provider, :in => %w( linkedin google_oauth2 ), presence: true
+  validates_inclusion_of :provider, :in => %w( linkedin google_oauth2 optecture), presence: true
   validate :validate_license_available, :only => :new
   validate :validate_only_one_email_per_provider_new, :on => :create
   validate :validate_only_one_email_per_provider
 
   def validate_only_one_email_per_provider_new
     logger.debug "validate_only_one_email_per_provider_new"
+    logger.debug "#{self.inspect}"
     logger.debug "#{self.email} , #{self.provider}"
     count = User.where(:email => self.email, :provider => self.provider).count
     logger.debug "count: #{count}"

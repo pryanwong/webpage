@@ -3,3 +3,4 @@
       - flash.each do |type, message|
          %div{:class=>"alert #{bootstrap_class_for(type)} fade in", :style=>"margin-bottom:0px"}
             =message
+            =devise_error_messages!

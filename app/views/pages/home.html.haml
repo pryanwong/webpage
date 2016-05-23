@@ -6,7 +6,21 @@
          %div{:class=>"col-xs-12 col-sm-5"}
             =image_tag "Logo4_blue_front.gif"
             %p{:style=>"padding:10px;"}
-            %p Draw It, Plan It, Sell It
+            =form_for(resource, as: resource_name, url: user_session_path) do |f|
+               %fieldset.form-group
+                  =f.label :email
+                  =f.email_field :email, autofocus: true, :class=>"form-control"
+               %fieldset.form-group
+                  = f.label :password
+                  = f.password_field :password, autocomplete: "off", :class=>"form-control"
+               -if devise_mapping.rememberable?
+                  %fieldset.form-group
+                     = f.check_box :remember_me
+                     = f.label :remember_me
+               %div.form-group
+                  = f.submit "Login", :class=>"btn btn-default"
+                  - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
+                     = link_to "Forgot your password?", new_password_path(resource_name)
             =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
                %span{:class=>"fa fa-linkedin"}
                Sign in with LinkedIn

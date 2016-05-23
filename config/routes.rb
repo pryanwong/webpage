@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => { omniauth_callbacks: "users/omniauth_callbacks" }
+  devise_for :users, :controllers => { omniauth_callbacks: "users/omniauth_callbacks", sessions: 'users/sessions', registrations:  "users/registrations", passwords: "users/passwords" }
   devise_scope :user do
-     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :end_user_session
   end
 
   resources :widgets
@@ -78,7 +78,7 @@ Rails.application.routes.draw do
     #get 'contact', to: 'messages#new', as: 'contact'
     #post 'contact', to: 'messages#create'
 
-    get 'users/auth/failure', to: 'pages#show'
+    get 'users/auth/failure', to: 'pages#failed'
 
     %w( 404 422 500 503 ).each do |code|
        get code, :to => "pages#not_found", :code => code

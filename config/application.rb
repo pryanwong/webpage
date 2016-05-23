@@ -88,5 +88,8 @@ module Optecture
    #config.assets.initialize_on_precompile = false
 
    config.exceptions_app = self.routes
+
+   #This is to deal with uninitialized CustomFailure in Devise custom routes
+   config.autoload_paths << Rails.root.join('lib')
   end
 end

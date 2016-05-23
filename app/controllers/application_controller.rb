@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   # authenticate_user uses Devise and Omniauth gems
   #before_action :authenticate_user!
 
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
   def current_ability
      logger.info "Entering ApplicationController:current_ability"
      @current_ability ||= Ability.new(current_user)
@@ -41,4 +43,12 @@ class ApplicationController < ActionController::Base
     flash[:notice] = exception.message
     redirect_to accessdenied_path
   end
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :provider, :role, :company_id, :timezone])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:username, :provider, :role, :company_id, :timezone])
+  end
+
 end
