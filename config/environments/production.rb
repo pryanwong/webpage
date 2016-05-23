@@ -122,5 +122,10 @@ Rails.application.configure do
    # is used in our Rails logs.
    config.middleware.insert_before(Rails::Rack::Logger, RemoteIpProxyScrubber.patched_logger)
    config.middleware.delete(Rails::Rack::Logger)
+   #default mailer for devise
+   config.action_mailer.delivery_method = :smtp
+   config.action_mailer.default_url_options = {
+      :host => ENV['DOMAINNAME']
+   }
 
 end

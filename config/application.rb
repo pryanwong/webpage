@@ -79,10 +79,6 @@ module Optecture
       :enable_starttls_auto => true
    }
 
-   config.action_mailer.default_url_options = {
-      :host => 'localhost:5000'
-   }
-
    config.action_dispatch.perform_deep_munge = false
    #config.assets.enabled = true
    #config.assets.initialize_on_precompile = false
