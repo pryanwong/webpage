@@ -17,7 +17,7 @@ module ApplicationHelper
      when "notice"
        "alert-info"      # Blue
      else
-       flash_type.to_s
+       "alert-info"
      end
    end
 

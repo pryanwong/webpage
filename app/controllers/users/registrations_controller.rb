@@ -4,9 +4,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
 prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # GET /resource/sign_up
-  # def new
-  #   super
-  # end
+  def new
+    flash[:info] = 'Registrations are not open.'
+    redirect_to root_path
+  end
 
   # POST /resource
   def create

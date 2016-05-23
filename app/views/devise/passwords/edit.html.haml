@@ -1,0 +1,23 @@
+%header{:class=>"jumbotron"}
+   <!-- Main component for a primary marketing message or call to action -->
+   %div{:class=>"container"}
+      %div{:class=>"row row-header"}
+         %div{:class=>"col-xs-12 col-sm-5"}
+            =image_tag "Logo4_blue_front.gif"
+            %p{:style=>"padding:10px;"}
+            %div{:class=>"col-sm-offset-1"}
+            %h2 Change Your Password
+            = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+               = f.hidden_field :reset_password_token
+               %fieldset.form-group
+                  = f.label :password, "New password"
+                  - if @minimum_password_length
+                     %em #{@minimum_password_length} characters minimum
+                     %br
+                  = f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control"
+               %fieldset.form-group
+                  = f.label :password_confirmation, "Confirm new password"
+                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control"
+               %div.form-group
+                  = f.submit "Change my password", :class=>"btn btn-default"
+            = render "devise/shared/links"
