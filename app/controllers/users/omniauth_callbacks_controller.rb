@@ -6,7 +6,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       logger.debug "In Google Oauth2 Callbacks Controller"
       logger.debug "Request #{request.env["omniauth.auth"]}"
       @user = User.from_omniauth(request.env["omniauth.auth"])
-      @user.skip_confirmation!
+      # @user.skip_confirmation!
       logger.debug "User: #{@user.inspect}"
 
       if @user.persisted?
@@ -23,7 +23,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
        logger.debug "In Google Oauth2 Callbacks Controller"
        logger.debug "Request #{request.env["omniauth.auth"]}"
        @user = User.from_omniauth(request.env["omniauth.auth"])
-       @user.skip_confirmation!
+       # @user.skip_confirmation!
        logger.debug "User: #{@user.inspect}"
 
        if @user.persisted?

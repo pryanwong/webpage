@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'optecture';
+  src: url(/assets/optectureicons.ttf) format('truetype'), url(/assets/optectureicons.svg) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.f-optecture:before {
+  font-family: optecture;
+  content: "\0061";
+}
