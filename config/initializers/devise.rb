@@ -242,11 +242,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
-  config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_SECRET"], {
-    access_type: 'online',
-    scope: 'email, profile',
-    prompt: 'consent'
-  }
+  config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_SECRET"], { :access_type => 'online', :prompt => ''}
 
   config.omniauth :linked_in, ENV["LINKEDIN_CLIENT_ID"], ENV["LINKEDIN_SECRET"],
       scope: 'r_basicprofile r_emailaddress',
