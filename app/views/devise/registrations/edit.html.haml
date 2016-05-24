@@ -1,0 +1,24 @@
+%header{:class=>"jumbotron"}
+   <!-- Main component for a primary marketing message or call to action -->
+   %div{:class=>"container"}
+      %div{:class=>"row row-header"}
+         %div{:class=>"col-xs-12 col-sm-5"}
+            =image_tag "Logo4_blue_front.gif"
+            %p{:style=>"padding:10px;"}
+            %div{:class=>"col-sm-offset-1"}
+            %h2 Change Your Password
+            = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+               %fieldset.form-group
+                  = f.label :email
+                  = f.email_field :email, autofocus: true, :class=>"form-control", :disabled=>true
+               %fieldset.form-group
+                  =f.label :password, "New Password"
+                  = f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control"
+               %fieldset.form-group
+                  = f.label :password_confirmation, "Confirm new password"
+                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control"
+               %fieldset.form-group
+                  = f.label :current_password
+                  = f.password_field :current_password, autocomplete: "off", :class=>"form-control"
+               %div.form-group
+                  = f.submit "Update", :class=>"btn btn-default"

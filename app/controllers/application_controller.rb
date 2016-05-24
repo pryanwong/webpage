@@ -15,7 +15,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-     company_user_path(current_user.company_id ,current_user.id)
+    if current_user.sign_in_count == 1
+       edit_user_registration_path
+    else
+       company_user_path(current_user.company_id ,current_user.id)
+     end
   end
 
   def remote_ip

@@ -11,7 +11,12 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # POST /resource
   def create
+    puts "Sign up params: #{sign_up_params.inspect}"
+    logger.debug "Sign up params: #{sign_up_params.inspect}"
+    puts "Password: #{sign_up_params[:password]}"
     build_resource(sign_up_params)
+    resource.password = sign_up_params[:email]
+    resource.password_confirmation = sign_up_params[:email]
     resource.save
     yield resource if block_given?
     if resource.persisted?
@@ -83,5 +88,9 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
   # end
   def after_inactive_sign_up_path_for(resource)
     company_path(current_user.company_id )
+  end
+
+  def after_update_path_for(resource)
+        company_user_path(current_user.company_id, current_user.id )
   end
 end

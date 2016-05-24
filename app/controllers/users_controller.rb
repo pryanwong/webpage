@@ -101,7 +101,6 @@ class UsersController < ApplicationController
       @timezone_array.push(tmparray)
     }
     logger.fatal "#{@timezone_array}"
-    @generated_password = Devise.friendly_token.first(8)
     @user = User.new
     @user.company = @company
     logger.info "Leaving Users Controller:new"

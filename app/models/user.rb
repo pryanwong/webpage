@@ -80,14 +80,23 @@ class User < ActiveRecord::Base
   #    user
   #end
 
-  def self.from_omniauth(auth)
+  def self.from_omniauth(auth , remote_ip)
     logger.debug "From Omniauth: #{auth.inspect}"
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0,20]
-      user.name = auth.info.name   # assuming the user model has a name
-      user.image = auth.info.image # assuming the user model has an image
+    user = nil
+    if where(provider: auth.provider, email: auth.info.email).count == 0
+      raise ActiveRecord::RecordNotFound
+    else
+      user = User.where(email: auth.info.email, provider: auth.provider).first
+      # user.password = Devise.friendly_token[0,20]
+      #user.name = auth.info.name   # assuming the user model has a name
+      #user.image = auth.info.image # assuming the user model has an image
+      #user.last_sign_in_at        = user.current_sign_in_at
+      #user.current_sign_in_at     = Time.new
+      user.last_sign_in_ip        = user.current_sign_in_ip
+      user.current_sign_in_ip     = remote_ip
+      user.save
     end
+    user
   end
 
   def self.new_with_session(params, session)
