@@ -243,16 +243,15 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_SECRET"], {
-    scope: "email, profile",
-    access_type: "online",
-    prompt: ""
+    access_type: 'online',
+    scope: 'email, profile',
+    prompt: 'consent'
   }
 
   config.omniauth :linked_in, ENV["LINKEDIN_CLIENT_ID"], ENV["LINKEDIN_SECRET"],
-  {
       scope: 'r_basicprofile r_emailaddress',
       fields: ['id', 'first-name', 'last-name', 'location', 'picture-url', 'public-profile-url', 'email-address']
-  }
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

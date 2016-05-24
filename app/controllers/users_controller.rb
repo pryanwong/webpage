@@ -101,6 +101,7 @@ class UsersController < ApplicationController
       @timezone_array.push(tmparray)
     }
     logger.fatal "#{@timezone_array}"
+    @generated_password = Devise.friendly_token.first(8)
     @user = User.new
     @user.company = @company
     logger.info "Leaving Users Controller:new"
@@ -399,7 +400,8 @@ class UsersController < ApplicationController
        role_val = User.roles[(params[:user][:role])]
        successfullyAdded = false;
        userErrors = {}
-       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id], provider: provalue, password: 'filler', timezone: params[:user][:timezone])
+       generated_password = Devise.friendly_token.first(8)
+       @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id], provider: provalue, password: generated_password, timezone: params[:user][:timezone])
        successfullyAdded = @user.save
        if !successfullyAdded
          addErrorsToFlash(@user.errors)

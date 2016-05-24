@@ -12,7 +12,6 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
   # POST /resource
   def create
     build_resource(sign_up_params)
-
     resource.save
     yield resource if block_given?
     if resource.persisted?
