@@ -5,5 +5,9 @@
 <p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
 
 <% if @resource.provider == "optecture" %>
-   <p>Your initial Password is your email address, you will be asked to change it on your first login</p>
+   <% pass = Devise.friendly_token.first(8) %>
+   <p>Your password is <%= pass %></p>
+   <% @resource.skip_confirmation_notification! %>
+   <% @resource.update_attributes( { :password => pass, :password_confirmation => pass }) %>
+   <p>You will be asked to change it on your first login</p>
 <% end %>
