@@ -274,7 +274,7 @@
        for (var i = 0; i < arrayLength; i++) {
            console.log("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
            var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + timestampsObj[i][0];
-           tr = '<tr> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
+           tr = '<tr style="height: 14px;""> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
            $('#versionslisttab').append(tr);
         }
        log.debug("load objects onto canvas");
