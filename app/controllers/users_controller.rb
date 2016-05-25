@@ -25,23 +25,16 @@ class UsersController < ApplicationController
     if current_user.admin? && !session[:switched] == true
        logger.info "current_user.admin? && !session[:switched]"
        session[:switched]  = true;
-       session[:adminuser] = session[:user_id]
-       session[:admincompany] = session[:company_id]
-       session[:adminrole] = session[:role]
-       session[:adminemail] = session[:email]
-       @current_user = @user
+       session[:adminuser] = current_user.id
+       session[:admincompany] = current_user.company_id
        session.delete(:user_id)
-       session.delete(:company_id)
-       session.delete(:role)
-       session.delete(:email)
        session[:user_id]  = @user.id
-       session[:company_id] = @user.company_id
-       session[:role]  = @user.role
-       session[:email] = @user.email
+       sign_in(@user)
        redirect_to company_user_path(@user.company_id , @user.id)
        return
     else
-       redirect_to company_user_path(session[:company_id] , session[:user_id])
+       redirect_to company_user_path(current_user.company_id , current_user.id)
+       return
     end
     logger.info "Leaving Users Controller:switchuser"
   end
@@ -60,22 +53,15 @@ class UsersController < ApplicationController
     if session[:switched]
        logger.info "Session Switched"
        session.delete(:switched)
-       @current_user = @user
        session.delete(:adminuser)
        session.delete(:admincompany)
-       session.delete(:adminrole)
-       session.delete(:adminemail)
        session.delete(:user_id)
-       session.delete(:company_id)
-       session.delete(:role)
-       session.delete(:email)
-       session[:user_id]  = @user.id
-       session[:company_id] = @user.company_id
-       session[:role]  = @user.role
-       session[:email] = @user.email
+       @current_user = @user
+       session[:user_id]  = @current_user.id
+       sign_in(@user)
     end
     logger.info "Leaving Users Controller:switchback"
-    redirect_to company_user_path(session[:company_id] , session[:user_id])
+    redirect_to company_user_path(current_user.company_id , current_user.id)
   end
 
   def new

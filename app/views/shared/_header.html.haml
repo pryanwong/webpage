@@ -33,8 +33,7 @@
                      = link_to user_showall_path(current_user.id) do
                         %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
                         Switch User
-               -#session[:switched] == true
-               -if false == true
+               -if session[:switched] == true
                   %li
                      = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
                         %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
