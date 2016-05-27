@@ -22,3 +22,4 @@
 //= require log4javascript
 //= require jquery.ui.widget
 //= require z.jquery.fileupload
+//= require passwordhelper
