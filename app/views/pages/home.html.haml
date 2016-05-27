@@ -1,7 +1,6 @@
 %iframe{:id=>"logoutframe", :src=>"https://accounts.google.com/logout",:style=>"display: none"}
-%header{:class=>"jumbotron"}
-   <!-- Main component for a primary marketing message or call to action -->
-   %div{:id=>"main", :class=>"container"}
+%header{:class=>"jumbotron jumbotron-fluid"}
+   %div{:class=>"container"}
       %div{:class=>"row row-header"}
          %div{:class=>"col-xs-12 col-sm-5"}
             =image_tag "Logo4_blue_front.gif"
@@ -27,3 +26,4 @@
             =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
                %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
                Sign in with Google
+%div{:id=>"main", :class=>"container"}
