@@ -26,7 +26,7 @@ class Ability
          can [:index, :read, :update, :bom, :edit, :new, :updateBackground, :deleteBackground, :show_image, :send_image_form, :send_image, :changeversion], Drawing do |drawing|
            Drawing.user_access(user).pluck("id").include? drawing.id
          end
-         can [:editdrawingdetails, :updatedrawingdetails], :user_id => user.id
+         can [:editdrawingdetails, :updatedrawingdetails], Drawing, :user_id => user.id
          can [:productconfig], Price, :company_id => user.company.id
          can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
