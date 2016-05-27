@@ -8,15 +8,28 @@ class Users::PasswordsController < Devise::PasswordsController
   # def create
   #   super
   # end
-  def create
-    self.resource = resource_class.send_reset_password_instructions(resource_params)
-    yield resource if block_given?
+  layout 'longpages'
 
-    if successfully_sent?(resource)
-      respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
+  def create
+    user = User.find_by_email(resource_params[:email])
+    provider = ""
+    if (User.exists?(:email  => resource_params[:email]))
+      provider = User.find_by_email(resource_params[:email]).provider
+    end
+    if provider == 'optecture'
+       self.resource = resource_class.send_reset_password_instructions(resource_params)
+       yield resource if block_given?
+       if successfully_sent?(resource)
+         respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
+       else
+         flash[:error] = resource.errors.full_messages.to_sentence
+         respond_with(resource)
+       end
     else
-      flash[:error] = resource.errors.full_messages.to_sentence
-      respond_with(resource)
+       providerval = "Linkedin"
+       providerval = "Google" if provider == 'google_oauth2'
+       flash[:error] = "No Passwords issued for #{providerval} by Optecture"
+       redirect_to new_password_path(resource_name)
     end
   end
   # GET /resource/password/edit?reset_password_token=abcdef

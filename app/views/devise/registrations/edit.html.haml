@@ -1,24 +1,35 @@
+<!-- Main component for a primary marketing message or call to action -->
 %header{:class=>"jumbotron"}
-   <!-- Main component for a primary marketing message or call to action -->
-   %div{:class=>"container"}
+   %div{:id=>"main", :class=>"container"}
       %div{:class=>"row row-header"}
          %div{:class=>"col-xs-12 col-sm-5"}
+            %div{:class=>"col-sm-offset-1"}
             =image_tag "Logo4_blue_front.gif"
             %p{:style=>"padding:10px;"}
             %div{:class=>"col-sm-offset-1"}
-            %h2 Change Your Password
+            %legend Change Your Password
             = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
-               %fieldset.form-group
+               %fieldset{:class=>"form-group"}
                   = f.label :email
                   = f.email_field :email, autofocus: true, :class=>"form-control", :disabled=>true
-               %fieldset.form-group
+               %fieldset{:class=>"form-group"}
+                  - if @minimum_password_length
+                     %em #{@minimum_password_length} characters minimum
+                     %br
                   =f.label :password, "New Password"
-                  = f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control"
-               %fieldset.form-group
+                  %div{:id=>"passwordholder", :class=>"input-group"}
+                     =f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control", :id=>"passwordfield", :required=>true, :pattern=>".{6,}", :title=>"6 characters minimum"
+               %fieldset{:class=>"form-group"}
                   = f.label :password_confirmation, "Confirm new password"
-                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control"
-               %fieldset.form-group
+                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control", :required=>true, :id=>"confirmPasswordfield"
+               %fieldset{:class=>"form-group"}
                   = f.label :current_password
-                  = f.password_field :current_password, autocomplete: "off", :class=>"form-control"
-               %div.form-group
+                  = f.password_field :current_password, autocomplete: "off", :class=>"form-control", :required=>true
+               %div{:class=>"form-group"}
                   = f.submit "Update", :class=>"btn btn-default"
+
+:Javascript
+   window.onload = function () {
+      document.getElementById("passwordfield").onchange = validatePassword;
+      document.getElementById("confirmPasswordfield").onchange = validatePassword;
+   }

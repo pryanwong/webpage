@@ -1,6 +1,6 @@
 %header{:class=>"jumbotron"}
    <!-- Main component for a primary marketing message or call to action -->
-   %div{:class=>"container"}
+   %div{:id=>"main", :class=>"container"}
       %div{:class=>"row row-header"}
          %div{:class=>"col-xs-12 col-sm-5"}
             =image_tag "Logo4_blue_front.gif"
@@ -9,15 +9,22 @@
             %h2 Change Your Password
             = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
                = f.hidden_field :reset_password_token
-               %fieldset.form-group
-                  = f.label :password, "New password"
+               %fieldset{:class=>"form-group"}
+                  =f.label :password, "New Password"
                   - if @minimum_password_length
                      %em #{@minimum_password_length} characters minimum
                      %br
-                  = f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control"
-               %fieldset.form-group
+                  %div{:id=>"passwordholder", :class=>"input-group"}
+                     =f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control", :id=>"passwordfield", :required=>true, :pattern=>".{6,}", :title=>"6 characters minimum"
+               %fieldset{:class=>"form-group"}
                   = f.label :password_confirmation, "Confirm new password"
-                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control"
+                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control", :required=>true, :id=>"confirmPasswordfield"
                %div.form-group
                   = f.submit "Change my password", :class=>"btn btn-default"
             = render "devise/shared/links"
+
+:Javascript
+   window.onload = function () {
+      document.getElementById("passwordfield").onchange = validatePassword;
+      document.getElementById("confirmPasswordfield").onchange = validatePassword;
+   }

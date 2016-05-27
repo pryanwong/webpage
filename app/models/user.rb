@@ -99,6 +99,11 @@ class User < ActiveRecord::Base
     user
   end
 
+  #def send_reset_password_instructions
+  #  return false if self.provider == 'google_oauth2'
+  #  super
+  #end
+
   def self.new_with_session(params, session)
     logger.debug "From new_with_session: #{session.inspect}"
     super.tap do |user|

@@ -12,7 +12,7 @@
             %li{:class=>"pull-right"}
                = link_to 'CSV', bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id], {:format => :csv })
 
-%div{:class=>"container"}
+%div{:id=>"main", :class=>"container"}
    %div{:class=>"row row-content-no-padding"}
       %div
          %table{:class=>"table table-bordered table-hover"}

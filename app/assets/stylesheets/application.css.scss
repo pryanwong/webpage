@@ -13,19 +13,18 @@
  *= require_tree .
  *= require_self
  */
-//= require 'bootstrap'
-//= require 'font-awesome'
-//= require 'optecturefont'
-//= require 'optecturefont'
-//= require 'bootstrap-theme'
-//= require 'bootstrap-social'
-//= require 'jquery-ui'
-//= require 'contextmenu'
-//= require 'tableslist'
-//= require 'mystyles'
-//= require 'screen'
+//= require font-awesome
+//= require optecturefont
+//= require jquery-ui
+//= require contextmenu
+//= require tableslist
+//= require mystyles
+//= require screen
 
 @import "bootstrap";
+@import "bootstrap-theme";
+@import "bootstrap-social";
+@import "mystyles";
 
 @font-face {
   font-family: 'Glyphicons Halflings';

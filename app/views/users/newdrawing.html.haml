@@ -10,7 +10,7 @@
                   Drawings
             %li New Drawing
 
-%div{:class=>"container"}
+%div{:id=>"main", :class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = form_for(@drawing, :html => {:class => "form-horizontal"}, url: newdrawingproc_company_user_path(@company.id, @user.id)) do |f|
          %div.page-header

@@ -1,5 +1,4 @@
-%div{:class=>"wrapper", :style=>"background-color:#303F9F"}
-   %div{:class=>"container", :id=>"errordiv", :style=>"background-color:#303F9F"}
-      - flash.each do |type, message|
-         %div{:class=>"alert #{bootstrap_class_for(type)} fade in", :style=>"margin-bottom:0px"}
-            =message
+%div{:class=>"row", :id=>"errordiv", :style=>"background-color:#303F9F"}
+   - flash.each do |type, message|
+      %div{:class=>"alert #{bootstrap_class_for(type)} fade in", :style=>"margin-bottom:0px"}
+         =message

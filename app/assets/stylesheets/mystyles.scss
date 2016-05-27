@@ -25,27 +25,65 @@
 }
 
 .row-footer{
-    background-color: #AfAfAf;
-    margin:0px auto;
-    padding: 20px 0px 20px 0px;
+    background-color: #003366;
+    color: #CCCCCC;
+    position: relative;
+    margin-top: -250px; /* negative value of footer height */
+    height: 250px;
+    clear:both;
+    padding-top:20px;
+}
+
+.row-footer a {
+    color: #CCCCCC;
+}
+
+.row-footer address {
+    color: #CCCCCC;
+}
+
+.row-footer p {
+    color: #CCCCCC;
 }
 
 .jumbotron {
     padding:70px 30px 70px 30px;
-    margin:0px auto;
+    margin:0px;
     background: #7986CB ;
     color:floralwhite;
 }
 
+#main {
+  padding-bottom:250px; /* this needs to be bigger than footer height*/
+}
+
+#wrappermain {
+  min-height: 100%;
+  padding-bottom: 150px;
+}
+
 address{
-    font-size:80%;
+    font-size:90%;
     margin:0px;
     color:#0f0f0f;
 }
 
 body{
-    padding:50px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    min-height: 100%;
+    margin-top:50px;
     z-index:0;
+}
+
+html {
+  height: 100%
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -155px; /* the bottom margin is the negative value of the footer's height */
 }
 
 table{

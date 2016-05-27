@@ -9,7 +9,7 @@
                = link_to company_path(current_user.company_id ) do
                   Company
             %li New Price
-%div{:class=>"container"}
+%div{:id=>"main",:class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       = form_for([@company,@price],:html => {:class => "form-horizontal"}) do |f|
          %div.page-header

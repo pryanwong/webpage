@@ -15,9 +15,9 @@
             %li{:class=>"hidden-sm hidden-xs"} PNG
 = javascript_include_tag 'jquery-ui'
 
-%div{:class=>"container", :style=>"padding-top: 20px"}
+%div{:id=>"main", :class=>"container", :style=>"padding-top: 20px"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
-      %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
+      %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800", :style=>"border: 1px solid black;"}
 
 :javaScript
    var handler = "";
