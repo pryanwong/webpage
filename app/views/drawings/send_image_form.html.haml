@@ -13,7 +13,7 @@
                = link_to company_user_path(current_user.company_id ,current_user.id) do
                   Home
             %li{:class=>"hidden-sm hidden-xs"} Send Form
-%div{:id=>"main", :class=>"container"}
+%div{:class=>"container"}
    -# %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
    = render 'shared/error_messages'
    = form_for @message, :html => {:class => "form-horizontal", :style=>"width:100%"}, url: send_image_company_user_drawing_path do |message_form|
@@ -46,7 +46,7 @@
          %div{:class=>"col-sm-offset-2 col-sm-5"}
             = message_form.submit "Send", :class=>"btn btn-default"
             = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)
-%div{:class=>"container", :style=>"padding-top: 20px"}
+%div{:id=>"main", :class=>"container", :style=>"padding-top: 20px"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800", :style=>"border: 1px solid black;"}
 
