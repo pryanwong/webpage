@@ -239,8 +239,8 @@
    var lineActive = true;
    var lineSelected = false;
    var log = log4javascript.getDefaultLogger();
-   var progressBar  = $("<div class='bar'></div>");
-   var barContainer = $("<div class='progress'></div>").append(progressBar);
+   var progressBar  = $("#bar");
+   progressBar.css('display','none');
    log4javascript.setEnabled(false);
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);

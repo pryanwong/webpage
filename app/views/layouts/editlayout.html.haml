@@ -31,16 +31,15 @@
                   %button{:type=>"button",:class=>"close","data-dismiss"=>"modal"} &times;
                   %h4{:class=>"modal-title"}Background Image
                %div{:class=>"modal-body"}
-                  %div{ :id=>"data" }
-                     = form_for(@drawing, :id=>"background_form",:url => updateBackground_company_user_drawing_path(params[:company_id], params[:user_id],params[:id]), html: { class: 'directUpload', data: { 'form-data' => (@presigned_post.fields), 'url' => @presigned_post.url, 'host' => URI.parse(@presigned_post.url).host } }) do |f|
-                        %div{:class=>"form-group"}
-                           = f.file_field :background, :class=>'form-control'
-      :javascript
-         var input = document.getElementById('drawing_background');
-         input.onclick = function () {
-            log.debug("Drawing Background Button Clicked");
-            this.value = null;
-         };
+                  = form_for(@drawing, :id=>"background_form",:url => updateBackground_company_user_drawing_path(params[:company_id], params[:user_id],params[:id]), html: { class: 'directUpload', data: { 'form-data' => (@presigned_post.fields), 'url' => @presigned_post.url, 'host' => URI.parse(@presigned_post.url).host } }) do |f|
+                     %div{:class=>"input-group", :id=>"data"}
+                        %label{ :class=>"input-group-btn"}
+                           %span{:id=>"submitButton", :class=>"btn btn-primary"}
+                              Browse&hellip;
+                              = f.file_field :background, :style=>"display: none;", :id=>"lefile", :onchange=>'$("#backgroundfile").val($(this).val());'
+                        %input{:type=>"text",:id=>"backgroundfile", :name=>"file",:disabled=>true, :class=>"form-control"}
+                  %div{:id=>'progress'}
+                     %progress{:class=>"progress", :value=>"0", :max=>"100", :id=>"bar", :style=>"display:inline;"}0%
 
       %div{ :id=>"spinner", :class=>"spinner"}
          %div{ :class=>"rect1"}

@@ -733,8 +733,8 @@ $(function() {
      log.trace(fileInput)
      var form         = $(fileInput.parents('form:first'));
      var URL_dest = form.data('url') + "/" + form.data('form-data').key
-     var submitButton = form.find('input[type="submit"]');
-     fileInput.after(barContainer);
+     var submitButton = $('#submitButton');
+     progressBar.css('display','inline');
      fileInput.fileupload({
      add: function(e, data) {
              var uploadErrors = [];
@@ -761,22 +761,21 @@ $(function() {
      replaceFileInput: false,
      progressall: function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
-        progressBar.css('width', progress + '%')
+        //progressBar.css('width', progress + '%')
+        $('#progress').show();
+        progressBar.text(progress + '%');
+        progressBar.attr('value',progress);
+        console.log("Progress: ", progress);
      },
      start: function (e) {
-        submitButton.prop('disabled', true);
-
-        progressBar.
-          css('background', 'green').
-          css('display', 'block').
-          css('width', '0%').
-          text("Loading...");
+        //submitButton.attr('disabled', 'disabled');
+        progressBar.addClass('progress-success');
         log.trace(form);
      },
      done: function(e, data) {
         $("#saveMessage").text('Changes Made, Save Pending...');
         submitButton.prop('disabled', false);
-        progressBar.text("Uploading done");
+        //progressBar.text("Uploading done");
         $('#upload_button').removeAttr('disabled');
         // extract key and generate URL from response
         var key   = $(data.jqXHR.responseXML).find("Key").text();
@@ -803,19 +802,30 @@ $(function() {
                 crossOrigin: 'anonymous'
              }
         );
+        $('#progress').hide();
+        //submitButton.removeAttr('disabled');
+        //resetFormElement($('#backgroundfile'));
+        //$("#backgroundfile").val("");
         $('#backgroundSection').modal('hide');
         backgroundButton(true);
         onSave();
       },
       fail: function(e, data) {
         submitButton.prop('disabled', false);
-        progressBar.
-          css("background", "red").
-          text("Failed");
+        progressBar.removeClass('progress-success').addClass('progress-danger');
       }
     });
   });
 });
+
+function resetFormElement(e) {
+  e.wrap('<form>').closest('form').get(0).reset();
+  e.unwrap();
+
+  // Prevent form submission
+  e.stopPropagation();
+  e.preventDefault();
+}
 
 function loadversion(link) {
    $(".spinner").show();
@@ -1824,14 +1834,18 @@ function SetConfig(searchId) {
  }
 
  function runBackground() {
-    progressBar.css('width', '0%').
-    css('color','white').
-    css('display','none').
-    text("");
+    $('#lefile').value = '';
+    $("#backgroundfile").val('');
+    //submitButton.removeAttr('disabled');
+    progressBar.addClass("progress-success");
+    progressBar.text('0%');
+    progressBar.attr('value','0');
  }
 
  function removeBackground() {
     $("#saveMessage").text('Changes Made, Save Pending...');
+    $('#lefile').attr("value", "");
+    $('#lefile').val("");
     canvas.setBackgroundImage(0, canvas.renderAll.bind(canvas));
     onSave();
  }
