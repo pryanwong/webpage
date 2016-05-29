@@ -28,23 +28,32 @@
                      = link_to newdrawing_company_user_path(current_user.company_id ,current_user.id) do
                         %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
                         New Drawing
-               -if current_user.admin? && !session[:switched] == true
-                  %li
-                     = link_to user_showall_path(current_user.id) do
-                        %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
-                        Switch User
-               -if session[:switched] == true
-                  %li
-                     = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
-                        %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
-                        Switch Back
          - if user_signed_in?
-            %ul{:class=>"nav navbar-nav navbar-right"}
-               %li{:class=>"hidden-sm hidden-xs"}
-                  %span{:class=>"navbar-text",:style=>"color:white"}
+            %ul{:class=>"nav navbar-nav pull-right"}
+               %li{ :class=>"dropdown hidden-sm hidden-xs"}
+                  %a{:href=>"#",:class=>"dropdown-toggle", "data-toggle"=>"dropdown", :role=>"button", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
+                     -# %span{:class=>"navbar-text",:style=>"color:white"}
                      %span{:class=>"fa fa-user","aria-hidden"=>"true"}
                      #{current_user.email}
-               %li{:class=>'align-right'}
-                  =link_to destroy_user_session_path, :method => :delete, :class => 'last' do
-                     %span{:class=>"fa fa-sign-out","aria-hidden"=>"true"}
-                     Sign out
+                     %span.caret
+                  %ul{:id=>"userdropdown", :class=>"dropdown-menu", :style=>"width:100%;"}
+                     %li
+                        = link_to company_user_path(current_user.company_id ,current_user.id) do
+                           %span{:class=>"glyphicon glyphicon-home"}
+                           User Home
+                     %li
+                        %a{:href=>"#"}Action2
+                     -if current_user.admin? && !session[:switched] == true
+                        %li
+                           = link_to user_showall_path(current_user.id) do
+                              %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
+                              Switch User
+                     -if session[:switched] == true
+                        %li
+                           = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
+                              %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
+                              Switch Back
+                     %li
+                        =link_to destroy_user_session_path, :method => :delete, :class => 'last' do
+                           %span{:class=>"fa fa-sign-out","aria-hidden"=>"true"}
+                           Sign out
