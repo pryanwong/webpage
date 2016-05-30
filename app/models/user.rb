@@ -113,4 +113,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def active_for_authentication?
+     super && (self.suspended == false)
+  end
+
+  def inactive_message
+     "User account has been suspended, contact your administrator"
+  end
+
 end

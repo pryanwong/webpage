@@ -1,0 +1,29 @@
+%div{:class=>"container"}
+   %div
+      %div
+         %ol{:class=>"breadcrumb"}
+            %li
+               = link_to company_user_path(current_user.company_id ,current_user.id) do
+                  Home
+            %li
+               = link_to company_path(current_user.company_id ) do
+                  Company
+            %li User Settings
+
+%div{:id=>"main", :class=>"container"}
+   %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
+      = render 'shared/error_messages'
+      = form_for([@company, @user] ,:html => {:class => "form-horizontal"}, :url => url_for(:controller => 'users', :action => 'usersettingssubmit')) do |f|
+         = f.hidden_field :company_id, :value => @company.id
+         %div.page-header
+            %div.container
+               %div.row-fluid
+                  %h2 Update User Settings
+         %div{:class=>"form-group"}
+            = f.label :timezone, :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.select :timezone, options_for_select(@timezone_array,@user.timezone), {}, {:class=>"form-control"}
+         %div.row
+            %div{:class=>"col-sm-12 col-sm-offset-1"}
+               = f.submit "Save", :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(@company,@user)

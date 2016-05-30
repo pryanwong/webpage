@@ -15,22 +15,14 @@
                      = link_to company_user_path(current_user.company_id ,current_user.id) do
                         %span{:class=>"glyphicon glyphicon-home"}
                         User Home
-               - if (current_user.admin? || current_user.moderator?)
-                  %li
-                     = link_to company_path(current_user.company_id ) do
-                        %span CurComp
-               -if current_user.admin?
-                  %li
-                     =link_to companies_path do
-                        %span AllComp
                - if @showdrawing == true
                   %li
                      = link_to newdrawing_company_user_path(current_user.company_id ,current_user.id) do
                         %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
                         New Drawing
          - if user_signed_in?
-            %ul{:class=>"nav navbar-nav pull-right"}
-               %li{ :class=>"dropdown hidden-sm hidden-xs"}
+            %ul{:class=>"nav navbar-nav navbar-right"}
+               %li{ :class=>"dropdown"}
                   %a{:href=>"#",:class=>"dropdown-toggle", "data-toggle"=>"dropdown", :role=>"button", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
                      -# %span{:class=>"navbar-text",:style=>"color:white"}
                      %span{:class=>"fa fa-user","aria-hidden"=>"true"}
@@ -42,7 +34,19 @@
                            %span{:class=>"glyphicon glyphicon-home"}
                            User Home
                      %li
-                        %a{:href=>"#"}Action2
+                        = link_to company_user_usersettings_path(current_user.company_id, current_user.id ) do
+                           %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
+                           %span User Settings
+                     - if (current_user.admin? || current_user.moderator?)
+                        %li
+                           = link_to company_path(current_user.company_id ) do
+                              %span{:class=>"fa fa-building","aria-hidden"=>"true"}
+                              %span My Company
+                     -if current_user.admin?
+                        %li
+                           =link_to companies_path do
+                              %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
+                              %span All Companies
                      -if current_user.admin? && !session[:switched] == true
                         %li
                            = link_to user_showall_path(current_user.id) do

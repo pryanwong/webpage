@@ -349,6 +349,14 @@ class UsersController < ApplicationController
        @user.timezone = "Eastern Time (US & Canada)";
     end
 
+    if (!params[:user][:suspended].blank?)
+       logger.debug "User suspended is not blank"
+       @user.suspended = true;
+    else
+       logger.debug "User suspended is blank, set to false"
+       @user.suspended = false;
+    end
+
     logger.debug "User is being saved"
     successfullyUpdated = @user.save
     if !successfullyUpdated
@@ -387,6 +395,9 @@ class UsersController < ApplicationController
        userErrors = {}
        generated_password = Devise.friendly_token.first(8)
        @user = User.new(email: params[:user][:email], role: role_val, company_id: params[:company_id], provider: provalue, password: generated_password, timezone: params[:user][:timezone])
+       if (!params[:user][:suspended].blank?)
+          @user.suspended = true;
+       end
        successfullyAdded = @user.save
        if !successfullyAdded
          addErrorsToFlash(@user.errors)
@@ -404,6 +415,48 @@ class UsersController < ApplicationController
     end
     logger.info "Leaving Users Controller:create"
     redirect_to root_path
+  end
+
+  def usersettings
+    @user = "";
+    @company = "";
+    if (Company.exists?(params[:company_id]))
+       logger.debug "Company Exists #{params[:company_id]}"
+       @company = Company.find(params[:company_id]);
+    else
+       logger.debug "Company not Found #{params[:company_id]}"
+       flash[:error] = "Company not Found"
+       logger.info "Leaving Users Controller:edit"
+       redirect_to root_path
+       return
+    end
+    if (User.exists?(params[:user_id]))
+       logger.debug "User Exists #{params[:user_id]}"
+       @user = User.find(params[:user_id]);
+    else
+       logger.debug "User not Found #{params[:user_id]}"
+       flash[:error] = "User not Found"
+       logger.info "Leaving Users Controller:edit"
+       redirect_to root_path
+       return
+    end
+    tzall = ActiveSupport::TimeZone.us_zones()
+    @timezone_array = []
+    tzall.each_with_index { |val, index|
+      logger.fatal "Timezone: #{val.inspect}"
+      logger.fatal "Timezone Name: #{val.name}"
+      tmp = val.name
+      tmparray = [val.to_s, tmp]
+      @timezone_array.push(tmparray)
+    }
+  end
+
+  def usersettingssubmit
+     flash[:notice] = "Updated User Settings"
+     user = current_user
+     user.timezone = params[:user][:timezone]
+     user.save
+     redirect_to company_user_path(current_user.company_id, current_user.id)
   end
 
   def destroy
@@ -434,7 +487,8 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :isadmin, :role, :user_id, :id, :provider, :timezone, :password)
+      logger.debug "Params to user_params: #{params.inspect}"
+      params.require(:user).permit(:suspended, :email, :isadmin, :role, :user_id, :id, :provider, :timezone, :password)
     end
 
     def sort_column

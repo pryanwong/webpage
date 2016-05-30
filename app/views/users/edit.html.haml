@@ -37,10 +37,16 @@
                      = f.radio_button :role, key
                      = key_show
          %div{:class=>"form-group"}
+            =f.label :suspended, :class=>"control-label col-sm-2"
+            %div{:class=>"controls col-sm-5"}
+               %div.checkbox
+                  %label
+                     =f.check_box :suspended
+         %div{:class=>"form-group"}
             = f.label :timezone, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.select :timezone, options_for_select(@timezone_array, @user.timezone), {}, {:class=>"form-control"}
          %div.row
-            %div{:class=>"col-sm-12 col-sm-offset-0", :style=>"padding-left:30px"}
-               = f.submit "Save"
-               = link_to "<button>Cancel</button>".html_safe, company_path(current_user.company_id)
+            %div{:class=>"col-sm-12 col-sm-offset-1", :style=>"padding-left:30px"}
+               = f.submit "Save", :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_path(current_user.company_id)

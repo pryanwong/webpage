@@ -36,6 +36,8 @@ Rails.application.routes.draw do
       resources :users do
         get 'switchuser'
         get 'switchback'
+        get 'usersettings'
+        patch 'usersettingssubmit'
         resources :drawings do
           member do
             get 'create'

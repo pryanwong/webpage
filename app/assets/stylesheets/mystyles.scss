@@ -113,6 +113,15 @@ ol li a:hover {
 .table a, a:visited {
     color: #000;
 }
+
+#footer li > a, a:visited {
+    color: #fff;
+}
+
+li > a, a:visited {
+    color: #000;
+}
+
 .table a:hover {
     background-color: #fff;
     color: #afafaf;

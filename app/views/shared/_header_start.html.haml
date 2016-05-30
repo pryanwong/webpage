@@ -36,7 +36,19 @@
                            %span{:class=>"glyphicon glyphicon-home"}
                            User Home
                      %li
-                        %a{:href=>"#"}Settings
+                        = link_to company_path(current_user.company_id ) do
+                           %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
+                           %span User Settings
+                     - if (current_user.admin? || current_user.moderator?)
+                        %li
+                           = link_to company_path(current_user.company_id ) do
+                              %span{:class=>"fa fa-building","aria-hidden"=>"true"}
+                              %span My Company
+                     -if current_user.admin?
+                        %li
+                           =link_to companies_path do
+                              %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
+                              %span All Companies
                      -if current_user.admin? && !session[:switched] == true
                         %li
                            = link_to user_showall_path(current_user.id) do

@@ -5,7 +5,7 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # GET /resource/sign_up
   layout 'longpages', only: [:edit, :new]
-  
+
   def new
     flash[:info] = 'Registrations are not open.'
     redirect_to root_path
@@ -64,7 +64,16 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
   #   super
   # end
 
+  before_filter :configure_permitted_parameters
+
   protected
+
+  # my custom fields are :name, :heard_how
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) do |u|
+      u.permit(:suspended, :role, :provider, :email, :company_id, :timezone)
+    end
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
