@@ -452,10 +452,14 @@ class UsersController < ApplicationController
   end
 
   def usersettingssubmit
-     flash[:notice] = "Updated User Settings"
-     user = current_user
-     user.timezone = params[:user][:timezone]
-     user.save
+     if (!params[:user][:timezone].blank? && user_signed_in?)
+        flash[:notice] = "Updated User Settings"
+        user = current_user
+        user.timezone = params[:user][:timezone]
+        user.save
+     else
+        flash[:error] = "Failed to Update User Settings"
+     end
      redirect_to company_user_path(current_user.company_id, current_user.id)
   end
 

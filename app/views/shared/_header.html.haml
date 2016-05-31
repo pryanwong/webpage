@@ -37,6 +37,10 @@
                         = link_to company_user_usersettings_path(current_user.company_id, current_user.id ) do
                            %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
                            %span User Settings
+                     %li
+                        = link_to edit_user_registration_path do
+                           %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
+                           %span Change Password
                      - if (current_user.admin? || current_user.moderator?)
                         %li
                            = link_to company_path(current_user.company_id ) do

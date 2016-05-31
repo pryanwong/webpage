@@ -11,41 +11,39 @@
          %ol{:class=>"breadcrumb"}
             %li{:class=>"hidden-sm hidden-xs"}
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
-            %li{:class=>"hidden-sm hidden-xs"} Send Form
+                  =t('.home')
+            %li{:class=>"hidden-sm hidden-xs"} #{t('.send_form')}
 %div{:class=>"container"}
-   -# %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
-   = render 'shared/error_messages'
    = form_for @message, :html => {:class => "form-horizontal", :style=>"width:100%"}, url: send_image_company_user_drawing_path do |message_form|
       %div.page-header
          %div.container
             %div.row-fluid
-               %h2 Email Drawing
+               %h2 #{t('.email_drawing')}
       %div{:class=>"form-group"}
-         = message_form.label :email1, :class=>"control-label col-sm-2"
+         = message_form.label t('.email1'), :class=>"control-label col-sm-2"
          %div{:class=>"control-label col-sm-5"}
             = message_form.email_field :email1, placeholder: "Email 1", :class=>"form-control", :required => true
       %div{:class=>"form-group"}
-         = message_form.label :email2, :class=>"control-label col-sm-2"
+         = message_form.label t('.email2'), :class=>"control-label col-sm-2"
          %div{:class=>"control-label col-sm-5"}
             = message_form.email_field :email2, placeholder: "Email 2", :class=>"form-control"
       %div{:class=>"form-group"}
-         = message_form.label :email3, :class=>"control-label col-sm-2"
+         = message_form.label t('.email3'), :class=>"control-label col-sm-2"
          %div{:class=>"control-label col-sm-5"}
             = message_form.email_field :email3, placeholder: "Email 3", :class=>"form-control"
       %div{:class=>"form-group"}
-         = message_form.label :email4, :class=>"control-label col-sm-2"
+         = message_form.label t('.email4'), :class=>"control-label col-sm-2"
          %div{:class=>"control-label col-sm-5"}
             = message_form.email_field :email4, placeholder: "Email 4", :class=>"form-control"
       %div{:class=>"form-group"}
-         = message_form.label :content, :class=>"control-label col-sm-2"
+         = message_form.label t('.content'), :class=>"control-label col-sm-2"
          %div{:class=>"control-label col-sm-5"}
             = message_form.text_area :content, placeholder: "Message", :class=>"form-control"
             = message_form.hidden_field :imageData, id: "PNG"
       %div{:class=>"form-group"}
          %div{:class=>"col-sm-offset-2 col-sm-5"}
-            = message_form.submit "Send", :class=>"btn btn-default"
-            = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)
+            = message_form.submit t('.send'), :class=>"btn btn-default"
+            = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)
 %div{:id=>"main", :class=>"container", :style=>"padding-top: 20px"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
       %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800", :style=>"border: 1px solid black;"}

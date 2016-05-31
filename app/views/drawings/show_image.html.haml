@@ -11,8 +11,8 @@
          %ol{:class=>"breadcrumb"}
             %li{:class=>"hidden-sm hidden-xs"}
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
-            %li{:class=>"hidden-sm hidden-xs"} PNG
+                  =t('.home')
+            %li{:class=>"hidden-sm hidden-xs"} #{t('.png')}
 = javascript_include_tag 'jquery-ui'
 
 %div{:id=>"main", :class=>"container", :style=>"padding-top: 20px"}

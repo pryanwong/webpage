@@ -4,19 +4,18 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
+                  =t('.home')
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Drawings
-            %li Edit Drawing Description
+                  =t('.drawings')
+            %li #{'.edit_drawing_description'}
 %div{:id=>"main", :class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
-      = render 'shared/error_messages'
       = form_for(@drawing, :html => {:class => "form-horizontal"}, url: updatedrawingdetails_company_user_drawing_path(@drawing.company_id, @drawing.user_id, @drawing.id), :method => :POST) do |f|
          %div.page-header
             %div.container
                %div.row-fluid
-                  %h2 Edit Drawing Description
+                  %h2 #{'.edit_drawing_description'}
          %div{:class=>"form-group"}
             = f.label :customer, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
@@ -32,18 +31,18 @@
          %div{:class=>"form-group"}
             = f.label :privacy, :class=>"control-label col-sm-2"
             %div{:class=>"controls col-sm-5"}
-               = f.label :privacy_company, "within Company", :class=>"radio" do
+               = f.label :privacy_company, t('.within_company'), :class=>"radio" do
                   = f.radio_button :privacy, "company"
-                  within Company
+                  = t('.within_company')
                -if @divcount > 0
-                  = f.label :privacy_division, "within Division", :class=>"radio" do
+                  = f.label :privacy_division, t('.within_division'), :class=>"radio" do
                      = f.radio_button :privacy, "division"
-                     within Division
+                     = t('.within_division')
                      = f.collection_select :division, @divisions,:id,:name, {include_blank: false}, {:class=>"form-control"}
-               = f.label :privacy_division, "Only for User", :class=>"radio" do
+               = f.label :privacy_division, t('.only_user'), :class=>"radio" do
                   = f.radio_button :privacy, "user"
-                  Only for User
+                  = t('.only_user')
          %div{:class=>"form-group"}
             %div{:class=>"col-sm-10 col-sm-offset-2"}
-               = f.submit "Save", :class=>"btn btn-default"
-               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)
+               = f.submit t('.save'), :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)

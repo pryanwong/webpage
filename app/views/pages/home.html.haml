@@ -7,23 +7,23 @@
             %p{:style=>"padding:10px;"}
             =form_for(resource, as: resource_name, url: user_session_path) do |f|
                %fieldset.form-group
-                  =f.label :email
+                  =f.label t('.email')
                   =f.email_field :email, autofocus: true, :class=>"form-control"
                %fieldset.form-group
-                  = f.label :password
+                  = f.label t('.password')
                   = f.password_field :password, autocomplete: "off", :class=>"form-control"
                -if devise_mapping.rememberable?
                   %fieldset.form-group
                      = f.check_box :remember_me
-                     = f.label :remember_me
+                     = f.label t('.remember_me')
                %div.form-group
-                  = f.submit "Login", :class=>"btn btn-default"
+                  = f.submit t('.login'), :class=>"btn btn-default"
                   - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
                      = link_to "Forgot your password?", new_password_path(resource_name)
             =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
                %span{:class=>"fa fa-linkedin"}
-               Sign in with LinkedIn
+               =t('.sign_in_linkedin')
             =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
                %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
-               Sign in with Google
+               =t('.sign_in_google')
 %div{:id=>"main", :class=>"container"}

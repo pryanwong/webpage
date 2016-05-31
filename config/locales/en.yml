@@ -20,4 +20,186 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  companies:
+    edit:
+      home: Home
+      company: Company
+      edit: Edit
+      edit_details: Edit Company Details
+      name: Name
+      portal: Portal
+      licenses: Licenses
+      save: Save
+      cancel: Cancel
+    index:
+      home: Home
+      companies: Companies
+      name: Name
+      licenses: Licenses
+      show: Show
+      edit: Edit
+      delete: Delete
+      confirm: Are You Sure?
+    new:
+      home: Home
+      companies: Companies
+      new_company: New Company
+      name: Name
+      portal: Portal
+      licenses: Licenses
+      save: Save
+      cancel: Cancel
+    show:
+      home: Home
+      company: Company
+      name: Name
+      licenses: Licenses
+      divisions: Divisions
+      division: Division
+      user: User
+      users: Users
+      add_user: Add User
+      new: New
+      email: Email
+      admin: Admin
+      edit: Edit
+      remove: Remove
+      products: Products
+      product_id: Product Id
+      product_name: Product Name
+  devise:
+    confirmations:
+      new:
+        provide_email_address: Provide Email Address
+        resend_confirmation_instructions: Resend confirmation instructions
+    registrations:
+      edit:
+        home: Home
+        edit_password: Edit Password
+        email: Email
+        chars_min: characters minimum
+        new_password: New Password
+        confirm_password: Confirm new password
+        current_password: Current Password
+        update: Update
+    passwords:
+      edit:
+        change_your_password: Change Your Password
+        new_password: New Password
+        characters_minimum: characters minimum
+        confirm_new_password: Confirm new password
+        change_my_password: Change my password
+      new:
+        provide_email_address: Provide Email Address
+        send_reset_instructions: Send me reset password instructions
+    shared:
+      links:
+        forgot_password: Forgot your password?
+        no_confirm_instructions: Didn't receive confirmation instructions?
+        no_unlock_instructions: Didn't receive unlock instructions?
+        sign_in_optecture: Sign in with Optecture
+        sign_in_linkedin: Sign in with LinkedIn
+        sign_in_google: Sign in with Google
+  divisions:
+    edit:
+      home: Home
+      company: Company
+      update_division: Update Division
+      name: Name
+      save: Save
+      cancel: Cancel
+    new:
+      home: Home
+      company: Company
+      new_division: New Division
+      name: Name
+      save: Save
+      cancel: Cancel
+  drawings:
+    bom:
+      home: Home
+      drawing: Drawing
+      billofmaterials: Bill of Materials
+      csv: CSV
+      quantity: Quantity
+      model: Model
+      configuration: Configuration
+      unit_price: Unit Price
+    editdrawingdetails:
+      home: Home
+      drawings: Drawings
+      edit_drawing_description: Edit Drawing Description
+      save: Save
+      cancel: Cancel
+      only_user: Only for User
+      within_division: within Division
+      within_company: within Company
+    send_image_form:
+      home: Home
+      send_form: Send Form
+      email_drawing: Email Drawing
+      email1: Email 1
+      email2: Email 2
+      email3: Email 3
+      email4: Email 4
+      content: Content
+      send: Send
+      cancel: Cancel
+    show_image:
+      home: Home
+      png: PNG
+  pages:
+    404:
+      status: Status 404...
+      error: I can't find what you are looking for
+    500:
+      status: Status 500...
+      error: Usually an internal error
+    accessdenied:
+      status: 404 - Not Found
+      error: What are you doing?
+    failed:
+      status: Login Failed
+      error: This login did not work
+    home:
+      email: Email
+      password: Password
+      remember_me: Remember Me
+      login: Login
+      sign_in_linkedin: Sign in with LinkedIn
+      sign_in_google: Sign in with Google
+    recordnotfound:
+      status: What's going on here
+      error: I have no idea what you are looking for.
+  prices:
+    edit:
+      home: Home
+      company: Company
+      edit_price: Edit Price
+      update_price: Update Product
+      product_id: Product Id
+      name: Name
+      price: Price
+      save: Save
+      cancel: Cancel
+    new:
+      home: Home
+      company: Company
+      new_price: New Price
+      new_product: New Product
+      name: Name
+      product_id: Product Id
+      price: Price
+      save: Save
+      cancel: Cancel
+    productconfig:
+      list_price: List Price
+      product_config: Product Configuration
+  shared:
+    footer:
+      links: Links
+      home: Home
+      about: About
+      menu: Menu
+      contact: Contact
+      our_address: Our Address

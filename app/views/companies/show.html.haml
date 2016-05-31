@@ -4,22 +4,22 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
-            %li Company
+                  =t('.home')
+            %li #{t('.company')}
 %div{:class=>"container"}
    %div{:class=>"row row-content-no-padding2"}
       %div
          %table{:class=>"table table-bordered table-hover"}
             %thead
                %tr
-                  %td Company
+                  %td #{t('.company')}
                   %td
                      =link_to "Companies List", companies_path
                   %td
                   %td
                %tr
-                  %th Name
-                  %th Licenses
+                  %th #{t('.name')}
+                  %th #{t('.licenses')}
                   %th
                   %th
                %tr
@@ -43,14 +43,14 @@
             %table{:class=>"table table-bordered table-hover"}
                %thead
                   %tr
-                     %td Divisions
+                     %td #{t('.divisions')}
                      %td
                      %td
                         = link_to new_company_division_path(@company) do
                            %i{:class=>"fa fa-plus-square"}
                      - first = false
                   %tr
-                     %th Division
+                     %th #{t('.division')}
                      %th
                      %th
 - @company.divisions.each do |division|
@@ -60,14 +60,14 @@
             %table{:class=>"table table-bordered table-hover"}
                %thead
                   %tr
-                     %td Divisions
+                     %td #{t('.divisions')}
                      %td
                      %td
                         = link_to new_company_division_path(@company) do
                            %i{:class=>"fa fa-plus-square"}
                      - first = false
                   %tr
-                     %th Division
+                     %th #{t('.division')}
                      %th
                      %th
                %tr
@@ -84,7 +84,7 @@
          %div
             %table{:class=>"table table-bordered table-hover"}
                %tr
-                  %th User
+                  %th #{t('.user')}
                   %th
                -division.users.each do |user|
                   %tr
@@ -102,25 +102,25 @@
                      %div{:class=>"control-label col-sm-5"}
                         = f.collection_select :id, User.where(id: compids).where.not(id: divids),:id,:email, {include_blank: false}, {:class=>"form-control"}
                   %div{:class=>"form-group"}
-                     = f.submit "Add User", :class=>"btn btn-default"
+                     = f.submit t('.add_user'), :class=>"btn btn-default"
 
 %div{:class=>"container"}
    %div{:class=>"row row-content-no-padding2"}
       %div
          %table{:class=>"table table-bordered table-hover"}
             %tr
-               %td Users
+               %td #{t('.users')}
                %td
-               %td New
+               %td #{t('.new')}
                %td
                   -if can? :create, current_user
                      = link_to new_company_user_path(@company) do
                         %i{:class=>"fa fa-plus-square"}
             %tr
-               %th Email
-               %th Admin
-               %th Edit
-               %th Remove
+               %th #{t('.email')}
+               %th #{t('.admin')}
+               %th #{t('.edit')}
+               %th #{t('.remove')}
             -@company.users.each do |user|
                %tr
                   %td= user.email
@@ -139,10 +139,10 @@
       %div
          %table{:class=>"table table-bordered table-hover"}
             %tr
-               %td Products
+               %td #{t('.products')}
                %td
                -if can? :create, Price
-                  %td  New
+                  %td  #{t('.new')}
                   %td
                      = link_to new_company_price_path(@company) do
                         %i{:class=>"fa fa-plus-square"}
@@ -150,11 +150,11 @@
                   %td
                   %td
             %tr
-               %th Product Id
-               %th Product Name
+               %th #{t('.product_id')}
+               %th #{t('.product_name')}
                -if can? :edit, Price
-                  %th Edit
-                  %th Remove
+                  %th #{t('.edit')}
+                  %th #{t('.remove')}
                -else
                   %th
                   %th

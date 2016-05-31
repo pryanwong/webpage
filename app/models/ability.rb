@@ -11,7 +11,7 @@ class Ability
          can [:read], Company, :id => user.company_id
          #can [:create, :read, :update, :destroy], Company
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
-         can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
+         can [:switchuser,:switchback, :usersettings, :usersettingssubmit], User, :user_id => user.id, :company_id => user.company.id
          can [:create, :read, :update, :destroy, :adduserdiv ], Division, :company_id => user.company_id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
          can [:productconfig], Price, :company_id => user.company.id
@@ -28,7 +28,7 @@ class Ability
          end
          can [:editdrawingdetails, :updatedrawingdetails], Drawing, :user_id => user.id
          can [:productconfig], Price, :company_id => user.company.id
-         can [:switchuser,:switchback], User, :user_id => user.id, :company_id => user.company.id
+         can [:switchuser,:switchback, :usersettings, :usersettingssubmit], User, :user_id => user.id, :company_id => user.company.id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
          can [], Company, :id => user.company_id

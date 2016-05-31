@@ -4,13 +4,13 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
+                  =t('.home')
             %li
                = link_to edit_company_user_drawing_path(current_user.company_id ,current_user.id, params[:id]) do
-                  Drawing
-            %li Bill of Materials
+                  =t('.drawing')
+            %li #{t('.billofmaterials')}
             %li{:class=>"pull-right"}
-               = link_to 'CSV', bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id], {:format => :csv })
+               = link_to t('.csv'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id], {:format => :csv })
 
 %div{:id=>"main", :class=>"container"}
    %div{:class=>"row row-content-no-padding"}
@@ -18,10 +18,10 @@
          %table{:class=>"table table-bordered table-hover"}
             %thead
                %tr
-                  %th Quantity
-                  %th Model
-                  %th Configuration
-                  %th Unit Price
+                  %th #{t('.quantity')}
+                  %th #{t('.model')}
+                  %th #{t('.configuration')}
+                  %th #{t('unit_price')}
             %tbody
                -@valsArray.each do |val|
                   %tr

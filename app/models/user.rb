@@ -118,7 +118,11 @@ class User < ActiveRecord::Base
   end
 
   def inactive_message
-     "User account has been suspended, contact your administrator"
+     if self.suspended == true
+        "suspended"
+     else
+       super
+     end
   end
 
 end

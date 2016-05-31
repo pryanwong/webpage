@@ -2,29 +2,56 @@
    <!-- Main component for a primary marketing message or call to action -->
    %div{:id=>"main", :class=>"container"}
       %div{:class=>"row row-header"}
-         %div{:class=>"col-xs-12 col-sm-5"}
+         %div{:class=>"col-xs-12  col-sm-5"}
             =image_tag "Logo4_blue_front.gif"
             %p{:style=>"padding:10px;"}
             %div{:class=>"col-sm-offset-1"}
-            %h2 Change Your Password
+            %h2 #{t('.change_your_password')}
             = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
                = f.hidden_field :reset_password_token
                %fieldset{:class=>"form-group"}
-                  =f.label :password, "New Password"
+                  =f.label :password, t('.new_password')
                   - if @minimum_password_length
-                     %em #{@minimum_password_length} characters minimum
+                     %em #{@minimum_password_length} #{t('.characters_minimum')}
                      %br
                   %div{:id=>"passwordholder", :class=>"input-group"}
                      =f.password_field :password, autofocus: true, autocomplete: "off", :class=>"form-control", :id=>"passwordfield", :required=>true, :pattern=>".{6,}", :title=>"6 characters minimum"
                %fieldset{:class=>"form-group"}
-                  = f.label :password_confirmation, "Confirm new password"
-                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control", :required=>true, :id=>"confirmPasswordfield"
+                  = f.label :password_confirmation, t('.confirm_new_password')
+                  = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control col-sm-5", :required=>true, :id=>"confirmPasswordfield"
                %div.form-group
-                  = f.submit "Change my password", :class=>"btn btn-default"
+                  = f.submit t('.change_my_password'), :class=>"btn btn-default"
             = render "devise/shared/links"
 
 :Javascript
-   window.onload = function () {
-      document.getElementById("passwordfield").onchange = validatePassword;
-      document.getElementById("confirmPasswordfield").onchange = validatePassword;
+   function validatePassword() {
+      console.log("in validate password")
+      var pass2=document.getElementById("passwordfield").value;
+      var pass1=document.getElementById("confirmPasswordfield").value;
+      if(pass1!=pass2) {
+        console.log("Passwords don't match!!!")
+        document.getElementById("confirmPasswordfield").setCustomValidity("Passwords Don't Match");
+      } else {
+        console.log("Passwords Match")
+        document.getElementById("confirmPasswordfield").setCustomValidity('');
+        //empty string means no validation error
+      }
    }
+   var ready
+   ready = function () {
+       document.getElementById("passwordfield").onchange = validatePassword;
+       document.getElementById("confirmPasswordfield").onchange = validatePassword;
+       console.log("Ready executed")
+       var options = {
+           onLoad: function () { },
+           onKeyUp: function (evt) {
+               $(evt.target).pwstrength("outputErrorList");
+           }
+       };
+       if (typeof $('#passwordfield').destroy != "undefined") {
+            console.log("Destroy is defined!!!")
+            $('#passwordfield').destroy();
+       }
+       $('#passwordfield').pwstrength(options);
+   };
+   $(document).ready(ready);

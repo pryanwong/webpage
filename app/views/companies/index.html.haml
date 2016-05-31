@@ -4,15 +4,15 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
-            %li Companies
+                  =t('.home')
+            %li #{t('.companies')}
 %div{:id=>"main",:class=>"container"}
    %div{:class=>"row row-content-no-padding"}
       %div
          %table{:class=>"table table-bordered table-hover"}
             %thead
                %tr
-                  %td Companies
+                  %td #{t('.companies')}
                   %td
                   %td{:class=>"hidden-sm hidden-xs"}
                   -if can? :create, :company
@@ -24,11 +24,11 @@
                      %td{:class=>"hidden-sm hidden-xs"}
                      %td{:class=>"hidden-sm hidden-xs"}
                %tr
-                  %th Name
-                  %th License
-                  %th{:class=>"hidden-sm hidden-xs"}Show
-                  %th{:class=>"hidden-sm hidden-xs"}Edit
-                  %th{:class=>"hidden-sm hidden-xs"}Delete
+                  %th #{t('.name')}
+                  %th #{t('.licenses')}
+                  %th{:class=>"hidden-sm hidden-xs"}#{t('.show')}
+                  %th{:class=>"hidden-sm hidden-xs"}#{t('.edit')}
+                  %th{:class=>"hidden-sm hidden-xs"}#{t('.delete')}
             -@companies.each do |company|
                %tr
                   %td= company.name
@@ -43,5 +43,5 @@
                            %i{:class=>"fa fa-edit"}
                   %td{:class=>"hidden-sm hidden-xs"}
                      -if can? :destroy, company
-                        = link_to company, method: :delete, data: { confirm: "Are you sure?" } do
+                        = link_to company, method: :delete, data: { confirm: "#{t('.confirm')}" } do
                            %span{:class=>"glyphicon glyphicon-trash"}

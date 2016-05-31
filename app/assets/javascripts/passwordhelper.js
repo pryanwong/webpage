@@ -1,21 +1,4 @@
-function validatePassword(){
-   var pass2=document.getElementById("passwordfield").value;
-   var pass1=document.getElementById("confirmPasswordfield").value;
-   if(pass1!=pass2)
-     document.getElementById("confirmPasswordfield").setCustomValidity("Passwords Don't Match");
-   else
-     document.getElementById("confirmPasswordfield").setCustomValidity('');
-     //empty string means no validation error
-}
-jQuery(document).ready(function () {
-    var options = {
-        onLoad: function () { },
-        onKeyUp: function (evt) {
-            $(evt.target).pwstrength("outputErrorList");
-        }
-    };
-    $('#passwordfield').pwstrength(options);
-});
+
 
 /*!jslint vars: false, browser: true, nomen: true, regexp: true */
 /*!global jQuery */

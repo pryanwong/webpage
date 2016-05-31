@@ -4,7 +4,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # GET /resource/sign_up
-  layout 'longpages', only: [:edit, :new]
+  layout 'longpages', only: [:new]
 
   def new
     flash[:info] = 'Registrations are not open.'
@@ -18,7 +18,13 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
     puts "Password: #{sign_up_params[:password]}"
     build_resource(sign_up_params)
     resource.password = sign_up_params[:email]
+    if sign_up_params[:suspended] == "0"
+       resource.suspended = false;
+    else
+       resource.suspended = true;
+    end
     resource.password_confirmation = sign_up_params[:email]
+
     resource.save
     yield resource if block_given?
     if resource.persisted?
@@ -70,7 +76,7 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # my custom fields are :name, :heard_how
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) do |u|
+    devise_parameter_sanitizer.permit(:sign_up) do |u|
       u.permit(:suspended, :role, :provider, :email, :company_id, :timezone)
     end
   end

@@ -42,7 +42,7 @@ Rails.application.configure do
   config.assets.css_compressor = :sass
 
   # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  config.action_view.raise_on_missing_translations = true
 
   #default mailer for devise
   config.action_mailer.delivery_method = :smtp

@@ -4,10 +4,10 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
+                  =t('.home')
             %li
                = link_to company_path(current_user.company_id) do
-                  Company
+                  =t('.company')
             %li New Division
 %div{:id=>"main", :class=>"container clear-top"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
@@ -16,12 +16,12 @@
          %div.page-header
             %div.container
                %div.row-fluid
-                  %h2 New Division
+                  %h2 #{t('.new_division')}
          %div{:class=>"form-group"}
-            = f.label :name, :class=>"control-label col-sm-2"
+            = f.label t('.name'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.text_field :name, :class=>"form-control", :required => true
          %div{:class=>"form-group"}
             %div{:class=>"col-sm-5 col-sm-offset-2"}
-               = f.submit "Save", :class=>"btn btn-default"
-               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_path(current_user.company_id)
+               = f.submit t('.save'), :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_path(current_user.company_id)

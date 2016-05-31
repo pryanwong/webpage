@@ -1,9 +1,9 @@
-%h1 Product Configuration
+%h1 #{t('.product_config')}
 
 %body
    %div{:id => 'data'}
    %p{:id => 'prodconfig'}
-   List Price: <em id='listconfig'></em>
+   #{t('.list_price')}: <em id='listconfig'></em>
 
 :javascript
    var selectId = "";
