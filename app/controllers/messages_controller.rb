@@ -15,7 +15,7 @@ class MessagesController < ApplicationController
       redirect_to contact_path, notice: "Your messages has been sent."
     else
       logger.debug "An error occurred while delivering this message."
-      flash[:alert] = "An error occurred while delivering this message."
+      flash[:alert] =  t('flash.messages.email_failed')
       logger.info "Leaving MessagesController#create"
       render :new
     end

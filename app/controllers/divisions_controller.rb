@@ -20,12 +20,12 @@ class DivisionsController < ApplicationController
     session[:return_to] ||= request.referer
     if (!Company.exists?(id: params[:company_id]))
       logger.error "Company ID not valid: #{params[:company_id]}"
-      flash[:error] = "Company ID not valid"
+      flash[:error] = t('flash.companies.company_id_not_found')
       redirect_to user_path(session[:user_id])
     end
     if (!Division.exists?(id: params[:id]))
       logger.error "Division ID not valid: #{params[:id]}"
-      flash[:error] = "Division ID not valid"
+      flash[:error] = t('flash.divsions.division_id_not_found')
       redirect_to user_path(session[:user_id])
     end
     @company = Company.find(params[:company_id])
@@ -42,7 +42,7 @@ class DivisionsController < ApplicationController
        logger.debug "User: #{@user.inspect}"
     else
       logger.error "User Not Added to Division, company wasn't found"
-      flash[:error] = "User Not Added to Division, company wasn't found"
+      flash[:error] = t('flash.divsions.user_not_added')
       redirect_to company_path(params[:company_id]), :method => :show
       return
     end
@@ -52,7 +52,7 @@ class DivisionsController < ApplicationController
        @division = Division.find(params[:id])
     else
        logger.debug "User Not Added to Division, division wasn't found"
-       flash[:error] = "User Not Added to Division, division wasn't found"
+       flash[:error] = t('flash.divsions.division_not_found')
        redirect_to company_path(params[:company_id]), :method => :show
        return
     end
@@ -60,7 +60,7 @@ class DivisionsController < ApplicationController
     successfullyAdded = userMember.save
     if successfullyAdded
        logger.debug "User Has Been Successfully Added to Division"
-       flash[:notice] = "User Has Been Successfully Added to Division"
+       flash[:notice] =  t('flash.divsions.user_successfully_added')
     else
        logger.error "Adding error notices to Flash"
        addErrorsToFlash(userMember.errors)
@@ -79,14 +79,14 @@ class DivisionsController < ApplicationController
     logger.info "Entering DivisionsController:update"
     if (!Company.exists?(id: params[:company_id]))
       logger.error "Company ID not valid: #{params[:company_id]}"
-      flash[:error] = "Company ID not valid"
+      flash[:error] = t('flash.companies.company_id_not_found')
       logger.info "Leaving DivisionsController:update"
       redirect_to user_path(session[:user_id])
       return
     end
     if (!Division.exists?(id: params[:id]))
       logger.error "Division ID not valid: #{params[:id]}"
-      flash[:error] = "Division ID not valid"
+      flash[:error] = t('flash.divsions.division_not_found')
       logger.info "Leaving DivisionsController:update"
       redirect_to user_path(session[:user_id])
       return
@@ -110,7 +110,7 @@ class DivisionsController < ApplicationController
     #Verify that Company id is valid
     if (!Company.exists?(id: params[:company_id]))
       logger.debug "Company ID not valid: #{params[:company_id]}"
-      flash[:error] = "Company ID not valid"
+      flash[:error] = t('flash.companies.company_id_not_found')
       logger.info "Leaving DivisionsController:create"
       redirect_to user_path(session[:user_id])
       return
@@ -120,12 +120,12 @@ class DivisionsController < ApplicationController
     division.company_id = @company.id
     if division.save
        logger.debug "Division Added Successfully"
-       flash[:notice] = "Division Added Successfully"
+       flash[:notice] = t('flash.divsions.division_added_successfully')
        val = true
     else
        addErrorsToFlash(division.errors)
        logger.error "Division Not Created"
-       flash[:not_created] = "Division Not Created"
+       flash[:not_created] = t('flash.divsions.division_created')
     end
     logger.info "Leaving DivisionsController:create"
     redirect_to company_path(@company), :method => :show
@@ -139,14 +139,14 @@ class DivisionsController < ApplicationController
        @division = Division.find(params[:id])
     else
        logger.error "Division Not Deleted, Division Not Found"
-       flash[:error] = "Division Not Deleted, Division Not Found"
+       flash[:error] = t('flash.divsions.division_not_deleted')
        redirect_to company_path(params[:company_id])
        return
     end
     @division.destroy
     if @division.destroyed?
       logger.debug "Division Removed"
-      flash[:notice] = "Division Removed"
+      flash[:notice] = t('flash.divsions.division_removed')
     else
       addErrorsToFlash(@division.errors)
     end
@@ -168,7 +168,7 @@ class DivisionsController < ApplicationController
       logger.info "Entering DivisionsController:company_valid"
       if (!Company.exists?(id: id))
         logger.debug "Company ID not valid: #{id}"
-        flash[:error] = "Company ID not valid"
+        flash[:error] = t('flash.companies.company_id_not_found')
         redirect_to user_path(session[:user_id])
       end
       logger.info "Leaving DivisionsController:company_valid"
@@ -178,7 +178,7 @@ class DivisionsController < ApplicationController
       logger.info "Entering DivisionsController:division_valid"
       if (!Division.exists?(id: id))
         logger.debug "Division ID not valid: #{id}"
-        flash[:error] = "Division ID not valid"
+        flash[:error] = t('flash.divsions.division_not_found')
         redirect_to user_path(session[:user_id])
       end
       logger.info "Leaving DivisionsController:division_valid"

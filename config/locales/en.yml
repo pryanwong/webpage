@@ -20,6 +20,58 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  flash:
+    companies:
+      company_not_found: Company Could Not Be Found
+      edit_saved: Edit Saved
+      not_updated: Company Could Not Be Updated
+      new_company_saved: New Company Saved
+      could_not_be_added: Company Could Not Be Added
+      has_been_removed: Company has been removed
+      company_id_not_found: Company ID not found
+    divisions:
+      division_id_not_found: Division ID not valid
+      user_not_added: User Not Added to Division, company wasn't found
+      division_not_found: User Not Added to Division, division wasn't found
+      user_successfully_added: User Has Been Successfully Added to Division
+      division_added_successfully: Division Added Successfully
+      division_not_deleted: Division Not Deleted, Division Not Found
+      division_created: Division Not Created
+      division_removed: Division Removed
+    drawings:
+      user_not_found: User not Found
+      drawing_not_found: Drawing not Found
+      company_not_found: Company not Found
+      drawing_version_not_found: Drawing version not Found
+      drawing_version_not_belong: Drawing version does not belong to drawing
+      drawing_saved: New Drawing Saved
+      no_drawing_made: No drawing made yet
+      drawing_not_added: Drawing Could Not Be Added
+      email_failed: An error occurred while delivering this message.
+    messages:
+      email_failed: An error occurred while delivering this message.
+    prices:
+      price_config_not_found: Product Configuration Could Not Be Found
+      company_not_found: Company Could Not Be Found
+      new_pricing_saved: New Product Pricing Saved
+      pricing_not_added: Product Pricing Could Not Be Added
+      pricing_not_deleted: Price Not Deleted, Price Not Found
+      pricing_removed: Price Removed
+      pricing_not_found: Price Not Found
+    users:
+      user_not_found: User Not Found
+      company_not_found: Company Not Found
+      division_not_found: Division Not Found
+      user_not_deleted: User Has Been Deleted From Division
+      could_not_remove: Could Not Remove User From Division
+      could_not_find: Could Not Find User In Division
+      privacy_not_found: Privacy Level not Found
+      user_updated: User Has Been Updated
+      user_not_created: User Has Failed To Be Created
+      user_created: User Has Been Created
+      user_updated: Updated User Settings
+      user_not_updated: Failed to Update User Settings
+      user_not_deleted: User has not been deleted
   companies:
     edit:
       home: Home
@@ -203,3 +255,76 @@ en:
       menu: Menu
       contact: Contact
       our_address: Our Address
+    header:
+      user_home: User Home
+      new_drawing: New Drawing
+      user_settings: User Settings
+      change_password: Change Password
+      my_company: My Company
+      all_companies: All Companies
+      switch_user: Switch User
+      switch_back: Switch Back
+      sign_out: Sign out
+  users:
+    edit:
+      home: Home
+      company: Company
+      edit_user: Edit User
+      email: Email
+      provider: Provider
+      role: Role
+      suspended: Suspended
+      timezone: Timezone
+      save: Save
+      cancel: Cancel
+    new:
+      home: Home
+      company: Company
+      new_user: New User
+      email: Email
+      provider: Provider
+      role: Role
+      suspended: Suspended
+      timezone: Timezone
+      save: Save
+      cancel: Cancel
+    newdrawing:
+      home: Home
+      drawing: Drawings
+      new_drawing: New Drawing
+      customer: Customer
+      opportunity: Opportunity
+      description: Description
+      privacy: Privacy
+      within_company: within Company
+      within_division: within Division
+      only_user: Only for User
+      save: Save
+      cancel: Cancel
+    show:
+      home: Home
+      drawing: Drawings
+      new: New
+      opportunity: Opportunity
+      description: Description
+      customer: Customer
+      email: Email
+      updated: Updated
+      png: PNG
+      send: Send
+      desc: Desc
+      bom: BOM
+      edit: Edit
+    showall:
+      home: Home
+      switch_user: Switch User
+      users: Users
+      switch: Switch
+    usersettings:
+      home: Home
+      company: Company
+      user_settings: User Settings
+      update_user_settings: Update User Settings
+      timezone: Timezone
+      save: Save
+      cancel: Cancel

@@ -4,11 +4,11 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
+                  =t('.home')
             %li
                = link_to company_path(current_user.company_id ) do
-                  Company
-            %li New User
+                  =t('.company')
+            %li #{t('.new_user')}
 
 %div{:id=>"main", :class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
@@ -17,13 +17,13 @@
          %div.page-header
             %div.container
                %div.row-fluid
-                  %h2 New User
+                  %h2 #{t('.new_user')}
          %div{:class=>"form-group"}
-            = f.label :email, :class=>"control-label col-sm-2"
+            = f.label t('.email'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.email_field :email, :required => true, :class=>"form-control"
          %div{:class=>"form-group"}
-            = f.label :role, :class=>"control-label col-sm-2"
+            = f.label t('.role'), :class=>"control-label col-sm-2"
             %div{:class=>"controls col-sm-5"}
                - User.roles.slice(:user,:moderator).each do |key, val|
                   = f.label :role, :class=>"radio" do
@@ -31,24 +31,24 @@
                      = f.radio_button :role, key, :checked => (key == "user")
                      = key_show
          %div{:class=>"form-group"}
-            = f.label :provider, :class=>"control-label col-sm-2"
+            = f.label t('.provider'), :class=>"control-label col-sm-2"
             %div{:class=>"controls col-sm-5"}
                - ['linkedin', 'google_oauth2', 'optecture'].each do |key|
                   = f.label :provider, :class=>"radio" do
                      = f.radio_button :provider, key, :checked => (key == "google_oauth2")
                      = key
          %div{:class=>"form-group"}
-            =f.label :suspended, :class=>"control-label col-sm-2"
+            =f.label t('.suspended'), :class=>"control-label col-sm-2"
             %div{:class=>"controls col-sm-5"}
                %div.checkbox
                   %label
                      =f.check_box :suspended
          %div{:class=>"form-group"}
-            = f.label :timezone, :class=>"control-label col-sm-2"
+            = f.label t('.timezone'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.select :timezone, options_for_select(@timezone_array), {}, {:class=>"form-control"}
 
          %div.row
             %div{:class=>"col-sm-12 col-sm-offset-1"}
-               = f.submit "Save", :class=>"btn btn-default"
-               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_path(@company)
+               = f.submit t('.save'), :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_path(@company)

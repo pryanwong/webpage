@@ -14,12 +14,12 @@
                   %li
                      = link_to company_user_path(current_user.company_id ,current_user.id) do
                         %span{:class=>"glyphicon glyphicon-home"}
-                        User Home
+                        =t('.user_home')
                - if @showdrawing == true
                   %li
                      = link_to newdrawing_company_user_path(current_user.company_id ,current_user.id) do
                         %span{:class=>"fa fa-paint-brush","aria-hidden"=>"true"}
-                        New Drawing
+                        =t('.new_drawing')
          - if user_signed_in?
             %ul{:class=>"nav navbar-nav navbar-right"}
                %li{ :class=>"dropdown"}
@@ -32,36 +32,36 @@
                      %li
                         = link_to company_user_path(current_user.company_id ,current_user.id) do
                            %span{:class=>"glyphicon glyphicon-home"}
-                           User Home
+                           =t('.user_home')
                      %li
                         = link_to company_user_usersettings_path(current_user.company_id, current_user.id ) do
                            %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
-                           %span User Settings
+                           %span #{t('.user_settings')}
                      %li
                         = link_to edit_user_registration_path do
                            %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
-                           %span Change Password
+                           %span #{t('.change_password')}
                      - if (current_user.admin? || current_user.moderator?)
                         %li
                            = link_to company_path(current_user.company_id ) do
                               %span{:class=>"fa fa-building","aria-hidden"=>"true"}
-                              %span My Company
+                              %span #{t('.my_company')}
                      -if current_user.admin?
                         %li
                            =link_to companies_path do
                               %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
-                              %span All Companies
+                              %span #{t('.all_companies')}
                      -if current_user.admin? && !session[:switched] == true
                         %li
                            = link_to user_showall_path(current_user.id) do
                               %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
-                              Switch User
+                              =t('.switch_user')
                      -if session[:switched] == true
                         %li
                            = link_to company_user_switchback_path(session[:admincompany],session[:adminuser]) do
                               %span{:class=>"fa fa-repeat","aria-hidden"=>"true"}
-                              Switch Back
+                              =t('.switch_back')
                      %li
                         =link_to destroy_user_session_path, :method => :delete, :class => 'last' do
                            %span{:class=>"fa fa-sign-out","aria-hidden"=>"true"}
-                           Sign out
+                           =t('.sign_out')

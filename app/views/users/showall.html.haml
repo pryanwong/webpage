@@ -4,19 +4,19 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
-            %li Switch User
+                  =t('.home')
+            %li #{t('.switch_user')}
 %div{:id=>"main", :class=>"container"}
    %div{:class=>"row row-content-no-padding"}
       %div
          %table{:class=>"table table-bordered table-hover"}
             %thead
                %tr
-                  %td Users
+                  %td #{t('.users')}
                   %td{:class=>"hidden-sm hidden-xs", :colspan=>'4'}
                %tr
                   %th= sortable "users.email", "email"
-                  %th Switch
+                  %th #{t('.switch')}
                   %th{:colspan=>"3"}
             %tbody
                -@users.each do |user|

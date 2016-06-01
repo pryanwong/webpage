@@ -13,7 +13,7 @@ class DrawingsController < ApplicationController
           @user = User.find(params[:user_id]);
        else
           logger.debug "User not Found"
-          flash[:error] = "User not Found"
+          flash[:error] = t('flash.drawings.user_not_found')
           redirect_to root_path
           return
        end
@@ -23,7 +23,7 @@ class DrawingsController < ApplicationController
           @drawing = Drawing.find(params[:id]);
        else
           logger.error "Drawing not Found"
-          flash[:error] = "Drawing not Found"
+          flash[:error] = t('flash.drawings.drawing_not_found')
           redirect_to root_path
           return
        end
@@ -38,7 +38,7 @@ class DrawingsController < ApplicationController
           company = Company.find(params[:company_id]);
        else
           logger.error "No Company found"
-          flash[:error] = "Company not Found"
+          flash[:error] = t('flash.drawings.company_not_found')
           redirect_to root_path
           return
        end
@@ -95,7 +95,7 @@ class DrawingsController < ApplicationController
           @user = User.find(params[:user_id]);
        else
           logger.debug "User not Found"
-          flash[:error] = "User not Found"
+          flash[:error] = t('flash.drawings.user_not_found')
           redirect_to root_path
           return
        end
@@ -105,7 +105,7 @@ class DrawingsController < ApplicationController
           @drawing = Drawing.find(params[:id]);
        else
           logger.error "Drawing not Found"
-          flash[:error] = "Drawing not Found"
+          flash[:error] = t('flash.drawings.drawing_not_found')
           redirect_to root_path
           return
        end
@@ -120,16 +120,7 @@ class DrawingsController < ApplicationController
           company = Company.find(params[:company_id]);
        else
           logger.error "No Company found"
-          flash[:error] = "Company not Found"
-          redirect_to root_path
-          return
-       end
-       if (Company.exists?(params[:company_id]))
-          logger.debug "Company exists: #{params[:company_id]}"
-          company = Company.find(params[:company_id]);
-       else
-          logger.error "No Company found"
-          flash[:error] = "Company not Found"
+          flash[:error] = t('flash.drawings.company_not_found')
           redirect_to root_path
           return
        end
@@ -139,7 +130,7 @@ class DrawingsController < ApplicationController
           @drawingver = Drawingver.find(params[:version]);
        else
           logger.error "No Drawing version found"
-          flash[:error] = "Drawing version not Found"
+          flash[:error] = t('flash.drawings.drawing_version_not_found')
           redirect_to root_path
           return
        end
@@ -147,7 +138,7 @@ class DrawingsController < ApplicationController
          logger.debug "Drawingver is part of drawing"
        else
          logger.error "Drawingver does not belong to drawing"
-         flash[:error] = "Drawingver does not belong to drawing"
+         flash[:error] = t('flash.drawings.drawing_version_not_belong')
          redirect_to root_path
        end
 
@@ -196,7 +187,7 @@ class DrawingsController < ApplicationController
           @user = User.find(params[:user_id]);
        else
           logger.debug "User not Found"
-          flash[:error] = "User not Found"
+          flash[:error] =  t('flash.drawings.user_not_found')
           redirect_to root_path
           return
        end
@@ -205,7 +196,7 @@ class DrawingsController < ApplicationController
           @company = Company.find(@user.company_id);
        else
           logger.error "Company not Found"
-          flash[:error] = "Company not Found"
+          flash[:error] =  t('flash.drawings.company_not_found')
           redirect_to root_path
           return
        end
@@ -214,7 +205,7 @@ class DrawingsController < ApplicationController
           @drawing = Drawing.find(params[:id]);
        else
           logger.error "Drawing not Found"
-          flash[:error] = "Drawing not Found"
+          flash[:error] = t('flash.drawings.drawing_not_found')
           redirect_to root_path
           return
        end
@@ -235,7 +226,7 @@ class DrawingsController < ApplicationController
          @user = User.find(params[:user_id]);
       else
          logger.error "User not Found: #{params[:user_id]}"
-         flash[:error] = "User not Found"
+         flash[:error] = t('flash.drawings.user_not_found')
          redirect_to root_path
          return
       end
@@ -244,7 +235,7 @@ class DrawingsController < ApplicationController
          @company = Company.find(@user.company_id);
       else
          logger.error "Company not Found: #{@user.company_id}"
-         flash[:error] = "Company not Found"
+         flash[:error] = t('flash.drawings.company_not_found')
          redirect_to root_path
          return
       end
@@ -253,7 +244,7 @@ class DrawingsController < ApplicationController
          @drawing = Drawing.find(params[:id]);
       else
          logger.error "Drawing not Found: #{params[:id]}"
-         flash[:error] = "Drawing not Found"
+         flash[:error] = t('flash.drawings.drawing_not_found')
          redirect_to root_path
          return
       end
@@ -293,7 +284,7 @@ class DrawingsController < ApplicationController
        @user = User.find(params[:user_id]);
     else
        logger.error "User not Found:  #{params[:user_id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.drawings.user_not_found')
        logger.info "Leaving DrawingsController:bom"
        redirect_to root_path
        return
@@ -303,13 +294,13 @@ class DrawingsController < ApplicationController
        @drawing = Drawing.find(params[:id]);
     else
        logger.error "Drawing not Found:  #{params[:id]}"
-       flash[:error] = "Drawing not Found"
+       flash[:error] = t('flash.drawings.drawing_not_found')
        logger.info "Leaving DrawingsController:bom"
        redirect_to root_path
     end
     if (@drawing.drawing == "")
        logger.debug "No drawing made yet"
-       flash[:error] = "No drawing made yet"
+       flash[:error] = t('flash.drawings.no_drawing_made')
        logger.info "Leaving DrawingsController:bom"
        redirect_to company_user_path(@company_id, @user.id)
     else
@@ -377,13 +368,13 @@ class DrawingsController < ApplicationController
     if @drawing.save
       # Handle a successful update.
       logger.debug "New Drawing Saved"
-      flash[:notice] = "New Drawing Saved"
+      flash[:notice] = t('flash.drawings.drawing_saved')
       redirect_to edit_company_user_drawing_path(params[:company_id], params[:user_id], @drawing.id)
       logger.info "Leaving Drawing#create"
       return
      else
        logger.error "New Drawing Saved"
-       flash[:notice] = "Drawing Could Not Be Added"
+       flash[:error] = t('flash.drawings.drawing_not_added')
        redirect_to company_user_path(params[:company_id], params[:user_id])
        logger.info "Leaving Drawing#create"
      end
@@ -399,7 +390,7 @@ class DrawingsController < ApplicationController
        @drawing = Drawing.find(params[:id]);
     else
        logger.error "Drawing not Found: #{params[:id]}"
-       flash[:error] = "Drawing not Found"
+       flash[:error] = t('flash.drawings.drawing_not_found')
        redirect_to root_path
        return
     end
@@ -408,7 +399,7 @@ class DrawingsController < ApplicationController
        logger.debug "User Exists: #{params[:user_id]}"
     else
        logger.error "User not Found: #{params[:user_id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.drawings.user_not_found')
        redirect_to root_path
        return
     end
@@ -479,7 +470,7 @@ class DrawingsController < ApplicationController
          drawing = Drawing.find(params[:id]);
       else
          logger.debug "Drawing not Found: #{params[:id]}"
-         flash[:error] = "Drawing not Found"
+         flash[:error] = t('flash.drawings.drawing_not_found')
          redirect_to root_path
          return
       end
@@ -511,13 +502,13 @@ class DrawingsController < ApplicationController
          drawing = Drawing.find(params[:id]);
       else
          logger.debug "Drawing not Found: #{params[:id]}"
-         flash[:error] = "Drawing not Found"
+         flash[:error] = t('flash.drawings.drawing_not_found')
          redirect_to root_path
          return
       end
       if (drawing.drawing == "")
         logger.debug "drawing.drawing not found"
-        flash[:error] = "Drawing not Found"
+        flash[:error] = t('flash.drawings.drawing_not_found')
         redirect_to root_path
         return
       else
@@ -554,7 +545,7 @@ class DrawingsController < ApplicationController
          redirect_to company_user_path(session[:company_id] ,session[:user_id]), notice: "Your messages has been sent."
        else
          logger.debug "An error occurred while delivering this message."
-         flash[:alert] = "An error occurred while delivering this message."
+         flash[:alert] = t('flash.drawings.email_failed') 
          redirect_to company_user_path(session[:company_id] ,session[:user_id])
        end
        logger.info "Leaving Drawing#send_image"

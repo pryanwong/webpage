@@ -16,7 +16,7 @@ class PricesController < ApplicationController
           logger.debug "#{@price.inspect}"
        else
           logger.error "Product Config Could Not Be Found"
-          flash[:error] = "Product Config Could Not Be Found"
+          flash[:error] = t('flash.prices.price_config_not_found')
           @price   = Price.New
        end
     else
@@ -38,7 +38,7 @@ class PricesController < ApplicationController
       @price   = Price.new
     else
        logger.error "Company Could Not Be Found: #{params[:company_id]}"
-       flash[:error] = "Company Could Not Be Found"
+       flash[:error] = t('flash.prices.company_not_found')
        redirect_to company_path(session[:company_id])
     end
     logger.info "Leaving PricesController#new"
@@ -52,11 +52,11 @@ class PricesController < ApplicationController
     @price.version = 1
     if @price.save
       logger.debug "New Product Pricing Saved"
-      flash[:notice] = "New Product Pricing Saved"
+      flash[:notice] = t('flash.prices.new_pricing_saved')
     else
       addErrorsToFlash(@price.errors)
       logger.error "Product Pricing Could Not Be Added"
-      flash[:error] = "Product Pricing Could Not Be Added"
+      flash[:error] = t('flash.prices.pricing_not_added')
     end
     logger.info "Leaving PricesController#create"
     redirect_to company_path(session[:company_id])
@@ -70,7 +70,7 @@ class PricesController < ApplicationController
        @price = Price.find(params[:id])
     else
        logger.error "Price Not Deleted, Price Not Found"
-       flash[:error] = "Price Not Deleted, Price Not Found"
+       flash[:error] = t('flash.prices.pricing_not_deleted')
        logger.info "Leaving PricesController#destroy"
        redirect_to company_path(params[:company_id])
        return
@@ -78,7 +78,7 @@ class PricesController < ApplicationController
     @price.destroy
     if @price.destroyed?
       logger.debug "Price Removed"
-      flash[:notice] = "Price Removed"
+      flash[:notice] = t('flash.prices.pricing_removed')
     else
       addErrorsToFlash(@price.errors)
     end
@@ -93,13 +93,13 @@ class PricesController < ApplicationController
     session[:return_to] ||= request.referer
     if (!Company.exists?(id: params[:company_id]))
       logger.error "Company ID not valid: #{params[:company_id]}"
-      flash[:error] = "Company ID not valid"
+      flash[:error] = t('flash.prices.company_not_found')
       redirect_to user_path(session[:user_id])
       return
     end
     if (!Price.exists?(id: params[:product_id]))
       logger.error "Price ID not valid: #{params[:product_id]}"
-      flash[:error] = "Price ID not valid"
+      flash[:error] = t('flash.prices.pricing_not_found')
       redirect_to company_path(session[:company_id])
       return
     end
@@ -113,13 +113,13 @@ class PricesController < ApplicationController
     logger.debug "Parameters: #{params.inspect}"
     if (!Company.exists?(id: params[:company_id]))
       logger.error "Company ID not valid: #{params[:company_id]}"
-      flash[:error] = "Company ID not valid"
+      flash[:error] = t('flash.prices.company_not_found')
       redirect_to user_path(session[:user_id])
       return
     end
     if (!Price.exists?(id: params[:product_id]))
       logger.error "Product Price ID not valid: #{params[:product_id]}"
-      flash[:error] = "Product Price ID not valid"
+      flash[:error] = t('flash.prices.pricing_not_found')
       redirect_to company_path(params[:company_id])
       return
     end

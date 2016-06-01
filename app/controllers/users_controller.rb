@@ -18,7 +18,7 @@ class UsersController < ApplicationController
        @user = User.find(params[:user_id]);
     else
        logger.error "User not Found id: #{params[:user_id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.users.user_not_found')
        redirect_to root_path
        return
     end
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
        @user = User.find(session[:adminuser]);
     else
        logger.error "User not Found id: #{session[:adminuser]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.users.user_not_found')
        redirect_to root_path
        return
     end
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
        @company = Company.find(params[:company_id])
     else
       logger.error "Company not Found #{params[:company_id]}"
-      flash[:error] = "Company not Found"
+      flash[:error] = t('flash.users.company_not_found')
       redirect_to root_path
       return
     end
@@ -100,7 +100,7 @@ class UsersController < ApplicationController
        @user = User.find(params[:id]);
     else
        logger.error "User not found #{params[:id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.users.user_not_found')
        redirect_to root_path
        return
     end
@@ -145,7 +145,7 @@ class UsersController < ApplicationController
        @company = Company.find(params[:company_id]);
     else
        logger.debug "Company not Found #{params[:company_id]}"
-       flash[:error] = "Company not Found"
+       flash[:error] = t('flash.users.company_not_found')
        logger.info "Leaving Users Controller:edit"
        redirect_to root_path
        return
@@ -155,7 +155,7 @@ class UsersController < ApplicationController
        @user = User.find(params[:id]);
     else
        logger.debug "User not Found #{params[:id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.users.user_not_found')
        logger.info "Leaving Users Controller:edit"
        redirect_to root_path
        return
@@ -179,7 +179,7 @@ class UsersController < ApplicationController
        logger.debug "Company Exists #{params[:company_id]}"
        @company = Company.find(params[:company_id]);
     else
-       flash[:error] = "Company not Found"
+       flash[:error] = t('flash.users.company_not_found')
        redirect_to root_path
        return
     end
@@ -188,7 +188,7 @@ class UsersController < ApplicationController
        @division = Division.find(params[:division_id])
     else
       logger.debug "Division not Found #{params[:division_id]}"
-      flash[:error] = "Division not Found"
+      flash[:error] = t('flash.users.division_not_found')
       redirect_to root_path
       return
     end
@@ -197,7 +197,7 @@ class UsersController < ApplicationController
        @user = User.find(params[:id]);
     else
        logger.debug "User not Found #{params[:id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.users.user_not_found')
        redirect_to root_path
        return
     end
@@ -209,7 +209,7 @@ class UsersController < ApplicationController
         successfullyDestroyed = userMembership[0].destroy!
         if successfullyDestroyed
           logger.debug "User Has Been Deleted From Division"
-          userErrors[:notice] = "User Has Been Deleted From Division"
+          userErrors[:notice] = t('flash.users.user_not_deleted')
         else
           if (!userMembership.errors.empty?)
              userMembership.errors.each do |attr,err|
@@ -217,11 +217,11 @@ class UsersController < ApplicationController
              end
           end
           logger.error "Could Not Remove User From Division"
-          userErrors[:could_not_update] = "Could Not Remove User From Division"
+          userErrors[:could_not_update] = t('flash.users.could_not_remove')
         end
      else
         logger.error "Could Not Find User In Division"
-        userErrors[:errors] = "Could Not Find User In Division"
+        userErrors[:errors] = t('flash.users.could_not_find')
      end
     addErrorsToFlash(userErrors)
     logger.info "Leaving Users Controller:removeuserdiv"
@@ -235,7 +235,7 @@ class UsersController < ApplicationController
           @user = User.find(params[:id]);
        else
           logger.debug "User not Found #{params[:id]}"
-          flash[:error] = "User not Found"
+          flash[:error] =  t('flash.users.user_not_found')
           redirect_to root_path
           return
        end
@@ -244,7 +244,7 @@ class UsersController < ApplicationController
           @company = Company.find(params[:company_id]);
        else
           logger.debug "Company not Found #{params[:company_id]}"
-          flash[:error] = "Company not Found"
+          flash[:error] =  t('flash.users.company_not_found')
           redirect_to root_path
           return
        end
@@ -265,7 +265,7 @@ class UsersController < ApplicationController
           @user = User.find(params[:id]);
        else
           logger.debug "User not Found #{params[:id]}"
-          flash[:error] = "User not Found"
+          flash[:error] = t('flash.users.user_not_found')
           logger.info "Leaving Users Controller:newdrawingproc"
           redirect_to root_path
           return
@@ -275,7 +275,7 @@ class UsersController < ApplicationController
           @company = Company.find(@user.company_id);
        else
           logger.debug "Company not Found #{params[:company_id]}"
-          flash[:error] = "Company not Found"
+          flash[:error] = t('flash.users.company_not_found')
           logger.info "Leaving Users Controller:newdrawingproc"
           redirect_to root_path
           return
@@ -291,7 +291,7 @@ class UsersController < ApplicationController
          logger.debug "Privacy Level #{@drawing.privacy}"
        else
          logger.debug "Privacy Level not Found"
-         flash[:error] = "Privacy Level not Found"
+         flash[:error] = t('flash.users.privacy_not_found')
          redirect_to root_path
          return
        end
@@ -311,7 +311,7 @@ class UsersController < ApplicationController
        @user = User.find(params[:id])
     else
        logger.debug "User Could Not Be Found #{params[:id]}"
-       flash[:error] = "User Could Not Be Found"
+       flash[:error] = t('flash.users.user_not_found')
        logger.info "Leaving Users Controller:update"
        redirect_to companies_path
        return
@@ -364,7 +364,7 @@ class UsersController < ApplicationController
        addErrorsToFlash(@user.errors)
     else
        logger.info "User Has Been Updated"
-       flash[:notice] = "User Has Been Updated"
+       flash[:notice] = t('flash.users.user_updated')
     end
     if (Company.exists?(params[:company_id]))
        logger.info "Leaving Users Controller:update"
@@ -383,7 +383,7 @@ class UsersController < ApplicationController
     @company = Company.new
     if (!Company.exists?(id: params[:company_id]))
        logger.debug "Company Could Not Be Found #{params[:company_id]}"
-       flash[:error] = "Company Could Not Be Found"
+       flash[:error] = t('flash.users.company_not_found')
        logger.info "Leaving Users Controller:create"
        redirect_to root_path
        return
@@ -402,10 +402,10 @@ class UsersController < ApplicationController
        if !successfullyAdded
          addErrorsToFlash(@user.errors)
          logger.error "User Has Failed To Be Created"
-         flash[:error] = "User Has Failed To Be Created"
+         flash[:error] = t('flash.users.user_not_created')
        else
          logger.debug "User Has Been Created"
-         flash[:notice] = "User Has Been Created"
+         flash[:notice] = t('flash.users.user_created')
        end
     end
     if (!params[:company_id].blank?)
@@ -425,7 +425,7 @@ class UsersController < ApplicationController
        @company = Company.find(params[:company_id]);
     else
        logger.debug "Company not Found #{params[:company_id]}"
-       flash[:error] = "Company not Found"
+       flash[:error] = t('flash.users.company_not_found')
        logger.info "Leaving Users Controller:edit"
        redirect_to root_path
        return
@@ -435,7 +435,7 @@ class UsersController < ApplicationController
        @user = User.find(params[:user_id]);
     else
        logger.debug "User not Found #{params[:user_id]}"
-       flash[:error] = "User not Found"
+       flash[:error] = t('flash.users.user_not_found')
        logger.info "Leaving Users Controller:edit"
        redirect_to root_path
        return
@@ -453,12 +453,12 @@ class UsersController < ApplicationController
 
   def usersettingssubmit
      if (!params[:user][:timezone].blank? && user_signed_in?)
-        flash[:notice] = "Updated User Settings"
+        flash[:notice] = t('flash.users.user_updated')
         user = current_user
         user.timezone = params[:user][:timezone]
         user.save
      else
-        flash[:error] = "Failed to Update User Settings"
+        flash[:error] = t('flash.users.user_not_updated')
      end
      redirect_to company_user_path(current_user.company_id, current_user.id)
   end
@@ -469,18 +469,18 @@ class UsersController < ApplicationController
        @user = User.find(params[:id])
     else
        logger.debug "User Not Found"
-       flash[:error] = "User Not Found"
+       flash[:error] = t('flash.users.user_not_found')
        redirect_to root_path
        return
     end
     @user.destroy
     if (!@user.destroyed?)
        logger.debug "User Not Destroyed"
+       flash[:error] = t('flash.users.user_not_deleted')
        addErrorsToFlash(@user.errors)
     end
     if (Company.exists?(params[:company_id]))
       logger.debug "Company Found #{params[:company_id]}"
-      flash[:notice] = "User has been deleted"
       redirect_to company_path(params[:company_id]), :method => :show
       return
     end

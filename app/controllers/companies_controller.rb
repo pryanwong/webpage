@@ -36,7 +36,7 @@
       logger.debug "Company: #{@company.inspect}"
     else
        logger.debug "Company Could Not Be Found"
-       flash[:error] = "Company Could Not Be Found"
+       flash[:error] = t('flash.companies.company_not_found')
        logger.info "Leaving CompaniesController:show"
        redirect_to companies_path
     end
@@ -53,7 +53,7 @@
        logger.debug "Company: #{@company.inspect}"
     else
        logger.error "Company Could Not Be Found"
-       flash[:error] = "Company Could Not Be Found"
+       flash[:error] = t('flash.companies.company_not_found')
        logger.info "Leaving CompaniesController:edit"
        redirect_to companies_path
     end
@@ -68,11 +68,11 @@
           logger.debug "Company: #{@company.inspect}"
           if @company.update_attributes(company_params)
             logger.debug "Company Edit Saved"
-            flash[:notice] = "Edit Saved"
+            flash[:notice] = t('flash.companies.edit_saved')
           else
             addErrorsToFlash(@company.errors)
             logger.error "Company Could Not Be Updated"
-            flash[:error] = "Company Could Not Be Updated"
+            flash[:error] = t('flash.companies.not_updated')
           end
     end
     addErrorsToFlash(@company.errors)
@@ -87,12 +87,12 @@
     if @company.save
           # Handle a successful update.
       logger.debug "New Company Saved"
-      flash[:notice] = "New Company Saved"
+      flash[:notice] = t('flash.companies.new_company_saved')
     else
       addErrorsToFlash(@company.errors)
       logger.error "Company Could Not Be Added"
       logger.error "errors: #{@company.inspect}"
-      flash[:error] = "Company Could Not Be Added"
+      flash[:error] = t('flash.companies.could_not_be_added')
     end
     logger.info "Leaving CompaniesController:create"
     redirect_to companies_path
@@ -105,14 +105,14 @@
        logger.debug "Company exists: #{params[:id]}"
        @company = Company.find(params[:id])
        if @company.destroy
-         flash[:notice] = "Company has been removed"
+         flash[:notice] = t('flash.companies.has_been_removed')
        else
          logger.debug "errors: #{@company.inspect}"
          addErrorsToFlash(@company.errors)
        end
     else
        logger.error "Company ID not found"
-       flash[:error] = "Company ID not found"
+       flash[:error] = t('flash.companies.company_id_not_found')
     end
     logger.info "Leaving CompaniesController:destroy"
     redirect_to companies_path

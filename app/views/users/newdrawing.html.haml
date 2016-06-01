@@ -4,11 +4,11 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
+                  =t('.home')
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Drawings
-            %li New Drawing
+                  =t('.drawings')
+            %li #{t('.new_drawing')}
 
 %div{:id=>"main", :class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
@@ -16,34 +16,34 @@
          %div.page-header
             %div.container
                %div.row-fluid
-                  %h2 New Drawing
+                  %h2 #{t('.new_drawing')}
          %div{:class=>"form-group"}
-            = f.label :customer, :class=>"control-label col-sm-2"
+            = f.label #{'.customer'}, :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.text_field :customer, :class=>"form-control"
          %div{:class=>"form-group"}
-            = f.label :opportunity, :class=>"control-label col-sm-2"
+            = f.label t('.opportunity'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.text_field :opportunity, :class=>"form-control"
          %div{:class=>"form-group"}
-            = f.label :description, :class=>"control-label col-sm-2"
+            = f.label t('.description'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.text_field :description, :class=>"form-control"
          %div{:class=>"form-group"}
-            = f.label :privacy, :class=>"control-label col-sm-2"
+            = f.label t('.privacy'), :class=>"control-label col-sm-2"
             %div{:class=>"controls col-sm-5"}
                = f.label :privacy_company, :class=>"radio" do
                   = f.radio_button :privacy, "company"
-                  within Company
+                  =t('.within_company')
                -if @divcount > 0
                   = f.label :privacy_division, "within Division", :class=>"radio" do
                      = f.radio_button :privacy, "division"
-                     within Division
+                     = t('.within_division')
                      = f.collection_select :division, @divisions,:id,:name, include_blank: false
                = f.label :privacy_division, "Only for User", :class=>"radio" do
                   = f.radio_button :privacy, "user"
-                  Only for User
+                  = t('.only_user')
          %div{:class=>"form-group"}
             %div{:class=>"col-sm-5 col-sm-offset-2"}
-               = f.submit "Save", :class=>"btn btn-default"
-               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)
+               = f.submit t('.save'), :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_user_path(current_user.company_id ,current_user.id)

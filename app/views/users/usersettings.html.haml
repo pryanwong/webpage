@@ -4,11 +4,11 @@
          %ol{:class=>"breadcrumb"}
             %li
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
+                  =t('.home')
             %li
                = link_to company_path(current_user.company_id ) do
-                  Company
-            %li User Settings
+                  =t('.company')
+            %li #{t('.user_settings')}
 
 %div{:id=>"main", :class=>"container"}
    %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
@@ -18,12 +18,12 @@
          %div.page-header
             %div.container
                %div.row-fluid
-                  %h2 Update User Settings
+                  %h2 #{t('.update_user_settings')}
          %div{:class=>"form-group"}
-            = f.label :timezone, :class=>"control-label col-sm-2"
+            = f.label t('.timezone'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.select :timezone, options_for_select(@timezone_array,@user.timezone), {}, {:class=>"form-control"}
          %div.row
             %div{:class=>"col-sm-12 col-sm-offset-1"}
-               = f.submit "Save", :class=>"btn btn-default"
-               = link_to "<button class='btn btn-default'>Cancel</button>".html_safe, company_user_path(@company,@user)
+               = f.submit t('.save'), :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_user_path(@company,@user)

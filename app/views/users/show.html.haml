@@ -4,8 +4,8 @@
          %ol{:class=>"breadcrumb"}
             %li{:class=>"hidden-sm hidden-xs"}
                = link_to company_user_path(current_user.company_id ,current_user.id) do
-                  Home
-            %li{:class=>"hidden-sm hidden-xs"} Drawings
+                  =t('.home')
+            %li{:class=>"hidden-sm hidden-xs"} #{t('.drawing')}
             = form_tag company_user_path(current_user.company_id ,current_user.id), class: "pull-right navbar-form searchbread", method: :get do
                %div{:class=>"input-group"}
                   %input{:type=>"text", :class=>"form-control", :placeholder=> "Search", :name=>"srch_term", :id=>"srch-term", :value => "#{@searchVal}"}
@@ -18,23 +18,23 @@
          %table{:class=>"table table-bordered table-hover"}
             %thead
                %tr
-                  %td Drawings
+                  %td #{t('.drawing')}
                   %td{:class=>"hidden-sm hidden-xs", :colspan=>'7'}
-                  %td New
+                  %td #{t('.new')}
                   %td
                      = link_to newdrawing_company_user_path(@user.company.id, @user.id) do
                         %i{:class=>"fa fa-plus-square"}
                %tr
-                  %th= sortable "opportunity"
-                  %th{:class=>"hidden-sm hidden-xs"}= sortable "description", "Description"
-                  %th{:class=>"hidden-sm hidden-xs"}= sortable "customer", "Customer"
-                  %th{:class=>"hidden-sm hidden-xs"}= sortable "users.email", "Email"
-                  %th{:class=>"hidden-sm hidden-xs"}= sortable "updated_at", "Updated"
-                  %th PNG
-                  %th Send
-                  %th Desc
-                  %th BOM
-                  %th Edit
+                  %th= sortable "opportunity", t('.opportunity')
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "description", t('.description')
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "customer", t('.customer')
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "users.email", t('.email')
+                  %th{:class=>"hidden-sm hidden-xs"}= sortable "updated_at", t('.updated')
+                  %th #{t('.png')}
+                  %th #{t('.send')}
+                  %th #{t('.desc')}
+                  %th #{t('.bom')}
+                  %th #{t('.edit')}
             %tbody
                -@userdrawings.each do |drawing|
                   %tr
