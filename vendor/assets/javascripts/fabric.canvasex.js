@@ -302,3 +302,88 @@ fabric.Circleone.fromObject = function(object) {
   return new fabric.Circleone(object);
 };
 fabric.Circleone.async = false;
+
+fabric.Conearrow = fabric.util.createClass(fabric.Circle, {
+   type: 'conearrow',
+   initialize: function(element, options) {
+     this.callSuper('initialize', element, options);
+     options && this.set('belongsTo', options.belongsTo);
+   },
+   toObject: function() {
+     return fabric.util.object.extend(this.callSuper('toObject'),{
+       belongsTo: this.belongsTo});
+   },
+   setBelongsTo: function(belongsToString) {
+     this.belongsTo = belongsToString;
+   },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+   }
+});
+
+fabric.Conearrow.fromObject = function(object) {
+    return new fabric.Conearrow(object);
+};
+
+fabric.Conearrow.async = false;
+
+//log.debug("Create Custom Circleone Class");
+fabric.Carrow = fabric.util.createClass(fabric.Triangle, {
+   type: 'carrow',
+   initialize: function(element, options) {
+      this.callSuper('initialize', element, options);
+      options && this.set('belongsTo', options.belongsTo);
+   },
+   toObject: function() {
+      return fabric.util.object.extend(this.callSuper('toObject'),
+                                  {belongsTo: this.belongsTo});
+   },
+   setBelongsTo: function(belongsToString) {
+      this.belongsTo = belongsToString;
+   },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+   }
+});
+
+fabric.Carrow.fromObject = function(object) {
+  return new fabric.Carrow(object);
+};
+fabric.Carrow.async = false;
+
+//log.debug("Create Custom Line Class");
+fabric.Customlinearrow = fabric.util.createClass(fabric.Line, {
+  type: 'customlinearrow',
+  initialize: function(coords, options) {
+      options || (options = {});
+      this.callSuper('initialize', coords ,options);
+      options && this.set('objId',  options.objId);
+      options && this.set('carrow', options.carrow);
+      options && this.set('conearrow',   options.conearrow);
+  },
+  toObject: function() {
+      return fabric.util.object.extend(this.callSuper('toObject'),
+                                    {objId:  this.objId,
+                                     carrow: this.carrow,
+                                     conearrow: this.conearrow});
+  },
+  setObjId: function(objIdString) {
+     this.objId = objIdString;
+  },
+  getObjId: function() {
+     return this.objId;
+  },
+  setCarrow: function(c1String) {
+     this.carrow = c1String;
+  },
+  setConearrow: function(c2String) {
+     this.conearrow = c2String;
+  },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+   }
+});
+fabric.Customlinearrow.fromObject = function (object) {
+  return new fabric.Customlinearrow([object.x1,object.y1,object.x2,object.y2], object);
+};
+fabric.Customlinearrow.async = false;

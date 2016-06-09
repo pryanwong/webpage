@@ -13,10 +13,10 @@ class UserMembership < ActiveRecord::Base
           company_id = User.find(self.user_id).company_id
           div_included = Division.where(:company_id => company_id).pluck(:id).include?(self.division_id)
           if !div_included
-             errors.add(:division_id, "The Division is not in the users company")
+             errors.add(:division_id, t('activerecord.user_membership.no_company'))
           end
        else
-         errors.add(:company_id, "The Company Does not Exist")
+         errors.add(:company_id, no_company)
        end
     end
 end

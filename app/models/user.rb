@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
     count = User.where(:email => self.email, :provider => self.provider).count
     logger.debug "count: #{count}"
     if (count > 0)
-      errors.add(:licenses, "Duplicate new record, already exists")
+      errors.add(:licenses, t('activerecord.user.duplicate'))
     end
   end
 
@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
     count = User.where(:email => self.email, :provider => self.provider).where.not(id: self.id).count
     logger.debug "count: #{count}"
     if (count > 0)
-      errors.add(:licenses, "Duplicate, error in edit, record exists")
+      errors.add(:licenses, t('activerecord.user.duplicate'))
     end
   end
 
@@ -54,31 +54,10 @@ class User < ActiveRecord::Base
         company = Company.find(self.company_id)
         count = User.where(:company_id => self.company_id).count
         if (count >= company.licenses)
-            errors.add(:licenses, "Insufficient Licenses to Add a User")
+            errors.add(:licenses, t('activerecord.user.insufficient_licenses'))
         end
      end
   end
-
-  #def self.from_omniauth(auth, remote_ip)
-  #    logger.debug "In User from_omniauth"
-  #    logger.debug "#{auth}"
-  #    if (auth.info.email).blank?
-  #      user = nil
-  #    else
-  #       if User.exists?(:email => auth.info.email, :provider => User.providers[auth.provider])
-  #          user = User.where(email: auth.info.email, provider: User.providers[auth.provider]).first
-  #          user.uid                    = auth.uid
-  #          user.reset_password_token   = auth.credentials.token
-  #          user.reset_password_sent_at = Time.at(auth.credentials.expires_at)
-  #          user.last_sign_in_at        = user.current_sign_in_at
-  #          user.current_sign_in_at     = Time.new
-  #          user.last_sign_in_ip        = user.current_sign_in_ip
-  #          user.current_sign_in_ip     = remote_ip
-  #          user.save!
-  #       end
-  #    end
-  #    user
-  #end
 
   def self.from_omniauth(auth , remote_ip)
     logger.debug "From Omniauth: #{auth.inspect}"
@@ -87,22 +66,12 @@ class User < ActiveRecord::Base
       raise ActiveRecord::RecordNotFound
     else
       user = User.where(email: auth.info.email, provider: auth.provider).first
-      # user.password = Devise.friendly_token[0,20]
-      #user.name = auth.info.name   # assuming the user model has a name
-      #user.image = auth.info.image # assuming the user model has an image
-      #user.last_sign_in_at        = user.current_sign_in_at
-      #user.current_sign_in_at     = Time.new
       user.last_sign_in_ip        = user.current_sign_in_ip
       user.current_sign_in_ip     = remote_ip
       user.save
     end
     user
   end
-
-  #def send_reset_password_instructions
-  #  return false if self.provider == 'google_oauth2'
-  #  super
-  #end
 
   def self.new_with_session(params, session)
     logger.debug "From new_with_session: #{session.inspect}"

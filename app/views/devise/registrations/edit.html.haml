@@ -30,6 +30,7 @@
                = f.password_field :current_password, autocomplete: "off", :class=>"form-control", :required=>true
             %div{:class=>"form-group"}
                = f.submit t('.update'), :class=>"btn btn-default"
+               = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_user_path(current_user.company_id, current_user)
 
 :Javascript
    function validatePassword() {

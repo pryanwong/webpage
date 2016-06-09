@@ -19,7 +19,7 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 
-en:
+fr:
   activerecord:
     company:
       error_license: Cannot Add User,  All Licenses Have Been Used
@@ -147,7 +147,6 @@ en:
         confirm_password: Confirm new password
         current_password: Current Password
         update: Update
-        cancel: Cancel
     passwords:
       edit:
         change_your_password: Change Your Password
@@ -155,13 +154,12 @@ en:
         characters_minimum: characters minimum
         confirm_new_password: Confirm new password
         change_my_password: Change my password
-        cancel: Cancel
       new:
         provide_email_address: Provide Email Address
         send_reset_instructions: Send me reset password instructions
     shared:
       links:
-        forgot_password: Forgot your password?
+        forgot_password: Oublier votre mot de passe?
         no_confirm_instructions: Didn't receive confirmation instructions?
         no_unlock_instructions: Didn't receive unlock instructions?
         sign_in_optecture: Sign in with Optecture
@@ -229,13 +227,13 @@ en:
       status: Login Failed
       error: This login did not work
     home:
-      email: Email
-      password: Password
-      remember_me: Remember Me
+      email: Courriel
+      password: Mot de Passe
+      remember_me: Souvien Moi
       login: Login
-      sign_in_linkedin: Sign in with LinkedIn
-      sign_in_google: Sign in with Google
-      forgot_password: Forgot your password?
+      sign_in_linkedin: Signer avec LinkedIn
+      sign_in_google: Signer avec Google
+      forgot_password: Oublier votre mot de passe?
     recordnotfound:
       status: What's going on here
       error: I have no idea what you are looking for.
@@ -306,7 +304,7 @@ en:
       cancel: Cancel
     newdrawing:
       home: Home
-      drawings: Drawings
+      drawing: Drawings
       new_drawing: New Drawing
       customer: Customer
       opportunity: Opportunity

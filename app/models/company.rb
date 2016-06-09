@@ -12,7 +12,7 @@ class Company < ActiveRecord::Base
         if (self.users.size < self.licenses)
            val = true;
         else
-           flashval[:error_license] = "Cannot Add User:  All Licenses Have Been Used"
+           flashval[:error_license] = t('activerecord.company.error_license')
         end
         return [val, flashval];
     end

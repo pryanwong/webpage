@@ -56,14 +56,14 @@ class Drawing < ActiveRecord::Base
   def division_belongs_to_user
       divisionBelongs = self.user.company.divisions.pluck(:id).include?(self.division_id)
       if !divisionBelongs
-        errors.add(:invalid_division, 'Division Does not Belong to User')
+        errors.add(:invalid_division, t('activerecord.drawing.does_not_belong_to_user'))
       end
   end
 
   def company_belongs_to_user
      companyBelongs = (self.user.company.id == self.company_id)
      if !companyBelongs
-       errors.add(:invalid_company, 'Company Does not Belong to User')
+       errors.add(:invalid_company, t('activerecord.drawing.company_does_not_belong_to_user'))
      end
   end
 
@@ -76,7 +76,7 @@ class Drawing < ActiveRecord::Base
           drawing_exists = true;
        end
     else
-      error_messages[:id_blank] = "Drawing Does Not Exist"
+      error_messages[:id_blank] = t('activerecord.drawing.no_drawing')
     end
     if (drawing_exists)
       valid_data = true;

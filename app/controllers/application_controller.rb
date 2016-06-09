@@ -6,6 +6,13 @@ class ApplicationController < ActionController::Base
   #before_action :authenticate_user!
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_filter :set_locale
+
+  def set_locale
+    val = extract_locale_from_accept_language_header
+    puts val
+    I18n.locale = val
+  end
 
   def current_ability
      logger.info "Entering ApplicationController:current_ability"
@@ -54,5 +61,16 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :provider, :role, :company_id, :timezone])
     devise_parameter_sanitizer.permit(:account_update, keys: [:username, :provider, :role, :company_id, :timezone])
   end
+
+  def extract_locale_from_accept_language_header
+  case request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first
+    when 'en'
+      'en'
+    when 'fr'
+      'fr'
+    else
+      'en'
+  end
+end
 
 end

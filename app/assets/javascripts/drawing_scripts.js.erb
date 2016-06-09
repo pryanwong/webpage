@@ -76,6 +76,8 @@ function setLinePositions(e) {
       var objId = p.get('objId')
       var _curXm = (_curX - e.e.clientX);
       var _curYm = (_curY - e.e.clientY);
+      console.log("_curX, _curY: ", _curX, " ", _curY)
+      console.log("Deltas: ", _curXm, " ", _curYm)
       //console.log("moved: " + _curXm);
       //console.log("moved: " + _curYm);
 
@@ -85,6 +87,11 @@ function setLinePositions(e) {
         if (currentObj.type == "circleone" && currentObj.get('belongsTo') == objId) {
           _c2Top = currentObj.getTop();
           _c2Left = currentObj.getLeft();
+          console.log("In circleone", currentObj)
+          console.log("currentObj.left: ", currentObj.left)
+          console.log("currentObj.top: ", currentObj.top)
+          console.log("New currentObj.left: ", (currentObj.left -_curXm))
+          console.log("New currentObj.top: ", (currentObj.top - _curYm))
           currentObj.set({
             'left': (currentObj.left - _curXm),
             'top': (currentObj.top - _curYm)
@@ -123,6 +130,65 @@ function setLinePositions(e) {
       _curX = e.e.clientX;
       _curY = e.e.clientY;
     }
+
+    if (objType == 'customlinearrow') {
+        console.log("In customlinearrow")
+        var objId = p.get('objId')
+        var _curXm = (_curX - e.e.clientX);
+        var _curYm = (_curY - e.e.clientY);
+        console.log("Deltas: ", _curXm, " ", _curYm)
+        for (var i = 0; i < canvas.getObjects().length; i++) {
+          var currentObj = canvas.getObjects()[i];
+          console.log("currentObj: ", currentObj)
+          if (currentObj.type == "carrow" && currentObj.get('belongsTo') == objId) {
+            console.log("In carrow", currentObj)
+            console.log("currentObj.left: ", currentObj.left)
+            console.log("currentObj.top: ", currentObj.top)
+            console.log("New currentObj.left: ", (currentObj.left -_curXm))
+            console.log("New currentObj.top: ", (currentObj.top - _curYm))
+            _c2Top = currentObj.getTop();
+            _c2Left = currentObj.getLeft();
+            currentObj.set({
+              'left': (currentObj.left - _curXm),
+              'top': (currentObj.top - _curYm)
+            });
+
+            currentObj.setCoords();
+
+            currentObj.line && currentObj.line.set({
+                'x2': currentObj.left,
+                'y2': currentObj.top
+              });
+
+            currentObj.line.setCoords();
+          }
+
+          if (currentObj.type == "conearrow" && currentObj.get('belongsTo') == objId) {
+            console.log("In conearrow", currentObj)
+            _c1Top = currentObj.getTop();
+            _c1Left = currentObj.getLeft();
+            console.log("New currentObj.left: ", (currentObj.left -_curXm))
+            console.log("New currentObj.top: ", (currentObj.top - _curYm))
+            currentObj.set({
+              'left': (currentObj.left - _curXm) ,
+              'top': (currentObj.top - _curYm)
+            });
+
+            currentObj.setCoords();
+
+            currentObj.line && currentObj.line.set({
+                'x1': currentObj.left,
+                'y1': currentObj.top
+              });
+
+            currentObj.line.setCoords();
+          }
+
+
+        }
+        _curX = e.e.clientX;
+        _curY = e.e.clientY;
+      }
 }
 
 function setLineCirclePositionsBoundary(e) {
@@ -131,8 +197,9 @@ function setLineCirclePositionsBoundary(e) {
       var objId = p.get('objId')
       var _curXm = (_curX - e.e.clientX);
       var _curYm = (_curY - e.e.clientY);
-      _circleOne = p.cone;
-      _circleTwo = p.ctwo;
+      if (p.type == "customline") {
+         _circleOne = p.cone;
+         _circleTwo = p.ctwo;
 
           _circleTwo && _circleTwo.set({
             'left': _c2Left,
@@ -163,7 +230,45 @@ function setLineCirclePositionsBoundary(e) {
             });
 
           _circleOne.line.setCoords();
-      p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
+          p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
+
+    }
+    if (p.type == "customlinearrow") {
+       _circleOne = p.conearrow;
+       _circleTwo = p.carrow;
+
+        _circleTwo && _circleTwo.set({
+          'left': _c2Left,
+          'top': _c2Top
+        });
+
+        _circleTwo.setCoords();
+
+        _circleTwo.line && _circleTwo.line.set({
+            'x2': _circleTwo.left,
+            'y2': _circleTwo.top
+          });
+
+        _circleTwo.line.setCoords();
+
+
+        _circleOne && _circleOne.set({
+          'left': _c1Left,
+          'top': _c1Top
+        });
+
+        _circleOne.setCoords();
+        //setCircleLineAtBoundary(currentObj,p)
+
+        _circleOne.line && _circleOne.line.set({
+            'x1': _circleOne.left,
+            'y1': _circleOne.top
+          });
+
+        _circleOne.line.setCoords();
+        p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
+
+      }
       p.setCoords();
       _curX = e.e.clientX;
       _curY = e.e.clientY;
@@ -178,7 +283,7 @@ function objectBoundaryCheck(e){
   console.log("Object in boundary check: ", e.target)
 
   log.debug( "Checking to see if the end points of a line are being dragged ");
-  if (e.target.type != "circlezero" && e.target.type != "circleone") {
+  if (e.target.type != "circlezero" && e.target.type != "circleone" && e.target.type != "conearrow" && e.target.type != "carrow") {
      var obj = e.target;
      var posBottom = e.target.getBoundingRect().top + e.target.getBoundingRect().height;
      var posRight = e.target.getBoundingRect().left + e.target.getBoundingRect().width;
@@ -194,7 +299,7 @@ function objectBoundaryCheck(e){
        log.debug( "hit the top-left corner");
        e.target.setTop(Math.max(e.target.top  , y1Delta  ));
        e.target.left = Math.max(e.target.left , x1Delta );
-       if (e.target.type == "customline") {
+       if (e.target.type == "customline" || e.target.type == "customlinearrow") {
           setLineCirclePositionsBoundary(e);
           canvas.deactivateAll();
        }
@@ -231,7 +336,7 @@ function objectBoundaryCheck(e){
            }
         }
         boundaryHit = true;
-        if (e.target.type == "customline") {
+        if (e.target.type == "customline" || e.target.type == "customlinearrow") {
            setLineCirclePositionsBoundary(e);
            canvas.deactivateAll();
         }
@@ -259,8 +364,10 @@ function objectDeletedEvent(e) {
 
 function boundaryInspectorCircle(e) {
    log.info( "Entering boundaryInspectorCircle");
+
    e.target.setCoords()
    var p = e.target;
+   console.log("Type is: ", p.type)
    bounds = {tl: {x: 0, y:0}, br: {x: canvas.width , y: canvas.height } };
    if((p.type == 'circleone' || p.type == 'circlezero')) {
       if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
@@ -279,6 +386,37 @@ function boundaryInspectorCircle(e) {
       p.line.setCoords();
       e.target.setCoords();
       //canvas.renderAll();
+   }
+   if (p.type == 'conearrow') {
+        if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
+           e.target.setTop(Math.max('0', e.target.top))
+           e.target.left = Math.max('0', e.target.left)
+        }  else if ((p.top + 2*p.radius) > bounds.br.y || (p.left + 2*p.radius) > bounds.br.x ) {
+           e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
+           e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
+        }
+        console.log("conearrow: ", p.line)
+        p.line && p.line.set({ 'x1': p.line.conearrow.left, 'y1': p.line.conearrow.top, 'x2': p.line.carrow.left, 'y2': p.line.carrow.top });
+        p.line.setCoords();
+        angle = calcArrowAngle(p.line.x1, p.line.y1, p.line.x2, p.line.y2);
+        p.line.carrow.set('angle', angle + 90);
+        e.target.setCoords();
+   }
+
+   if (p.type == 'carrow') {
+        if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
+           e.target.setTop(Math.max('0', e.target.top))
+           e.target.left = Math.max('0', e.target.left)
+        }  else if ((p.top + 2*p.radius) > bounds.br.y || (p.left + 2*p.radius) > bounds.br.x ) {
+           e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
+           e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
+        }
+        console.log("conearrow: ", p.line)
+        p.line && p.line.set({ 'x1': p.line.conearrow.left, 'y1': p.line.conearrow.top, 'x2': p.line.carrow.left, 'y2': p.line.carrow.top });
+        p.line.setCoords();
+        angle = calcArrowAngle(p.line.x1, p.line.y1, p.line.x2, p.line.y2);
+        p.set('angle', angle + 90);
+        e.target.setCoords();
    }
    log.info( "Leaving boundaryInspectorCircle");
 };
@@ -340,6 +478,15 @@ function objectSelected(e) {
       _c2Top = e.target.ctwo.getTop();
       _c2Left = e.target.ctwo.getLeft();
    }
+   if (objType == 'customlinearrow') {
+     console.log("custom line selected");
+     _curX = e.e.clientX;
+     _curY = e.e.clientY;
+     _c1Top = e.target.conearrow.getTop();
+     _c1Left =  e.target.conearrow.getLeft();
+     _c2Top = e.target.carrow.getTop();
+     _c2Left = e.target.carrow.getLeft();
+  }
    var activeGroupCollection = canvas.getActiveGroup();
    var circleZeroInCollection = new Array();
    var circleOneInCollection = new Array();
@@ -693,6 +840,49 @@ function loadCanvasDrawing(data_drawing) {
               });
               objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
             }
+
+            if (objs[i].type == "customlinearrow")  {
+              console.log("customline: ", objs[i])
+              console.log("Item Id of line set to: ", objs[i].getObjId())
+              canvas.forEachObject(function(circleProspect){
+                log.debug("Object Type: ", circleProspect.type)
+                if (circleProspect.type == "carrow" || circleProspect.type == "conearrow") {
+                   log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
+                   log.debug("objs[1].objId: ", objs[i].objId)
+                }
+                if (circleProspect.type == "conearrow" && circleProspect.belongsTo == objs[i].objId) {
+                   circleProspect.hasBorders = circleProspect.hasControls = false;
+                   circleProspect.line = objs[i]
+                   circleProspect.belongsTo = itemId;
+                   objs[i].conearrow = circleProspect
+                   circleProspect.set('hoverCursor','crosshair')
+                   console.log("found conearrow")
+                   foundCircle = foundCircle + 1;
+
+                }
+                if (circleProspect.type == "carrow" && circleProspect.belongsTo == objs[i].objId) {
+                  circleProspect.hasBorders = circleProspect.hasControls = false;
+                  circleProspect.line = objs[i]
+                  circleProspect.belongsTo = itemId;
+                  objs[i].carrow = circleProspect
+                  circleProspect.set('hoverCursor','crosshair')
+                  console.log("found carrow")
+                  foundCircle = foundCircle + 1;
+                }
+                if (foundCircle == 2) {
+                  console.log("objId: ", objs[i].get('objId'))
+                  objs[i].setObjId(itemId)
+                  itemId = itemId + 1;
+                  objs[i].conearrow.id = itemId;
+                  itemId = itemId + 1;
+                  objs[i].carrow.id = itemId;
+                  foundCircle = 0;
+                }
+              });
+              objs[i].on("mousedown", function(data, index) { lineArrowDown(data,index); });
+            }
+
+
             itemId = itemId + 1;
          }
          canvas.renderAll();
@@ -881,6 +1071,45 @@ function makeLine(coords, id) {
    return line;
  }
 
+ function makeLineArrow(coords, id) {
+    log.info( "Entering makeLine");
+    log.debug("Coords are: ", coords);
+    line =  new fabric.Customlinearrow(coords, {
+      x1: coords[0],
+      y1: coords[1],
+      x2: coords[2],
+      y2: coords[3],
+      fill: 'red',
+      stroke: 'red',
+      strokeWidth: 5,
+      selectable: true,
+      objId: id,
+      perPixelTargetFind: true,
+    });
+    line.hasControls = false;
+    log.info( "Leaving makeLine");
+    return line;
+  }
+
+ function makeArrowShape(coords, id) {
+   arrow = new fabric.Arrowone({
+            left: line.get(coords[0]),
+            top: line.get(coords[1]),
+            originX: 'center',
+            originY: 'center',
+            hasBorders: false,
+            hasControls: false,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            pointType: 'arrow_start',
+            angle: -225,
+            width: 20,
+            height: 20,
+            fill: '#000'
+        });
+   return arrow;
+ }
  function makeCircleShape(coords, id) {
    log.info( "Entering makeCircleShape");
    return new fabric.Circle({ top: coords[1],
@@ -941,6 +1170,11 @@ function makeLine(coords, id) {
             activeObjectValCP.fill = newLineColor;
             activeObjectValCP.stroke = newLineColor;
           }
+          if (activeObjectValCP.type == "customlinearrow") {
+            log.debug( "colorPickerChange on line type");
+            activeObjectValCP.fill = newLineColor;
+            activeObjectValCP.stroke = newLineColor;
+          }
           if (activeObjectValCP.type == "circle") {
             log.debug( "colorPickerChange on circle type");
             activeObjectValCP.stroke = newLineColor;
@@ -995,6 +1229,48 @@ function makeLine(coords, id) {
      c2.line = line;
      line.cone = c1;
      line.ctwo = c2;
+     var c = new Array(c1, c2);
+     log.info( "Leaving makeCircle");
+     return c;
+ }
+
+ function makeCircleArrow(line) {
+     log.info( "Entering makeCircleArrow");
+     var c1 = new fabric.Conearrow({
+       left: line.get('x1')-2.5,
+       top: line.get('y1')-2.5,
+       visible: 'true',
+       hoverCursor: 'crosshair',
+       strokeWidth:  2,
+       stroke: '#000',
+       radius: 5,
+       fill: '#fff'
+     });
+     c1.setBelongsTo(line.objId);
+     var c2 =  new fabric.Carrow({
+              left: line.get('x2'),
+              top: line.get('y2'),
+              originX: 'center',
+              originY: 'center',
+              hasBorders: false,
+              hasControls: false,
+              lockScalingX: true,
+              lockScalingY: true,
+              lockRotation: true,
+              pointType: 'arrow_start',
+              angle: 135,
+              width: 20,
+              height: 20,
+              fill: '#000'
+          });
+     c2.setBelongsTo(line.objId);
+     c1.hasBorders = c1.hasControls = false;
+     c2.hasBorders = c2.hasControls = false;
+
+     c1.line = line;
+     c2.line = line;
+     line.conearrow = c1;
+     line.carrow = c2;
      var c = new Array(c1, c2);
      log.info( "Leaving makeCircle");
      return c;
@@ -1123,6 +1399,73 @@ function lineDown(data,index) {
                                                    i = i -1;
                                                    canvas.remove(objs[i].cone)
                                                    canvas.remove(objs[i].ctwo)
+                                                   canvas.remove(objs[i]);
+                                                 }
+                                                 canvas.renderAll()
+                                               }
+                                             }
+                                             $('#contextMenu').remove();
+                                             contextmenuon = false;
+                                             activeObject = false;
+                                           });
+           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
+                                                             $('#contextMenu').remove();
+                                                             contextmenuon = false;}
+                                                );
+           $('a:contains("Send Backward")').click(function() {sendBackward();});
+           $('a:contains("Send To Back")').click(function() {sendToBack();});
+           $('a:contains("Bring Forward")').click(function() {bringFoward();});
+           $('a:contains("Bring To Front")').click(function() {bringToFront();});
+           contextmenuon = true;
+        };
+      }
+      document.addEventListener('contextmenu', handler, false);
+   }
+   log.info( "Leaving lineDown");
+}
+
+function lineArrowDown(data,index) {
+   log.info( "Entering lineDown");
+   console.log( "Entering lineDown");
+   console.log("data: ", data)
+
+   if (activeObjectVal) {
+     activeObject = true;
+   }
+   if (handler != "") {
+      document.removeEventListener('contextmenu', handler);
+   }
+   if (data.e.which == 3) {
+      handler = function(e) {
+         if (contextmenuon == false &&  activeObject == true) {
+            e.preventDefault();
+            var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            menus(items, e);
+            $('a:contains("Delete")').click(  function() {
+                                             if (activeObjectVal.type) {
+                                               if (activeObjectVal.type == "customlinearrow") {
+                                                 canvas.remove(activeObjectVal.conearrow)
+                                                 canvas.remove(activeObjectVal.carrow)
+                                                 canvas.remove(activeObjectVal);
+                                               } else if(activeObjectVal.hasOwnProperty('belongsTo')) {
+                                                 console.log("removing belongTo object")
+                                                 var objs = canvas.getObjects()
+                                                 // find line with belongsTo value
+                                                 var searchVal = activeObjectVal.get('belongsTo')
+                                                 var found = false;
+                                                 var i = 0;
+                                                 while (!found && i < objs.length) {
+                                                   if (objs[i].type == "customlinearrow") {
+                                                     if (objs[i].objId == searchVal) {
+                                                       found= true;
+                                                     }
+                                                   }
+                                                   i = i + 1;
+                                                 }
+                                                 if (found) {
+                                                   i = i -1;
+                                                   canvas.remove(objs[i].conearrow)
+                                                   canvas.remove(objs[i].carrow)
                                                    canvas.remove(objs[i]);
                                                  }
                                                  canvas.renderAll()
@@ -1424,6 +1767,28 @@ function handleDrop(e) {
          canvas.add(c[id][0],c[id][1]);
          canvas.renderAll();
          line.on("mousedown", function(data, index) { lineDown(data,index); });
+      } else if (imgsrc_val == "line_arrow_icon.png") {
+         log.debug("In line.png section");
+         objectName = "customlinearrow";
+         var xpos1 = e.layerX;
+         var ypos1 = e.layerY;
+         var xpos2 = xpos1 + 25;
+         var ypos2 = ypos1 + 25;
+         objId = id;
+         var line = makeLineArrow([ xpos1, ypos1, xpos2, ypos2 ], id)
+         line.hasControls = false
+         itemId = itemId + 1;
+         line.id = itemId
+         line.objId = itemId;
+         canvas.add(line)
+         c[id] = makeCircleArrow(line);
+         line.conearrow = c[id][0];
+         line.carrow= c[id][1];
+         console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'))
+         console.log("circle and arrow: ", c[id][0], ":", c[id][1])
+         canvas.add(c[id][0],c[id][1]);
+         canvas.renderAll();
+         line.on("mousedown", function(data, index) { lineArrowDown(data,index); });
       } else if (imgsrc_val == "circle_icon.png") {
         log.debug("In circle_icon.png section");
         objectName = "circle";
@@ -1916,3 +2281,21 @@ function SetConfig(searchId) {
     var duration = 500;
     $('#versionspanel').toggle(effect, options, duration);
  }
+
+ function calcArrowAngle(x1, y1, x2, y2) {
+        var angle = 0,
+            x, y;
+
+        x = (x2 - x1);
+        y = (y2 - y1);
+
+        if (x === 0) {
+            angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
+        } else if (y === 0) {
+            angle = (x > 0) ? 0 : Math.PI;
+        } else {
+            angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
+        }
+
+        return (angle * 180 / Math.PI);
+    }
