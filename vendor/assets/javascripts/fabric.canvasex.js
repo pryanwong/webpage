@@ -351,6 +351,29 @@ fabric.Carrow.fromObject = function(object) {
 };
 fabric.Carrow.async = false;
 
+fabric.Carrowtwo = fabric.util.createClass(fabric.Triangle, {
+   type: 'carrowtwo',
+   initialize: function(element, options) {
+      this.callSuper('initialize', element, options);
+      options && this.set('belongsTo', options.belongsTo);
+   },
+   toObject: function() {
+      return fabric.util.object.extend(this.callSuper('toObject'),
+                                  {belongsTo: this.belongsTo});
+   },
+   setBelongsTo: function(belongsToString) {
+      this.belongsTo = belongsToString;
+   },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+   }
+});
+
+fabric.Carrowtwo.fromObject = function(object) {
+  return new fabric.Carrowtwo(object);
+};
+fabric.Carrowtwo.async = false;
+
 //log.debug("Create Custom Line Class");
 fabric.Customlinearrow = fabric.util.createClass(fabric.Line, {
   type: 'customlinearrow',
@@ -387,3 +410,40 @@ fabric.Customlinearrow.fromObject = function (object) {
   return new fabric.Customlinearrow([object.x1,object.y1,object.x2,object.y2], object);
 };
 fabric.Customlinearrow.async = false;
+
+//log.debug("Create Custom Line Class");
+fabric.Customlinetwoarrow = fabric.util.createClass(fabric.Line, {
+  type: 'customlinetwoarrow',
+  initialize: function(coords, options) {
+      options || (options = {});
+      this.callSuper('initialize', coords ,options);
+      options && this.set('objId',  options.objId);
+      options && this.set('carrow', options.carrow);
+      options && this.set('carrowtwo',   options.carrowtwo);
+  },
+  toObject: function() {
+      return fabric.util.object.extend(this.callSuper('toObject'),
+                                    {objId:  this.objId,
+                                     carrow: this.carrow,
+                                     carrowtwo: this.carrowtwo});
+  },
+  setObjId: function(objIdString) {
+     this.objId = objIdString;
+  },
+  getObjId: function() {
+     return this.objId;
+  },
+  setCarrow: function(c1String) {
+     this.carrow = c1String;
+  },
+  setCarrowtwo: function(c2String) {
+     this.carrowtwo = c2String;
+  },
+   _render: function(ctx) {
+      this.callSuper('_render', ctx);
+   }
+});
+fabric.Customlinetwoarrow.fromObject = function (object) {
+  return new fabric.Customlinearrow([object.x1,object.y1,object.x2,object.y2], object);
+};
+fabric.Customlinetwoarrow.async = false;

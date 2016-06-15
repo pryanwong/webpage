@@ -20,6 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 fr:
+  will_paginate:
+    previous_label: Previous
+    next_label: Next
   activerecord:
     company:
       error_license: Cannot Add User,  All Licenses Have Been Used

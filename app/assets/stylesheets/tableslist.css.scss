@@ -193,3 +193,13 @@ tr:nth-child(3) .settingsIcon {
    .next_page { background: #7777ff; color: white }
    .next_page.disabled { background: white; color: #777 }
 }
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.text-faded {
+  color: rgba(255, 255, 255, 0.7);
+}
