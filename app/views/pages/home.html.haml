@@ -3,7 +3,7 @@
    %div.header-content
       %div.header-content-inner
          %h1 Your Favorite Source of Free Bootstrap Themes
-         %hr
+         %hr.light
          %p Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!
          %a{:href=>"#about",:class=>"btn btn-primary btn-xl page-scroll"} Find Out More
 %section.bg-primary{:id=>"about"}
@@ -42,6 +42,68 @@
                %i{:class=>"fa fa-4x fa-heart text-primary sr-icons"}
                %h3 Made with Love
                %p.text-muted You have to make your websites with love these days!
+%section.no-padding{:id=>"portfolio"}
+   %div.container-fluid
+      %div{:class=>"row no-gutter popup-gallery"}
+         %div{:class=>"col-lg-4 col-sm-6"}
+            =link_to image_path( 'fullsize/1.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/1.jpg", :class =>"img-responsive")
+               %div.portfolio-box-caption
+                  %div.portfolio-box-caption-content
+                     %div{:class=>"project-category text-faded"}
+                        Category
+                     %div.project-name
+                        Project Name
+         %div{:class=>"col-lg-4 col-sm-6"}
+            =link_to image_path( 'fullsize/2.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/2.jpg", :class =>"img-responsive")
+               %div.portfolio-box-caption
+                  %div{:class=>"portfolio-box-caption-content"}
+                     %div{:class=>"project-category text-faded"}
+                        Category
+                     %div.project-name
+                        Project Name
+         %div{:class=>"col-lg-4 col-sm-6"}
+            =link_to image_path( 'fullsize/3.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/3.jpg", :class =>"img-responsive")
+               %div.portfolio-box-caption
+                  %div{:class=>"portfolio-box-caption-content"}
+                     %div{:class=>"project-category text-faded"}
+                        Category
+                     %div.project-name
+                        Project Name
+         %div{:class=>"col-lg-4 col-sm-6"}
+            =link_to image_path( 'fullsize/4.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/4.jpg", :class =>"img-responsive")
+               %div.portfolio-box-caption
+                  %div{:class=>"portfolio-box-caption-content"}
+                     %div{:class=>"project-category text-faded"}
+                        Category
+                     %div.project-name
+                        Project Name
+         %div{:class=>"col-lg-4 col-sm-6"}
+            =link_to image_path( 'fullsize/5.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/5.jpg", :class =>"img-responsive")
+               %div.portfolio-box-caption
+                  %div{:class=>"portfolio-box-caption-content"}
+                     %div{:class=>"project-category text-faded"}
+                        Category
+                     %div.project-name
+                        Project Name
+         %div{:class=>"col-lg-4 col-sm-6"}
+            =link_to image_path( 'fullsize/6.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/6.jpg", :class =>"img-responsive")
+               %div.portfolio-box-caption
+                  %div{:class=>"portfolio-box-caption-content"}
+                     %div{:class=>"project-category text-faded"}
+                        Category
+                     %div.project-name
+                        Project Name
+%aside.bg-dark
+   %div{:class=>"container text-center"}
+      %div.call-to-action
+         %h2 Free Download at Start Bootstrap!
+         %a{:href=>"http://startbootstrap.com/template-overviews/creative/",:class=>"btn btn-default btn-xl sr-button"}Download Now!
 %section.bg-primary{:id=>"login"}
    %div{:class=>"container"}
       %div{:class=>"row row-centered"}
@@ -64,7 +126,7 @@
                   = f.submit t('.login'), :class=>"btn btn-default"
                   - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
                      = link_to t('.forgot_password'), new_password_path(resource_name), :id=>"forgot_password"
-            %hr
+            %hr.light
             =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
                %span{:class=>"fa fa-linkedin"}
                =t('.sign_in_linkedin')
