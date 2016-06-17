@@ -1,18 +1,19 @@
 %iframe{:id=>"logoutframe", :src=>"https://accounts.google.com/logout",:style=>"display: none"}
-%header
+%header{:id=>"home"}
    %div.header-content
       %div.header-content-inner
-         %h1 Your Favorite Source of Free Bootstrap Themes
+         %h1 Draw Your Solution - Generate a Quote
          %hr.light
-         %p Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!
+         %p Optecture's Powerful Diagram to Quotation Cloud Service will speed time and capture what's needed to grow opportunities.
          %a{:href=>"#about",:class=>"btn btn-primary btn-xl page-scroll"} Find Out More
 %section.bg-primary{:id=>"about"}
    %div.container
       %div.row
          %div{:class=>"col-lg-8 col-lg-offset-2 text-center"}
-            %h2.section-heading We've got what you need!
+            %h2.section-heading Draw and Price
             %hr.light
-            %p.text-faded Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!
+            %p.text-faded Cloud based software converts sales drawings to quotations
+            %p.text-faded Capture and Share Requirements, Instantly Generate Quote, Grow Deal Sizes
             %a{:href=>"#login",:class=>"page-scroll btn btn-default btn-xl sr-button"} Get Started!
 %section{:id=>"services", :style=>'background-color: #fff;'}
    %div.container
@@ -24,127 +25,128 @@
       %div.row
          %div{:class=>"col-lg-3 col-md-6 text-center"}
             %div.service-box
-               %i{:class=>"fa fa-4x fa-diamond text-primary sr-icons"}
-               %h3 Sturdy Templates
-               %p.text-muted Our templates are updated regularly so they don't break
+               %i{:class=>"fa fa-4x fa-object-group text-primary sr-icons"}
+               %h3 Diagram to Quote
+               %p.text-muted Quickly map out solutions using your products and configurations
          %div{:class=>"col-lg-3 col-md-6 text-center"}
             %div.service-box
-               %i{:class=>"fa fa-4x fa-paper-plane text-primary sr-icons"}
-               %h3 Ready to Ship
-               %p.text-muted You can use this theme as is, or you can make changes!
+               %i{:class=>"fa fa-4x fa-phone text-primary sr-icons"}
+               %h3 Ideal for Teleconferences
+               %p.text-muted Better capture and communicate customer problems, and more quickly close deals
          %div{:class=>"col-lg-3 col-md-6 text-center"}
             %div.service-box
-               %i{:class=>"fa fa-4x fa-newspaper-o text-primary sr-icons"}
-               %h3 Up to Date
-               %p.text-muted We update dependencies to keep things fresh
+               %i{:class=>"fa fa-4x fa-line-chart text-primary sr-icons"}
+               %h3 Analytics
+               %p.text-muted Reports and Analysis to grow opportunity size
          %div{:class=>"col-lg-3 col-md-6 text-center"}
             %div.service-box
-               %i{:class=>"fa fa-4x fa-heart text-primary sr-icons"}
-               %h3 Made with Love
-               %p.text-muted You have to make your websites with love these days!
+               %i{:class=>"fa fa-4x fa-gears text-primary sr-icons"}
+               %h3 Integration
+               %p.text-muted Save time by sending results directly to CRM
 %section.no-padding{:id=>"portfolio"}
    %div.container-fluid
       %div{:class=>"row no-gutter popup-gallery"}
          %div{:class=>"col-lg-4 col-sm-6"}
-            =link_to image_path( 'fullsize/1.jpg'), :class => "portfolio-box" do
-               = image_tag("thumbnails/1.jpg", :class =>"img-responsive")
+            =link_to image_path( 'fullsize/software-sized.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/software-sized.jpg", :class =>"img-responsive")
                %div.portfolio-box-caption
                   %div.portfolio-box-caption-content
                      %div{:class=>"project-category text-faded"}
-                        Category
+                        Diagram & BOM
                      %div.project-name
-                        Project Name
+                        IT Sales
          %div{:class=>"col-lg-4 col-sm-6"}
-            =link_to image_path( 'fullsize/2.jpg'), :class => "portfolio-box" do
-               = image_tag("thumbnails/2.jpg", :class =>"img-responsive")
+            =link_to image_path( 'fullsize/dirty-industry-stack-factory-sized.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/dirty-industry-stack-factory-sized.jpg", :class =>"img-responsive")
                %div.portfolio-box-caption
                   %div{:class=>"portfolio-box-caption-content"}
                      %div{:class=>"project-category text-faded"}
-                        Category
+                        Diagram & BOM
                      %div.project-name
-                        Project Name
+                        Industrial Sales
          %div{:class=>"col-lg-4 col-sm-6"}
-            =link_to image_path( 'fullsize/3.jpg'), :class => "portfolio-box" do
-               = image_tag("thumbnails/3.jpg", :class =>"img-responsive")
+            =link_to image_path( 'fullsize/it_switch_sized.jpg'), :class => "portfolio-box" do
+               = image_tag("thumbnails/it_switch_sized.jpg", :class =>"img-responsive")
                %div.portfolio-box-caption
                   %div{:class=>"portfolio-box-caption-content"}
                      %div{:class=>"project-category text-faded"}
-                        Category
+                        Diagram & BOM
                      %div.project-name
-                        Project Name
+                        VAR Sales
          %div{:class=>"col-lg-4 col-sm-6"}
             =link_to image_path( 'fullsize/4.jpg'), :class => "portfolio-box" do
                = image_tag("thumbnails/4.jpg", :class =>"img-responsive")
                %div.portfolio-box-caption
                   %div{:class=>"portfolio-box-caption-content"}
                      %div{:class=>"project-category text-faded"}
-                        Category
+                        Example
                      %div.project-name
-                        Project Name
+                        IT Solution
          %div{:class=>"col-lg-4 col-sm-6"}
             =link_to image_path( 'fullsize/5.jpg'), :class => "portfolio-box" do
                = image_tag("thumbnails/5.jpg", :class =>"img-responsive")
                %div.portfolio-box-caption
                   %div{:class=>"portfolio-box-caption-content"}
                      %div{:class=>"project-category text-faded"}
-                        Category
+                        Example
                      %div.project-name
-                        Project Name
+                        Industrial Solution
          %div{:class=>"col-lg-4 col-sm-6"}
             =link_to image_path( 'fullsize/6.jpg'), :class => "portfolio-box" do
                = image_tag("thumbnails/6.jpg", :class =>"img-responsive")
                %div.portfolio-box-caption
                   %div{:class=>"portfolio-box-caption-content"}
                      %div{:class=>"project-category text-faded"}
-                        Category
+                        Example
                      %div.project-name
-                        Project Name
+                        VAR Solution
 %aside.bg-dark
    %div{:class=>"container text-center"}
       %div.call-to-action
-         %h2 Free Download at Start Bootstrap!
-         %a{:href=>"http://startbootstrap.com/template-overviews/creative/",:class=>"btn btn-default btn-xl sr-button"}Download Now!
-%section.bg-primary{:id=>"login"}
-   %div{:class=>"container"}
-      %div{:class=>"row row-centered"}
-         -# %div{:class=>"col-sm-6"}
-         -#    =image_tag "Logo4_blue_front.gif"
-         -#   %p{:style=>"padding:10px;"}
-         %div{:class=>"col-sm-offset-4 col-sm-4"}
-            =form_for(resource, as: resource_name, url: user_session_path) do |f|
-               %fieldset.form-group
-                  =f.label t('.email')
-                  =f.email_field :email, autofocus: false, :class=>"form-control"
-               %fieldset.form-group
-                  = f.label t('.password')
-                  = f.password_field :password, autocomplete: "off", :class=>"form-control"
-               -if devise_mapping.rememberable?
+         %h2 Visit Our Blog on Sales and Marketing
+         %a{:href=>"http://startbootstrap.com/template-overviews/creative/",:class=>"btn btn-default btn-xl sr-button"}Blog
+- if !user_signed_in?
+   %section.bg-primary{:id=>"login"}
+      %div{:class=>"container"}
+         %div{:class=>"row row-centered"}
+            -# %div{:class=>"col-sm-6"}
+            -#    =image_tag "Logo4_blue_front.gif"
+            -#   %p{:style=>"padding:10px;"}
+            %div{:class=>"col-sm-offset-4 col-sm-4"}
+               =form_for(resource, as: resource_name, url: user_session_path) do |f|
                   %fieldset.form-group
-                     = f.check_box :remember_me
-                     = f.label t('.remember_me')
-               %div.form-group
-                  = f.submit t('.login'), :class=>"btn btn-default"
-                  - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
-                     = link_to t('.forgot_password'), new_password_path(resource_name), :id=>"forgot_password"
-            %hr.light
-            =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
-               %span{:class=>"fa fa-linkedin"}
-               =t('.sign_in_linkedin')
-            =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
-               %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
-               =t('.sign_in_google')
-            %p{:style=>"padding:10px;"}
+                     =f.label t('.email')
+                     =f.email_field :email, autofocus: false, :class=>"form-control"
+                  %fieldset.form-group
+                     = f.label t('.password')
+                     = f.password_field :password, autocomplete: "off", :class=>"form-control"
+                  -if devise_mapping.rememberable?
+                     %fieldset.form-group
+                        = f.check_box :remember_me
+                        = f.label t('.remember_me')
+                  %div.form-group
+                     = f.submit t('.login'), :class=>"btn btn-default"
+                     - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
+                        = link_to t('.forgot_password'), new_password_path(resource_name), :id=>"forgot_password"
+               %hr.light
+               =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
+                  %span{:class=>"fa fa-linkedin"}
+                  =t('.sign_in_linkedin')
+               =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
+                  %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
+                  =t('.sign_in_google')
+               %p{:style=>"padding:10px;"}
 %section{:id=>"contact"}
    %div.container
       %div.row
          %div{:class=>"col-lg-8 col-lg-offset-2 text-center"}
             %h2.section-heading Let's Get In Touch!
             %hr.primary
-            %p Ready to start your next project with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!
+            %p Ready to explore drawing to quote solutions with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!
          %div{:class=>"col-lg-4 col-lg-offset-2 text-center"}
             %i{:class=>"fa fa-phone fa-3x sr-contact"}
-            %p 123-456-6789
+            %p 647-739-2776
          %div{:class=>"col-lg-4 text-center"}
             %i{:class=>"fa fa-envelope-o fa-3x sr-contact"}
             %p
-               %a{:href=>"mailto:your-email@your-domain.com"} feedback@startbootstrap.com
+               %a{:href=>"mailto:sales@optecture.com"} sales@optecture.com
