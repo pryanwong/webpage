@@ -1057,7 +1057,7 @@ function loadCanvasDrawing(data_drawing) {
                 }
               });
 
-              objs[i].on("mousedown", function(data, index) { lineArrowDown(data,index); });
+              objs[i].on("mousedown", function(data, index) { lineArrowTwoDown(data,index); });
             }
 
             itemId = itemId + 1;
@@ -1758,7 +1758,9 @@ function lineArrowTwoDown(data,index) {
             var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             menus(items, e);
             $('a:contains("Delete")').click(  function() {
+                                             console.log("In Delete customlinetwoarrow")
                                              if (activeObjectVal.type) {
+                                               console.log("Object Found: ", activeObjectVal.type)
                                                if (activeObjectVal.type == "customlinetwoarrow") {
                                                  canvas.remove(activeObjectVal.carrowtwo)
                                                  canvas.remove(activeObjectVal.carrow)
