@@ -8,6 +8,12 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   # def create
   #   super
   # end
+  layout 'longpages2'
+
+  def new
+     super
+  end
+
   def create
     logger.debug "Resource Params Confirmations: #{resource_params.inspect}"
     self.resource = resource_class.send_confirmation_instructions(resource_params)
