@@ -8,7 +8,7 @@ class Users::PasswordsController < Devise::PasswordsController
   # def create
   #   super
   # end
-  layout 'longpages'
+  layout 'longpages2'
 
   def create
     user = User.find_by_email(resource_params[:email])

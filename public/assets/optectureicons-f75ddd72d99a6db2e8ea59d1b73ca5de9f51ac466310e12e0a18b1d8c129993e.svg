@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="239.000000pt"
+   height="231.000000pt"
+   viewBox="0 0 239.000000 231.000000"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg4157"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="optectureicons.svg">
+  <defs
+     id="defs4175">
+    <font
+       horiz-adv-x="1024"
+       id="font4758"
+       inkscape:label="font 1">
+      <font-face
+         units-per-em="1024"
+         id="font-face4760"
+         font-family="optecture" />
+      <missing-glyph
+         d="M0,0h1000v1024h-1000z"
+         id="missing-glyph4762" />
+      <glyph
+         glyph-name="Logo"
+         id="glyph4764"
+         unicode="a"
+         d="m 14.47211,938.70063 -30.32866,-28.77005 0,-407.01144 c 0,-280.931 2.67606,-412.93473 9.81222,-427.31974 22.30046,-46.53977 39.24883,-49.07831 356.80767,-45.69359 326.47902,2.53852 319.34284,1.69233 338.07527,65.15567 11.59624,40.61653 11.59624,764.94461 0,805.56115 -18.73243,63.46332 -10.70425,62.61715 -345.21142,65.15569 l -297.93441,2.53851 -31.22067,-29.6162 z m 495.96264,-436.62769 0,-296.16221 -169.48362,0 -169.48365,0 0,296.16221 0,296.16219 169.48365,0 169.48362,0 0,-296.16219 z" />
+    </font>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1018"
+     id="namedview4173"
+     showgrid="false"
+     inkscape:zoom="0.5779297"
+     inkscape:cx="208.84225"
+     inkscape:cy="-370.01404"
+     inkscape:window-x="1358"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4157" />
+  <metadata
+     id="metadata4159">
+Created by potrace 1.13, written by Peter Selinger 2001-2015
+<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+    <dc:title></dc:title>
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <path
+     style="fill:#000000;stroke:none"
+     inkscape:connector-curvature="0"
+     id="path4169"
+     d="m 14.47211,61.299373 -30.32866,28.77005 0,407.011437 c 0,280.931 2.67606,412.93473 9.81222,427.31974 22.30046,46.53977 39.24883,49.07831 356.80767,45.69359 326.47902,-2.53852 319.34284,-1.69233 338.07527,-65.15567 11.59624,-40.61653 11.59624,-764.94461 0,-805.561147 C 670.10618,35.914048 678.13436,36.760223 343.62719,34.221685 L 45.69278,31.683173 14.47211,61.299373 Z m 495.96264,436.627687 0,296.16221 -169.48362,0 -169.48365,0 0,-296.16221 0,-296.16219 169.48365,0 169.48362,0 0,296.16219 z" />
+</svg>

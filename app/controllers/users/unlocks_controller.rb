@@ -1,4 +1,5 @@
 class Users::UnlocksController < Devise::UnlocksController
+  layout 'longpages2'
   # GET /resource/unlock/new
   # def new
   #   super

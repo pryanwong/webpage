@@ -94,6 +94,19 @@ html {
   height: 100%
 }
 
+section#login {
+  background-color: #303F9F;
+}
+
+hr {
+  border-color: #303F9F;
+  border-width: 3px;
+  max-width: 50px;
+}
+hr.light {
+  border-color: white;
+}
+
 .wrapper {
     min-height: 100%;
     height: auto !important;

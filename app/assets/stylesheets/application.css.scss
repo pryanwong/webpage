@@ -35,3 +35,16 @@
        url('/assets/glyphicons-halflings-regular.ttf') format('truetype'),
        url('/assets/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+
+@font-face {
+  font-family: 'optecture';
+  src: url('optectureicons.ttf') format('truetype'), url('optectureicons.svg') format('svg'),
+       url('optectureicons.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.f-optecture:before {
+  font-family: optecture;
+  content: "\0061";
+}

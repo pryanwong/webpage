@@ -40,7 +40,7 @@ module Optecture
     #config.assets.paths << Rails.root.join("app", "assets", "fonts")
     #config.assets.precompile += %w( .svg .eot .woff .ttf )
     #config.assets.precompile << /\.(?:svg|eot|woff|ttf)\z/
-
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
     #config.action_mailer.smtp_settings = {
     #  address: "smtp.gmail.com",
     #  port: "587",

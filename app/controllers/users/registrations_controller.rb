@@ -4,7 +4,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # GET /resource/sign_up
-  layout 'longpages', only: [:new]
+  layout 'longpages2', only: [:new]
 
   def new
     flash[:info] = 'Registrations are not open.'

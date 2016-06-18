@@ -1,15 +1,15 @@
-%header{:class=>"jumbotron"}
-   <!-- Main component for a primary marketing message or call to action -->
+%section.bg-primary{:id=>"login"}
    %div{:id=>"main", :class=>"container"}
-      %div{:class=>"row row-header"}
-         %div{:class=>"col-xs-12 col-sm-5"}
-            =image_tag "Logo4_blue_front.gif"
-            %p{:style=>"padding:10px;"}
-            %div{:class=>"col-sm-offset-1"}
+      %div{:class=>"row row-centered"}
+         -# %div{:class=>"col-sm-6"}
+         -#    =image_tag "Logo4_blue_front.gif"
+         -#   %p{:style=>"padding:10px;"}
+         %div{:class=>"col-sm-offset-4 col-sm-4"}
             = form_for(resource, as: resource_name, url: user_confirmation_path(resource_name), html: { method: :post }) do |f|
                %fieldset.form-group
                   =f.label t('.provide_email_address')
                   =f.email_field :email, autofocus: true, :class=>"form-control", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email)
                %div.form-group
                   = f.submit t('.resend_confirmation_instructions'), :class=>"btn btn-default"
-            = render "devise/shared/links"
+            %hr.light
+            =render "devise/shared/links"
