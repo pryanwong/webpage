@@ -41,7 +41,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
             redirect_to new_user_registration_url
           end
     rescue ActiveRecord::RecordNotFound
-      flash[:error] = "Google User Not Registered"
+      flash[:error] = "LinkedIn User Not Registered"
       redirect_to root_path
     end
    end
