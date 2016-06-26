@@ -1,0 +1,334 @@
+%div{ :class=>"hide", :id=>"info"}
+%div{ :class=>"hide", :id=>"TextFormDiv"}
+   %form{:id=>"TextForm", :autocomplete=>"off"}
+      %TEXTAREA {:id=>"textBoxMultiline", :COLS=>40, :ROWS=>2}
+      %input.activeTextObjectId
+      %br
+      %input {:type=>"submit", :value=>"Submit"}
+      %input {:type=>"button", :name=>"cancel" :value=>"Cancel" :onClick=>"textcancel()"}
+%div{:class=>"hide", :id=>"LabelFormDiv"}
+   %form{ :id=>"LabelForm", :autocomplete=>"off"}
+      %input{ :id=>"textBox", :placeholder=>"your text", :autocomplete=>"off"}
+      %input{ :id=>"activeObjectId"}
+      %br
+      %input{ :type=>"submit", :value=>"Submit"}
+      %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
+%div#inputs
+%div{:id=>"drawingwrap", :style=>"width:1500px"}
+   %div#menubar{:sytle=>"width:100%;height:75px;"}
+      =link_to "<button id='backgroundButtonText' class='btn btn-default'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
+      =image_tag "common/paint_bucket.png"
+      %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
+      =image_tag "common/FastText.png"
+      %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
+      -# Customer:
+      -# = @drawing.customer
+      -# Opportunity:
+      -# = @drawing.opportunity
+      Last Saved:
+      %span{:id=>'saveMessage'}
+         = @lastedit
+      %a{href: '#', onclick: 'toggle_versions_pane(); return false;', :style=>'text-decoration: underline'} Archived Versions
+   %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
+      %div{:class=>"panel-group", :id=>"accordiontools"}
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
+            %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
+               %div{:id=>"images", :class=>"panel-body"}
+                  %table
+                     %tr
+                        %td
+                           = image_tag "companies/GE/EPM2000.gif", :img_val=>"EPM2000.gif",  :"data-config"=>"4", :"data-loc"=>"companies/GE/EPM2000.gif", :"data-model"=>"EPM2000", :draggable=>"true", :width=>"68", :height => "65"
+                           %figcaption EPM2000
+                        %td
+                           = image_tag "companies/GE/EPM6000.gif", :img_val=>"EPM6000.gif", :"data-config"=>"5", :"data-loc"=>"companies/GE/EPM6000.gif", :"data-model"=>"EPM6000", :draggable=>"true", :width=>"54", :height => "54"
+                           %figcaption EPM6000
+                     %tr
+                        %td
+                           = image_tag "companies/GE/EPM9000.gif", :img_val=>"EPM9650.gif",  :"data-config"=>"6", :"data-loc"=>"companies/GE/EPM9000.gif", :"data-model"=>"EPM9650", :draggable=>"true", :width=>"82", :height => "52"
+                           %figcaption EPM9650
+                        %td
+                           = image_tag "companies/GE/EPM9800.gif", :img_val=>"EPM9800.gif", :"data-config"=>"7", :"data-loc"=>"companies/GE/EPM9800.gif", :"data-model"=>"EPM9800", :draggable=>"true", :width=>"71", :height => "64"
+                           %figcaption EPM9800
+                     %tr
+                        %td
+                           = image_tag "companies/GE/epm4600.jpg", :img_val=>"EPM4600.jpg",  :"data-config"=>"8", :"data-loc"=>"companies/GE/epm4600.jpg", :"data-model"=>"EPM4600", :draggable=>"true", :width=>"82", :height => "53"
+                           %figcaption EPM4600
+                        %td
+                           = image_tag "companies/GE/epm9900.jpg", :img_val=>"EPM9900.jpg", :"data-config"=>"9", :"data-loc"=>"companies/GE/epm9900.jpg", :"data-model"=>"EPM9900", :draggable=>"true", :width=>"82", :height => "52"
+                           %figcaption EPM9900
+                     %tr
+                        %td
+                           = image_tag "companies/GE/PQMII.gif", :img_val=>"PQMII.gif",  :"data-config"=>"10", :"data-loc"=>"companies/GE/PQMII.gif", :"data-model"=>"PQMII", :draggable=>"true", :width=>"67", :height => "44"
+                           %figcaption PQMII
+                        %td
+                           = image_tag "companies/GE/epm6100-7100.jpg", :img_val=>"epm6100.jpg", :"data-config"=>"11", :"data-loc"=>"companies/GE/epm6100-7100.jpg", :"data-model"=>"EPM6100", :draggable=>"true", :width=>"68", :height => "65"
+                           %figcaption EPM6100
+                     %tr
+                        %td
+                           = image_tag "companies/GE/epm6100-7100.jpg", :img_val=>"epm7100.jpg", :"data-config"=>"12", :"data-loc"=>"companies/GE/epm6100-7100.jpg", :"data-model"=>"EPM7100", :draggable=>"true", :width=>"68", :height => "65"
+                           %figcaption EPM7100
+                        %td
+                           = image_tag "companies/GE/EPM-Enclosure.png", :img_val=>"EPM-Enclosure.png", :"data-config"=>"13", :"data-loc"=>"companies/GE/EPM-Enclosure.png", :"data-model"=>"EPM-Enclosure", :draggable=>"true", :width=>"60", :height => "71"
+                           %figcaption EPM-Enclosure
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse2"} Networking
+            %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
+                  %table
+                     %tr
+                        %td
+                           = image_tag "companies/GE/ml3000.jpg", :img_val=>"ml300.jpg", :"data-loc"=>"companies/GE/ml3000.jpg", :"data-config"=>"14", :"data-model"=>"ML3000", :draggable=>"true", :width=>"99", :height => "36"
+                           %figcaption ML3000
+                        %td
+                           = image_tag "companies/GE/ML1200.gif", :img_val=>"ML1200.gif", :"data-loc"=>"companies/GE/ML1200.gif", :"data-config"=>"15", :"data-model"=>"ML1200", :draggable=>"true", :width=>"77", :height => "49"
+                           %figcaption ML1200
+                     %tr
+                        %td
+                           = image_tag "companies/GE/ml810.jpg", :img_val=>"ml810.jpg", :"data-loc"=>"companies/GE/ml810.jpg", :"data-config"=>"16", :"data-model"=>"ML810", :draggable=>"true", :width=>"77", :height => "50"
+                           %figcaption ML810
+                        %td
+                           = image_tag "companies/GE/ML800.gif", :img_val=>"ML800.gif", :"data-loc"=>"companies/GE/ML800.gif", :"data-config"=>"17", :"data-model"=>"ML800", :draggable=>"true", :width=>"77", :height => "50"
+                           %figcaption ML800
+                     %tr
+                        %td
+                           = image_tag "companies/GE/ML600.gif", :img_val=>"ML600.gif", :"data-loc"=>"companies/GE/ML600.gif", :"data-config"=>"18", :"data-model"=>"ML600", :draggable=>"true", :width=>"52", :height => "64"
+                           %figcaption ML600
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse3"} Computing
+            %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
+                  %table
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_cloud.svg", :img_val=>"osa_cloud.svg", :"data-loc"=>"companies/common/osa_cloud.svg", :"data-model"=>"Cloud", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Cloud
+                        %td
+                           = image_tag "companies/common/osa_database.svg", :img_val=>"osa_database.svg", :"data-loc"=>"companies/common/osa_database.svg", :"data-model"=>"Database",:draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Database
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_firewall.svg", :img_val=>"osa_firewall.svg", :"data-loc"=>"companies/common/osa_firewall.svg", :"data-model"=>"Firewall", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Firewall
+                        %td
+                           = image_tag "companies/common/osa_server.svg", :img_val=>"osa_server.svg", :"data-loc"=>"companies/common/osa_server.svg", :"data-model"=>"Server",:draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Server
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_device-wireless-router.svg", :"data-loc"=>"companies/common/osa_device-wireless-router.svg", :img_val=>"osa_device-wireless-router.svg",:"data-model"=>"Wifi", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Wifi
+                        %td
+                           = image_tag "companies/common/osa_ics_drive.svg", :img_val=>"osa_ics_drive.svg", :"data-loc"=>"companies/common/osa_ics_drive.svg", :"data-model"=>"Cog",:draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Cog
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_wireless_network.svg", :img_val=>"osa_wireless_network.svg", :"data-loc"=>"companies/common/osa_wireless_network.svg", :"data-model"=>"Antenna", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Antenna
+                        %td
+                           = image_tag "companies/common/osa_vpn.svg", :img_val=>"osa_vpn.svg", :"data-loc"=>"companies/common/osa_vpn.svg", :"data-model"=>"VPN",:draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption VPN
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse4"} Shapes
+            %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
+                  %table
+                     %tr
+                        %td
+                           = image_tag "common/line.png", :"data-loc"=>"common/line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
+                           %figcaption Line
+                        %td
+                           = image_tag "common/line_arrow_icon.png", :"data-loc"=>"common/line_arrow_icon.png", :img_val=>"line_arrow_icon.png", :draggable=>"true", :width=>"63", :height => "34"
+                           %figcaption Line Arrow
+                     %tr
+                        %td
+                           = image_tag "common/line_arrow_two_icon.png", :"data-loc"=>"common/line_arrow_two_icon.png", :img_val=>"line_arrow_two_icon.png", :draggable=>"true", :width=>"63", :height => "34"
+                           %figcaption Line Arrow
+                     %tr
+                        %td
+                           = image_tag "common/circle.png", :"data-loc"=>"common/circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
+                           %figcaption Circle
+                        %td
+                           = image_tag "common/ellipse_icon.png", :"data-loc"=>"common/ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
+                           %figcaption Ellipse
+                     %tr
+                        %td
+                           = image_tag "common/rectangle-icon.png", :"data-loc"=>"common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
+                           %figcaption Rectangle
+                        %td
+                           = image_tag "common/textbox_icon.png", :"data-loc"=>"common/textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
+                           %figcaption Text Box
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse5"} Places/People
+            %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
+                  %table
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_home.svg", :"data-loc"=>"companies/common/osa_home.svg", :img_val=>"osa_home.svg",:"data-model"=>"Home", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Home
+                        %td
+                           = image_tag "companies/common/osa_site-branch.svg", :"data-loc"=>"companies/common/osa_site-branch.svg", :img_val=>"osa_site-branch.svg",:"data-model"=>"Branch", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Branch
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_site-factory.svg", :"data-loc"=>"companies/common/osa_site-factory.svg", :img_val=>"osa_site-factory.svg",:"data-model"=>"Factory", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Factory
+                        %td
+                           = image_tag "companies/common/osa_site-head-office.svg", :"data-loc"=>"companies/common/osa_site-head-office.svg", :img_val=>"osa_site-head-office.svg",:"data-model"=>"Office", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Office
+                     %tr
+                        %td
+                           = image_tag "companies/common/osa_site-neighbourhood.svg", :"data-loc"=>"companies/common/osa_site-neighbourhood.svg", :img_val=>"osa_site-neighbourhood.svg",:"data-model"=>"Homes", :draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption Homes
+                        %td
+                           = image_tag "companies/common/osa_user_blue.svg", :"data-loc"=>"companies/common/osa_user_blue.svg", :img_val=>"osa_user_blue.svg", :"data-model"=>"User",:draggable=>"true", :width=>"64", :height => "64"
+                           %figcaption User
+
+   %div{:id=>"div2", :style=>"float:left;width:1000px;height:800px;padding-top:10px;"}
+      %div{:id=>"canvas-container"}
+         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
+   %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;height:800px;display:none;margin-top:10px;overflow: auto"}
+      %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
+         Versions
+         %button{:type=>"button", :class=>"close", onclick: 'toggle_versions_pane(); return false;'}
+            %span &times;
+            %span{:class=>"sr-only"} Close
+      %div{:id=>"versionslist", :class=>"panel-body"}
+         %p Previous Versions of Drawing, stored when changes made after 60mins of inactivity
+      %table{:class=>"table table-bordered table-hover"}
+         %thead
+            %tr
+               %th Date and Time
+            %tbody{:id=>"versionslisttab", :style=>"height:400px;overflow-y: scroll;"}
+
+:javascript
+
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+   ga('create', 'UA-76942309-1', 'auto');
+   ga('send', 'pageview');
+
+   var handler = "";
+   var c = new Array();
+   var objId_var = 0;
+   var saveInProgress = false;
+   var company_id ='#{params[:company_id]}'
+   var user_id= '#{params[:user_id]}'
+   var drawing_id = '#{params[:id]}'
+   var modified = false
+   var timestamps   = '#{@timestamps_readable}'
+   var itemId = 0;
+   var contextmenuon = false;
+   var activeObject = false;
+   var activeObjectVal = "";
+   var activeObjectValCP = "";
+   var backgroundImageVal = "";
+   var objectName = "";
+   var _curX, _curY;
+   var canvas = new fabric.CanvasEx('demoCanvas2', {selection: true});
+   fabric.Group.prototype.hasControls = false
+   document.getElementById("demoCanvas2").fabric = canvas;
+   var fabric = fabric || { version: "1.4.13" };
+   var motionInbounds = true;
+   var lineActive = true;
+   var lineSelected = false;
+   var log = log4javascript.getDefaultLogger();
+   var progressBar  = $("#bar");
+   progressBar.css('display','none');
+   log4javascript.setEnabled(false);
+   var debugOn = GetDebugParameter('debug');
+   log4javascript.setEnabled(debugOn);
+   log.setLevel(log4javascript.Level.TRACE);
+   log.info("Executing javascript in edit.html");
+    log.debug("Executing spinner");
+    $(".spinner").show();
+    canvas.backgroundColor="";
+
+   log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
+   if(!window.location.hash) {
+       window.location = window.location + '#loaded';
+       window.location.reload();
+   }else{
+       log.debug("Load Drawing");
+       var data_drawing = "";
+       if (parseInt("#{@drawing.drawing.length}") > 0) {
+            log.debug("drawing loaded");
+            data_drawing = #{ raw(@drawing.drawing) }
+       } else {
+            log.debug("no drawing loaded");
+            data_drawing = ""
+       }
+       objId_var = 1;
+
+       log.debug("Load versions into table")
+       timestampsObj = JSON.parse(timestamps)
+       var arrayLength = timestampsObj.length;
+       console.log("Array Length:", arrayLength)
+
+       for (var i = 0; i < arrayLength; i++) {
+           console.log("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
+           var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + timestampsObj[i][0];
+           tr = '<tr style="height: 14px;""> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
+           $('#versionslisttab').append(tr);
+        }
+       log.debug("load objects onto canvas");
+
+       loadCanvasDrawing(data_drawing)
+
+       log.debug("load background object onto canvas");
+       var center = canvas.getCenter();
+       log.info( "Drawing should be loaded ");
+       log.info( "Fade spinner out ");
+       $(".spinner").fadeOut( 400 );
+   }
+
+   log.info( "Loading all observers and listeners ");
+   canvas.on('mouse:over', mouseOver);
+   canvas.on('mouse:out', mouseOut);
+   canvas.on('object:selected', objectSelected);
+   canvas.on('mouse:up', function(e) { });
+   canvas.on('mouse:down', mouseDown);
+   canvas.on('selection:cleared', selectionCleared);
+   canvas.on('object:scaling', objectResize);
+   canvas.on("object:moving", objectBoundaryCheck);
+   canvas.on("object:rotating", objectBoundaryCheck);
+   canvas.on('object.modified', function(e) {console.log("object.modified: ",e)})
+   canvas.on('custom-image:textChange', textChangedEvent);
+   canvas.on('object:removed', objectDeletedEvent);
+
+   if (Modernizr.draganddrop) {
+      // Browser supports HTML5 DnD.
+      // Bind the event listeners for the image elements
+      log.info( "Binding event listeners to images ");
+      var images = document.querySelectorAll('#images img');
+      [].forEach.call(images, function (img) {
+         img.addEventListener('dragstart', handleDragStart, false);
+         img.addEventListener('dragend', handleDragEnd, false);
+      });
+      // Bind the event listeners for the canvas
+      var canvasContainer = document.getElementById('canvas-container');
+      log.info( "Binding event listeners to canvas ");
+      canvasContainer.addEventListener('dragenter', handleDragEnter, false);
+      canvasContainer.addEventListener('dragover', handleDragOver, false);
+      canvasContainer.addEventListener('dragleave', handleDragLeave, false);
+      canvasContainer.addEventListener('drop', handleDrop, false);
+   } else {
+     // Replace with a fallback to a library solution.
+     log.error( " This browser doesn't support the HTML5 Drag and Drop API ");
+     alert("This browser doesn't support the HTML5 Drag and Drop API.");
+   }
+
+   log.info( "Done Demo_Industrial Javascript ");

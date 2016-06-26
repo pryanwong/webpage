@@ -1,63 +1,10 @@
+var id = 0;
+
 function setLinePositions(e) {
   var p = e.target;
   var objType = p.get('type');
-  if (objType == 'customline') {
-      var objId = p.get('objId')
-      var _curXm = (_curX - e.e.clientX);
-      var _curYm = (_curY - e.e.clientY);
-      console.log("_curX, _curY: ", _curX, " ", _curY)
-      console.log("Deltas: ", _curXm, " ", _curYm)
-      //console.log("moved: " + _curXm);
-      //console.log("moved: " + _curYm);
-
-      //loop all circles and if some contains the line - move it
-      for (var i = 0; i < canvas.getObjects().length; i++) {
-        var currentObj = canvas.getObjects()[i];
-        if (currentObj.type == "circleone" && currentObj.get('belongsTo') == objId) {
-          _c2Top = currentObj.getTop();
-          _c2Left = currentObj.getLeft();
-          console.log("In circleone", currentObj)
-          console.log("currentObj.left: ", currentObj.left)
-          console.log("currentObj.top: ", currentObj.top)
-          console.log("New currentObj.left: ", (currentObj.left -_curXm))
-          console.log("New currentObj.top: ", (currentObj.top - _curYm))
-          currentObj.set({
-            'left': (currentObj.left - _curXm),
-            'top': (currentObj.top - _curYm)
-          });
-
-          currentObj.setCoords();
-
-          currentObj.line && currentObj.line.set({
-              'x2': currentObj.left,
-              'y2': currentObj.top
-            });
-
-          currentObj.line.setCoords();
-        }
-
-        if (currentObj.type == "circlezero" && currentObj.get('belongsTo') == objId) {
-          _c1Top = currentObj.getTop();
-          _c1Left = currentObj.getLeft();
-          currentObj.set({
-            'left': (currentObj.left - _curXm) ,
-            'top': (currentObj.top - _curYm)
-          });
-
-          currentObj.setCoords();
-
-          currentObj.line && currentObj.line.set({
-              'x1': currentObj.left,
-              'y1': currentObj.top
-            });
-
-          currentObj.line.setCoords();
-        }
-
-
-      }
-      _curX = e.e.clientX;
-      _curY = e.e.clientY;
+    if (objType == 'customline') {
+      lineobject.setLinePositions(e);
     }
 
     if (objType == 'customlinearrow') {
@@ -185,41 +132,8 @@ function setLineCirclePositionsBoundary(e) {
       var objId = p.get('objId')
       var _curXm = (_curX - e.e.clientX);
       var _curYm = (_curY - e.e.clientY);
-      if (p.type == "customline") {
-         _circleOne = p.cone;
-         _circleTwo = p.ctwo;
-
-          _circleTwo && _circleTwo.set({
-            'left': _c2Left,
-            'top': _c2Top
-          });
-
-          _circleTwo.setCoords();
-
-          _circleTwo.line && _circleTwo.line.set({
-              'x2': _circleTwo.left,
-              'y2': _circleTwo.top
-            });
-
-          _circleTwo.line.setCoords();
-
-
-          _circleOne && _circleOne.set({
-            'left': _c1Left,
-            'top': _c1Top
-          });
-
-          _circleOne.setCoords();
-          //setCircleLineAtBoundary(currentObj,p)
-
-          _circleOne.line && _circleOne.line.set({
-              'x1': _circleOne.left,
-              'y1': _circleOne.top
-            });
-
-          _circleOne.line.setCoords();
-          p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
-
+    if (p.type == "customline") {
+        lineobject.setLineCirclePositionsBoundary(e);
     }
     if (p.type == "customlinearrow") {
        _circleOne = p.conearrow;
@@ -299,7 +213,16 @@ function setLineCirclePositionsBoundary(e) {
       _curY = e.e.clientY;
 
 }
-function objectBoundaryCheck(e){
+
+function objectBoundaryCheck(e) {
+  if (e.target.type == "customline") {
+    lineobject.objectBoundaryCheck(e);
+  } else {
+    objectBoundaryCheckAll(e)
+  }
+}
+
+function objectBoundaryCheckAll(e){
   var boundaryHit = false;
   setLinePositions(e);
   log.info( "Entering  objectBoundaryCheck");
@@ -316,21 +239,15 @@ function objectBoundaryCheck(e){
      var x1Delta = -(boundRect.left - obj.left)
      var y1Delta = -(boundRect.top - obj.top)
      bounds = {tl: {x: 0, y: 0}, br: {x: canvas.width , y: canvas.height } };
-
-
-     // top-left  corner
      log.debug( "Checking to see if we hit the top-left corner");
      if((e.target.getBoundingRect().top <= bounds.tl.y || e.target.getBoundingRect().left <= bounds.tl.x) ){
        log.debug( "hit the top-left corner");
        e.target.setTop(Math.max(e.target.top  , y1Delta  ));
        e.target.left = Math.max(e.target.left , x1Delta );
-       if (e.target.type == "customline" || e.target.type == "customlinearrow" || e.target.type == "customlinetwoarrow") {
-          setLineCirclePositionsBoundary(e);
-          canvas.deactivateAll();
-       }
+       setLineCirclePositionsBoundary(e);
+       canvas.deactivateAll();
        boundaryHit = true;
        e.target.setCoords();
-       //canvas.renderAll();
      }
 
      // bot-right corner
@@ -361,7 +278,9 @@ function objectBoundaryCheck(e){
            }
         }
         boundaryHit = true;
-        if (e.target.type == "customline" || e.target.type == "customlinearrow" || e.target.type == "customlinetwoarrow") {
+        if (e.target.type == "customline"){
+          lineobject.setLineCirclePositionsBoundary(e)
+        }else if (e.target.type == "customlinearrow" || e.target.type == "customlinetwoarrow") {
            setLineCirclePositionsBoundary(e);
            canvas.deactivateAll();
         }
@@ -375,17 +294,6 @@ function objectBoundaryCheck(e){
   log.info( "Leaving objectBoundaryCheck");
 };
 
-function textChangedEvent(e) {
-  $("#saveMessage").text('Changes Made, Save Pending...');
-  log.debug('text:changed', e.target, e);
-  onSave();
-};
-
-function objectDeletedEvent(e) {
-  $("#saveMessage").text('Changes Made, Save Pending...');
-  log.debug('lineDeletedEvent', e.target, e);
-  onSave();
-};
 
 function boundaryInspectorCircle(e) {
    log.info( "Entering boundaryInspectorCircle");
@@ -475,19 +383,11 @@ function boundaryInspectorCircle(e) {
 function objectResize(e) {
    log.info( "Entering objectResize");
    if(e.target.type == "circle") {
-      newWidth = e.target.width * e.target.scaleX
-      newRadius = e.target.radius * e.target.scaleX
-      e.target.set({ width: newWidth, radius: newRadius, height: newWidth, scaleX: 1, scaleY: 1, });
+      circleobject.objectResize(e);
    } else if(e.target.type == "ellipse") {
-      newWidth = e.target.width * e.target.scaleX
-      newHeight = e.target.height * e.target.scaleY
-      newRadiusX = newWidth/2
-      newRadiusY = newHeight/2
-      e.target.set({ rx: newRadiusX, ry: newRadiusY, scaleX: 1, scaleY: 1, });
+      ellipseobject.objectResize(e);
    } else if(e.target.type == "rect") {
-      newWidth = e.target.width * e.target.scaleX;
-      newHeight = e.target.height * e.target.scaleY;
-      e.target.set({ height: newHeight, width: newWidth, scaleX: 1, scaleY: 1, });
+      rectobject.objectResize(e);
    }
    objectBoundaryCheck(e)
    log.info( "Leaving objectResize");
@@ -520,14 +420,8 @@ function objectSelected(e) {
    activeObjectVal = e.target;
    console.log("objectSelected: ", activeObjectVal);
    var objType = e.target.get('type');
-    if (objType == 'customline') {
-      console.log("custom line selected");
-      _curX = e.e.clientX;
-      _curY = e.e.clientY;
-      _c1Top = e.target.cone.getTop();
-      _c1Left =  e.target.cone.getLeft();
-      _c2Top = e.target.ctwo.getTop();
-      _c2Left = e.target.ctwo.getLeft();
+   if (objType == 'customline') {
+     lineobject.objectSelected(e);
    }
    if (objType == 'customlinearrow') {
      console.log("custom line selected");
@@ -703,11 +597,7 @@ function objectSelected(e) {
 function mouseOut(e){
    log.info( "Entering mouseOut");
    contextmenuon = true;
-   log.trace("Viewing target in mouseOut")
-   log.trace(e.target)
-   log.debug("Rendering All")
    canvas.renderAll();
-   log.debug("Done Rendering All")
    log.info( "Leaving mouseOut");
 };
 
@@ -733,9 +623,7 @@ function postProcessLoading(o, object) {
     object.on("mousedown", function(data, index) { imageDown(data,index)   });
   }
   if (object.type == "circle") {
-    log.debug( "Processing circle");
-    object.fill = undefined
-    object.on("mousedown", function(data, index) { circleDown(data,index)   });
+    circleobject.postprocessLoading(object);
   }
 
   if (object.type == "circleone") {
@@ -751,13 +639,13 @@ function postProcessLoading(o, object) {
   if (object.type == "ellipse") {
     log.debug( "Processing ellipse");
     object.fill = undefined
-    object.on("mousedown", function(data, index) { ellipseDown(data,index)   });
+    object.on("mousedown", function(data, index) { ellipseobject.ellipseDown(data,index);   });
   }
 
   if (object.type == "rect") {
     log.debug( "Processing rect");
     object.fill = undefined
-    object.on("mousedown", function(data, index) { rectangleDown(data,index)   });
+    object.on("mousedown", function(data, index) { rectobject.rectangleDown(data,index);   });
   }
 
   if (object.type == "customline") {
@@ -767,244 +655,11 @@ function postProcessLoading(o, object) {
   }
   if (object.type == "i-text") {
     log.debug( "Processing i-text");
-    object.on("mousedown", function(data, index) { textDown(data,index)   });
+    object.on("mousedown", function(data, index) { textobject.textDown(data,index)   });
   }
   log.info( "Leaving postProcessLoading");
 
 };
-
-function checkBackgroundFileExists( link ) {
-  log.info("Entering checkBackgroundFileExists")
-  log.debug(link);
-  $.ajax({
-    url:link,
-    type:'HEAD',
-    error: function()
-    {
-        log.debug("In Error Function checkBackgroundFileExists");
-        log.debug("Background File Not Found")
-        return false;
-    },
-    success: function()
-    {
-        log.debug("In success Function checkBackgroundFileExists")
-        log.debug("Background File Exists")
-        return true;
-    }
-  });
-  log.info("Leaving checkBackgroundFileExists")
-}
-
-var onSave  =  debounce(function() {
-    log.info( "Entering onSave");
-    modified = true;
-    // Remove circle0 and circle1 from image
-    //$(".spinner").show();
-    $(".saveMessage").text('Save In Progress...');
-
-    objects = canvas.getObjects();
-
-    var len = objects.length;
-    log.debug( "Number of objects to process: ", len);
-    console.log( "Number of objects to process: ", len);
-    canvas.renderAll();
-    var token = $('meta[name="csrf-token"]').attr('content');
-
-    canvas.backgroundColor = "";
-
-    var json_data = { company_id: company_id,
-                   user_id:  user_id,
-                   id: drawing_id,
-                   authenticity_token: token,
-                   png: "",
-                   drawing: canvas  }
-    log.trace(json_data)
-    //console.log(json_data)
-    var json_url = "/companies/" + company_id + "/users/" + user_id + "/drawings/" + drawing_id +".json"
-    $.ajax({
-            url: json_url, // Route to the Script Controller method
-           type: "patch",
-       dataType: "json",
-    contentType: "application/json",
-           data: JSON.stringify(json_data), // This goes to Controller in params hash, i.e. params[:file_name]
-        timeout: 3000, // sets timeout to 3 seconds
-       complete: function() {
-                 },
-        success: function(data, textStatus, xhr) {
-                   textMsg = JSON.parse(data[0]);
-                   console.log("Text Msg: ", textMsg)
-                   $("#saveMessage").text(textMsg[0]);
-                   loadVersionsIntoPanel(data[1])
-                 },
-          error: function(data, textStatus) {
-                   msg = "Error: " + textStatus;
-                   $("#saveMessage").text(msg);
-                 }
-      });
-     //canvas.renderAll.bind(canvas);
-     log.info( "Leaving onSave");
-}, 3000);
-
-function loadCanvasDrawing(data_drawing) {
-  if (data_drawing != "") {
-      log.debug("data_drawing not blank")
-      canvas.loadFromJSON(data_drawing, function () {
-         //first render
-         canvas.renderAll.bind(canvas);
-         var objs = canvas.getObjects().map(function(o) {
-           return o.set('active', false);
-         });
-         log.debug("Entering loop for objects")
-         log.debug("Loop size: ", objs.length)
-         var foundCircle = 0;
-         var itemId = 0;
-         for(i = 0; i < objs.length; i++ ) {
-            log.debug("Objs Type: ", objs[i].type)
-            objs[i].id = itemId
-            if (objs[i].type == "customline")  {
-              objs[i].hasControls = false;
-              console.log("customline: ", objs[i])
-              console.log("Item Id of line set to: ", objs[i].getObjId())
-              canvas.forEachObject(function(circleProspect){
-                log.debug("Object Type: ", circleProspect.type)
-                if (circleProspect.type == "circlezero" || circleProspect.type == "circleone") {
-                   log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
-                   log.debug("objs[1].objId: ", objs[i].objId)
-                }
-                if (circleProspect.type == "circlezero" && circleProspect.belongsTo == objs[i].objId) {
-                   circleProspect.hasBorders = circleProspect.hasControls = false;
-                   circleProspect.line = objs[i]
-                   circleProspect.belongsTo = itemId;
-                   objs[i].cone = circleProspect
-                   circleProspect.set('hoverCursor','crosshair')
-                   console.log("found circlezero")
-                   foundCircle = foundCircle + 1;
-
-                }
-                if (circleProspect.type == "circleone" && circleProspect.belongsTo == objs[i].objId) {
-                  circleProspect.hasBorders = circleProspect.hasControls = false;
-                  circleProspect.line = objs[i]
-                  circleProspect.belongsTo = itemId;
-                  objs[i].ctwo = circleProspect
-                  circleProspect.set('hoverCursor','crosshair')
-                  console.log("found circleone")
-                  foundCircle = foundCircle + 1;
-                }
-                if (foundCircle == 2) {
-                  console.log("objId: ", objs[i].get('objId'))
-                  objs[i].setObjId(itemId)
-                  itemId = itemId + 1;
-                  objs[i].cone.id = itemId;
-                  itemId = itemId + 1;
-                  objs[i].ctwo.id = itemId;
-                  foundCircle = 0;
-                }
-              });
-              objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
-            }
-
-            if (objs[i].type == "customlinearrow")  {
-              objs[i].hasControls = false;
-              console.log("customline: ", objs[i])
-              console.log("Item Id of line set to: ", objs[i].getObjId())
-              canvas.forEachObject(function(circleProspect){
-                log.debug("Object Type: ", circleProspect.type)
-                if (circleProspect.type == "carrow" || circleProspect.type == "conearrow") {
-                   log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
-                   log.debug("objs[1].objId: ", objs[i].objId)
-                }
-                if (circleProspect.type == "conearrow" && circleProspect.belongsTo == objs[i].objId) {
-                   circleProspect.hasBorders = circleProspect.hasControls = false;
-                   circleProspect.line = objs[i]
-                   circleProspect.belongsTo = itemId;
-                   objs[i].conearrow = circleProspect
-                   circleProspect.set('hoverCursor','crosshair')
-                   console.log("found conearrow")
-                   foundCircle = foundCircle + 1;
-
-                }
-                if (circleProspect.type == "carrow" && circleProspect.belongsTo == objs[i].objId) {
-                  circleProspect.hasBorders = circleProspect.hasControls = false;
-                  circleProspect.line = objs[i]
-                  circleProspect.belongsTo = itemId;
-                  objs[i].carrow = circleProspect
-                  circleProspect.set('hoverCursor','crosshair')
-                  console.log("found carrow")
-                  foundCircle = foundCircle + 1;
-                }
-                if (foundCircle == 2) {
-                  console.log("objId: ", objs[i].get('objId'))
-                  objs[i].setObjId(itemId)
-                  itemId = itemId + 1;
-                  objs[i].conearrow.id = itemId;
-                  itemId = itemId + 1;
-                  objs[i].carrow.id = itemId;
-                  foundCircle = 0;
-                }
-              });
-
-              objs[i].on("mousedown", function(data, index) { lineArrowDown(data,index); });
-            }
-
-            if (objs[i].type == "customlinetwoarrow")  {
-              objs[i].hasControls = false;
-              console.log("customline: ", objs[i])
-              console.log("Item Id of line set to: ", objs[i].getObjId())
-              canvas.forEachObject(function(circleProspect){
-                log.debug("Object Type: ", circleProspect.type)
-                if (circleProspect.type == "carrow" || circleProspect.type == "carrowtwo") {
-                   log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
-                   log.debug("objs[1].objId: ", objs[i].objId)
-                }
-                if (circleProspect.type == "carrowtwo" && circleProspect.belongsTo == objs[i].objId) {
-                   circleProspect.hasBorders = circleProspect.hasControls = false;
-                   circleProspect.line = objs[i]
-                   circleProspect.belongsTo = itemId;
-                   objs[i].carrowtwo = circleProspect
-                   circleProspect.set('hoverCursor','crosshair')
-                   console.log("found carrowtwo")
-                   foundCircle = foundCircle + 1;
-
-                }
-                if (circleProspect.type == "carrow" && circleProspect.belongsTo == objs[i].objId) {
-                  circleProspect.hasBorders = circleProspect.hasControls = false;
-                  circleProspect.line = objs[i]
-                  circleProspect.belongsTo = itemId;
-                  objs[i].carrow = circleProspect
-                  circleProspect.set('hoverCursor','crosshair')
-                  console.log("found carrow")
-                  foundCircle = foundCircle + 1;
-                }
-                if (foundCircle == 2) {
-                  console.log("objId: ", objs[i].get('objId'))
-                  objs[i].setObjId(itemId)
-                  itemId = itemId + 1;
-                  objs[i].carrowtwo.id = itemId;
-                  itemId = itemId + 1;
-                  objs[i].carrow.id = itemId;
-                  foundCircle = 0;
-                }
-              });
-
-              objs[i].on("mousedown", function(data, index) { lineArrowTwoDown(data,index); });
-            }
-
-            itemId = itemId + 1;
-         }
-         canvas.renderAll();
-         backgroundImageVal = "";
-         if (canvas.hasOwnProperty('backgroundImage')) {
-            if ((canvas.backgroundImage).hasOwnProperty('src')) {
-                backgroundImageVal = canvas.backgroundImage.src;
-            }
-         }
-         log.debug("BackgroundImage Loc: ", backgroundImageVal)
-         backgroundExists(backgroundImageVal);
-      },
-      postProcessLoading);
-
-  }
-}
 
 function handleDragStart(e) {
  log.info( "Entering handleDragStart");
@@ -1016,23 +671,7 @@ function handleDragStart(e) {
 }
 
 function makeLine(coords, id) {
-   log.info( "Entering makeLine");
-   log.debug("Coords are: ", coords);
-   line =  new fabric.Customline(coords, {
-     x1: coords[0],
-     y1: coords[1],
-     x2: coords[2],
-     y2: coords[3],
-     fill: 'red',
-     stroke: 'red',
-     strokeWidth: 5,
-     selectable: true,
-     objId: id,
-     perPixelTargetFind: true,
-   });
-   line.hasControls = false;
-   log.info( "Leaving makeLine");
-   return line;
+   lineobject.makeLine(coords, id)
  }
 
  function makeLineArrow(coords, id) {
@@ -1095,43 +734,7 @@ function makeLine(coords, id) {
    return arrow;
  }
  function makeCircleShape(coords, id) {
-   log.info( "Entering makeCircleShape");
-   return new fabric.Circle({ top: coords[1],
-                              left: coords[0],
-                              radius: 15,
-                              fill : undefined,
-                              stroke : 'red',
-                              lockUniScaling: true,
-                              hasRotatingPoint : false,
-                              strokeWidth : 5 })
-   log.info( "Leaving makeCircleShape");
- }
-
- function makeEllipseShape(coords, id) {
-   log.info( "Entering makeEllipseShape");
-   return new fabric.Ellipse({ top: coords[1],
-                              left: coords[0],
-                              rx: 15,
-                              ry: 7,
-                              fill : undefined,
-                              stroke : 'red',
-                              lockUniScaling: false,
-                              hasRotatingPoint : true,
-                              strokeWidth : 5 })
-   log.info( "Leaving makeEllipseShape");
- }
-
- function makeRectangleShape(coords, id) {
-    log.info( "Entering makeRectangleShape");
-    return new fabric.Rect({ top: coords[1],
-                             left: coords[0],
-                             width: 67,
-                             height: 45,
-                             fill: undefined,
-                             stroke : 'red',
-                             hasRotatingPoint : true,
-                             strokeWidth : 5 })
-    log.info( "Leaving makeRectangleShape");
+   circleobject.makeCircleShape(coords, id)
  }
 
  function activateColorPicker(e) {
@@ -1385,79 +988,8 @@ function bringToFront() {
    log.info( "Leaving bringToFront");
 }
 
-
 function lineDown(data,index) {
-   log.info( "Entering lineDown");
-   console.log( "Entering lineDown");
-   console.log("data: ", data)
-
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {
-                                             if (activeObjectVal.type) {
-                                               if (activeObjectVal.type == "customline") {
-                                                 canvas.remove(activeObjectVal.cone)
-                                                 canvas.remove(activeObjectVal.ctwo)
-                                                 canvas.remove(activeObjectVal);
-                                               } else if(activeObjectVal.hasOwnProperty('belongsTo')) {
-                                                 console.log("removing belongTo object")
-                                                 var objs = canvas.getObjects()
-                                                 // find line with belongsTo value
-                                                 var searchVal = activeObjectVal.get('belongsTo')
-                                                 var found = false;
-                                                 var i = 0;
-                                                 while (!found && i < objs.length) {
-                                                   if (objs[i].type == "customline") {
-                                                     if (objs[i].objId == searchVal) {
-                                                       found= true;
-                                                     }
-                                                   }
-                                                   i = i + 1;
-                                                 }
-                                                 if (found) {
-                                                   i = i -1;
-                                                   canvas.remove(objs[i].cone)
-                                                   canvas.remove(objs[i].ctwo)
-                                                   canvas.remove(objs[i]);
-                                                 }
-                                                 canvas.renderAll()
-                                               }
-                                             }
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;
-                                           });
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
-           contextmenuon = true;
-        };
-      }
-      document.addEventListener('contextmenu', handler, false);
-   }
-   log.info( "Leaving lineDown");
+  lineobject.lineDown(data,index);
 }
 
 function lineArrowDown(data,index) {
@@ -1596,185 +1128,8 @@ function lineArrowTwoDown(data,index) {
    log.info( "Leaving lineDown");
 }
 
-function ellipseDown(data,index) {
-   log.info( "Entering ellipseDown");
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            var items = ["Delete Ellipse", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {log.debug("ellipseDown: In Delete");
-                                             activeObjectVal = canvas.getActiveObject();
-                                             log.trace(activeObjectVal);
-                                             canvas.remove(activeObjectVal);
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;
-                                                             activeObject = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
-           contextmenuon = true;
-        };
-      }
-      document.addEventListener('contextmenu', handler, false);
-   }
-   log.info( "Leaving ellipseDown");
-}
-
 function circleDown(data,index) {
-   console.log("Data: ", data)
-   log.info( "Entering circleDown");
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true ) {
-            e.preventDefault();
-            var items = ["Delete Circle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {log.debug("circleDown: In Delete");
-                                             activeObjectVal = canvas.getActiveObject();
-                                             log.trace(activeObjectVal);
-                                             canvas.remove(activeObjectVal);
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;
-                                                             activeObject = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
-           contextmenuon = true;
-        };
-      }
-      document.addEventListener('contextmenu', handler, false);
-   }
-   log.info( "Leaving circleDown");
-}
-
-function rectangleDown(data,index) {
-   log.info( "Entering rectangleDown");
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            var items = ["Delete Rectangle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {log.debug("rectangleDown: In Delete");
-                                             activeObjectVal = canvas.getActiveObject();
-                                             log.trace(activeObjectVal);
-                                             canvas.remove(activeObjectVal);
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;
-                                                             activeObject = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
-           contextmenuon = true;
-        };
-      }
-      document.addEventListener('contextmenu', handler, false);
-   }
-   log.info( "Leaving rectangleDown");
-}
-
-function textDown(data,index) {
-   log.info( "Entering textDown");
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            var items = ["Delete Text", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {log.debug("textDown: In Delete");
-                                             activeObjectVal = canvas.getActiveObject();
-                                             log.trace(activeObjectVal);
-                                             canvas.remove(activeObjectVal);
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;}   );
-            $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                              $('#contextMenu').remove();
-                                                              contextmenuon = false;
-                                                              activeObject = false;}
-                                                 );
-            $('a:contains("Send Backward")').click(function() {sendBackward();});
-            $('a:contains("Send To Back")').click(function() {sendToBack();});
-            $('a:contains("Bring Forward")').click(function() {bringFoward();});
-            $('a:contains("Bring To Front")').click(function() {bringToFront();});
-            contextmenuon = true;
-         };
-       }
-   }
-   document.addEventListener('contextmenu', handler, false);
-   log.info( "Leaving textDown");
+   circleobject.circleDown(data,index);
 }
 
 function imageDown(data,index) {
@@ -1810,7 +1165,41 @@ function imageDown(data,index) {
                                                    var companyId = 1
                                                    searchId = getItemIndex(activeObjectVal)
                                                    canvas.setActiveObject(canvas.item(searchId))
-                                                   configuratorProduct2(productId, companyId, searchId);
+                                                   $('#configsection').modal('show');
+                                                   $('#gifspinner').show();
+                                                   document.getElementById('data').innerHTML = "";
+                                                   var selectChoices = false;
+                                                   var splitVals = "";
+                                                   var objectConfig = canvas.item(searchId).config
+                                                   if (objectConfig != undefined) {
+                                                      log.info( "Object Config is Defined: ", objectConfig);
+                                                      selectChoices = true;
+                                                      splitVals = objectConfig.split("-")
+                                                   }
+                                                   var json_url = "/companies/" + companyId + "/prices/" + productId + "/productconfig.json"
+                                                   var jsondata = "";
+                                                   $.ajax({
+                                                           url: json_url, // Route to the Script Controller method
+                                                          type: "GET",
+                                                      dataType: "json",
+                                                          data: jsondata,
+                                                   contentType: "application/json",
+                                                       timeout: 3000, // sets timeout to 3 seconds
+                                                      complete: function() {
+                                                                  $('#gifspinner').fadeOut( 400 );
+                                                                  log.info( "Ajax Call is Complete");
+                                                                },
+                                                       success: function(data, textStatus, xhr) {
+                                                                   loadConfigScreen( data, selectChoices, splitVals );
+                                                                   log.trace(data)
+                                                                   log.info( "Ajax Call is Success");
+                                                                },
+                                                         error: function(data, textStatus) {
+                                                                log.trace(data);
+                                                                alert(textStatus);
+                                                                log.info( textStatus);
+                                                                }
+                                                        });
                                                    $('#contextMenu').remove();
                                                    contextmenuon = false;
                                                    activeObject = true;
@@ -1852,26 +1241,7 @@ function handleDrop(e) {
       log.debug("imgsrc_val: ", imgsrc_val)
       if (imgsrc_val == "line.png")
       {
-         log.debug("In line.png section");
-         objectName = "customline";
-         var xpos1 = e.layerX;
-         var ypos1 = e.layerY;
-         var xpos2 = xpos1 + 25;
-         var ypos2 = ypos1 + 25;
-         objId = id;
-         var line = makeLine([ xpos1, ypos1, xpos2, ypos2 ], id)
-         line.hasControls = false
-         itemId = itemId + 1;
-         line.id = itemId
-         line.objId = itemId;
-         canvas.add(line)
-         c[id] = makeCircle(line);
-         line.cone = c[id][0];
-         line.ctwo = c[id][1];
-         console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'))
-         canvas.add(c[id][0],c[id][1]);
-         canvas.renderAll();
-         line.on("mousedown", function(data, index) { lineDown(data,index); });
+         lineobject.lineDrop(e,id);
       } else if (imgsrc_val == "line_arrow_icon.png") {
          log.debug("In line.png section");
          objectName = "customlinearrow";
@@ -1917,44 +1287,11 @@ function handleDrop(e) {
         canvas.renderAll();
         line.on("mousedown", function(data, index) { lineArrowTwoDown(data,index); });
       } else if (imgsrc_val == "circle_icon.png") {
-        log.debug("In circle_icon.png section");
-        objectName = "circle";
-        var xpos1 = e.layerX;
-        var ypos1 = e.layerY;
-        var id = objId_var + 1;
-        objId = id;
-        var circleShape = makeCircleShape([ xpos1, ypos1 ], id)
-        circleShape.hasBorders = circleShape.hasControls = true
-        circleShape.on("mousedown", function(data, index) { circleDown(data,index); });
-        circleShape.id = itemId
-        itemId = itemId + 1;
-        canvas.add(circleShape)
+        circleobject.circledrop(e, id);
       } else if (imgsrc_val == "ellipse_icon.png") {
-        log.debug("In ellipse_icon.png section");
-        objectName = "circle";
-        var xpos1 = e.layerX;
-        var ypos1 = e.layerY;
-        var id = objId_var + 1;
-        objId = id;
-        var ellipseShape = makeEllipseShape([ xpos1, ypos1 ], id)
-        ellipseShape.hasBorders = ellipseShape.hasControls = true
-        ellipseShape.on("mousedown", function(data, index) { ellipseDown(data,index); });
-        ellipseShape.id = itemId
-        itemId = itemId + 1;
-        canvas.add(ellipseShape)
+        ellipseobject.ellipsedrop(e,id);
       } else if (imgsrc_val == "rectangle-icon.png") {
-        log.debug("In rectangle-icon.png section");
-        objectName = "rectangle";
-        var xpos1 = e.layerX;
-        var ypos1 = e.layerY;
-        var id = objId_var + 1;
-        objId = id;
-        var rectangleShape = makeRectangleShape([ xpos1, ypos1 ], id);
-        rectangleShape.hasBorders = rectangleShape.hasControls = true
-        rectangleShape.on("mousedown", function(data, index) { rectangleDown(data,index); });
-        rectangleShape.id = itemId
-        itemId = itemId + 1;
-        canvas.add(rectangleShape)
+        rectobject.rectdrop(e, id);
       } else if (imgsrc_val == "textbox_icon.png") {
          log.debug("In textbox_icon.png section");
          var textbox = new fabric.IText('Tap and Type', {
@@ -1967,7 +1304,7 @@ function handleDrop(e) {
          textbox.id = itemId
          itemId = itemId + 1;
          canvas.add(textbox);
-         textbox.on("mousedown", function(data, index) { textDown(data,index); });
+         textbox.on("mousedown", function(data, index) { textobject.textDown(data,index); });
       } else {
          log.debug("In drag down else category")
          var newImage = new fabric.CustomImage(img, {
@@ -2054,8 +1391,6 @@ function menus(items, event) {
    if (contextmenuon == false) {
       var menucontainer = document.createElement('div');
       menucontainer.id = 'contextMenu';
-      //menucontainer.className = "dropdown clearfix";
-      //var html = "<ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu' style='display:block;position:static;margin-bottom:5px;'>";
       var html = "<ul class='dropdown-menu' role='menu' style='display:block;position:static;' >";
       for (index=0; index < items.length; index++) {
          html += "<li> <a tabindex=''-1'>" + items[index] + "</a> </li>";
@@ -2107,182 +1442,10 @@ function getItemIndex(object) {
      return index;
 }
 
-var popup;
-function configuratorProduct(productId, companyId, searchId) {
-   log.info( "Entering configuratorProduct");
-   popup = window.open("/companies/" + companyId + "/prices/" + productId + "/productconfig.html?searchId=" + searchId, "Popup", "width=300,height=500");
-   popup.focus();
-   log.info( "Leaving configuratorProduct");
-}
-
 function backgroundModal() {
   log.info( "Entering backgroundModal");
   $('#backgroundSection').modal('show');
   log.info( "Leaving backgroundModal");
-}
-
-function loadConfigScreen( data, selectChoices, splitVals ) {
-   jsondata = data;
-   log.info( "Entering loadConfigScreen");
-   log.trace("jsondata: ", jsondata)
-   if (jsondata.error == "Data Not Found") {
-      document.getElementById('data').innerHTML += '<br>' + jsondata.error;
-   }
-   else {
-     jsondataprice = JSON.parse(jsondata.price);
-     //document.getElementById('data').innerHTML += '<br>' + jsondata['name'];
-     var prodName = document.createElement('div')
-     prodName.className = 'form-group form-group-sm';
-     var prodName2 = document.createElement('div');
-     prodName2.className = 'control-label col-sm-3';
-     prodName2.innerHTML += jsondata['name'];
-     prodName.appendChild(prodName2);
-     document.getElementById('data').appendChild(prodName);
-     for (i=0; i< jsondataprice.product.options.length; i++) {
-        var newNode = document.createElement('div');
-        newNode.className = 'form-group form-group-sm';
-        var newNode2 = document.createElement('label');
-        newNode2.className = 'control-label col-sm-3';
-        newNode2.innerHTML += jsondataprice.product.options[i].opname
-        newNode.appendChild(newNode2)
-        var newNode3 = document.createElement('div');
-        newNode3.className = 'control-label col-sm-9';
-        var selectHTML = "";
-        var selectid = 'select' + i
-        selectHTML='<select class="form-control input-sm" id="' + selectid + '">';
-        for (j=0; j< jsondataprice.product.options[i].selections.length; j++) {
-           selectHTML += '<option value=\'{"code":"'
-           selectHTML += jsondataprice.product.options[i].selections[j].code
-           selectHTML += '","price":"'
-           selectHTML += jsondataprice.product.options[i].selections[j].price
-           selectHTML +='"}\''
-           if (selectChoices) {
-             if (jsondataprice.product.options[i].selections[j].code == splitVals[i+1]) {
-                selectHTML +=' selected="selected" '
-             }
-           }
-           selectHTML += '>'
-           selectHTML +=jsondataprice.product.options[i].selections[j].description
-           selectHTML +='</option>'
-        }
-        selectHTML += "</select>";
-        newNode3.innerHTML += selectHTML
-        newNode.appendChild(newNode3)
-        document.getElementById('data').appendChild(newNode);
-   }
-   // Configuration
-   var newNode = document.createElement('div');
-   newNode.className = 'form-group form-group-sm';
-   var newNode2 = document.createElement('label');
-   newNode2.className = 'control-label col-sm-3';
-   newNode2.innerHTML += "Configuration: "
-   newNode.appendChild(newNode2)
-   var newNodeDiv = document.createElement('div');
-   newNodeDiv.className = "col-sm-9 input-sm";
-   var newNode3 = document.createElement('p');
-   newNode3.className = 'pull-left';
-   newNode3.id = "prodconfig"
-   newNodeDiv.appendChild(newNode3);
-   newNode.appendChild(newNodeDiv);
-   document.getElementById('data').appendChild(newNode);
-
-   // List Price
-   var newPriceNode = document.createElement('div');
-   newPriceNode.className = 'form-group form-group-sm';
-   var newNode2 = document.createElement('label');
-   newNode2.className = 'control-label col-sm-3';
-   newNode2.innerHTML += "List Price: "
-   newPriceNode.appendChild(newNode2)
-   var newNodeDiv = document.createElement('div');
-   newNodeDiv.className = "col-sm-9 input-sm";
-   var newNode3 = document.createElement('p');
-   newNode3.className = 'pull-left';
-   newNode3.id = "price"
-   newNodeDiv.appendChild(newNode3);
-   newPriceNode.appendChild(newNodeDiv);
-
-   document.getElementById('data').appendChild(newPriceNode);
-   // done configuration
-   configString(jsondata,searchId)
-   log.debug("Adding Listeners: Before For Loop")
-   for (i=0; i< jsondataprice.product.options.length; i++) {
-      var selectid = 'select' + i
-      document.getElementById(selectid).onchange = function() {
-            var index = this.selectedIndex;
-            var inputText = this.children[index].innerHTML.trim();
-            log.trace(inputText);
-            configString(jsondata,searchId)
-      }
-    }
-   }
-   $('#gifspinner').fadeOut( 400 );
-   log.info( "Leaving loadConfigScreen");
-}
-
-function configuratorProduct2(productId, companyId, searchId) {
-   log.info( "Entering configuratorProduct2");
-   $('#configsection').modal('show');
-   $('#gifspinner').show();
-   document.getElementById('data').innerHTML = "";
-   var selectChoices = false;
-   var splitVals = "";
-   var objectConfig = canvas.item(searchId).config
-   if (objectConfig != undefined) {
-      log.info( "Object Config is Defined: ", objectConfig);
-      selectChoices = true;
-      splitVals = objectConfig.split("-")
-   }
-   var json_url = "/companies/" + companyId + "/prices/" + productId + "/productconfig.json"
-   var jsondata = "";
-   $.ajax({
-           url: json_url, // Route to the Script Controller method
-          type: "GET",
-      dataType: "json",
-          data: jsondata,
-   contentType: "application/json",
-       timeout: 3000, // sets timeout to 3 seconds
-      complete: function() {
-                  $('#gifspinner').fadeOut( 400 );
-                  log.info( "Ajax Call is Complete");
-                },
-       success: function(data, textStatus, xhr) {
-                   log.trace("configuratorProduct2: In Ajax Success")
-                   loadConfigScreen( data, selectChoices, splitVals );
-                   log.trace(data)
-                   //configString(data,searchId);
-                   log.info( "Ajax Call is Success");
-                },
-         error: function(data, textStatus) {
-                log.trace(data);
-                alert(textStatus);
-                log.info( textStatus);
-                }
-        });
-   log.info( "Leaving configuratorProduct2");
-}
-
-function configString(jsontext,searchId) {
-  log.info( "Entering configString");
-  log.trace ("configString:jasontext", jsontext);
-  jsondataprice = JSON.parse(jsontext.price);
-  log.trace("configString:jsondataprice", jsondataprice);
-  var configurationString = jsondataprice.product.name;
-  var priceString = "List Price: $";
-  var listPrice = jsondataprice.product.basePrice;
-  for (i=0; i< jsondataprice.product.options.length; i++) {
-       selectid = 'select' + i
-       var index = document.getElementById(selectid).selectedIndex
-       configurationString += '-'
-       var values = JSON.parse(document.getElementById(selectid).children[index].value)
-       configurationString += values.code
-       listPrice = parseInt(listPrice) + parseInt(values.price)
-  }
-  document.getElementById('prodconfig').innerHTML = configurationString
-  document.getElementById('price').innerHTML = listPrice
-  canvas.item(searchId).setConfig(document.getElementById('prodconfig').innerHTML)
-  canvas.item(searchId).price = document.getElementById('price').innerHTML
-  canvas.renderAll();
-  log.info( "Leaving configString");
 }
 
  function calcArrowAngle(x1, y1, x2, y2) {
