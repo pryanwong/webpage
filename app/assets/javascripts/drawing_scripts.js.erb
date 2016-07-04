@@ -8,216 +8,37 @@ function setLinePositions(e) {
     }
 
     if (objType == 'customlinearrow') {
-        console.log("In customlinearrow")
-        var objId = p.get('objId')
-        var _curXm = (_curX - e.e.clientX);
-        var _curYm = (_curY - e.e.clientY);
-        console.log("Deltas: ", _curXm, " ", _curYm)
-        for (var i = 0; i < canvas.getObjects().length; i++) {
-          var currentObj = canvas.getObjects()[i];
-          console.log("currentObj: ", currentObj)
-          if (currentObj.type == "carrow" && currentObj.get('belongsTo') == objId) {
-            console.log("In carrow", currentObj)
-            console.log("currentObj.left: ", currentObj.left)
-            console.log("currentObj.top: ", currentObj.top)
-            console.log("New currentObj.left: ", (currentObj.left -_curXm))
-            console.log("New currentObj.top: ", (currentObj.top - _curYm))
-            _c2Top = currentObj.getTop();
-            _c2Left = currentObj.getLeft();
-            currentObj.set({
-              'left': (currentObj.left - _curXm),
-              'top': (currentObj.top - _curYm)
-            });
+      customlinearrow.setLinePositions(e);
+    }
 
-            currentObj.setCoords();
-
-            currentObj.line && currentObj.line.set({
-                'x2': currentObj.left,
-                'y2': currentObj.top
-              });
-
-            currentObj.line.setCoords();
-          }
-
-          if (currentObj.type == "conearrow" && currentObj.get('belongsTo') == objId) {
-            console.log("In conearrow", currentObj)
-            _c1Top = currentObj.getTop();
-            _c1Left = currentObj.getLeft();
-            console.log("New currentObj.left: ", (currentObj.left -_curXm))
-            console.log("New currentObj.top: ", (currentObj.top - _curYm))
-            currentObj.set({
-              'left': (currentObj.left - _curXm) ,
-              'top': (currentObj.top - _curYm)
-            });
-
-            currentObj.setCoords();
-
-            currentObj.line && currentObj.line.set({
-                'x1': currentObj.left,
-                'y1': currentObj.top
-              });
-
-            currentObj.line.setCoords();
-          }
-
-
-        }
-        _curX = e.e.clientX;
-        _curY = e.e.clientY;
-      }
-
-      if (objType == 'customlinetwoarrow') {
-          console.log("In customlinetwoarrow")
-          var objId = p.get('objId')
-          var _curXm = (_curX - e.e.clientX);
-          var _curYm = (_curY - e.e.clientY);
-          console.log("Deltas: ", _curXm, " ", _curYm)
-          for (var i = 0; i < canvas.getObjects().length; i++) {
-            var currentObj = canvas.getObjects()[i];
-            console.log("currentObj: ", currentObj)
-            if (currentObj.type == "carrowtwo" && currentObj.get('belongsTo') == objId) {
-              console.log("In carrowtwo", currentObj)
-              console.log("currentObj.left: ", currentObj.left)
-              console.log("currentObj.top: ", currentObj.top)
-              console.log("New currentObj.left: ", (currentObj.left -_curXm))
-              console.log("New currentObj.top: ", (currentObj.top - _curYm))
-              _c2Top = currentObj.getTop();
-              _c2Left = currentObj.getLeft();
-              currentObj.set({
-                'left': (currentObj.left - _curXm),
-                'top': (currentObj.top - _curYm)
-              });
-
-              currentObj.setCoords();
-
-              currentObj.line && currentObj.line.set({
-                  'x1': currentObj.left,
-                  'y1': currentObj.top
-                });
-
-              currentObj.line.setCoords();
-            }
-
-            if (currentObj.type == "carrow" && currentObj.get('belongsTo') == objId) {
-              console.log("In conearrow", currentObj)
-              _c1Top = currentObj.getTop();
-              _c1Left = currentObj.getLeft();
-              console.log("New currentObj.left: ", (currentObj.left -_curXm))
-              console.log("New currentObj.top: ", (currentObj.top - _curYm))
-              currentObj.set({
-                'left': (currentObj.left - _curXm) ,
-                'top': (currentObj.top - _curYm)
-              });
-
-              currentObj.setCoords();
-
-              currentObj.line && currentObj.line.set({
-                  'x2': currentObj.left,
-                  'y2': currentObj.top
-                });
-
-              currentObj.line.setCoords();
-            }
-
-
-          }
-          _curX = e.e.clientX;
-          _curY = e.e.clientY;
-        }
+    if (objType == 'customlinetwoarrow') {
+      customlinetwoarrow.setLinePositions(e);
+    }
 }
 
 function setLineCirclePositionsBoundary(e) {
-  var p = e.target;
-  var objType = p.get('type');
-      var objId = p.get('objId')
-      var _curXm = (_curX - e.e.clientX);
-      var _curYm = (_curY - e.e.clientY);
     if (p.type == "customline") {
         lineobject.setLineCirclePositionsBoundary(e);
     }
     if (p.type == "customlinearrow") {
-       _circleOne = p.conearrow;
-       _circleTwo = p.carrow;
+       customlinearrow.setLineCirclePositionsBoundary(e);
+    }
 
-        _circleTwo && _circleTwo.set({
-          'left': _c2Left,
-          'top': _c2Top
-        });
-
-        _circleTwo.setCoords();
-
-        _circleTwo.line && _circleTwo.line.set({
-            'x2': _circleTwo.left,
-            'y2': _circleTwo.top
-          });
-
-        _circleTwo.line.setCoords();
-
-
-        _circleOne && _circleOne.set({
-          'left': _c1Left,
-          'top': _c1Top
-        });
-
-        _circleOne.setCoords();
-        //setCircleLineAtBoundary(currentObj,p)
-
-        _circleOne.line && _circleOne.line.set({
-            'x1': _circleOne.left,
-            'y1': _circleOne.top
-          });
-
-        _circleOne.line.setCoords();
-        p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
-
-      }
-
-      if (p.type == "customlinetwoarrow") {
-         _circleOne = p.carrow;
-         _circleTwo = p.carrowtwo;
-
-          _circleTwo && _circleTwo.set({
-            'left': _c2Left,
-            'top': _c2Top
-          });
-
-          _circleTwo.setCoords();
-
-          _circleTwo.line && _circleTwo.line.set({
-              'x2': _circleTwo.left,
-              'y2': _circleTwo.top
-            });
-
-          _circleTwo.line.setCoords();
-
-
-          _circleOne.line && _circleOne.set({
-            'left': _c1Left,
-            'top': _c1Top
-          });
-
-          _circleOne.setCoords();
-          //setCircleLineAtBoundary(currentObj,p)
-
-          _circleOne.line && _circleOne.line.set({
-              'x1': _circleOne.left,
-              'y1': _circleOne.top
-            });
-
-          _circleOne.line.setCoords();
-          p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
-
-        }
-      p.setCoords();
-      _curX = e.e.clientX;
-      _curY = e.e.clientY;
+    if (p.type == "customlinetwoarrow") {
+      customlinetwoarrow.setLineCirclePositionsBoundary(e);
+    }
+    p.setCoords();
+    _curX = e.e.clientX;
+    _curY = e.e.clientY;
 
 }
 
 function objectBoundaryCheck(e) {
   if (e.target.type == "customline") {
     lineobject.objectBoundaryCheck(e);
-  } else {
+  } else if (e.target.type == "customlinearrow") {
+    customlinearrow.objectBoundaryCheck(e);
+  }else {
     objectBoundaryCheckAll(e)
   }
 }
@@ -228,7 +49,6 @@ function objectBoundaryCheckAll(e){
   log.info( "Entering  objectBoundaryCheck");
   $("#saveMessage").text('Changes Made, Save Pending...');
   e.target.setCoords();
-  console.log("Object in boundary check: ", e.target)
 
   log.debug( "Checking to see if the end points of a line are being dragged ");
   if (e.target.type != "circlezero" && e.target.type != "circleone" && e.target.type != "conearrow" && e.target.type != "carrow"  && e.target.type != "carrowtwo") {
@@ -310,15 +130,10 @@ function boundaryInspectorCircle(e) {
          e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
          e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
       }
-      if (p.type == "circleone")  {
-         p.line && p.line.set({ 'x1': p.line.cone.left, 'y1': p.line.cone.top, 'x2': p.line.ctwo.left, 'y2': p.line.ctwo.top });
-      } else {
-         p.line && p.line.set({ 'x1': p.line.cone.left, 'y1': p.line.cone.top, 'x2': p.line.ctwo.left, 'y2': p.line.ctwo.top });
-      }
+      p.line && p.line.set({ 'x1': p.line.cone.left, 'y1': p.line.cone.top, 'x2': p.line.ctwo.left, 'y2': p.line.ctwo.top });
 
       p.line.setCoords();
       e.target.setCoords();
-      //canvas.renderAll();
    }
    if (p.type == 'conearrow') {
         if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
@@ -328,7 +143,6 @@ function boundaryInspectorCircle(e) {
            e.target.setTop(Math.min(bounds.br.y, e.target.top + 2*p.radius ))
            e.target.left = Math.min(bounds.br.x, e.target.left + 2*p.radius)
         }
-        console.log("conearrow: ", p.line)
         p.line && p.line.set({ 'x1': p.line.conearrow.left, 'y1': p.line.conearrow.top, 'x2': p.line.carrow.left, 'y2': p.line.carrow.top});
         p.line.setCoords();
         angle = calcArrowAngle(p.line.x1, p.line.y1, p.line.x2, p.line.y2);
@@ -344,8 +158,6 @@ function boundaryInspectorCircle(e) {
            e.target.setTop(Math.min(bounds.br.y, e.target.top ))
            e.target.left = Math.min(bounds.br.x, e.target.left + p.width)
         }
-        console.log("carrow: ", p)
-        console.log("line: ", p.line)
         if (p.line.type == "customlinetwoarrow") {
            p.line && p.line.set({ 'x1': p.line.carrowtwo.left, 'y1': p.line.carrowtwo.top, 'x2': p.line.carrow.left, 'y2': p.line.carrow.top });
         } else {
@@ -368,7 +180,6 @@ function boundaryInspectorCircle(e) {
            e.target.setTop(Math.min(bounds.br.y, e.target.top))
            e.target.left = Math.min(bounds.br.x, e.target.left + p.width)
         }
-        console.log("carrowtwo: ", p.line)
         p.line && p.line.set({'x1': p.left, 'y1': p.top, 'x2': p.line.carrow.left, 'y2': p.line.carrow.top});
         p.line.setCoords();
         angle = calcArrowAngle(p.line.x1, p.line.y1, p.line.x2, p.line.y2);
@@ -418,13 +229,11 @@ function objectSelected(e) {
    log.info( "Entering objectSelected");
    activeObject = true;
    activeObjectVal = e.target;
-   console.log("objectSelected: ", activeObjectVal);
    var objType = e.target.get('type');
    if (objType == 'customline') {
      lineobject.objectSelected(e);
    }
    if (objType == 'customlinearrow') {
-     console.log("custom line selected");
      _curX = e.e.clientX;
      _curY = e.e.clientY;
      _c1Top = e.target.conearrow.getTop();
@@ -433,12 +242,10 @@ function objectSelected(e) {
      _c2Left = e.target.carrow.getLeft();
   }
   if (objType == 'customlinetwoarrow') {
-    console.log("custom line two selected");
     _curX = e.e.clientX;
     _curY = e.e.clientY;
     _c1Top = e.target.carrow.getTop();
     _c1Left =  e.target.carrow.getLeft();
-    console.log("customlinetwoarrow: ", e.target );
     _c2Top = e.target.carrowtwo.get('top');
     _c2Left = e.target.carrowtwo.getLeft();
  }
@@ -461,9 +268,6 @@ function objectSelected(e) {
      for ( i=0; i < groupObjectsCustomLine.length; i++) {
        customLineInCollection.push(groupObjectsCustomLine[i].objId)
      }
-     console.log("circleOneInCollection:", circleOneInCollection)
-     console.log("circleZeroInCollection:", circleZeroInCollection)
-     console.log("customLineInCollection:", customLineInCollection)
 
      allObjects = canvas.getObjects();
      for (i=0; i< circleZeroInCollection.length; i++) {
@@ -478,8 +282,7 @@ function objectSelected(e) {
                  if (allObjects[j].belongsTo == circleZeroInCollection[i]) {
                      circleOneInCollection.push( circleZeroInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
-                     console.log("Found circleone for circlezero", circleOneInCollection)
-                     notFound = false
+                     notFound = false;
                  }
                }
                j = j+1;
@@ -496,8 +299,7 @@ function objectSelected(e) {
                  if (allObjects[j].objId == circleZeroInCollection[i]) {
                      customLineInCollection.push( circleZeroInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false
-                     console.log("Found customline for circlezero", customLineInCollection)
+                     notFound = false;
                  }
                }
                j = j+1;
@@ -518,8 +320,7 @@ function objectSelected(e) {
                  if (allObjects[j].belongsTo == circleOneInCollection[i]) {
                      circleZeroInCollection.push( circleOneInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false
-                     console.log("Found circlezero for circleone", circleZeroInCollection)
+                     notFound = false;
                  }
                }
                j = j+1;
@@ -536,8 +337,7 @@ function objectSelected(e) {
                  if (allObjects[j].objId == circleOneInCollection[i]) {
                      customLineInCollection.push( circleOneInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false
-                     console.log("Found customline for circleone", customLineInCollection)
+                     notFound = false;
                  }
                }
                j = j+1;
@@ -558,8 +358,7 @@ function objectSelected(e) {
                  if (allObjects[j].belongsTo == customLineInCollection[i]) {
                      circleZeroInCollection.push( customLineInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false
-                     console.log("Found circlezero for customline", circleZeroInCollection)
+                     notFound = false;
                  }
                }
                j = j+1;
@@ -576,8 +375,7 @@ function objectSelected(e) {
                  if (allObjects[j].belongsTo == customLineInCollection[i]) {
                      circleOneInCollection.push( customLineInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false
-                      console.log("Found circleone for customline", circleOneInCollection)
+                     notFound = false;
                  }
                }
                j = j+1;
@@ -585,9 +383,6 @@ function objectSelected(e) {
 
        }
      }
-     console.log("circleOneInCollection:", circleOneInCollection)
-     console.log("circleZeroInCollection:", circleZeroInCollection)
-     console.log("customLineInCollection:", customLineInCollection)
      canvas.renderAll();
 
    }
@@ -620,7 +415,7 @@ function postProcessLoading(o, object) {
   log.info( "Entering postProcessLoading");
   if (object.type == "custom-image") {
     log.debug( "Processing custom-image");
-    object.on("mousedown", function(data, index) { imageDown(data,index)   });
+    object.on("mousedown", function(data, index) { imageobject.imageDown(data,index)   });
   }
   if (object.type == "circle") {
     circleobject.postprocessLoading(object);
@@ -674,65 +469,6 @@ function makeLine(coords, id) {
    lineobject.makeLine(coords, id)
  }
 
- function makeLineArrow(coords, id) {
-    log.info( "Entering makeLine");
-    log.debug("Coords are: ", coords);
-    line =  new fabric.Customlinearrow(coords, {
-      x1: coords[0],
-      y1: coords[1],
-      x2: coords[2],
-      y2: coords[3],
-      fill: 'red',
-      stroke: 'red',
-      strokeWidth: 5,
-      selectable: true,
-      objId: id,
-      perPixelTargetFind: true,
-    });
-    line.hasControls = false;
-    log.info( "Leaving makeLine");
-    return line;
-  }
-
-  function makeLineTwoArrow(coords, id) {
-     log.info( "Entering makeLine");
-     log.debug("Coords are: ", coords);
-     line =  new fabric.Customlinetwoarrow(coords, {
-       x1: coords[0],
-       y1: coords[1],
-       x2: coords[2],
-       y2: coords[3],
-       fill: 'red',
-       stroke: 'red',
-       strokeWidth: 5,
-       selectable: true,
-       objId: id,
-       perPixelTargetFind: true,
-     });
-     line.hasControls = false;
-     log.info( "Leaving makeLine");
-     return line;
-   }
-
- function makeArrowShape(coords, id) {
-   arrow = new fabric.Arrowone({
-            left: line.get(coords[0]),
-            top: line.get(coords[1]),
-            originX: 'center',
-            originY: 'center',
-            hasBorders: false,
-            hasControls: false,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockRotation: true,
-            pointType: 'arrow_start',
-            angle: -225,
-            width: 20,
-            height: 20,
-            fill: '#000'
-        });
-   return arrow;
- }
  function makeCircleShape(coords, id) {
    circleobject.makeCircleShape(coords, id)
  }
@@ -788,131 +524,6 @@ function makeLine(coords, id) {
       }
       canvas.renderAll();
       log.info( "Leaving colorPickerChange");
- }
-
- function makeCircle(line) {
-     log.info( "Entering makeCircle");
-     var c1 = new fabric.Circlezero({
-       left: line.get('x1')-2.5,
-       top: line.get('y1')-2.5,
-       visible: 'true',
-       hoverCursor: 'crosshair',
-       strokeWidth:  2,
-       stroke: '#000',
-       radius: 5,
-       fill: '#fff'
-     });
-     c1.setBelongsTo(line.objId);
-     var c2 = new fabric.Circleone({
-       left: line.get('x2')-2.5,
-       top: line.get('y2')-2.5,
-       visible: 'true',
-       hoverCursor: 'crosshair',
-       strokeWidth:  2,
-       stroke: '#000',
-       radius: 5,
-       fill: '#fff'
-     });
-     c2.setBelongsTo(line.objId);
-     c1.hasBorders = c1.hasControls = false;
-     c2.hasBorders = c2.hasControls = false;
-
-     c1.line = line;
-     c2.line = line;
-     line.cone = c1;
-     line.ctwo = c2;
-     var c = new Array(c1, c2);
-     log.info( "Leaving makeCircle");
-     return c;
- }
-
- function makeCircleArrow(line) {
-     log.info( "Entering makeCircleArrow");
-     var c1 = new fabric.Conearrow({
-       left: line.get('x1')-2.5,
-       top: line.get('y1')-2.5,
-       visible: 'true',
-       hoverCursor: 'crosshair',
-       strokeWidth:  2,
-       stroke: '#000',
-       radius: 5,
-       fill: '#fff'
-     });
-     c1.setBelongsTo(line.objId);
-     var c2 =  new fabric.Carrow({
-              left: line.get('x2'),
-              top: line.get('y2'),
-              originX: 'center',
-              originY: 'center',
-              hasBorders: false,
-              hasControls: false,
-              lockScalingX: true,
-              lockScalingY: true,
-              lockRotation: true,
-              pointType: 'arrow_start',
-              angle: 135,
-              width: 20,
-              height: 20,
-              fill: '#000'
-          });
-     c2.setBelongsTo(line.objId);
-     c1.hasBorders = c1.hasControls = false;
-     c2.hasBorders = c2.hasControls = false;
-
-     c1.line = line;
-     c2.line = line;
-     line.conearrow = c1;
-     line.carrow = c2;
-     var c = new Array(c1, c2);
-     log.info( "Leaving makeCircle");
-     return c;
- }
-
- function makeArrowTwo(line) {
-     log.info( "Entering makeArrowTwo");
-     var c1 =  new fabric.Carrowtwo({
-              left: line.get('x1')-2.5,
-              top: line.get('y1')-2.5,
-              originX: 'center',
-              originY: 'center',
-              hasBorders: false,
-              hasControls: false,
-              lockScalingX: true,
-              lockScalingY: true,
-              lockRotation: true,
-              pointType: 'arrow_start',
-              angle: -45,
-              width: 20,
-              height: 20,
-              fill: '#000'
-          });
-     c1.setBelongsTo(line.objId);
-     var c2 =  new fabric.Carrow({
-              left: line.get('x2'),
-              top: line.get('y2'),
-              originX: 'center',
-              originY: 'center',
-              hasBorders: false,
-              hasControls: false,
-              lockScalingX: true,
-              lockScalingY: true,
-              lockRotation: true,
-              pointType: 'arrow_start',
-              angle: 135,
-              width: 20,
-              height: 20,
-              fill: '#000'
-          });
-     c2.setBelongsTo(line.objId);
-     c1.hasBorders = c1.hasControls = false;
-     c2.hasBorders = c2.hasControls = false;
-     c1.line = line;
-     c2.line = line;
-     line.carrowtwo = c1;
-     line.carrow = c2;
-     var c = new Array(c1, c2);
-     log.info( "Leaving makeCircle");
-     return c;
  }
 
 function handleDragOver(e) {
@@ -992,237 +603,13 @@ function lineDown(data,index) {
   lineobject.lineDown(data,index);
 }
 
-function lineArrowDown(data,index) {
-   log.info( "Entering lineDown");
-   console.log( "Entering lineDown");
-   console.log("data: ", data)
-
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {
-                                             if (activeObjectVal.type) {
-                                               if (activeObjectVal.type == "customlinearrow") {
-                                                 canvas.remove(activeObjectVal.conearrow)
-                                                 canvas.remove(activeObjectVal.carrow)
-                                                 canvas.remove(activeObjectVal);
-                                               } else if(activeObjectVal.hasOwnProperty('belongsTo')) {
-                                                 console.log("removing belongTo object")
-                                                 var objs = canvas.getObjects()
-                                                 // find line with belongsTo value
-                                                 var searchVal = activeObjectVal.get('belongsTo')
-                                                 var found = false;
-                                                 var i = 0;
-                                                 while (!found && i < objs.length) {
-                                                   if (objs[i].type == "customlinearrow") {
-                                                     if (objs[i].objId == searchVal) {
-                                                       found= true;
-                                                     }
-                                                   }
-                                                   i = i + 1;
-                                                 }
-                                                 if (found) {
-                                                   i = i -1;
-                                                   canvas.remove(objs[i].conearrow)
-                                                   canvas.remove(objs[i].carrow)
-                                                   canvas.remove(objs[i]);
-                                                 }
-                                                 canvas.renderAll()
-                                               }
-                                             }
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;
-                                           });
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
-           contextmenuon = true;
-        };
-      }
-      document.addEventListener('contextmenu', handler, false);
-   }
-   log.info( "Leaving lineDown");
-}
-
 function lineArrowTwoDown(data,index) {
-   log.info( "Entering lineDown");
-   console.log( "Entering lineDown");
-   console.log("data: ", data)
-
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {
-                                             console.log("In Delete customlinetwoarrow")
-                                             if (activeObjectVal.type) {
-                                               console.log("Object Found: ", activeObjectVal.type)
-                                               if (activeObjectVal.type == "customlinetwoarrow") {
-                                                 canvas.remove(activeObjectVal.carrowtwo)
-                                                 canvas.remove(activeObjectVal.carrow)
-                                                 canvas.remove(activeObjectVal);
-                                               } else if(activeObjectVal.hasOwnProperty('belongsTo')) {
-                                                 console.log("removing belongTo object")
-                                                 var objs = canvas.getObjects()
-                                                 // find line with belongsTo value
-                                                 var searchVal = activeObjectVal.get('belongsTo')
-                                                 var found = false;
-                                                 var i = 0;
-                                                 while (!found && i < objs.length) {
-                                                   if (objs[i].type == "customlinetwoarrow") {
-                                                     if (objs[i].objId == searchVal) {
-                                                       found= true;
-                                                     }
-                                                   }
-                                                   i = i + 1;
-                                                 }
-                                                 if (found) {
-                                                   i = i -1;
-                                                   canvas.remove(objs[i].carrowtwo)
-                                                   canvas.remove(objs[i].carrow)
-                                                   canvas.remove(objs[i]);
-                                                 }
-                                                 canvas.renderAll()
-                                               }
-                                             }
-                                             $('#contextMenu').remove();
-                                             contextmenuon = false;
-                                             activeObject = false;
-                                           });
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
-           contextmenuon = true;
-        };
-      }
-      document.addEventListener('contextmenu', handler, false);
-   }
-   log.info( "Leaving lineDown");
+   customlinetwoarrow.lineArrowTwoDown(data,index);
 }
 
 function circleDown(data,index) {
    circleobject.circleDown(data,index);
 }
-
-function imageDown(data,index) {
-   log.info( "Entering imageDown");
-   console.log("data", data)
-   if (handler != "") {
-      document.removeEventListener('contextmenu', handler);
-   }
-   if (activeObjectVal) {
-     activeObject = true;
-   }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
-   if (data.e.which == 3) {
-      handler = function(e) {
-         if (contextmenuon == false &&  activeObject == true) {
-            e.preventDefault();
-            log.trace("ActiveObjectVal: ", activeObjectVal);
-            log.trace("Has configdbid property: ", activeObjectVal.hasOwnProperty('configdbid'));
-            if (activeObjectVal.configdbid != false) {
-               var items = ["Configure","Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
-            } else {
-               var items = ["Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
-            }
-            menus(items, e);
-            $('a:contains("Configure")').click( function() {
-                                                   var productId = activeObjectVal.configdbid
-                                                   var companyId = 1
-                                                   searchId = getItemIndex(activeObjectVal)
-                                                   canvas.setActiveObject(canvas.item(searchId))
-                                                   $('#configsection').modal('show');
-                                                   $('#gifspinner').show();
-                                                   document.getElementById('data').innerHTML = "";
-                                                   var selectChoices = false;
-                                                   var splitVals = "";
-                                                   var objectConfig = canvas.item(searchId).config
-                                                   if (objectConfig != undefined) {
-                                                      log.info( "Object Config is Defined: ", objectConfig);
-                                                      selectChoices = true;
-                                                      splitVals = objectConfig.split("-")
-                                                   }
-                                                   var json_url = "/companies/" + companyId + "/prices/" + productId + "/productconfig.json"
-                                                   var jsondata = "";
-                                                   $.ajax({
-                                                           url: json_url, // Route to the Script Controller method
-                                                          type: "GET",
-                                                      dataType: "json",
-                                                          data: jsondata,
-                                                   contentType: "application/json",
-                                                       timeout: 3000, // sets timeout to 3 seconds
-                                                      complete: function() {
-                                                                  $('#gifspinner').fadeOut( 400 );
-                                                                  log.info( "Ajax Call is Complete");
-                                                                },
-                                                       success: function(data, textStatus, xhr) {
-                                                                   loadConfigScreen( data, selectChoices, splitVals );
-                                                                   log.trace(data)
-                                                                   log.info( "Ajax Call is Success");
-                                                                },
-                                                         error: function(data, textStatus) {
-                                                                log.trace(data);
-                                                                alert(textStatus);
-                                                                log.info( textStatus);
-                                                                }
-                                                        });
-                                                   $('#contextMenu').remove();
-                                                   contextmenuon = false;
-                                                   activeObject = true;
-                                                });
-            $('a:contains("Delete")').click(  function() {log.debug("imageDown: In Delete");
-                                               log.trace(activeObjectVal);
-                                               canvas.remove(activeObjectVal);
-                                               $('#contextMenu').remove();
-                                               contextmenuon = false;
-                                               activeObject = false;}   );
-            $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
-            $('a:contains("Send Backward")').click(function() {sendBackward();});
-            $('a:contains("Send To Back")').click(function() {sendToBack();});
-            $('a:contains("Bring Forward")').click(function() {bringFoward();});
-            $('a:contains("Bring To Front")').click(function() {bringToFront();});
-            contextmenuon = true;
-        };
-     };
-   };
-   document.addEventListener('contextmenu', handler, false);
-   log.info( "Leaving imageDown");
-}
-
 
 function handleDrop(e) {
    log.info( "Entering handleDrop");
@@ -1243,49 +630,9 @@ function handleDrop(e) {
       {
          lineobject.lineDrop(e,id);
       } else if (imgsrc_val == "line_arrow_icon.png") {
-         log.debug("In line.png section");
-         objectName = "customlinearrow";
-         var xpos1 = e.layerX;
-         var ypos1 = e.layerY;
-         var xpos2 = xpos1 + 25;
-         var ypos2 = ypos1 + 25;
-         objId = id;
-         var line = makeLineArrow([ xpos1, ypos1, xpos2, ypos2 ], id)
-         line.hasControls = false
-         itemId = itemId + 1;
-         line.id = itemId
-         line.objId = itemId;
-         canvas.add(line)
-         c[id] = makeCircleArrow(line);
-         line.conearrow = c[id][0];
-         line.carrow= c[id][1];
-         console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'))
-         console.log("circle and arrow: ", c[id][0], ":", c[id][1])
-         canvas.add(c[id][0],c[id][1]);
-         canvas.renderAll();
-         line.on("mousedown", function(data, index) { lineArrowDown(data,index); });
+          customlinearrow.linearrowdrop(e,id);
       } else if (imgsrc_val == "line_arrow_two_icon.png") {
-        log.debug("In line.png section");
-        objectName = "customlinetwoarrow";
-        var xpos1 = e.layerX;
-        var ypos1 = e.layerY;
-        var xpos2 = xpos1 + 25;
-        var ypos2 = ypos1 + 25;
-        objId = id;
-        var line = makeLineTwoArrow([ xpos1, ypos1, xpos2, ypos2 ], id)
-        line.hasControls = false
-        itemId = itemId + 1;
-        line.id = itemId
-        line.objId = itemId;
-        canvas.add(line)
-        c[id] = makeArrowTwo(line);
-        line.carrowtwo = c[id][0];
-        line.carrow    = c[id][1];
-        console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'))
-        console.log("circle and arrow: ", c[id][0], ":", c[id][1])
-        canvas.add(c[id][0],c[id][1]);
-        canvas.renderAll();
-        line.on("mousedown", function(data, index) { lineArrowTwoDown(data,index); });
+        customlinetwoarrow.lineDrop(e, id);
       } else if (imgsrc_val == "circle_icon.png") {
         circleobject.circledrop(e, id);
       } else if (imgsrc_val == "ellipse_icon.png") {
@@ -1354,7 +701,7 @@ function handleDrop(e) {
          log.debug("Height",newImage.getHeight());
          log.debug("Width", newImage.getWidth());
          itemId = itemId + 1;
-         newImage.on("mousedown", function(data, index) { imageDown(data,index); });
+         newImage.on("mousedown", function(data, index) { imageobject.imageDown(data,index); });
          canvas.add(newImage);
          canvas.renderAll();
 

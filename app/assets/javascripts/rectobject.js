@@ -42,13 +42,6 @@ rectobject.rectangleDown = function(data,index) {
    if (activeObjectVal) {
      activeObject = true;
    }
-   /*
-   if (canvas.getActiveObject() != null) {
-     activeObjectVal = canvas.getActiveObject();
-     activeObject = true;
-     console.log("ActiveObjectVal: " , activeObjectVal )
-   }
-   */
    if (data.e.which == 3) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true) {

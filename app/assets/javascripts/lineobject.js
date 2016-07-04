@@ -1,20 +1,25 @@
 var lineobject = function(coords, id) {
-     log.info( "Entering lineobject");
-     log.debug("Coords are: ", coords);
-     var line =  new fabric.Customline(coords, {
-       x1: coords[0],
-       y1: coords[1],
-       x2: coords[2],
-       y2: coords[3],
-       fill: 'red',
-       stroke: 'red',
-       strokeWidth: 5,
-       selectable: true,
-       objId: id,
-       perPixelTargetFind: true
-     });
-     line.hasControls = false;
 };
+
+lineobject.makeLine = function(coords, id) {
+   log.info( "Entering makeLine");
+   log.debug("Coords are: ", coords);
+   line =  new fabric.Customline(coords, {
+     x1: coords[0],
+     y1: coords[1],
+     x2: coords[2],
+     y2: coords[3],
+     fill: 'red',
+     stroke: 'red',
+     strokeWidth: 5,
+     selectable: true,
+     objId: id,
+     perPixelTargetFind: true,
+   });
+   line.hasControls = false;
+   log.info( "Leaving makeLine");
+   return line;
+ }
 
 lineobject.setLinePositions= function(e) {
   var p = e.target;
@@ -268,13 +273,13 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
       var xpos2 = xpos1 + 25;
       var ypos2 = ypos1 + 25;
       objId = id;
-      line = makeLine([ xpos1, ypos1, xpos2, ypos2 ], id);
+      line = lineobject.makeLine([ xpos1, ypos1, xpos2, ypos2 ], id);
       line.hasControls = false;
       itemId = itemId + 1;
       line.id = itemId;
       line.objId = itemId;
       canvas.add(line);
-      c[id] = makeCircle(line);
+      c[id] = lineobject.makeCircle(line);
       line.cone = c[id][0];
       line.ctwo = c[id][1];
       console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'));
@@ -282,3 +287,39 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
       canvas.renderAll();
       line.on("mousedown", function(data, index) { lineDown(data,index); });
    };
+
+   lineobject.makeCircle = function(line) {
+       log.info( "Entering makeCircle");
+       var c1 = new fabric.Circlezero({
+         left: line.get('x1')-2.5,
+         top: line.get('y1')-2.5,
+         visible: 'true',
+         hoverCursor: 'crosshair',
+         strokeWidth:  2,
+         stroke: '#000',
+         radius: 5,
+         fill: '#fff'
+       });
+       c1.setBelongsTo(line.objId);
+       var c2 = new fabric.Circleone({
+         left: line.get('x2')-2.5,
+         top: line.get('y2')-2.5,
+         visible: 'true',
+         hoverCursor: 'crosshair',
+         strokeWidth:  2,
+         stroke: '#000',
+         radius: 5,
+         fill: '#fff'
+       });
+       c2.setBelongsTo(line.objId);
+       c1.hasBorders = c1.hasControls = false;
+       c2.hasBorders = c2.hasControls = false;
+
+       c1.line = line;
+       c2.line = line;
+       line.cone = c1;
+       line.ctwo = c2;
+       var c = new Array(c1, c2);
+       log.info( "Leaving makeCircle");
+       return c;
+   }

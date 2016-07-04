@@ -159,7 +159,7 @@ function loadCanvasDrawing(data_drawing) {
                 }
               });
 
-              objs[i].on("mousedown", function(data, index) { lineArrowDown(data,index); });
+              objs[i].on("mousedown", function(data, index) { customlinearrow.lineArrowDown(data,index); });
             }
 
             if (objs[i].type == "customlinetwoarrow")  {
