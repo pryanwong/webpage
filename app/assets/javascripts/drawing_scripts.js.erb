@@ -254,9 +254,11 @@ function objectSelected(e) {
    var circleZeroInCollection = new Array();
    var circleOneInCollection = new Array();
    var circleOneArrowInCollection = new Array();
+   var circleTwoArrowInCollection = new Array();
    var cArrowInCollection = new Array();
    var customLineInCollection = new Array();
    var customLineArrowInCollection = new Array();
+   var customLineTwoArrowInCollection = new Array();
    if (activeGroupCollection)
    {
      //iterate through objects to see if it contains lineSelected
@@ -264,6 +266,11 @@ function objectSelected(e) {
      for ( i=0; i < groupObjectsCustomLineArrow.length; i++) {
        customLineArrowInCollection.push(groupObjectsCustomLineArrow[i].objId)
        console.log("Found Custom Line Arrow: ", groupObjectsCustomLineArrow[i].objId)
+     }
+     groupObjectsCustomLineTwoArrow = activeGroupCollection.getObjects('customlinetwoarrow');
+     for ( i=0; i < groupObjectsCustomLineTwoArrow.length; i++) {
+       customLineTwoArrowInCollection.push(groupObjectsCustomLineTwoArrow[i].objId)
+       console.log("Found Custom Line Two Arrow: ", groupObjectsCustomLineTwoArrow[i].objId)
      }
      groupObjectsCircleZero = activeGroupCollection.getObjects('circlezero');
      for ( i=0; i < groupObjectsCircleZero.length; i++) {
@@ -285,204 +292,138 @@ function objectSelected(e) {
      for ( i=0; i < groupObjectsCArrow.length; i++) {
        cArrowInCollection.push(groupObjectsCArrow[i].belongsTo)
      }
+     groupObjectsCircleTwoArrow = activeGroupCollection.getObjects('carrowtwo');
+     for ( i=0; i < groupObjectsCircleTwoArrow.length; i++) {
+       circleTwoArrowInCollection.push(groupObjectsCircleTwoArrow[i].belongsTo)
+     }
 
      allObjects = canvas.getObjects();
-     for (i=0; i< circleZeroInCollection.length; i++) {
-       //Is the belongsTo found in circleOneInCollection
-       if ($.inArray(circleZeroInCollection[i], circleOneInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'circleone') {
-                 if (allObjects[j].belongsTo == circleZeroInCollection[i]) {
-                     circleOneInCollection.push( circleZeroInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
+     includeEndPointsInGroup(activeGroupCollection, customLineInCollection, circleZeroInCollection, circleOneInCollection, allObjects, 'customline', 'circleone', 'circlezero')
+     includeEndPointsInGroup(activeGroupCollection, customLineArrowInCollection, circleOneArrowInCollection, cArrowInCollection, allObjects, 'customlinearrow', 'carrow', 'conearrow')
+     includeEndPointsInGroup(activeGroupCollection, customLineTwoArrowInCollection, circleTwoArrowInCollection, cArrowInCollection, allObjects, 'customlinetwoarrow', 'carrow', 'carrowtwo')
 
-       }
-       if ($.inArray(circleZeroInCollection[i], customLineInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'customline') {
-                 if (allObjects[j].objId == circleZeroInCollection[i]) {
-                     customLineInCollection.push( circleZeroInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-     }
-
-     for (i=0; i< circleOneInCollection.length; i++) {
-       //Is the belongsTo found in circleOneInCollection
-       if ($.inArray(circleOneInCollection[i], circleZeroInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'circlezero') {
-                 if (allObjects[j].belongsTo == circleOneInCollection[i]) {
-                     circleZeroInCollection.push( circleOneInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-       if ($.inArray(circleOneInCollection[i], customLineInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'customline') {
-                 if (allObjects[j].objId == circleOneInCollection[i]) {
-                     customLineInCollection.push( circleOneInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-     }
-
-     for (i=0; i< customLineInCollection.length; i++) {
-       //Is the belongsTo found in circleOneInCollection
-       if ($.inArray(customLineInCollection[i], circleZeroInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'circlezero') {
-                 if (allObjects[j].belongsTo == customLineInCollection[i]) {
-                     circleZeroInCollection.push( customLineInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-       if ($.inArray(customLineInCollection[i], circleOneInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'circleone') {
-                 if (allObjects[j].belongsTo == customLineInCollection[i]) {
-                     circleOneInCollection.push( customLineInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-     }
-
-     // Line with one arrow
-     for (i=0; i< customLineArrowInCollection.length; i++) {
-       //Is the belongsTo found in circleOneInCollection
-       console.log("Searching for LineArrow ends")
-       if ($.inArray(customLineArrowInCollection[i], circleOneArrowInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'conearrow') {
-                 if (allObjects[j].belongsTo == customLineArrowInCollection[i]) {
-                     circleOneArrowInCollection.push( customLineArrowInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-       if ($.inArray(customLineArrowInCollection[i], cArrowInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'carrow') {
-                 if (allObjects[j].belongsTo == customLineArrowInCollection[i]) {
-                     cArrowInCollection.push( customLineArrowInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-     }
-
-     for (i=0; i< cArrowInCollection.length; i++) {
-       //Is the belongsTo found in circleOneInCollection
-       if ($.inArray(cArrowInCollection[i], circleOneArrowInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'circleonearrow') {
-                 if (allObjects[j].belongsTo == cArrowInCollection[i]) {
-                     circleOneArrowInCollection.push( cArrowInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-       if ($.inArray(cArrowInCollection[i], customLineInCollection) == -1)
-       {
-             // not found
-             j = 0;
-             notFound = true
-             while(j < allObjects.length && notFound) {
-               if (allObjects[j].type == 'customlinearrow') {
-                 if (allObjects[j].objId == cArrowInCollection[i]) {
-                     customLineArrowInCollection.push( cArrowInCollection[i])
-                     activeGroupCollection.addWithUpdate(allObjects[j])
-                     notFound = false;
-                 }
-               }
-               j = j+1;
-             }
-
-       }
-     }
      canvas.renderAll();
 
    }
    log.info( "Leaving objectSelected");
 };
+
+function includeEndPointsInGroup(activeGroupCollection, customLineInCollection, circleZeroInCollection, circleOneInCollection, allObjects, lineType, c1Type, c2Type) {
+  for (i=0; i< circleZeroInCollection.length; i++) {
+    //Is the belongsTo found in circleOneInCollection
+    if ($.inArray(circleZeroInCollection[i], circleOneInCollection) == -1)
+    {
+          // not found
+          j = 0;
+          notFound = true
+          while(j < allObjects.length && notFound) {
+            if (allObjects[j].type == c1Type) {
+              if (allObjects[j].belongsTo == circleZeroInCollection[i]) {
+                  circleOneInCollection.push( circleZeroInCollection[i])
+                  activeGroupCollection.addWithUpdate(allObjects[j])
+                  notFound = false;
+              }
+            }
+            j = j+1;
+          }
+
+    }
+    if ($.inArray(circleZeroInCollection[i], customLineInCollection) == -1)
+    {
+          // not found
+          j = 0;
+          notFound = true
+          while(j < allObjects.length && notFound) {
+            if (allObjects[j].type == lineType) {
+              if (allObjects[j].objId == circleZeroInCollection[i]) {
+                  customLineInCollection.push( circleZeroInCollection[i])
+                  activeGroupCollection.addWithUpdate(allObjects[j])
+                  notFound = false;
+              }
+            }
+            j = j+1;
+          }
+
+    }
+  }
+
+  for (i=0; i< circleOneInCollection.length; i++) {
+    //Is the belongsTo found in circleOneInCollection
+    if ($.inArray(circleOneInCollection[i], circleZeroInCollection) == -1)
+    {
+          // not found
+          j = 0;
+          notFound = true
+          while(j < allObjects.length && notFound) {
+            if (allObjects[j].type == c2Type) {
+              if (allObjects[j].belongsTo == circleOneInCollection[i]) {
+                  circleZeroInCollection.push( circleOneInCollection[i])
+                  activeGroupCollection.addWithUpdate(allObjects[j])
+                  notFound = false;
+              }
+            }
+            j = j+1;
+          }
+
+    }
+    if ($.inArray(circleOneInCollection[i], customLineInCollection) == -1)
+    {
+          // not found
+          j = 0;
+          notFound = true
+          while(j < allObjects.length && notFound) {
+            if (allObjects[j].type == lineType) {
+              if (allObjects[j].objId == circleOneInCollection[i]) {
+                  customLineInCollection.push( circleOneInCollection[i])
+                  activeGroupCollection.addWithUpdate(allObjects[j])
+                  notFound = false;
+              }
+            }
+            j = j+1;
+          }
+
+    }
+  }
+
+  for (i=0; i< customLineInCollection.length; i++) {
+    //Is the belongsTo found in circleOneInCollection
+    if ($.inArray(customLineInCollection[i], circleZeroInCollection) == -1)
+    {
+          // not found
+          j = 0;
+          notFound = true
+          while(j < allObjects.length && notFound) {
+            if (allObjects[j].type == c2Type) {
+              if (allObjects[j].belongsTo == customLineInCollection[i]) {
+                  circleZeroInCollection.push( customLineInCollection[i])
+                  activeGroupCollection.addWithUpdate(allObjects[j])
+                  notFound = false;
+              }
+            }
+            j = j+1;
+          }
+
+    }
+    if ($.inArray(customLineInCollection[i], circleOneInCollection) == -1)
+    {
+          // not found
+          j = 0;
+          notFound = true
+          while(j < allObjects.length && notFound) {
+            if (allObjects[j].type == c1Type) {
+              if (allObjects[j].belongsTo == customLineInCollection[i]) {
+                  circleOneInCollection.push( customLineInCollection[i])
+                  activeGroupCollection.addWithUpdate(allObjects[j])
+                  notFound = false;
+              }
+            }
+            j = j+1;
+          }
+
+    }
+  }
+}
+
 
 function mouseOut(e){
    log.info( "Entering mouseOut");
