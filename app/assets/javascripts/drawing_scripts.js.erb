@@ -253,13 +253,17 @@ function objectSelected(e) {
    var activeGroupCollection = canvas.getActiveGroup();
    var circleZeroInCollection = new Array();
    var circleOneInCollection = new Array();
+   var circleOneArrowInCollection = new Array();
+   var cArrowInCollection = new Array();
    var customLineInCollection = new Array();
+   var customLineArrowInCollection = new Array();
    if (activeGroupCollection)
    {
      //iterate through objects to see if it contains lineSelected
-     groupObjectsCircleOne = activeGroupCollection.getObjects('circleone');
-     for ( i=0; i < groupObjectsCircleOne.length; i++) {
-       circleOneInCollection.push(groupObjectsCircleOne[i].belongsTo)
+     groupObjectsCustomLineArrow = activeGroupCollection.getObjects('customlinearrow');
+     for ( i=0; i < groupObjectsCustomLineArrow.length; i++) {
+       customLineArrowInCollection.push(groupObjectsCustomLineArrow[i].objId)
+       console.log("Found Custom Line Arrow: ", groupObjectsCustomLineArrow[i].objId)
      }
      groupObjectsCircleZero = activeGroupCollection.getObjects('circlezero');
      for ( i=0; i < groupObjectsCircleZero.length; i++) {
@@ -268,6 +272,18 @@ function objectSelected(e) {
      groupObjectsCustomLine = activeGroupCollection.getObjects('customline');
      for ( i=0; i < groupObjectsCustomLine.length; i++) {
        customLineInCollection.push(groupObjectsCustomLine[i].objId)
+     }
+     groupObjectsCircleOne = activeGroupCollection.getObjects('circleone');
+     for ( i=0; i < groupObjectsCircleOne.length; i++) {
+       circleOneInCollection.push(groupObjectsCircleOne[i].belongsTo)
+     }
+     groupObjectsCircleOneArrow = activeGroupCollection.getObjects('conearrow');
+     for ( i=0; i < groupObjectsCircleOneArrow.length; i++) {
+       circleOneArrowInCollection.push(groupObjectsCircleOneArrow[i].belongsTo)
+     }
+     groupObjectsCArrow = activeGroupCollection.getObjects('carrow');
+     for ( i=0; i < groupObjectsCArrow.length; i++) {
+       cArrowInCollection.push(groupObjectsCArrow[i].belongsTo)
      }
 
      allObjects = canvas.getObjects();
@@ -375,6 +391,84 @@ function objectSelected(e) {
                if (allObjects[j].type == 'circleone') {
                  if (allObjects[j].belongsTo == customLineInCollection[i]) {
                      circleOneInCollection.push( customLineInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false;
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+     }
+
+     // Line with one arrow
+     for (i=0; i< customLineArrowInCollection.length; i++) {
+       //Is the belongsTo found in circleOneInCollection
+       console.log("Searching for LineArrow ends")
+       if ($.inArray(customLineArrowInCollection[i], circleOneArrowInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'conearrow') {
+                 if (allObjects[j].belongsTo == customLineArrowInCollection[i]) {
+                     circleOneArrowInCollection.push( customLineArrowInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false;
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+       if ($.inArray(customLineArrowInCollection[i], cArrowInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'carrow') {
+                 if (allObjects[j].belongsTo == customLineArrowInCollection[i]) {
+                     cArrowInCollection.push( customLineArrowInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false;
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+     }
+
+     for (i=0; i< cArrowInCollection.length; i++) {
+       //Is the belongsTo found in circleOneInCollection
+       if ($.inArray(cArrowInCollection[i], circleOneArrowInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'circleonearrow') {
+                 if (allObjects[j].belongsTo == cArrowInCollection[i]) {
+                     circleOneArrowInCollection.push( cArrowInCollection[i])
+                     activeGroupCollection.addWithUpdate(allObjects[j])
+                     notFound = false;
+                 }
+               }
+               j = j+1;
+             }
+
+       }
+       if ($.inArray(cArrowInCollection[i], customLineInCollection) == -1)
+       {
+             // not found
+             j = 0;
+             notFound = true
+             while(j < allObjects.length && notFound) {
+               if (allObjects[j].type == 'customlinearrow') {
+                 if (allObjects[j].objId == cArrowInCollection[i]) {
+                     customLineArrowInCollection.push( cArrowInCollection[i])
                      activeGroupCollection.addWithUpdate(allObjects[j])
                      notFound = false;
                  }
