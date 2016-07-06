@@ -328,5 +328,17 @@
    } else {
       window.location.href = '/companies/'+ company_id +'/users/' + user_id;
    }
-
+   var md = new MobileDetect(window.navigator.userAgent);
+   console.log( md.mobile() );          // 'Sony'
+   console.log( md.mobileGrade() );
+   console.log( md.phone() );           // 'Sony'
+   console.log( md.tablet() );          // null
+   console.log( md.userAgent() );       // 'Safari'
+   console.log( md.os() );              // 'AndroidOS'
+   console.log( md.is('iPhone') );      // false
+   console.log( md.is('bot') );         // false
+   console.log( md.version('Webkit') );         // 534.3
+   console.log( md.versionStr('Build') );       // '4.1.A.0.562'
+   console.log( md.match('playstation|xbox') ); // false
+   if (md.mobile() == 'A') { window.location.href = '/companies/'+ company_id +'/users/' + user_id; }
    log.info( "Done Demo_Industrial Javascript ");
