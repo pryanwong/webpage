@@ -326,20 +326,7 @@
       canvasContainer.addEventListener('dragleave', handleDragLeave, false);
       canvasContainer.addEventListener('drop', handleDrop, false);
    } else {
-     // Replace with a fallback to a library solution.
-     log.error( " This browser doesn't support the HTML5 Drag and Drop API ");
-     alert("This browser doesn't support the HTML5 Drag and Drop API.");
-     $('img[draggable="true"]').draggable({ revert: "invalid" });
-     var images = document.querySelectorAll('#images img');
-     [].forEach.call(images, function (img) {
-        img.addEventListener('start', handleDragStart, false);
-        img.addEventListener('stop', handleDragEnd, false);
-     });
-     $( "#canvas-container" ).droppable({
-            accept: 'img[draggable="true"]',
-            drop: handleDrop
-          });
-     var canvasContainer = document.getElementById('canvas-container');
+      window.location.href = '/companies/'+ company_id +'/users/' + user_id;
    }
 
    log.info( "Done Demo_Industrial Javascript ");
