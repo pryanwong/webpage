@@ -308,7 +308,7 @@
    canvas.on('custom-image:textChange', textChangedEvent);
    canvas.on('object:removed', objectDeletedEvent);
 
-   if (dragtest()) {
+   if (!window.mobilecheck()) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements
       console.log("Browser supports Drag N Drop")
