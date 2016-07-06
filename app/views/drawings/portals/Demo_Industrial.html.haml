@@ -340,5 +340,8 @@
    console.log( md.version('Webkit') );         // 534.3
    console.log( md.versionStr('Build') );       // '4.1.A.0.562'
    console.log( md.match('playstation|xbox') ); // false
-   if (md.mobile() == 'A') { window.location.href = '/companies/'+ company_id +'/users/' + user_id; }
+   if ( md.mobileGrade() != 'A') {
+      console.log("Redirecting...")
+      window.location.href = '/companies/'+ company_id +'/users/' + user_id;
+   }
    log.info( "Done Demo_Industrial Javascript ");
