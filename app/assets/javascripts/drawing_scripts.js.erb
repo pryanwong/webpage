@@ -66,7 +66,7 @@ function objectBoundaryCheckAll(e){
        e.target.setTop(Math.max(e.target.top  , y1Delta  ));
        e.target.left = Math.max(e.target.left , x1Delta );
        setLineCirclePositionsBoundary(e);
-       canvas.deactivateAll();
+       //canvas.deactivateAll();
        boundaryHit = true;
        e.target.setCoords();
      }
@@ -103,7 +103,7 @@ function objectBoundaryCheckAll(e){
           lineobject.setLineCirclePositionsBoundary(e)
         }else if (e.target.type == "customlinearrow" || e.target.type == "customlinetwoarrow") {
            setLineCirclePositionsBoundary(e);
-           canvas.deactivateAll();
+           //canvas.deactivateAll();
         }
         e.target.setCoords();
 

@@ -253,10 +253,9 @@
    log4javascript.setEnabled(debugOn);
    log.setLevel(log4javascript.Level.TRACE);
    log.info("Executing javascript in edit.html");
-    log.debug("Executing spinner");
-    $(".spinner").show();
-    canvas.backgroundColor="";
-
+   log.debug("Executing spinner");
+   $(".spinner").show();
+   canvas.backgroundColor="";
    log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
    if(!window.location.hash) {
        window.location = window.location + '#loaded';
@@ -309,9 +308,10 @@
    canvas.on('custom-image:textChange', textChangedEvent);
    canvas.on('object:removed', objectDeletedEvent);
 
-   if (Modernizr.draganddrop) {
+   if (dragtest()) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements
+      console.log("Browser supports Drag N Drop")
       log.info( "Binding event listeners to images ");
       var images = document.querySelectorAll('#images img');
       [].forEach.call(images, function (img) {
@@ -329,6 +329,17 @@
      // Replace with a fallback to a library solution.
      log.error( " This browser doesn't support the HTML5 Drag and Drop API ");
      alert("This browser doesn't support the HTML5 Drag and Drop API.");
+     $('img[draggable="true"]').draggable({ revert: "invalid" });
+     var images = document.querySelectorAll('#images img');
+     [].forEach.call(images, function (img) {
+        img.addEventListener('start', handleDragStart, false);
+        img.addEventListener('stop', handleDragEnd, false);
+     });
+     $( "#canvas-container" ).droppable({
+            accept: 'img[draggable="true"]',
+            drop: handleDrop
+          });
+     var canvasContainer = document.getElementById('canvas-container');
    }
 
    log.info( "Done Demo_Industrial Javascript ");
