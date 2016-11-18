@@ -210,7 +210,6 @@
             %tr
                %th Date and Time
             %tbody{:id=>"versionslisttab", :style=>"height:400px;overflow-y: scroll;"}
-
 :javascript
 
    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -220,6 +219,35 @@
 
    ga('create', 'UA-76942309-1', 'auto');
    ga('send', 'pageview');
+
+   function GetDebugParameter(sParam){
+       log.info( "Entering  GetDebugParameter");
+       var sPageURL = window.location.hash;
+       log.debug("sPageURL:");
+       log.debug( sPageURL);
+       sPageURL = sPageURL.split("?");
+       if (sPageURL.length > 1) {
+          var sURLVariables = sPageURL[1].split('&');
+          log.debug("sURLVariables:");
+          log.debug( sURLVariables);
+          for (var i = 0; i < sURLVariables.length; i++)
+          {
+             var sParameterName = sURLVariables[i].split('=');
+             log.debug("sParameterName:")
+             log.debug(sParameterName);
+             if (sParameterName[0] == sParam)
+             {
+               log.debug("sParameterName[1]:")
+               log.debug(sParameterName[1]);
+               log.info( "Leaving GetDebugParameter");
+               return sParameterName[1];
+             }
+          }
+       } else {
+         log.info( "Leaving GetDebugParameter returning false");
+         return false;
+       }
+   };
 
    var handler = "";
    var c = new Array();
@@ -275,10 +303,10 @@
        log.debug("Load versions into table")
        timestampsObj = JSON.parse(timestamps)
        var arrayLength = timestampsObj.length;
-       console.log("Array Length:", arrayLength)
+       log.info("Array Length:", arrayLength)
 
        for (var i = 0; i < arrayLength; i++) {
-           console.log("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
+           log.info("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
            var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + timestampsObj[i][0];
            tr = '<tr style="height: 14px;""> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
            $('#versionslisttab').append(tr);
@@ -306,12 +334,13 @@
    canvas.on("object:rotating", objectBoundaryCheck);
    canvas.on('object.modified', function(e) {console.log("object.modified: ",e)})
    canvas.on('custom-image:textChange', textChangedEvent);
+   canvas.on('text:changed', textChangedEvent);
    canvas.on('object:removed', objectDeletedEvent);
 
    if (dragtest()) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements
-      console.log("Browser supports Drag N Drop")
+      log.debug("Browser supports Drag N Drop")
       log.info( "Binding event listeners to images ");
       var images = document.querySelectorAll('#images img');
       [].forEach.call(images, function (img) {
@@ -329,19 +358,19 @@
       window.location.href = '/companies/'+ company_id +'/users/' + user_id;
    }
    var md = new MobileDetect(window.navigator.userAgent);
-   console.log( md.mobile() );          // 'Sony'
-   console.log( md.mobileGrade() );
-   console.log( md.phone() );           // 'Sony'
-   console.log( md.tablet() );          // null
-   console.log( md.userAgent() );       // 'Safari'
-   console.log( md.os() );              // 'AndroidOS'
-   console.log( md.is('iPhone') );      // false
-   console.log( md.is('bot') );         // false
-   console.log( md.version('Webkit') );         // 534.3
-   console.log( md.versionStr('Build') );       // '4.1.A.0.562'
-   console.log( md.match('playstation|xbox') ); // false
+   log.info( md.mobile() );          // 'Sony'
+   log.info( md.mobileGrade() );
+   log.info( md.phone() );           // 'Sony'
+   log.info( md.tablet() );          // null
+   log.info( md.userAgent() );       // 'Safari'
+   log.info( md.os() );              // 'AndroidOS'
+   log.info( md.is('iPhone') );      // false
+   log.info( md.is('bot') );         // false
+   log.info( md.version('Webkit') );         // 534.3
+   log.info( md.versionStr('Build') );       // '4.1.A.0.562'
+   log.info( md.match('playstation|xbox') ); // false
    if ( md.is('Windows Phone') || md.is('iemobile') || md.is('WPDesktop') || md.os() == 'AndroidOS' || md.is('iPhone') || md.is('iPad')) {
-      console.log("Redirecting...")
+      log.info("Redirecting...")
       window.location.href = '/companies/'+ company_id +'/users/' + user_id;
    }
    log.info( "Done Demo_Industrial Javascript ");

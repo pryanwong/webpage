@@ -44,6 +44,36 @@
    var barContainer = $("<div class='progress'></div>").append(progressBar);
    var image = new Image();
    log4javascript.setEnabled(false);
+
+   function GetDebugParameter(sParam){
+       log.info( "Entering  GetDebugParameter");
+       var sPageURL = window.location.hash;
+       log.debug("sPageURL:");
+       log.debug( sPageURL);
+       sPageURL = sPageURL.split("?");
+       if (sPageURL.length > 1) {
+          var sURLVariables = sPageURL[1].split('&');
+          log.debug("sURLVariables:");
+          log.debug( sURLVariables);
+          for (var i = 0; i < sURLVariables.length; i++)
+          {
+             var sParameterName = sURLVariables[i].split('=');
+             log.debug("sParameterName:")
+             log.debug(sParameterName);
+             if (sParameterName[0] == sParam)
+             {
+               log.debug("sParameterName[1]:")
+               log.debug(sParameterName[1]);
+               log.info( "Leaving GetDebugParameter");
+               return sParameterName[1];
+             }
+          }
+       } else {
+         log.info( "Leaving GetDebugParameter returning false");
+         return false;
+       }
+   };
+   
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);
    log.setLevel(log4javascript.Level.TRACE);

@@ -15,13 +15,12 @@ var onSave  =  debounce(function() {
     modified = true;
     // Remove circle0 and circle1 from image
     //$(".spinner").show();
-    $(".saveMessage").text('Save In Progress...');
+    $("#saveMessage").text('Save In Progress...');
 
     objects = canvas.getObjects();
 
     var len = objects.length;
     log.debug( "Number of objects to process: ", len);
-    console.log( "Number of objects to process: ", len);
     canvas.renderAll();
     var token = $('meta[name="csrf-token"]').attr('content');
 
@@ -47,7 +46,7 @@ var onSave  =  debounce(function() {
                  },
         success: function(data, textStatus, xhr) {
                    textMsg = JSON.parse(data[0]);
-                   console.log("Text Msg: ", textMsg)
+                   log.debug("Text Msg: ", textMsg)
                    $("#saveMessage").text(textMsg[0]);
                    loadVersionsIntoPanel(data[1])
                  },
@@ -79,8 +78,8 @@ function loadCanvasDrawing(data_drawing) {
             objs[i].id = itemId
             if (objs[i].type == "customline")  {
               objs[i].hasControls = false;
-              console.log("customline: ", objs[i])
-              console.log("Item Id of line set to: ", objs[i].getObjId())
+              log.debug("customline: ", objs[i])
+              log.debug("Item Id of line set to: ", objs[i].getObjId())
               canvas.forEachObject(function(circleProspect){
                 log.debug("Object Type: ", circleProspect.type)
                 if (circleProspect.type == "circlezero" || circleProspect.type == "circleone") {
@@ -93,7 +92,7 @@ function loadCanvasDrawing(data_drawing) {
                    circleProspect.belongsTo = itemId;
                    objs[i].cone = circleProspect
                    circleProspect.set('hoverCursor','crosshair')
-                   console.log("found circlezero")
+                   log.debug("found circlezero")
                    foundCircle = foundCircle + 1;
 
                 }
@@ -103,11 +102,11 @@ function loadCanvasDrawing(data_drawing) {
                   circleProspect.belongsTo = itemId;
                   objs[i].ctwo = circleProspect
                   circleProspect.set('hoverCursor','crosshair')
-                  console.log("found circleone")
+                  log.debug("found circleone")
                   foundCircle = foundCircle + 1;
                 }
                 if (foundCircle == 2) {
-                  console.log("objId: ", objs[i].get('objId'))
+                  log.debug("objId: ", objs[i].get('objId'))
                   objs[i].setObjId(itemId)
                   itemId = itemId + 1;
                   objs[i].cone.id = itemId;
@@ -121,8 +120,8 @@ function loadCanvasDrawing(data_drawing) {
 
             if (objs[i].type == "customlinearrow")  {
               objs[i].hasControls = false;
-              console.log("customline: ", objs[i])
-              console.log("Item Id of line set to: ", objs[i].getObjId())
+              log.debug("customline: ", objs[i])
+              log.debug("Item Id of line set to: ", objs[i].getObjId())
               canvas.forEachObject(function(circleProspect){
                 log.debug("Object Type: ", circleProspect.type)
                 if (circleProspect.type == "carrow" || circleProspect.type == "conearrow") {
@@ -135,7 +134,7 @@ function loadCanvasDrawing(data_drawing) {
                    circleProspect.belongsTo = itemId;
                    objs[i].conearrow = circleProspect
                    circleProspect.set('hoverCursor','crosshair')
-                   console.log("found conearrow")
+                   log.debug("found conearrow")
                    foundCircle = foundCircle + 1;
 
                 }
@@ -145,11 +144,11 @@ function loadCanvasDrawing(data_drawing) {
                   circleProspect.belongsTo = itemId;
                   objs[i].carrow = circleProspect
                   circleProspect.set('hoverCursor','crosshair')
-                  console.log("found carrow")
+                  log.debug("found carrow")
                   foundCircle = foundCircle + 1;
                 }
                 if (foundCircle == 2) {
-                  console.log("objId: ", objs[i].get('objId'))
+                  log.debug("objId: ", objs[i].get('objId'))
                   objs[i].setObjId(itemId)
                   itemId = itemId + 1;
                   objs[i].conearrow.id = itemId;
@@ -164,8 +163,8 @@ function loadCanvasDrawing(data_drawing) {
 
             if (objs[i].type == "customlinetwoarrow")  {
               objs[i].hasControls = false;
-              console.log("customline: ", objs[i])
-              console.log("Item Id of line set to: ", objs[i].getObjId())
+              log.debug("customline: ", objs[i])
+              log.debug("Item Id of line set to: ", objs[i].getObjId())
               canvas.forEachObject(function(circleProspect){
                 log.debug("Object Type: ", circleProspect.type)
                 if (circleProspect.type == "carrow" || circleProspect.type == "carrowtwo") {
@@ -178,7 +177,7 @@ function loadCanvasDrawing(data_drawing) {
                    circleProspect.belongsTo = itemId;
                    objs[i].carrowtwo = circleProspect
                    circleProspect.set('hoverCursor','crosshair')
-                   console.log("found carrowtwo")
+                   log.debug("found carrowtwo")
                    foundCircle = foundCircle + 1;
 
                 }
@@ -188,11 +187,11 @@ function loadCanvasDrawing(data_drawing) {
                   circleProspect.belongsTo = itemId;
                   objs[i].carrow = circleProspect
                   circleProspect.set('hoverCursor','crosshair')
-                  console.log("found carrow")
+                  log.debug("found carrow")
                   foundCircle = foundCircle + 1;
                 }
                 if (foundCircle == 2) {
-                  console.log("objId: ", objs[i].get('objId'))
+                  log.debug("objId: ", objs[i].get('objId'))
                   objs[i].setObjId(itemId)
                   itemId = itemId + 1;
                   objs[i].carrowtwo.id = itemId;

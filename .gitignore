@@ -17,3 +17,4 @@
 /bin
 /config/local_env.yml
 /config/s3.yml
+.env 

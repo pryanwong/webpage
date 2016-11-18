@@ -517,6 +517,40 @@ function makeLine(coords, id) {
       log.info( "Leaving activateColorPicker");
  }
 
+ function changeFontSize(size) {
+      console.log( "Entering changeFontSize");
+      console.log( size );
+      var activeObjectVal = canvas.getActiveObject();
+      console.log(activeObjectVal);
+      if (activeObjectVal.type == "i-text") {
+        console.log( "changeFontSize on i-text type");
+        //activeObjectValCP.stroke = newLineColor;
+        activeObjectVal.set("fontSize", size);
+        canvas.renderAll();
+        //activeObjectVal.setColor(newLineColor);
+      }
+      console.log( "Leaving changeFontSize");
+      $("#saveMessage").text('Changes Made, Save Pending...');
+      onSave();
+ }
+
+ function changeFontFamily(ff) {
+      console.log( "Entering changeFontFamily");
+      console.log( ff );
+      var activeObjectVal = canvas.getActiveObject();
+      console.log(activeObjectVal);
+      if (activeObjectVal.type == "i-text") {
+        console.log( "changeFontFamily on i-text type");
+        //activeObjectValCP.stroke = newLineColor;
+        activeObjectVal.set("fontFamily", ff);
+        canvas.renderAll();
+        //activeObjectVal.setColor(newLineColor);
+      }
+      console.log( "Leaving changeFontFamily");
+      $("#saveMessage").text('Changes Made, Save Pending...');
+      onSave();
+ }
+
  function colorPickerChange(newLineColor) {
       log.info( "Entering colorPickerChange");
       log.debug( "newLineColor: ", newLineColor);
@@ -553,7 +587,8 @@ function makeLine(coords, id) {
           }
           if (activeObjectValCP.type == "i-text") {
             log.debug( "colorPickerChange on i-text type");
-            activeObjectValCP.stroke = newLineColor;
+            //activeObjectValCP.stroke = newLineColor;
+            activeObjectValCP.setColor(newLineColor);
             //activeObjectVal.setColor(newLineColor);
           }
         }
@@ -779,6 +814,7 @@ function menus(items, event) {
          html += "<li> <a tabindex=''-1'>" + items[index] + "</a> </li>";
       }
       html += "</ul>" ;
+
       menucontainer.innerHTML = html;
       $('body').append(menucontainer);
       $contextMenu = $("#contextMenu");
@@ -792,6 +828,48 @@ function menus(items, event) {
      log.info("Menu Not Displayed contextmenu is true");
    }
    log.info( "Leaving menus");
+};
+
+function textmenus(items, event) {
+   log.info( "Entering textmenus");
+   var $contextMenu = "";
+   if (contextmenuon == false) {
+      var menucontainer = document.createElement('div');
+      menucontainer.id = 'contextMenu';
+      var html = "<ul class='dropdown-menu' role='menu' style='display:block;position:static;' >";
+      for (index=0; index < items.length; index++) {
+         html += "<li> <a tabindex=''-1'>" + items[index] + "</a> </li>";
+      }
+      html+= '<li role="separator" class="divider"></li>'
+      html+='<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Font Size</a>'
+      html+='   <ul class="dropdown-menu sub-menu">'
+      html+="     <li><a tabindex=''-1'>Large</a></li>"
+      html+="     <li><a tabindex=''-1'>Medium</a></li>"
+      html+="     <li><a tabindex=''-1'>Small</a></li>"
+      html+="   </ul>"
+      html+="</li>"
+      html+='<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Font Family</a>'
+      html+='   <ul class="dropdown-menu sub-menu">'
+      html+="     <li><a tabindex=''-1'>Arial</a></li>"
+      html+="     <li><a tabindex=''-1'>Sans-Serif</a></li>"
+      html+="     <li><a tabindex=''-1'>Rockwell</a></li>"
+      html+="   </ul>"
+      html+="</li>"
+      html += "</ul>" ;
+
+      menucontainer.innerHTML = html;
+      $('body').append(menucontainer);
+      $contextMenu = $("#contextMenu");
+      $contextMenu.css({
+         display: "block",
+         left: event.pageX,
+         top: event.pageY
+       });
+
+   } else {
+     log.info("Menu Not Displayed contextmenu is true");
+   }
+   log.info( "Leaving textmenus");
 };
 
 function handleDragEnd(e) {

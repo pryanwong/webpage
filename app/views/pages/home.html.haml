@@ -130,9 +130,9 @@
                      - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
                         = link_to t('.forgot_password'), new_password_path(resource_name), :id=>"forgot_password"
                %hr.light
-               =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin' do
+               =link_to  user_linkedin_omniauth_authorize_path, id: "sign_in", :class => 'btn btn-block btn-social btn-linkedin', :style => 'border-radius:0px' do
                   %span{:class=>"fa fa-linkedin"}
                   =t('.sign_in_linkedin')
-               =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google' do
+               =link_to user_google_oauth2_omniauth_authorize_path , id: "sign_in", :class => 'btn btn-block btn-social btn-google', :style => 'border-radius:0px' do
                   %span{:id=>"googlebutton", :class=>"fa fa-google-plus"}
                   =t('.sign_in_google')

@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1', :engine => 'jruby', :engine_version => '9.0.0.0'
+ruby '2.2.2', :engine => 'jruby', :engine_version => '9.0.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
+gem 'rails', '4.1.8'
 # Use postgresql as the database for Active Record
 gem 'activerecord-jdbcpostgresql-adapter'
 gem 'rails_12factor', group: :production
@@ -63,14 +63,11 @@ gem 'remote_ip_proxy_scrubber'
 gem 'will_paginate-bootstrap'
 
 group :development, :test do
-  # gem 'guard-jruby-minitest'
-  # gem 'guard-jruby-rspec'
-  gem 'rspec-rails', '~> 3.0'
-  gem 'guard-rspec', '4.6.5'
-  gem 'guard', '2.11.0'
-  gem 'factory_girl_rails'
-  gem 'derailed'
-  # gem 'guard'
+  #gem 'rspec-rails', '~> 3.0'
+  #gem 'guard-rspec', '4.6.5'
+  #gem 'guard', '2.11.0'
+  #gem 'factory_girl_rails'
+  #gem 'derailed'
 end
 
 group :test do
