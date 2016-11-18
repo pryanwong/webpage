@@ -174,6 +174,48 @@ html, body, div, canvas {
     color:#ffffff;
   }
 
-.input-group .form-control {
+#contextMenu .input-group .form-control {
       margin: 0px !important;
+}
+
+#contextMenu .dropdown-submenu {
+    position:relative;
+}
+#contextMenu .dropdown-submenu>.dropdown-menu {
+    top:0;
+    left:100%;
+    margin-top:-6px;
+    margin-left:-1px;
+    -webkit-border-radius:0 6px 6px 6px;
+    -moz-border-radius:0 6px 6px 6px;
+    border-radius:0 6px 6px 6px;
+}
+#contextMenu .dropdown-submenu:hover>.dropdown-menu {
+    display:block;
+}
+#contextMenu .dropdown-submenu>a:after {
+    display:block;
+    content:" ";
+    float:right;
+    width:0;
+    height:0;
+    border-color:transparent;
+    border-style:solid;
+    border-width:5px 0 5px 5px;
+    border-left-color:#cccccc;
+    margin-top:5px;
+    margin-right:-10px;
+}
+#contextMenu .dropdown-submenu:hover>a:after {
+    border-left-color:#ffffff;
+}
+#contextMenu .dropdown-submenu.pull-left {
+    float:none;
+}
+#contextMenu .dropdown-submenu.pull-left>.dropdown-menu {
+    left:-100%;
+    margin-left:10px;
+    -webkit-border-radius:6px 0 6px 6px;
+    -moz-border-radius:6px 0 6px 6px;
+    border-radius:6px 0 6px 6px;
 }

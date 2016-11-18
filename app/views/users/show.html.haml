@@ -17,11 +17,11 @@
       %div
          %table{:class=>"table table-bordered table-hover"}
             %thead
-               %tr
-                  %td #{t('.drawing')}
+               %tr{:class=>"hidden-sm hidden-xs"}
+                  %td{:class=>"hidden-sm hidden-xs"} #{t('.drawing')}
                   %td{:class=>"hidden-sm hidden-xs", :colspan=>'7'}
-                  %td #{t('.new')}
-                  %td
+                  %td{:class=>"hidden-sm hidden-xs"} #{t('.new')}
+                  %td{:class=>"hidden-sm hidden-xs"}
                      = link_to newdrawing_company_user_path(@user.company.id, @user.id) do
                         %i{:class=>"fa fa-plus-square"}
                %tr
@@ -34,7 +34,7 @@
                   %th #{t('.send')}
                   %th #{t('.desc')}
                   %th #{t('.bom')}
-                  %th #{t('.edit')}
+                  %th{:class=>"hidden-sm hidden-xs"} #{t('.edit')}
             %tbody
                -@userdrawings.each do |drawing|
                   %tr
@@ -72,7 +72,7 @@
                         - else
                            = link_to bom_company_user_drawing_path(@user.company.id, @user.id, drawing.id) do
                               %i{:class=>"fa fa-file-text-o"}
-                     %td
+                     %td{:class=>"hidden-sm hidden-xs"}
                         = link_to edit_company_user_drawing_path(@user.company.id,@user.id,drawing.id) do
                            %i{:class=>"fa fa-pencil-square-o"}
          %div{:id=>"pagination-wrapper", :class=>"pagination-wrapper"}

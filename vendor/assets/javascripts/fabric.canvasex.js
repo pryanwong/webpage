@@ -444,6 +444,6 @@ fabric.Customlinetwoarrow = fabric.util.createClass(fabric.Line, {
    }
 });
 fabric.Customlinetwoarrow.fromObject = function (object) {
-  return new fabric.Customlinearrow([object.x1,object.y1,object.x2,object.y2], object);
+  return new fabric.Customlinetwoarrow([object.x1,object.y1,object.x2,object.y2], object);
 };
 fabric.Customlinetwoarrow.async = false;

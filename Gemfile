@@ -63,14 +63,11 @@ gem 'remote_ip_proxy_scrubber'
 gem 'will_paginate-bootstrap'
 
 group :development, :test do
-  # gem 'guard-jruby-minitest'
-  # gem 'guard-jruby-rspec'
-  gem 'rspec-rails', '~> 3.0'
-  gem 'guard-rspec', '4.6.5'
-  gem 'guard', '2.11.0'
-  gem 'factory_girl_rails'
-  gem 'derailed'
-  # gem 'guard'
+  #gem 'rspec-rails', '~> 3.0'
+  #gem 'guard-rspec', '4.6.5'
+  #gem 'guard', '2.11.0'
+  #gem 'factory_girl_rails'
+  #gem 'derailed'
 end
 
 group :test do

@@ -136,6 +136,11 @@ class UsersController < ApplicationController
     logger.info "Leaving Users Controller:show"
   end
 
+  def nodraganddrop
+    flash[:error] = "Drag and Drop Not Supported"
+    redirect_to company_user_path(current_user.company_id , current_user.id)
+  end
+
   def edit
     logger.info "Entering Users Controller:edit"
     session.delete(:return_to)
