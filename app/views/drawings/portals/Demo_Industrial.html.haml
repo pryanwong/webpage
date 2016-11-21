@@ -194,9 +194,9 @@
                            = image_tag "companies/common/osa_user_blue.svg", :"data-loc"=>"companies/common/osa_user_blue.svg", :img_val=>"osa_user_blue.svg", :"data-model"=>"User",:draggable=>"true", :width=>"64", :height => "64"
                            %figcaption User
 
-   %div{:id=>"div2", :style=>"float:left;width:1000px;height:800px;padding-top:10px;"}
-      %div{:id=>"canvas-container"}
-         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
+   %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
+      %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
+         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
    %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;height:800px;display:none;margin-top:10px;overflow: auto"}
       %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
          Versions

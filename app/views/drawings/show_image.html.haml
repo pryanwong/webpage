@@ -16,8 +16,8 @@
 = javascript_include_tag 'jquery-ui'
 
 %div{:id=>"main", :class=>"container", :style=>"padding-top: 20px"}
-   %div{:class=>"img-rounded",:style=>"background: white;padding-bottom:10px"}
-      %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800", :style=>"border: 1px solid black;"}
+   %div{:class=>"img-rounded",:style=>"width:1000;height:1000;background:white;padding-bottom:10px;overflow:auto"}
+      %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600", :style=>"border: 1px solid black;"}
 
 :javaScript
    var handler = "";
@@ -73,7 +73,7 @@
          return false;
        }
    };
-   
+
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);
    log.setLevel(log4javascript.Level.TRACE);

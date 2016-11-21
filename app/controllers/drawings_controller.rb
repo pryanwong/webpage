@@ -145,12 +145,13 @@ class DrawingsController < ApplicationController
        #Create New Version version of
        if (params.has_key?(:modified))
           if (params[:modified] == "true")
-             drawingverold = Drawingver.new
              #logger.error "Drawing Id: #{@drawing.id}"
+             drawingverold = ""
              if (@drawing.drawingvers.count > 9)
                  logger.error "count greater than 9"
                  drawingverold = @drawing.drawingvers.last
              else
+                 drawingverold = Drawingver.new
                  drawingverold.ver_created_at = @drawing.created_at
              end
              drawingverold.drawing_id = @drawing.id.to_i
@@ -424,10 +425,16 @@ class DrawingsController < ApplicationController
        logger.debug "drawing was last updated more than one hour ago"
        logger.debug "Drawing #{@drawing.inspect}"
        logger.debug "Drawing to be copied: #{@drawing.drawing}"
-       @drawingver = Drawingver.new
-       @drawingver.drawing_id = @drawing.id.to_i
+       @drawingver = ""
+       if (@drawing.drawingvers.count > 9)
+           logger.error "count greater than 9"
+           @drawingver = @drawing.drawingvers.last
+       else
+           @drawingver = Drawingver.new
+           @drawingver.ver_created_at = @drawing.created_at
+           @drawingver.drawing_id = @drawing.id.to_i
+       end
        @drawingver.ver_updated_at = @drawing.updated_at
-       @drawingver.ver_created_at = @drawing.created_at
        @drawingver.drawingtext = @drawing.drawing
        @drawingver.save
        logger.debug "Old version of drawing has been archived"

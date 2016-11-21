@@ -100,10 +100,18 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
    newNode4.style.visibility = "hidden";
    newNode4.appendChild(newNode5);
    document.getElementById('data').appendChild(newNode4);
+   var initialConfig = canvas.item(searchId).config
    configString(jsondata,searchId)
+   console.log("Config: ", initialConfig)
    if (version != canvas.item(searchId).priceversion) {
-     document.getElementById('price').innerHTML += "- Invalid Price, Please Adjust Configuration"
-     newNode3.style.color = "red";
+     if (initialConfig == 'undefined') {
+       document.getElementById('price').innerHTML += "- Please Configure"
+       newNode3.style.color = "blue";
+       changeVersion(version, searchId);
+     } else {
+       document.getElementById('price').innerHTML += "- Invalid Price, Please Adjust Configuration"
+       newNode3.style.color = "red";
+     }
    }
 
    // done configuration
