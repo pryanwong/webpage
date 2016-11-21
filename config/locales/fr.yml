@@ -193,6 +193,7 @@ fr:
       model: Model
       configuration: Configuration
       unit_price: Unit Price
+      valid: Configuration Valide
     editdrawingdetails:
       home: Home
       drawings: Drawings

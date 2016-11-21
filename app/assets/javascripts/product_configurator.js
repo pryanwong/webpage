@@ -15,6 +15,7 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
    }
    else {
      jsondataprice = JSON.parse(jsondata.price);
+     version = JSON.parse(jsondata.version)
      //document.getElementById('data').innerHTML += '<br>' + jsondata['name'];
      var prodName = document.createElement('div')
      prodName.className = 'form-group form-group-sm';
@@ -52,8 +53,10 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
         }
         selectHTML += "</select>";
         newNode3.innerHTML += selectHTML
-        newNode.appendChild(newNode3)
+        newNode.appendChild(newNode3);
+
         document.getElementById('data').appendChild(newNode);
+
    }
    // Configuration
    var newNode = document.createElement('div');
@@ -87,8 +90,23 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
    newPriceNode.appendChild(newNodeDiv);
 
    document.getElementById('data').appendChild(newPriceNode);
-   // done configuration
+
+   var newNode4 = document.createElement('div');
+   newNode4.innerHTML += "Price Version: "
+   var newNode5 = document.createElement('label');
+   console.log(version)
+   newNode5.setAttribute("id","priceversion");
+   newNode5.innerHTML += version;
+   newNode4.style.visibility = "hidden";
+   newNode4.appendChild(newNode5);
+   document.getElementById('data').appendChild(newNode4);
    configString(jsondata,searchId)
+   if (version != canvas.item(searchId).priceversion) {
+     document.getElementById('price').innerHTML += "- Invalid Price, Please Adjust Configuration"
+     newNode3.style.color = "red";
+   }
+
+   // done configuration
    log.debug("Adding Listeners: Before For Loop")
    for (i=0; i< jsondataprice.product.options.length; i++) {
       var selectid = 'select' + i
@@ -96,7 +114,11 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
             var index = this.selectedIndex;
             var inputText = this.children[index].innerHTML.trim();
             log.trace(inputText);
-            configString(jsondata,searchId)
+            configString(jsondata,searchId);
+            changeVersion(version, searchId);
+            if (version == canvas.item(searchId).priceversion) {
+              newNode3.style.color = "black";
+            }
       }
     }
    }
@@ -126,4 +148,9 @@ function configString(jsontext,searchId) {
   canvas.item(searchId).price = document.getElementById('price').innerHTML
   canvas.renderAll();
   log.info( "Leaving configString");
+}
+
+function changeVersion(version, searchId) {
+  canvas.item(searchId).priceversion = version;
+  canvas.renderAll();
 }

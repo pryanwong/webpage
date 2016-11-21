@@ -187,6 +187,7 @@ fabric.CustomImage = fabric.util.createClass(fabric.Image, {
        options && this.set('origloc', options.origloc);
        options && this.set('price', options.price);
        options && this.set('configdbid', options.configdbid);
+       options && this.set('priceverversion', options.priceversion);
    },
    toObject: function() {
        return fabric.util.object.extend(this.callSuper('toObject'),
@@ -194,7 +195,8 @@ fabric.CustomImage = fabric.util.createClass(fabric.Image, {
                                       price:  this.price,
                                       model:  this.model,
                                       origloc: this.origloc,
-                                      configdbid: this.configdbid});
+                                      configdbid: this.configdbid,
+                                      priceversion: this.priceversion});
    },
    setConfig: function(configString) {
       this.config = configString;

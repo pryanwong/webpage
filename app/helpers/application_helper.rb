@@ -21,6 +21,15 @@ module ApplicationHelper
      end
    end
 
+   def bootstrap_class_for_valid(type)
+     case type
+     when "valid"
+       ""
+     else
+       "bg-danger"
+     end
+   end
+
    def resource_name
      :user
    end

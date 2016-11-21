@@ -32,7 +32,7 @@ class DrawingsController < ApplicationController
           logger.error "No drawing found"
           @drawing.drawing = "{}"
        end
-       company = Drawing.new
+       company = Company.new
        if (Company.exists?(params[:company_id]))
           logger.debug "Company exists: #{params[:company_id]}"
           company = Company.find(params[:company_id]);
@@ -142,13 +142,19 @@ class DrawingsController < ApplicationController
          redirect_to root_path
        end
 
-       #Create New Version version of drawing
+       #Create New Version version of
        if (params.has_key?(:modified))
           if (params[:modified] == "true")
              drawingverold = Drawingver.new
+             #logger.error "Drawing Id: #{@drawing.id}"
+             if (@drawing.drawingvers.count > 9)
+                 logger.error "count greater than 9"
+                 drawingverold = @drawing.drawingvers.last
+             else
+                 drawingverold.ver_created_at = @drawing.created_at
+             end
              drawingverold.drawing_id = @drawing.id.to_i
              drawingverold.ver_updated_at = @drawing.updated_at
-             drawingverold.ver_created_at = @drawing.created_at
              drawingverold.drawingtext = @drawing.drawing
              drawingverold.save
           end
@@ -324,7 +330,15 @@ class DrawingsController < ApplicationController
 		         configHash = modelHash[val["config"]];
 		         configHash[:qty] = configHash[:qty] + 1;
 		       else
-		         configHash = {:qty => 1, :price => val["price"]}
+             priceversiondb = Price.find_by_product_id(val["configdbid"])
+             uptodate = "valid"
+             if (priceversiondb.version != val["priceversion"])
+               uptodate = "Out of date pricelist used, reconfigure"
+               if (val["config"] == "undefined")
+                 uptodate = "Invalid configuration"
+               end
+             end
+             configHash = {:qty => 1, :price => val["price"], :uptodate => uptodate}
 		       end
 		       modelHash[val["config"]] = configHash;
 		       valhash[val["model"]] = modelHash;
@@ -338,7 +352,8 @@ class DrawingsController < ApplicationController
            h = {:qty    =>confighash[:qty],
                 :model  => keyv,
                 :config => keym,
-                :price  => confighash[:price]
+                :price  => confighash[:price],
+                :uptodate => confighash[:uptodate]
               }
            @valsArray[counter] = h;
 	         counter = counter+1;
@@ -545,7 +560,7 @@ class DrawingsController < ApplicationController
          redirect_to company_user_path(session[:company_id] ,session[:user_id]), notice: "Your messages has been sent."
        else
          logger.debug "An error occurred while delivering this message."
-         flash[:alert] = t('flash.drawings.email_failed') 
+         flash[:alert] = t('flash.drawings.email_failed')
          redirect_to company_user_path(session[:company_id] ,session[:user_id])
        end
        logger.info "Leaving Drawing#send_image"

@@ -22,10 +22,12 @@
                   %th #{t('.model')}
                   %th #{t('.configuration')}
                   %th #{t('.unit_price')}
+                  %th #{t('.valid')}
             %tbody
                -@valsArray.each do |val|
-                  %tr
+                  %tr{:class => bootstrap_class_for_valid(val[:uptodate])}
                      %td= val[:qty]
                      %td= val[:model]
                      %td= val[:config]
                      %td= val[:price]
+                     %td= val[:uptodate]
