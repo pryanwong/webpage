@@ -38,12 +38,12 @@ textobject.textDown = function(data,index) {
             $('a:contains("Send To Back")').click(function() {sendToBack();});
             $('a:contains("Bring Forward")').click(function() {bringFoward();});
             $('a:contains("Bring To Front")').click(function() {bringToFront();});
-            $('a:contains("Small")').click(function(){console.log("Small clicked");changeFontSize(6);});
-            $('a:contains("Medium")').click(function(){console.log("Med clicked");changeFontSize(12);});
-            $('a:contains("Large")').click(function(){console.log("Large clicked");changeFontSize(24);});
-            $('a:contains("Arial")').click(function(){console.log("arial clicked");changeFontFamily('arial black');});
-            $('a:contains("Sans-Serif")').click(function(){console.log("Sans clicked");changeFontFamily('sans-serif');});
-            $('a:contains("Rockwell")').click(function(){console.log("Rockwell clicked");changeFontFamily('rockwell');});
+            $('a:contains("Small")').click(function(){changeFontSize(6);});
+            $('a:contains("Medium")').click(function(){changeFontSize(12);});
+            $('a:contains("Large")').click(function(){changeFontSize(24);});
+            $('a:contains("Arial")').click(function(){changeFontFamily('arial black');});
+            $('a:contains("Sans-Serif")').click(function(){changeFontFamily('sans-serif');});
+            $('a:contains("Rockwell")').click(function(){changeFontFamily('rockwell');});
             contextmenuon = true;
          };
        }

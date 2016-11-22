@@ -3,7 +3,7 @@ var imageobject = function(coords, id) {
 
 imageobject.imageDown = function(data,index) {
    log.info( "Entering imageDown");
-   console.log("data", data)
+   //console.log("data", data)
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);
    }

@@ -191,7 +191,7 @@ calculateScore = function ($el) {
             }
         }
     });
-    console.log("Total Score: ", totalScore)
+    //console.log("Total Score: ", totalScore)
     setProgressBar($el, totalScore);
     return totalScore;
 },

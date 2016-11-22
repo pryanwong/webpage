@@ -272,8 +272,8 @@
      canvas.on('mouse:over', function(e) {
         console.log("In mouse:over")
         console.log(e.target)
-        e.target.setOpacity(0.5);
         activeObjectVal = e.target
+        activeObjectVal.setOpacity(0.5);
         if (e.target.type) {
             console.log("e.target.type: " + e.target.type)
             if (e.target.type == "line") {

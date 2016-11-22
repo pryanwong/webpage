@@ -28,7 +28,7 @@ circleobject.makeCircleShape = function(coords, id){
 };
 
 circleobject.circleDown = function(data,index) {
-   console.log("Data: ", data);
+   //console.log("Data: ", data);
    log.info( "Entering circleDown");
    if (handler != "") {
       document.removeEventListener('contextmenu', handler);

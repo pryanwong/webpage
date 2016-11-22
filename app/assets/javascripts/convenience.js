@@ -133,7 +133,7 @@ $(function() {
         $('#progress').show();
         progressBar.text(progress + '%');
         progressBar.attr('value',progress);
-        console.log("Progress: ", progress);
+        //console.log("Progress: ", progress);
      },
      start: function (e) {
         //submitButton.attr('disabled', 'disabled');
@@ -302,8 +302,8 @@ function loadversion(link) {
           format: 'json'
        },
        error: function(data) {
-          console.log(data)
-          console.log("An error has occurred");
+          //console.log(data)
+          //console.log("An error has occurred");
           $(".spinner").fadeOut( 400 );
        },
        success: function(data) {

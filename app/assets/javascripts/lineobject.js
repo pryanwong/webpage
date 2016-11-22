@@ -119,7 +119,7 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
      log.info( "Entering  objectBoundaryCheck");
      $("#saveMessage").text('Changes Made, Save Pending...');
      e.target.setCoords();
-     console.log("Object in boundary check: ", e.target);
+     //console.log("Object in boundary check: ", e.target);
 
      log.debug( "Checking to see if the end points of a line are being dragged ");
         var obj = e.target;
@@ -181,9 +181,9 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
        log.info( "Entering objectSelected");
        activeObject = true;
        activeObjectVal = e.target;
-       console.log("objectSelected: ", activeObjectVal);
+       //console.log("objectSelected: ", activeObjectVal);
        var objType = e.target.get('type');
-       console.log("custom line selected");
+       //console.log("custom line selected");
        _curX = e.e.clientX;
        _curY = e.e.clientY;
        _c1Top = e.target.cone.getTop();
@@ -194,8 +194,8 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
 
    lineobject.lineDown= function(data,index) {
       log.info( "Entering lineDown");
-      console.log( "Entering lineDown");
-      console.log("data: ", data);
+      //.log( "Entering lineDown");
+      //console.log("data: ", data);
 
       if (activeObjectVal) {
         activeObject = true;
@@ -223,7 +223,7 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
                                                     canvas.remove(activeObjectVal.ctwo);
                                                     canvas.remove(activeObjectVal);
                                                   } else if(activeObjectVal.hasOwnProperty('belongsTo')) {
-                                                    console.log("removing belongTo object");
+                                                    //console.log("removing belongTo object");
                                                     var objs = canvas.getObjects();
                                                     // find line with belongsTo value
                                                     var searchVal = activeObjectVal.get('belongsTo');
@@ -282,7 +282,7 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
       c[id] = lineobject.makeCircle(line);
       line.cone = c[id][0];
       line.ctwo = c[id][1];
-      console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'));
+      //console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'));
       canvas.add(c[id][0],c[id][1]);
       canvas.renderAll();
       line.on("mousedown", function(data, index) { lineDown(data,index); });

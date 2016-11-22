@@ -121,7 +121,7 @@ function boundaryInspectorCircle(e) {
 
    e.target.setCoords()
    var p = e.target;
-   console.log("Type is: ", p.type)
+   //console.log("Type is: ", p.type)
    bounds = {tl: {x: 0, y:0}, br: {x: canvas.width , y: canvas.height } };
    if((p.type == 'circleone' || p.type == 'circlezero')) {
       if(p.top < bounds.tl.y || p.left < bounds.tl.x) {
@@ -265,12 +265,12 @@ function objectSelected(e) {
      groupObjectsCustomLineArrow = activeGroupCollection.getObjects('customlinearrow');
      for ( i=0; i < groupObjectsCustomLineArrow.length; i++) {
        customLineArrowInCollection.push(groupObjectsCustomLineArrow[i].objId)
-       console.log("Found Custom Line Arrow: ", groupObjectsCustomLineArrow[i].objId)
+       //console.log("Found Custom Line Arrow: ", groupObjectsCustomLineArrow[i].objId)
      }
      groupObjectsCustomLineTwoArrow = activeGroupCollection.getObjects('customlinetwoarrow');
      for ( i=0; i < groupObjectsCustomLineTwoArrow.length; i++) {
        customLineTwoArrowInCollection.push(groupObjectsCustomLineTwoArrow[i].objId)
-       console.log("Found Custom Line Two Arrow: ", groupObjectsCustomLineTwoArrow[i].objId)
+       //console.log("Found Custom Line Two Arrow: ", groupObjectsCustomLineTwoArrow[i].objId)
      }
      groupObjectsCircleZero = activeGroupCollection.getObjects('circlezero');
      for ( i=0; i < groupObjectsCircleZero.length; i++) {
@@ -435,8 +435,8 @@ function mouseOut(e){
 function mouseOver(e) {
   log.info( "Entering mouseOver");
   contextmenuon = false;
-  activeObjectVal = e.target
-  if (e.target.type) {
+  activeObjectVal = e.target;
+  if (e.target) {
        if (e.target.type == "line") {
          log.debug( "Target is line");
          searchId = getItemIndex(e.target);
@@ -488,6 +488,15 @@ function postProcessLoading(o, object) {
     log.debug( "Processing i-text");
     object.on("mousedown", function(data, index) { textobject.textDown(data,index)   });
   }
+
+  backgroundImageVal = "";
+  if (canvas.backgroundImage !== null) {
+     backgroundimg = canvas.backgroundImage;
+     if (backgroundimg.src !== null ) {
+        backgroundImageVal = canvas.backgroundImage.src;
+     }
+  }
+
   log.info( "Leaving postProcessLoading");
 
 };
@@ -511,34 +520,34 @@ function makeLine(coords, id) {
 
  function activateColorPicker(e) {
       log.info( "Entering activateColorPicker");
-      console.log("activateColorPicker: ", e)
+      //console.log("activateColorPicker: ", e)
       activeObjectValCP = activeObjectVal;
       document.getElementById('myColor').color.showPicker();
       log.info( "Leaving activateColorPicker");
  }
 
  function changeFontSize(size) {
-      console.log( "Entering changeFontSize");
-      console.log( size );
+      //console.log( "Entering changeFontSize");
+      //console.log( size );
       var activeObjectVal = canvas.getActiveObject();
-      console.log(activeObjectVal);
+      //console.log(activeObjectVal);
       if (activeObjectVal.type == "i-text") {
-        console.log( "changeFontSize on i-text type");
+        //console.log( "changeFontSize on i-text type");
         //activeObjectValCP.stroke = newLineColor;
         activeObjectVal.set("fontSize", size);
         canvas.renderAll();
         //activeObjectVal.setColor(newLineColor);
       }
-      console.log( "Leaving changeFontSize");
+      //console.log( "Leaving changeFontSize");
       $("#saveMessage").text('Changes Made, Save Pending...');
       onSave();
  }
 
  function changeFontFamily(ff) {
-      console.log( "Entering changeFontFamily");
-      console.log( ff );
+      //console.log( "Entering changeFontFamily");
+      //console.log( ff );
       var activeObjectVal = canvas.getActiveObject();
-      console.log(activeObjectVal);
+      //console.log(activeObjectVal);
       if (activeObjectVal.type == "i-text") {
         console.log( "changeFontFamily on i-text type");
         //activeObjectValCP.stroke = newLineColor;
@@ -546,7 +555,7 @@ function makeLine(coords, id) {
         canvas.renderAll();
         //activeObjectVal.setColor(newLineColor);
       }
-      console.log( "Leaving changeFontFamily");
+      //console.log( "Leaving changeFontFamily");
       $("#saveMessage").text('Changes Made, Save Pending...');
       onSave();
  }

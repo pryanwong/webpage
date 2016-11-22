@@ -207,12 +207,7 @@ function loadCanvasDrawing(data_drawing) {
             itemId = itemId + 1;
          }
          canvas.renderAll();
-         backgroundImageVal = "";
-         if (canvas.hasOwnProperty('backgroundImage')) {
-            if ((canvas.backgroundImage).hasOwnProperty('src')) {
-                backgroundImageVal = canvas.backgroundImage.src;
-            }
-         }
+         
          log.debug("BackgroundImage Loc: ", backgroundImageVal)
          backgroundExists(backgroundImageVal);
       },

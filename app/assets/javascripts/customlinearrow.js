@@ -3,13 +3,13 @@ var customlinearrow = function(coords, id) {
 
 customlinearrow.setLinePositions = function(e) {
 
-      console.log("In customlinearrow");
+      //console.log("In customlinearrow");
       var p = e.target;
       var objType = p.get('type');
       var objId = p.get('objId');
       var _curXm = (_curX - e.e.clientX);
       var _curYm = (_curY - e.e.clientY);
-      console.log("Deltas: ", _curXm, " ", _curYm);
+      //console.log("Deltas: ", _curXm, " ", _curYm);
       for (var i = 0; i < canvas.getObjects().length; i++) {
         var currentObj = canvas.getObjects()[i];
         if (currentObj.type == "carrow" && currentObj.get('belongsTo') == objId) {
@@ -31,7 +31,7 @@ customlinearrow.setLinePositions = function(e) {
         }
 
         if (currentObj.type == "conearrow" && currentObj.get('belongsTo') == objId) {
-          console.log("In conearrow", currentObj)
+          //console.log("In conearrow", currentObj)
           _c1Top = currentObj.getTop();
           _c1Left = currentObj.getLeft();
           currentObj.set({
@@ -60,7 +60,7 @@ customlinearrow.objectBoundaryCheck = function(e){
   log.info( "Entering  objectBoundaryCheck");
   $("#saveMessage").text('Changes Made, Save Pending...');
   e.target.setCoords();
-  console.log("Object in boundary check: ", e.target)
+  //console.log("Object in boundary check: ", e.target)
 
   log.debug( "Checking to see if the end points of a line are being dragged ");
      var obj = e.target;
@@ -189,8 +189,8 @@ customlinearrow.makeLineArrow =function(coords, id) {
 
  customlinearrow.lineArrowDown = function(data,index) {
     log.info( "Entering lineDown");
-    console.log( "Entering lineDown");
-    console.log("data: ", data)
+    //console.log( "Entering lineDown");
+    //console.log("data: ", data)
 
     if (activeObjectVal) {
       activeObject = true;
@@ -313,8 +313,8 @@ customlinearrow.makeLineArrow =function(coords, id) {
    c[id] = customlinearrow.makeCircleArrow(line);
    line.conearrow = c[id][0];
    line.carrow= c[id][1];
-   console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'));
-   console.log("circle and arrow: ", c[id][0], ":", c[id][1]);
+   //console.log("Line coords: ",line.get('x1') ,line.get('y1') ,line.get('x2') , line.get('y2'));
+   //console.log("circle and arrow: ", c[id][0], ":", c[id][1]);
    canvas.add(c[id][0],c[id][1]);
    canvas.renderAll();
    line.on("mousedown", function(data, index) {  customlinearrow.lineArrowDown(data,index); });

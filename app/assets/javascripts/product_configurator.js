@@ -94,7 +94,7 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
    var newNode4 = document.createElement('div');
    newNode4.innerHTML += "Price Version: "
    var newNode5 = document.createElement('label');
-   console.log(version)
+   //console.log(version)
    newNode5.setAttribute("id","priceversion");
    newNode5.innerHTML += version;
    newNode4.style.visibility = "hidden";
@@ -102,9 +102,15 @@ function loadConfigScreen( data, selectChoices, splitVals ) {
    document.getElementById('data').appendChild(newNode4);
    var initialConfig = canvas.item(searchId).config
    configString(jsondata,searchId)
-   console.log("Config: ", initialConfig)
+   //console.log("Config: ", initialConfig)
    if (version != canvas.item(searchId).priceversion) {
-     if (initialConfig == 'undefined') {
+     if (initialConfig == 'undefined' && jsondataprice.product.options.length == 0) {
+       changeVersion(version, searchId);
+     }  else if (jsondataprice.product.options.length == 0) {
+       document.getElementById('price').innerHTML += "- Please Note Price Has been Updated"
+       newNode3.style.color = "red";
+       changeVersion(version, searchId);
+     } else if (initialConfig == 'undefined') {
        document.getElementById('price').innerHTML += "- Please Configure"
        newNode3.style.color = "blue";
        changeVersion(version, searchId);
