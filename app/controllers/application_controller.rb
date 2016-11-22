@@ -10,7 +10,6 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     val = extract_locale_from_accept_language_header
-    puts val
     I18n.locale = val
   end
 

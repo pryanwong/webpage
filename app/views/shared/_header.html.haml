@@ -58,10 +58,11 @@
                         = link_to company_user_usersettings_path(current_user.company_id, current_user.id ) do
                            %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
                            %span #{t('.user_settings')}
-                     %li
-                        = link_to edit_user_registration_path do
-                           %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
-                           %span #{t('.change_password')}
+                     - if (current_user.provider == 'optecture')
+                        %li
+                           = link_to edit_user_registration_path do
+                              %span{:class=>"fa fa-cogs","aria-hidden"=>"true"}
+                              %span #{t('.change_password')}
                      - if (current_user.admin? || current_user.moderator?)
                         %li
                            = link_to company_path(current_user.company_id ) do

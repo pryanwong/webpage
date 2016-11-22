@@ -13,9 +13,9 @@ prepend_before_filter :require_no_authentication, :only => [ :cancel ]
 
   # POST /resource
   def create
-    puts "Sign up params: #{sign_up_params.inspect}"
+    # puts "Sign up params: #{sign_up_params.inspect}"
     logger.debug "Sign up params: #{sign_up_params.inspect}"
-    puts "Password: #{sign_up_params[:password]}"
+    # puts "Password: #{sign_up_params[:password]}"
     build_resource(sign_up_params)
     resource.password = sign_up_params[:email]
     if sign_up_params[:suspended] == "0"

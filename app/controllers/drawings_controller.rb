@@ -610,7 +610,7 @@ class DrawingsController < ApplicationController
 
     def export_csv(records, options = {})
       CSV.generate(options) do |csv|
-        csv << ["Quantity", "Model", "Configuration", "Unit Price"]
+        csv << ["Quantity", "Model", "Configuration", "Unit Price", "Valid Configuration"]
         records.each do |record|
           csv << record.values
         end

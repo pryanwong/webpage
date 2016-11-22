@@ -27,6 +27,7 @@ class UsersController < ApplicationController
        session[:switched]  = true;
        session[:adminuser] = current_user.id
        session[:admincompany] = current_user.company_id
+       session[:provider] = current_user.provider
        session.delete(:user_id)
        session[:user_id]  = @user.id
        sign_in(@user)
@@ -56,6 +57,7 @@ class UsersController < ApplicationController
        session.delete(:adminuser)
        session.delete(:admincompany)
        session.delete(:user_id)
+       session.delete(:provider)
        @current_user = @user
        session[:user_id]  = @current_user.id
        sign_in(@user)

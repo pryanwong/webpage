@@ -15,7 +15,17 @@
       %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
 %div#inputs
 %div{:id=>"drawingwrap", :style=>"width:1500px"}
-   %div#menubar{:sytle=>"width:100%;height:75px;"}
+   %div{:id=>"breadcrumbs", :style=>"padding-left:230px;width:1230px", :class=>"hidden-sm hidden-xs"}
+      %div
+         %div
+            %ol{:class=>"breadcrumb"}
+               %li{:class=>"hidden-sm hidden-xs"}
+                  = link_to company_user_path(current_user.company_id ,current_user.id) do
+                     =t('drawings.editdrawingdetails.home')
+               %li{:class=>"hidden-sm hidden-xs"} #{t('drawings.editdrawingdetails.drawings')}
+               %li{:class=>"pull-right"}
+                  = link_to t('drawings.bom.billofmaterials'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id])
+   %div#menubar{:sytle=>"width:1230px;height:75px;"}
       =link_to "<button id='backgroundButtonText' class='btn btn-default'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
       =image_tag "common/paint_bucket.png"
       %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
