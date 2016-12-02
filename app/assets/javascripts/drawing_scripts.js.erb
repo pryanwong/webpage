@@ -695,6 +695,7 @@ function handleDrop(e) {
    log.info( "Entering handleDrop");
    $("#saveMessage").text('Changes Made, Save Pending...');
    var img = document.querySelector('#images img.img_dragging');
+   console.log(img);
    img.height = img.height;
    img.width = img.width;
    log.trace("Draggable Stage:", img);

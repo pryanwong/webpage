@@ -6,6 +6,10 @@
       =stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
       =javascript_include_tag 'application', 'data-turbolinks-track' => true
       -# =stylesheet_link_tag "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"
+      =javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"
+      =javascript_include_tag "app.js", "data-turbolinks-track" => true
+      =javascript_include_tag "iconController.js", "data-turbolinks-track" => true
+      =javascript_include_tag "iconDirective.js", "data-turbolinks-track" => true
       =javascript_include_tag "mobile-detect.js", "data-turbolinks-track" => true
       =javascript_include_tag 'convenience.js', "data-turbolinks-track" => true
       =javascript_include_tag 'canvaswide.js', "data-turbolinks-track" => true
@@ -20,7 +24,7 @@
       =javascript_include_tag 'product_configurator.js', "data-turbolinks-track" => true
       =javascript_include_tag 'drawing_scripts.js', "data-turbolinks-track" => true
       =csrf_meta_tags
-   %body
+   %body{"ng-app"=>"app"}
       = render "shared/error_messages"
       %div{ :id=>"configsection", :class=>"modal fade", :role=>"dialog"}
          %div{ :class=>"modal-dialog", :id=>"openModal"}

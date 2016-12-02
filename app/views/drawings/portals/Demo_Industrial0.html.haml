@@ -1,4 +1,3 @@
-= javascript_include_tag 'jquery-ui'
 %div{ :class=>"hide", :id=>"info"}
 %div{ :class=>"hide", :id=>"TextFormDiv"}
    %form{:id=>"TextForm", :autocomplete=>"off"}
@@ -16,7 +15,17 @@
       %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
 %div#inputs
 %div{:id=>"drawingwrap", :style=>"width:1500px"}
-   %div#menubar{:sytle=>"width:100%;height:75px;"}
+   %div{:id=>"breadcrumbs", :style=>"padding-left:230px;width:1230px", :class=>"hidden-sm hidden-xs"}
+      %div
+         %div
+            %ol{:class=>"breadcrumb"}
+               %li{:class=>"hidden-sm hidden-xs"}
+                  = link_to company_user_path(current_user.company_id ,current_user.id) do
+                     =t('drawings.editdrawingdetails.home')
+               %li{:class=>"hidden-sm hidden-xs"} #{t('drawings.editdrawingdetails.drawings')}
+               %li{:class=>"pull-right"}
+                  = link_to t('drawings.bom.billofmaterials'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id])
+   %div#menubar{:sytle=>"width:1230px;height:75px;"}
       =link_to "<button id='backgroundButtonText' class='btn btn-default'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
       =image_tag "common/paint_bucket.png"
       %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
@@ -29,13 +38,15 @@
       Last Saved:
       %span{:id=>'saveMessage'}
          = @lastedit
-         %a{href: '#', onclick: 'toggle_versions_pane(); return false;'} Archived Versions
-   %div{:id=>"accordian-canvas-wrapper", :style=>"float:left;height:1000px;width:230px;"}
-      %div{:id=>"accordian-container"}
-         %div{ :id=>"accordion" }
-            %h3 Meters
-            %div{:style=>"margin:0px;padding:0px;"}
-               %div{:id=>"images"}
+      %a{href: '#', onclick: 'toggle_versions_pane(); return false;', :style=>'text-decoration: underline'} Archived Versions
+   %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
+      %div{:class=>"panel-group", :id=>"accordiontools"}
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
+            %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
+               %div{:id=>"images", :class=>"panel-body"}
                   %table
                      %tr
                         %td
@@ -72,9 +83,12 @@
                         %td
                            = image_tag "companies/GE/EPM-Enclosure.png", :img_val=>"EPM-Enclosure.png", :"data-config"=>"13", :"data-loc"=>"companies/GE/EPM-Enclosure.png", :"data-model"=>"EPM-Enclosure", :draggable=>"true", :width=>"60", :height => "71"
                            %figcaption EPM-Enclosure
-            %h3 Networking
-            %div{:style=>"margin:0px;padding:0px;"}
-               %div{:id=>"images"}
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse2"} Networking
+            %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
                   %table
                      %tr
                         %td
@@ -94,9 +108,12 @@
                         %td
                            = image_tag "companies/GE/ML600.gif", :img_val=>"ML600.gif", :"data-loc"=>"companies/GE/ML600.gif", :"data-config"=>"18", :"data-model"=>"ML600", :draggable=>"true", :width=>"52", :height => "64"
                            %figcaption ML600
-            %h3 Computing
-            %div{:style=>"margin:0px;padding:0px;"}
-               %div{:id=>"images"}
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse3"} Computing
+            %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
                   %table
                      %tr
                         %td
@@ -126,17 +143,24 @@
                         %td
                            = image_tag "companies/common/osa_vpn.svg", :img_val=>"osa_vpn.svg", :"data-loc"=>"companies/common/osa_vpn.svg", :"data-model"=>"VPN",:draggable=>"true", :width=>"64", :height => "64"
                            %figcaption VPN
-            %h3 Shapes
-            %div{:style=>"margin:0px;padding:0px;"}
-               %div{:id=>"images"}
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse4"} Shapes
+            %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
                   %table
                      %tr
                         %td
                            = image_tag "common/line.png", :"data-loc"=>"common/line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
                            %figcaption Line
                         %td
-                           = image_tag "common/textbox_icon.png", :"data-loc"=>"common/textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
-                           %figcaption Text Box
+                           = image_tag "common/line_arrow_icon.png", :"data-loc"=>"common/line_arrow_icon.png", :img_val=>"line_arrow_icon.png", :draggable=>"true", :width=>"63", :height => "34"
+                           %figcaption Line Arrow
+                     %tr
+                        %td
+                           = image_tag "common/line_arrow_two_icon.png", :"data-loc"=>"common/line_arrow_two_icon.png", :img_val=>"line_arrow_two_icon.png", :draggable=>"true", :width=>"63", :height => "34"
+                           %figcaption Line Arrow
                      %tr
                         %td
                            = image_tag "common/circle.png", :"data-loc"=>"common/circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
@@ -148,9 +172,15 @@
                         %td
                            = image_tag "common/rectangle-icon.png", :"data-loc"=>"common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
                            %figcaption Rectangle
-            %h3 Places/People
-            %div{:style=>"margin:0px;padding:0px;"}
-               %div{:id=>"images"}
+                        %td
+                           = image_tag "common/textbox_icon.png", :"data-loc"=>"common/textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
+                           %figcaption Text Box
+         %div{ :class=>"panel panel-default" }
+            %div.panel-heading
+               %h4.panel-title
+                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse5"} Places/People
+            %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
+               %div{:id=>"images",:class=>"panel-body"}
                   %table
                      %tr
                         %td
@@ -174,19 +204,22 @@
                            = image_tag "companies/common/osa_user_blue.svg", :"data-loc"=>"companies/common/osa_user_blue.svg", :img_val=>"osa_user_blue.svg", :"data-model"=>"User",:draggable=>"true", :width=>"64", :height => "64"
                            %figcaption User
 
-   -# %div{:id=>"div2", :style=>"position:absolute;left:230px"}
-   %div{:id=>"div2", :style=>"float:left;width:1000px;height:800px;padding-top:10px;"}
-      %div{:id=>"canvas-container"}
-         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"800"}
-   %div{:id=>"versionspanel", :class=>"panel panel-default",:style=>"position:absolute;right:0;float:right;height:800px;display:none;margin-top:10px;"}
-      %div{:class=>"panel-heading"}
+   %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
+      %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
+         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
+   %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;display:none;margin-top:10px;overflow: auto"}
+      %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
          Versions
          %button{:type=>"button", :class=>"close", onclick: 'toggle_versions_pane(); return false;'}
             %span &times;
             %span{:class=>"sr-only"} Close
       %div{:id=>"versionslist", :class=>"panel-body"}
-         %p test to see where stuff appears
-
+         %p Previous Versions of Drawing, stored when changes made after 60mins of inactivity
+      %table{:class=>"table table-bordered table-hover"}
+         %thead
+            %tr
+               %th Date and Time
+            %tbody{:id=>"versionslisttab", :style=>"overflow-y: scroll;"}
 :javascript
 
    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -197,6 +230,35 @@
    ga('create', 'UA-76942309-1', 'auto');
    ga('send', 'pageview');
 
+   function GetDebugParameter(sParam){
+       log.info( "Entering  GetDebugParameter");
+       var sPageURL = window.location.hash;
+       log.debug("sPageURL:");
+       log.debug( sPageURL);
+       sPageURL = sPageURL.split("?");
+       if (sPageURL.length > 1) {
+          var sURLVariables = sPageURL[1].split('&');
+          log.debug("sURLVariables:");
+          log.debug( sURLVariables);
+          for (var i = 0; i < sURLVariables.length; i++)
+          {
+             var sParameterName = sURLVariables[i].split('=');
+             log.debug("sParameterName:")
+             log.debug(sParameterName);
+             if (sParameterName[0] == sParam)
+             {
+               log.debug("sParameterName[1]:")
+               log.debug(sParameterName[1]);
+               log.info( "Leaving GetDebugParameter");
+               return sParameterName[1];
+             }
+          }
+       } else {
+         log.info( "Leaving GetDebugParameter returning false");
+         return false;
+       }
+   };
+
    var handler = "";
    var c = new Array();
    var objId_var = 0;
@@ -204,6 +266,8 @@
    var company_id ='#{params[:company_id]}'
    var user_id= '#{params[:user_id]}'
    var drawing_id = '#{params[:id]}'
+   var modified = false
+   var timestamps   = '#{@timestamps_readable}'
    var itemId = 0;
    var contextmenuon = false;
    var activeObject = false;
@@ -220,151 +284,21 @@
    var lineActive = true;
    var lineSelected = false;
    var log = log4javascript.getDefaultLogger();
-   var progressBar  = $("<div class='bar'></div>");
-   var barContainer = $("<div class='progress'></div>").append(progressBar);
+   var progressBar  = $("#bar");
+   progressBar.css('display','none');
    log4javascript.setEnabled(false);
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);
    log.setLevel(log4javascript.Level.TRACE);
    log.info("Executing javascript in edit.html");
-    log.debug("Executing spinner");
-    $(".spinner").show();
-    canvas.backgroundColor="";
-
-    log.debug("Create Custom Image Class");
-    fabric.CustomImage = fabric.util.createClass(fabric.Image, {
-       type: 'custom-image',
-       initialize: function(element, options) {
-           this.callSuper('initialize', element, options);
-           options && this.set('model', options.model);
-           options && this.set('config', options.config);
-           options && this.set('origloc', options.origloc);
-           options && this.set('price', options.price);
-           options && this.set('configdbid', options.configdbid);
-       },
-       toObject: function() {
-           return fabric.util.object.extend(this.callSuper('toObject'),
-                                         {config: this.config,
-                                          price:  this.price,
-                                          model:  this.model,
-                                          origloc: this.origloc,
-                                          configdbid: this.configdbid});
-       },
-       setConfig: function(configString) {
-          this.config = configString;
-          canvas.trigger('custom-image:textChange');
-       },
-       _render: function(ctx) {
-          this.callSuper('_render', ctx);
-          if (this.config != 'undefined') {
-            log.debug("In Call Super Render, ctx")
-            log.trace(ctx)
-            ctx.font = '12px Helvetica';
-            ctx.fillStyle = '#333';
-            log.debug("render text");
-            textwidth = ctx.measureText(this.config).width
-            ctx.fillText(this.config, -textwidth/2, (this.height/2+10))
-          }
-       }
-   });
-   fabric.CustomImage.fromObject = function(object, callback) {
-     fabric.util.loadImage(object.src, function(img) {
-       callback && callback(new fabric.CustomImage(img, object));
-      });
-   };
-   fabric.CustomImage.async = true;
-
-   log.debug("Create Custom Line Class");
-   fabric.Customline = fabric.util.createClass(fabric.Line, {
-      type: 'customline',
-      initialize: function(coords, options) {
-          options || (options = {});
-          this.callSuper('initialize', coords ,options);
-          options && this.set('objId', options.objId);
-          options && this.set('cone', options.cone);
-          options && this.set('ctwo', options.ctwo);
-      },
-      toObject: function() {
-          return fabric.util.object.extend(this.callSuper('toObject'),
-                                        {objId: this.objId,
-                                         cone:    this.cone,
-                                         ctwo:    this.ctwo});
-      },
-      setObjId: function(objIdString) {
-         this.objId = objIdString;
-      },
-      getObjId: function() {
-         return this.objId;
-      },
-      setCone: function(c1String) {
-         this.cone = c1String;
-      },
-      setCtwo: function(c2String) {
-         this.ctwo = c2String;
-      },
-       _render: function(ctx) {
-          this.callSuper('_render', ctx);
-       }
-   });
-   fabric.Customline.fromObject = function (object) {
-      return new fabric.Customline([object.x1,object.y1,object.x2,object.y2], object);
-   };
-   fabric.Customline.async = false;
-
-   log.debug("Create Custom Circlezero Class");
-   fabric.Circlezero = fabric.util.createClass(fabric.Circle, {
-     type: 'circlezero',
-     initialize: function(element, options) {
-         this.callSuper('initialize', element, options);
-         options && this.set('belongsTo', options.belongsTo);
-     },
-     toObject: function() {
-         return fabric.util.object.extend(this.callSuper('toObject'),
-                                       {belongsTo: this.belongsTo});
-     },
-     setBelongsTo: function(belongsToString) {
-        this.belongsTo = belongsToString;
-     },
-     _render: function(ctx) {
-        this.callSuper('_render', ctx);
-     }
-   });
-   fabric.Circlezero.fromObject = function(object) {
-      return new fabric.Circlezero(object);
-   };
-   fabric.Circlezero.async = false;
-
-   log.debug("Create Custom Circleone Class");
-   fabric.Circleone = fabric.util.createClass(fabric.Circle, {
-    type: 'circleone',
-    initialize: function(element, options) {
-        this.callSuper('initialize', element, options);
-        options && this.set('belongsTo', options.belongsTo);
-    },
-    toObject: function() {
-        return fabric.util.object.extend(this.callSuper('toObject'),
-                                      {belongsTo: this.belongsTo});
-    },
-    setBelongsTo: function(belongsToString) {
-       this.belongsTo = belongsToString;
-    },
-    _render: function(ctx) {
-       this.callSuper('_render', ctx);
-    }
-   });
-   fabric.Circleone.fromObject = function(object) {
-      return new fabric.Circleone(object);
-   };
-   fabric.Circleone.async = false;
-
-
+   log.debug("Executing spinner");
+   $(".spinner").show();
+   canvas.backgroundColor="";
    log.debug("Load window twice, there is a bug in canvas/fabric that this addresses");
    if(!window.location.hash) {
        window.location = window.location + '#loaded';
        window.location.reload();
    }else{
-       log.debug("Create accordian");
-       $( "#accordion" ).accordion();
        log.debug("Load Drawing");
        var data_drawing = "";
        if (parseInt("#{@drawing.drawing.length}") > 0) {
@@ -375,78 +309,21 @@
             data_drawing = ""
        }
        objId_var = 1;
+
+       log.debug("Load versions into table")
+       timestampsObj = JSON.parse(timestamps)
+       var arrayLength = timestampsObj.length;
+       log.info("Array Length:", arrayLength)
+
+       for (var i = 0; i < arrayLength; i++) {
+           log.info("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
+           var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + timestampsObj[i][0];
+           tr = '<tr style="height: 14px;""> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
+           $('#versionslisttab').append(tr);
+        }
        log.debug("load objects onto canvas");
 
-       if (data_drawing != "") {
-           log.debug("data_drawing not blank")
-           canvas.loadFromJSON(data_drawing, function () {
-              //first render
-              canvas.renderAll.bind(canvas);
-              var objs = canvas.getObjects().map(function(o) {
-                return o.set('active', false);
-              });
-              log.debug("Entering loop for objects")
-              log.debug("Loop size: ", objs.length)
-              var foundCircle = 0;
-              var itemId = 0;
-              for(i = 0; i < objs.length; i++ ) {
-                 log.debug("Objs Type: ", objs[i].type)
-                 objs[i].id = itemId
-                 if (objs[i].type == "customline")  {
-                   console.log("customline: ", objs[i])
-                   console.log("Item Id of line set to: ", objs[i].getObjId())
-                   canvas.forEachObject(function(circleProspect){
-                     log.debug("Object Type: ", circleProspect.type)
-                     if (circleProspect.type == "circlezero" || circleProspect.type == "circleone") {
-                        log.debug("circleProspect.belongsTo: ", circleProspect.belongsTo)
-                        log.debug("objs[1].objId: ", objs[i].objId)
-                     }
-                     if (circleProspect.type == "circlezero" && circleProspect.belongsTo == objs[i].objId) {
-                        circleProspect.hasBorders = circleProspect.hasControls = false;
-                        circleProspect.line = objs[i]
-                        circleProspect.belongsTo = itemId;
-                        objs[i].cone = circleProspect
-                        circleProspect.set('hoverCursor','crosshair')
-                        console.log("found circlezero")
-                        foundCircle = foundCircle + 1;
-
-                     }
-                     if (circleProspect.type == "circleone" && circleProspect.belongsTo == objs[i].objId) {
-                       circleProspect.hasBorders = circleProspect.hasControls = false;
-                       circleProspect.line = objs[i]
-                       circleProspect.belongsTo = itemId;
-                       objs[i].ctwo = circleProspect
-                       circleProspect.set('hoverCursor','crosshair')
-                       console.log("found circleone")
-                       foundCircle = foundCircle + 1;
-                     }
-                     if (foundCircle == 2) {
-                       console.log("objId: ", objs[i].get('objId'))
-                       objs[i].setObjId(itemId)
-                       itemId = itemId + 1;
-                       objs[i].cone.id = itemId;
-                       itemId = itemId + 1;
-                       objs[i].ctwo.id = itemId;
-                       foundCircle = 0;
-                     }
-                   });
-                   objs[i].on("mousedown", function(data, index) { lineDown(data,index); });
-                 }
-                 itemId = itemId + 1;
-              }
-              canvas.renderAll();
-              backgroundImageVal = "";
-              if (canvas.hasOwnProperty('backgroundImage')) {
-                 if ((canvas.backgroundImage).hasOwnProperty('src')) {
-                     backgroundImageVal = canvas.backgroundImage.src;
-                 }
-              }
-              log.debug("BackgroundImage Loc: ", backgroundImageVal)
-              backgroundExists(backgroundImageVal);
-           },
-           postProcessLoading);
-
-       }
+       loadCanvasDrawing(data_drawing)
 
        log.debug("load background object onto canvas");
        var center = canvas.getCenter();
@@ -467,11 +344,13 @@
    canvas.on("object:rotating", objectBoundaryCheck);
    canvas.on('object.modified', function(e) {console.log("object.modified: ",e)})
    canvas.on('custom-image:textChange', textChangedEvent);
+   canvas.on('text:changed', textChangedEvent);
    canvas.on('object:removed', objectDeletedEvent);
 
-   if (Modernizr.draganddrop) {
+   if (dragtest()) {
       // Browser supports HTML5 DnD.
       // Bind the event listeners for the image elements
+      log.debug("Browser supports Drag N Drop")
       log.info( "Binding event listeners to images ");
       var images = document.querySelectorAll('#images img');
       [].forEach.call(images, function (img) {
@@ -486,114 +365,22 @@
       canvasContainer.addEventListener('dragleave', handleDragLeave, false);
       canvasContainer.addEventListener('drop', handleDrop, false);
    } else {
-     // Replace with a fallback to a library solution.
-     log.error( " This browser doesn't support the HTML5 Drag and Drop API ");
-     alert("This browser doesn't support the HTML5 Drag and Drop API.");
+      window.location.href = '/companies/'+ company_id +'/users/' + user_id;
    }
-
+   var md = new MobileDetect(window.navigator.userAgent);
+   log.info( md.mobile() );          // 'Sony'
+   log.info( md.mobileGrade() );
+   log.info( md.phone() );           // 'Sony'
+   log.info( md.tablet() );          // null
+   log.info( md.userAgent() );       // 'Safari'
+   log.info( md.os() );              // 'AndroidOS'
+   log.info( md.is('iPhone') );      // false
+   log.info( md.is('bot') );         // false
+   log.info( md.version('Webkit') );         // 534.3
+   log.info( md.versionStr('Build') );       // '4.1.A.0.562'
+   log.info( md.match('playstation|xbox') ); // false
+   if ( md.is('Windows Phone') || md.is('iemobile') || md.is('WPDesktop') || md.os() == 'AndroidOS' || md.is('iPhone') || md.is('iPad')) {
+      log.info("Redirecting...")
+      window.location.href = '/companies/'+ company_id +'/users/' + user_id;
+   }
    log.info( "Done Demo_Industrial Javascript ");
-
-   $(function() {
-      $('.directUpload').find("input:file").each(function(i, elem) {
-        log.debug("URL directUpload")
-        log.debug(form)
-        var fileInput    = $(elem);
-        log.debug("fileInput")
-        log.trace(fileInput)
-        var form         = $(fileInput.parents('form:first'));
-        log.trace("form")
-        log.trace(form)
-        log.trace("form:first data")
-        log.trace(form.data)
-        log.trace("form.data('url')")
-        log.trace(form.data('url'))
-        log.trace("form.data('form-data')")
-        log.trace(form.data('form-data'))
-        log.trace("form.data('form-data').key")
-        log.trace(form.data('form-data').key)
-        log.trace("form.data('host')")
-        log.trace(form.data('host'))
-        var URL_dest = form.data('url') + "/" + form.data('form-data').key
-        var submitButton = form.find('input[type="submit"]');
-        fileInput.after(barContainer);
-        fileInput.fileupload({
-        add: function(e, data) {
-                var uploadErrors = [];
-                var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-                if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-                    uploadErrors.push('Not an accepted file type');
-                }
-                if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 1000000) {
-                    uploadErrors.push('Filesize is too big');
-                }
-                if(uploadErrors.length > 0) {
-                    alert(uploadErrors.join("\n"));
-                } else {
-                    data.submit();
-                }
-        },
-        fileInput:       fileInput,
-        url:             form.data('url'),
-        type:            'POST',
-        autoUpload:       true,
-        formData:         form.data('form-data'),
-        paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
-        dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
-        replaceFileInput: false,
-        progressall: function (e, data) {
-           var progress = parseInt(data.loaded / data.total * 100, 10);
-           progressBar.css('width', progress + '%')
-        },
-        start: function (e) {
-           submitButton.prop('disabled', true);
-
-           progressBar.
-             css('background', 'green').
-             css('display', 'block').
-             css('width', '0%').
-             text("Loading...");
-           log.trace(form);
-        },
-        done: function(e, data) {
-           $("#saveMessage").text('Changes Made, Save Pending...');
-           submitButton.prop('disabled', false);
-           progressBar.text("Uploading done");
-           $('#upload_button').removeAttr('disabled');
-           // extract key and generate URL from response
-           var key   = $(data.jqXHR.responseXML).find("Key").text();
-           var url   = '//' + form.data('host') + '/' + key;
-           log.debug("done:key,url")
-           log.debug(key)
-           log.debug(url)
-           // create hidden field
-           var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
-           form.append(input);
-           imageURL = "https:" + url;
-           log.debug("imageURL");
-           log.debug(imageURL);
-           canvas.setBackgroundImage(imageURL,
-                canvas.renderAll.bind(canvas), {
-                   backgroundImageOpacity: 0.5,
-                   backgroundImageStretch: false,
-                   scaleX:1,
-                   scaleY:1,
-                   top: center.top,
-                   left: center.left,
-                   originX: 'center',
-                   originY: 'center',
-                   crossOrigin: 'anonymous'
-                }
-           );
-           $('#backgroundSection').modal('hide');
-           backgroundButton(true);
-           onSave();
-         },
-         fail: function(e, data) {
-           submitButton.prop('disabled', false);
-           progressBar.
-             css("background", "red").
-             text("Failed");
-         }
-       });
-     });
-   });

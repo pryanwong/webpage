@@ -1,0 +1,119 @@
+angular.module('app')
+.controller('IconController', ['$scope',
+   function ($scope) {
+      var vm = this;
+      vm.meters = [[{
+        image_tag: "<%=asset_path('companies/GE/EPM2000.gif') %>",
+        img_val: 'EPM2000.gif',
+        data_config: '4',
+        data_loc: 'companies/GE/EPM2000.gif',
+        data_model: 'EPM2000',
+        draggable: 'true',
+        width:68,
+        height:65,
+        caption: 'EPM2000'
+    }, {
+        image_tag: "<%=asset_path('companies/GE/EPM6000.gif') %>",
+        img_val: 'EPM6000.gif',
+        data_config: '5',
+        data_loc: 'companies/GE/EPM6000.gif',
+        data_model: 'EPM6000',
+        draggable: 'true',
+        width:'54',
+        height:'54',
+        caption: 'EPM6000'
+    }], [{
+        image_tag: "<%=asset_path('companies/GE/EPM9000.gif') %>",
+        img_val: 'EPM9650.gif',
+        data_config: '6',
+        data_loc: 'companies/GE/EPM9000.gif',
+        data_model: 'EPM9650',
+        draggable: 'true',
+        width:'82',
+        height:'52',
+        caption: 'EPM9650'
+    }, {
+        image_tag: "<%=asset_path('companies/GE/EPM9800.gif') %>",
+        img_val: 'EPM9800.gif',
+        data_config: '7',
+        data_loc: 'companies/GE/EPM9800.gif',
+        data_model: 'EPM9800',
+        draggable: 'true',
+        width:'71',
+        height:'64',
+        caption: 'EPM9800'
+    }], [{
+        image_tag: "<%=asset_path('companies/GE/epm4600.jpg') %>",
+        img_val: 'EPM4600.gif',
+        data_config: '8',
+        data_loc: 'companies/GE/epm4600.jpg',
+        data_model: 'EPM4600',
+        draggable: 'true',
+        width:'82',
+        height:'53',
+        caption: 'EPM4600'
+    }, {
+        image_tag: "<%=asset_path('companies/GE/epm9900.jpg') %>",
+        img_val: 'EPM9900.jpg',
+        data_config: '9',
+        data_loc: 'companies/GE/epm9900.jpg',
+        data_model: 'EPM9900',
+        draggable: 'true',
+        width:'82',
+        height:'52',
+        caption: 'EPM9900'
+    }],  [{
+        image_tag: "<%=asset_path('companies/GE/PQMII.gif') %>",
+        img_val: 'PQMII.gif',
+        data_config: '10',
+        data_loc: 'companies/GE/PQMII.gif',
+        data_model: 'PQMII',
+        draggable: 'true',
+        width:'67',
+        height:'44',
+        caption: 'PQMII'
+    }, {
+        image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
+        img_val: 'epm6100.jpg',
+        data_config: '11',
+        data_loc: 'companies/GE/epm6100-7100.jpg',
+        data_model: 'EPM6100',
+        draggable: 'true',
+        width:'68',
+        height:'65',
+        caption: 'EPM6100'
+    }], [{
+        image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
+        img_val: 'epm7100.jpg',
+        data_config: '12',
+        data_loc: 'companies/GE/epm6100-7100.jpg',
+        data_model: 'EPM7100',
+        draggable: 'true',
+        width:'68',
+        height:'65',
+        caption: 'EPM7100'
+    }, {
+        image_tag: "<%=asset_path('companies/GE/EPM-Enclosure.png') %>",
+        img_val: 'EPM-Enclosure.png',
+        data_config: '13',
+        data_loc: 'companies/GE/EPM-Enclosure.png',
+        data_model: 'EPM-Enclosure',
+        draggable: 'true',
+        width:'60',
+        height:'71',
+        caption: 'EPM-Enclosure'
+    }], [{
+        image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
+        img_val: 'epm7100.jpg',
+        data_config: '12',
+        data_loc: 'companies/GE/epm6100-7100.jpg',
+        data_model: 'EPM7100',
+        draggable: 'true',
+        width:'68',
+        height:'65',
+        caption: 'TEST'
+    }]
+
+    ];
+   }
+]);
