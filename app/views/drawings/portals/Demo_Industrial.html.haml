@@ -56,24 +56,7 @@
             %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
                %div{:id=>"images",:class=>"panel-body"}
                   %table
-                     %tr
-                        %td
-                           = image_tag "companies/GE/ml3000.jpg", :img_val=>"ml300.jpg", :"data-loc"=>"companies/GE/ml3000.jpg", :"data-config"=>"14", :"data-model"=>"ML3000", :draggable=>"true", :width=>"99", :height => "36"
-                           %figcaption ML3000
-                        %td
-                           = image_tag "companies/GE/ML1200.gif", :img_val=>"ML1200.gif", :"data-loc"=>"companies/GE/ML1200.gif", :"data-config"=>"15", :"data-model"=>"ML1200", :draggable=>"true", :width=>"77", :height => "49"
-                           %figcaption ML1200
-                     %tr
-                        %td
-                           = image_tag "companies/GE/ml810.jpg", :img_val=>"ml810.jpg", :"data-loc"=>"companies/GE/ml810.jpg", :"data-config"=>"16", :"data-model"=>"ML810", :draggable=>"true", :width=>"77", :height => "50"
-                           %figcaption ML810
-                        %td
-                           = image_tag "companies/GE/ML800.gif", :img_val=>"ML800.gif", :"data-loc"=>"companies/GE/ML800.gif", :"data-config"=>"17", :"data-model"=>"ML800", :draggable=>"true", :width=>"77", :height => "50"
-                           %figcaption ML800
-                     %tr
-                        %td
-                           = image_tag "companies/GE/ML600.gif", :img_val=>"ML600.gif", :"data-loc"=>"companies/GE/ML600.gif", :"data-config"=>"18", :"data-model"=>"ML600", :draggable=>"true", :width=>"52", :height => "64"
-                           %figcaption ML600
+                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.networking"}
          %div{ :class=>"panel panel-default" }
             %div.panel-heading
                %h4.panel-title

@@ -2,6 +2,58 @@ angular.module('app')
 .controller('IconController', ['$scope',
    function ($scope) {
       var vm = this;
+      vm.networking = [[{
+        image_tag: "<%=asset_path('companies/GE/ml3000.jpg') %>",
+        img_val: 'ml300.jpg',
+        data_config: '14',
+        data_loc: 'companies/GE/ml3000.jpg',
+        data_model: 'ML3000',
+        draggable: 'true',
+        width:99,
+        height:36,
+        caption: 'ML3000'
+      }, {
+        image_tag: "<%=asset_path('companies/GE/ML1200.gif') %>",
+        img_val: 'ML1200.gif',
+        data_config: '15',
+        data_loc: 'companies/GE/ML1200.gif',
+        data_model: 'ML1200',
+        draggable: 'true',
+        width:77,
+        height:49,
+        caption: 'ML1200'
+      }],[{
+        image_tag: "<%=asset_path('companies/GE/ml810.jpg') %>",
+        img_val: 'ml810.jpg',
+        data_config: '16',
+        data_loc: 'companies/GE/ml810.jpg',
+        data_model: 'ML810',
+        draggable: 'true',
+        width:77,
+        height:50,
+        caption: 'ML810'
+      }, {
+        image_tag: "<%=asset_path('companies/GE/ML800.gif') %>",
+        img_val: 'ML800.gif',
+        data_config: '17',
+        data_loc: 'companies/GE/ML800.gif',
+        data_model: 'ML800',
+        draggable: 'true',
+        width:77,
+        height:50,
+        caption: 'ML800'
+      }], [{
+        image_tag: "<%=asset_path('companies/GE/ML600.gif') %>",
+        img_val: 'ML600.gif',
+        data_config: '18',
+        data_loc: 'companies/GE/ML600.gif',
+        data_model: 'ML600',
+        draggable: 'true',
+        width:52,
+        height:64,
+        caption: 'ML600'
+      }]
+    ];
       vm.meters = [[{
         image_tag: "<%=asset_path('companies/GE/EPM2000.gif') %>",
         img_val: 'EPM2000.gif',
@@ -102,16 +154,6 @@ angular.module('app')
         width:'60',
         height:'71',
         caption: 'EPM-Enclosure'
-    }], [{
-        image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
-        img_val: 'epm7100.jpg',
-        data_config: '12',
-        data_loc: 'companies/GE/epm6100-7100.jpg',
-        data_model: 'EPM7100',
-        draggable: 'true',
-        width:'68',
-        height:'65',
-        caption: 'TEST'
     }]
 
     ];
