@@ -1,4 +1,4 @@
-angular.module('app').directive('iconDirective', function () {
+angular.module('app').directive('iconDirective', ['$compile', function ($compile) {
         return {
             restrict: 'EA',
             replace: true,
@@ -19,8 +19,8 @@ angular.module('app').directive('iconDirective', function () {
                             '<figcaption>{{data[1].caption}}</figcaption>' +
                          '</td>' +
                       '</tr>',
-            link: function ($scope, el, attrs) {
-              $scope.$evalAsync(function() {
+            link: function (scope, el, attrs, ctrl) {
+              scope.$evalAsync(function() {
 
                   var imagetags1 = angular.element(el.find('img')[0]);
                   var list = [];
@@ -28,7 +28,7 @@ angular.module('app').directive('iconDirective', function () {
                      var imagetags2 = angular.element(el.find('img')[1]);
                      list = [imagetags1, imagetags2]
                   } else {
-                     list = [imagetags1]  
+                     list = [imagetags1]
                   }
                   for (var i = 0; i < list.length; i++) {
                      list[i].bind("dragstart", function () {
@@ -48,4 +48,4 @@ angular.module('app').directive('iconDirective', function () {
 
             }
         };
-    });
+    }]);

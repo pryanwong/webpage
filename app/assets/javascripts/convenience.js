@@ -175,7 +175,7 @@ $(function() {
         //resetFormElement($('#backgroundfile'));
         //$("#backgroundfile").val("");
         $('#backgroundSection').modal('hide');
-        backgroundButton(true);
+        //backgroundButton(true);
         onSave();
       },
       fail: function(e, data) {
@@ -185,62 +185,6 @@ $(function() {
     });
   });
 });
-function backgroundExists(link) {
-
-   log.info("In background exists")
-   log.debug(link)
-   var background_exists = false;
-   if (link === undefined || link === "") {
-      background_exists = false;
-      log.debug("Using Background Button")
-      if ( $( "#backgroundButton" ).length ) {
-              log.debug("Found Background Button")
-      }
-      if ( $( "#backgroundButtonText" ).length ) {
-              log.debug("Found backgroundButtonText")
-      }
-      backgroundButton(false);
-   } else {
-      background_exists = true;
-      log.debug("Using Remove Background Button")
-      if ( $( "#backgroundButton" ).length ) {
-              log.debug("Found Background Button")
-      }
-      if ( $( "#backgroundButtonText" ).length ) {
-              log.debug("Found backgroundButtonText")
-      }
-      backgroundButton(true);
-   }
-   log.debug("Background Exists?")
-   log.debug(background_exists)
-   log.info("Leaving Background Exists")
-   return background_exists;
-}
-
-function backgroundButton( background )
-{
-   if (background) {
-     $("#backgroundButton").attr("onclick","removeBackgroundRoutine(); return false;");
-     $("#backgroundButtonText").html('Remove Background');
-   } else {
-     $("#backgroundButton").attr("onclick","addBackgroundRoutine(); return false;");
-     $("#backgroundButtonText").html('Background');
-   }
-}
-
-function removeBackgroundRoutine()
-{
-   removeBackground();
-   backgroundButton(false);
-   return false;
-}
-
-function addBackgroundRoutine()
-{
-   runBackground();
-   backgroundModal();
-   return false;
-}
 
 function toggle_versions_pane()
 {
@@ -250,24 +194,6 @@ function toggle_versions_pane()
    // Set the duration (default: 400 milliseconds)
    var duration = 500;
    $('#versionspanel').toggle(effect, options, duration);
-}
-
-
-function runBackground() {
-   $('#lefile').value = '';
-   $("#backgroundfile").val('');
-   //submitButton.removeAttr('disabled');
-   progressBar.addClass("progress-success");
-   progressBar.text('0%');
-   progressBar.attr('value','0');
-}
-
-function removeBackground() {
-   $("#saveMessage").text('Changes Made, Save Pending...');
-   $('#lefile').attr("value", "");
-   $('#lefile').val("");
-   canvas.setBackgroundImage(0, canvas.renderAll.bind(canvas));
-   onSave();
 }
 
 function resetFormElement(e) {

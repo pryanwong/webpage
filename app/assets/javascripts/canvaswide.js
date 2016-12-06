@@ -62,7 +62,8 @@ var onSave  =  debounce(function() {
 
 function loadCanvasDrawing(data_drawing) {
   if (data_drawing != "") {
-      log.debug("data_drawing not blank")
+      console.log("data_drawing not blank")
+      console.log(data_drawing)
       canvas.loadFromJSON(data_drawing, function () {
          //first render
          canvas.renderAll.bind(canvas);
@@ -207,9 +208,6 @@ function loadCanvasDrawing(data_drawing) {
             itemId = itemId + 1;
          }
          canvas.renderAll();
-         
-         log.debug("BackgroundImage Loc: ", backgroundImageVal)
-         backgroundExists(backgroundImageVal);
       },
       postProcessLoading);
 
@@ -219,6 +217,7 @@ function loadCanvasDrawing(data_drawing) {
 function checkBackgroundFileExists( link ) {
   log.info("Entering checkBackgroundFileExists")
   log.debug(link);
+  console.log("Checkbackgroundfileexists: ", link)
   $.ajax({
     url:link,
     type:'HEAD',

@@ -448,6 +448,7 @@ function mouseOver(e) {
 };
 
 function postProcessLoading(o, object) {
+  console.log("In postProcessLoading");
   log.info( "Entering postProcessLoading");
   if (object.type == "custom-image") {
     log.debug( "Processing custom-image");
@@ -492,10 +493,12 @@ function postProcessLoading(o, object) {
   backgroundImageVal = "";
   if (canvas.backgroundImage !== null) {
      backgroundimg = canvas.backgroundImage;
+     console.log("drawing_scripts: ", backgroundimg)
      if (backgroundimg.src !== null ) {
         backgroundImageVal = canvas.backgroundImage.src;
      }
   }
+  console.log("drawing_scripts background image: ",backgroundImageVal )
 
   log.info( "Leaving postProcessLoading");
 
@@ -911,12 +914,6 @@ function getItemIndex(object) {
      }
      log.info( "Leaving getItemIndex");
      return index;
-}
-
-function backgroundModal() {
-  log.info( "Entering backgroundModal");
-  $('#backgroundSection').modal('show');
-  log.info( "Leaving backgroundModal");
 }
 
  function calcArrowAngle(x1, y1, x2, y2) {

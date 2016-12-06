@@ -14,7 +14,7 @@
       %input{ :type=>"submit", :value=>"Submit"}
       %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
 %div#inputs
-%div{:id=>"drawingwrap", :style=>"width:1500px"}
+%div{:id=>"drawingwrap", :style=>"width:1500px",  "ng-controller"=>"IconController as vm"}
    %div{:id=>"breadcrumbs", :style=>"padding-left:230px;width:1230px", :class=>"hidden-sm hidden-xs"}
       %div
          %div
@@ -25,8 +25,10 @@
                %li{:class=>"hidden-sm hidden-xs"} #{t('drawings.editdrawingdetails.drawings')}
                %li{:class=>"pull-right"}
                   = link_to t('drawings.bom.billofmaterials'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id])
-   %div#menubar{:sytle=>"width:1230px;height:75px;"}
-      =link_to "<button id='backgroundButtonText' class='btn btn-default'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
+   %div#menubar{:sytle=>"width:1230px;height:75px;", "ng-controller"=>"IconController as vm"}
+      -# =link_to "<button id='backgroundButtonText' class='btn btn-default'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
+      -# %button.backgroundButtonText{:class=>'btn btn-default', "ng-click"=>"vm.runBackground()"} Background
+      %backgroundbutton-directive{"background"=>""}
       =image_tag "common/paint_bucket.png"
       %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
       =image_tag "common/FastText.png"
@@ -39,14 +41,14 @@
       %span{:id=>'saveMessage'}
          = @lastedit
       %a{href: '#', onclick: 'toggle_versions_pane(); return false;', :style=>'text-decoration: underline'} Archived Versions
-   %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px", "ng-controller"=>"IconController as vm"}
+   %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
       %div{:class=>"panel-group", :id=>"accordiontools"}
          %div{ :class=>"panel panel-default" }
             %div.panel-heading
                %h4.panel-title
-                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
+                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
             %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
-               %div{:id=>"images", :class=>"panel-body"}
+               %div{:id=>"images",:class=>"panel-body"}
                   %table
                      %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.meters"}
          %div{ :class=>"panel panel-default" }
@@ -64,34 +66,7 @@
             %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
                %div{:id=>"images",:class=>"panel-body"}
                   %table
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_cloud.svg", :img_val=>"osa_cloud.svg", :"data-loc"=>"companies/common/osa_cloud.svg", :"data-model"=>"Cloud", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Cloud
-                        %td
-                           = image_tag "companies/common/osa_database.svg", :img_val=>"osa_database.svg", :"data-loc"=>"companies/common/osa_database.svg", :"data-model"=>"Database",:draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Database
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_firewall.svg", :img_val=>"osa_firewall.svg", :"data-loc"=>"companies/common/osa_firewall.svg", :"data-model"=>"Firewall", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Firewall
-                        %td
-                           = image_tag "companies/common/osa_server.svg", :img_val=>"osa_server.svg", :"data-loc"=>"companies/common/osa_server.svg", :"data-model"=>"Server",:draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Server
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_device-wireless-router.svg", :"data-loc"=>"companies/common/osa_device-wireless-router.svg", :img_val=>"osa_device-wireless-router.svg",:"data-model"=>"Wifi", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Wifi
-                        %td
-                           = image_tag "companies/common/osa_ics_drive.svg", :img_val=>"osa_ics_drive.svg", :"data-loc"=>"companies/common/osa_ics_drive.svg", :"data-model"=>"Cog",:draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Cog
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_wireless_network.svg", :img_val=>"osa_wireless_network.svg", :"data-loc"=>"companies/common/osa_wireless_network.svg", :"data-model"=>"Antenna", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Antenna
-                        %td
-                           = image_tag "companies/common/osa_vpn.svg", :img_val=>"osa_vpn.svg", :"data-loc"=>"companies/common/osa_vpn.svg", :"data-model"=>"VPN",:draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption VPN
+                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.computing"}
          %div{ :class=>"panel panel-default" }
             %div.panel-heading
                %h4.panel-title
@@ -99,31 +74,7 @@
             %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
                %div{:id=>"images",:class=>"panel-body"}
                   %table
-                     %tr
-                        %td
-                           = image_tag "common/line.png", :"data-loc"=>"common/line.png", :img_val=>"line.png", :draggable=>"true", :width=>"22", :height => "39"
-                           %figcaption Line
-                        %td
-                           = image_tag "common/line_arrow_icon.png", :"data-loc"=>"common/line_arrow_icon.png", :img_val=>"line_arrow_icon.png", :draggable=>"true", :width=>"63", :height => "34"
-                           %figcaption Line Arrow
-                     %tr
-                        %td
-                           = image_tag "common/line_arrow_two_icon.png", :"data-loc"=>"common/line_arrow_two_icon.png", :img_val=>"line_arrow_two_icon.png", :draggable=>"true", :width=>"63", :height => "34"
-                           %figcaption Line Arrow
-                     %tr
-                        %td
-                           = image_tag "common/circle.png", :"data-loc"=>"common/circle.png", :img_val=>"circle_icon.png", :draggable=>"true", :width=>"40", :height => "32"
-                           %figcaption Circle
-                        %td
-                           = image_tag "common/ellipse_icon.png", :"data-loc"=>"common/ellipse_icon.png", :img_val=>"ellipse_icon.png", :draggable=>"true", :width=>"40", :height => "16"
-                           %figcaption Ellipse
-                     %tr
-                        %td
-                           = image_tag "common/rectangle-icon.png", :"data-loc"=>"common/rectangle-icon.png", :img_val=>"rectangle-icon.png", :draggable=>"true", :width=>"65", :height => "47"
-                           %figcaption Rectangle
-                        %td
-                           = image_tag "common/textbox_icon.png", :"data-loc"=>"common/textbox_icon.png", :img_val=>"textbox_icon.png", :draggable=>"true", :width=>"60", :height => "32"
-                           %figcaption Text Box
+                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.shapes"}
          %div{ :class=>"panel panel-default" }
             %div.panel-heading
                %h4.panel-title
@@ -131,27 +82,7 @@
             %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
                %div{:id=>"images",:class=>"panel-body"}
                   %table
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_home.svg", :"data-loc"=>"companies/common/osa_home.svg", :img_val=>"osa_home.svg",:"data-model"=>"Home", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Home
-                        %td
-                           = image_tag "companies/common/osa_site-branch.svg", :"data-loc"=>"companies/common/osa_site-branch.svg", :img_val=>"osa_site-branch.svg",:"data-model"=>"Branch", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Branch
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_site-factory.svg", :"data-loc"=>"companies/common/osa_site-factory.svg", :img_val=>"osa_site-factory.svg",:"data-model"=>"Factory", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Factory
-                        %td
-                           = image_tag "companies/common/osa_site-head-office.svg", :"data-loc"=>"companies/common/osa_site-head-office.svg", :img_val=>"osa_site-head-office.svg",:"data-model"=>"Office", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Office
-                     %tr
-                        %td
-                           = image_tag "companies/common/osa_site-neighbourhood.svg", :"data-loc"=>"companies/common/osa_site-neighbourhood.svg", :img_val=>"osa_site-neighbourhood.svg",:"data-model"=>"Homes", :draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption Homes
-                        %td
-                           = image_tag "companies/common/osa_user_blue.svg", :"data-loc"=>"companies/common/osa_user_blue.svg", :img_val=>"osa_user_blue.svg", :"data-model"=>"User",:draggable=>"true", :width=>"64", :height => "64"
-                           %figcaption User
+                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.places"}
 
    %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
       %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
@@ -270,11 +201,11 @@
            tr = '<tr style="height: 14px;""> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
            $('#versionslisttab').append(tr);
         }
-       log.debug("load objects onto canvas");
+       console.log("load objects onto canvas");
 
        loadCanvasDrawing(data_drawing)
 
-       log.debug("load background object onto canvas");
+       console.log("load background object onto canvas");
        var center = canvas.getCenter();
        log.info( "Drawing should be loaded ");
        log.info( "Fade spinner out ");
