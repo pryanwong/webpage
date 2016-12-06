@@ -22,3 +22,8 @@
 //= require log4javascript
 //= require jquery.ui.widget
 //= require z.jquery.fileupload
+//= require app/app
+//= require app/backgroundbuttonDirective
+//= require app/iconController
+//= require app/iconDirective
+//= require app/iconTableDirective
