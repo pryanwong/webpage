@@ -628,6 +628,7 @@ function sendBackward() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
+   canvas.deactivateAll().renderAll();
    log.info( "Leaving sendBackward");
 }
 
@@ -640,6 +641,7 @@ function sendToBack() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
+   canvas.deactivateAll().renderAll();
    log.info( "Leaving sendToBack");
 }
 
@@ -652,6 +654,7 @@ function bringFoward() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
+   canvas.deactivateAll().renderAll();
    log.info( "Leaving bringFoward");
 }
 
@@ -664,6 +667,7 @@ function bringToFront() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
+   canvas.deactivateAll().renderAll();
    log.info( "Leaving bringToFront");
 }
 
