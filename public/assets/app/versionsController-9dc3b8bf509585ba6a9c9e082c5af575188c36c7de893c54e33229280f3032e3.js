@@ -1,0 +1,1 @@
+angular.module("app").controller("VersionsController",["$scope",function(){var o=this;o.toggle_versions_pane=function(){var o="slide",e={direction:"right"},n=500;$("#versionspanel").toggle(o,e,n)}}]);

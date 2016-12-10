@@ -230,6 +230,7 @@ function objectSelected(e) {
    log.info( "Entering objectSelected");
    activeObject = true;
    activeObjectVal = e.target;
+   console.log("Object Selected, ", activeObjectVal)
    var objType = e.target.get('type');
    if (objType == 'customline') {
      lineobject.objectSelected(e);
@@ -529,6 +530,36 @@ function makeLine(coords, id) {
       log.info( "Leaving activateColorPicker");
  }
 
+ function colorPickerChange(newLineColor) {
+      console.log( "Entering colorPickerChange");
+      log.debug( "newLineColor: ", newLineColor);
+      if (canvas.getActiveObject()) {
+        console.log( "activeObjectVal: ", canvas.getActiveObject());
+        console.log( "type: ", canvas.getActiveObject().type);
+        valType = canvas.getActiveObject().type;
+        if (valType) {
+          log.trace( "activeObjectVal.type: ", valType);
+          if (valType == "customline" | valType == "customlinearrow" | valType == "customlinetwoarrow") {
+            canvas.getActiveObject().set("fill",newLineColor);
+            canvas.getActiveObject().set("stroke",newLineColor);
+          }
+
+          if (valType == "circle" | valType == "ellipse" | valType == "rect") {
+            log.debug( "colorPickerChange on circle type");
+              canvas.getActiveObject().set("stroke",newLineColor);
+          }
+          if (valType == "i-text") {
+            console.log( "colorPickerChange on i-text type");
+            //activeObjectValCP.stroke = newLineColor;
+            canvas.getActiveObject().setColor(newLineColor);
+            //activeObjectVal.setColor(newLineColor);
+          }
+        }
+      }
+      canvas.renderAll();
+      log.info( "Leaving colorPickerChange");
+ };
+
  function changeFontSize(size) {
       //console.log( "Entering changeFontSize");
       //console.log( size );
@@ -563,52 +594,6 @@ function makeLine(coords, id) {
       onSave();
  }
 
- function colorPickerChange(newLineColor) {
-      log.info( "Entering colorPickerChange");
-      log.debug( "newLineColor: ", newLineColor);
-      if (activeObjectValCP) {
-        log.trace( "activeObjectVal: ", activeObjectValCP);
-        if (activeObjectValCP.type) {
-          log.trace( "activeObjectVal.type: ", activeObjectValCP.type);
-          if (activeObjectValCP.type == "customline") {
-            log.debug( "colorPickerChange on line type");
-            activeObjectValCP.fill = newLineColor;
-            activeObjectValCP.stroke = newLineColor;
-          }
-          if (activeObjectValCP.type == "customlinearrow") {
-            log.debug( "colorPickerChange on line type");
-            activeObjectValCP.fill = newLineColor;
-            activeObjectValCP.stroke = newLineColor;
-          }
-          if (activeObjectValCP.type == "customlinetwoarrow") {
-            log.debug( "colorPickerChange on line type");
-            activeObjectValCP.fill = newLineColor;
-            activeObjectValCP.stroke = newLineColor;
-          }
-          if (activeObjectValCP.type == "circle") {
-            log.debug( "colorPickerChange on circle type");
-            activeObjectValCP.stroke = newLineColor;
-          }
-          if (activeObjectValCP.type == "ellipse") {
-            log.debug( "colorPickerChange on ellipse type");
-            activeObjectValCP.stroke = newLineColor;
-          }
-          if (activeObjectValCP.type == "rect") {
-            log.debug( "colorPickerChange on rect type");
-            activeObjectValCP.stroke = newLineColor;
-          }
-          if (activeObjectValCP.type == "i-text") {
-            log.debug( "colorPickerChange on i-text type");
-            //activeObjectValCP.stroke = newLineColor;
-            activeObjectValCP.setColor(newLineColor);
-            //activeObjectVal.setColor(newLineColor);
-          }
-        }
-      }
-      canvas.renderAll();
-      log.info( "Leaving colorPickerChange");
- }
-
 function handleDragOver(e) {
    log.info( "Entering handleDragOver");
    if (e.preventDefault) {
@@ -638,7 +623,7 @@ function sendBackward() {
    log.info( "Entering sendBackward");
    var activeObjectVal = canvas.getActiveObject();
    if (activeObjectVal) {
-      canvas.sendBackwards(activeObjectVal);
+      canvas.sendBackwards(canvas.getActiveObject(), true);
    }
    $('#contextMenu').remove();
    contextmenuon = false;
@@ -650,7 +635,7 @@ function sendToBack() {
    log.info( "Entering sendToBack");
    var activeObjectVal = canvas.getActiveObject();
    if (activeObjectVal) {
-      canvas.sendToBack(activeObjectVal);
+      canvas.sendToBack(canvas.getActiveObject());
    }
    $('#contextMenu').remove();
    contextmenuon = false;

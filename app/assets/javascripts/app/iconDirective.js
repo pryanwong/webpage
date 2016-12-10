@@ -21,10 +21,9 @@ angular.module('app').directive('iconDirective', ['$compile', function ($compile
                       '</tr>',
             link: function (scope, el, attrs, ctrl) {
               scope.$evalAsync(function() {
-
                   var imagetags1 = angular.element(el.find('img')[0]);
                   var list = [];
-                  if (data.length == 2) {
+                  if (scope.data.length == 2) {
                      var imagetags2 = angular.element(el.find('img')[1]);
                      list = [imagetags1, imagetags2]
                   } else {

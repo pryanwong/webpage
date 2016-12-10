@@ -77,6 +77,7 @@ class DrawingsController < ApplicationController
                 success_action_status: '201',
                 acl: 'public-read'}
        @presigned_post = obj.presigned_post(options)
+       @presigned_fields = obj.presigned_post(options).to_json
        @public_url = obj.public_url
        logger.debug "presigned_post.inspect"
        logger.debug "#{@presigned_post.inspect}"

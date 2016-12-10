@@ -3,15 +3,17 @@ angular.module('app').service('backgroundAService', function() {
     this.imageSrc = "";
 });
 
-angular.module('app').directive('backgroundbuttonDirective',  [ 'backgroundAService', function (backgroundAService) {
+angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAService', function (backgroundAService) {
         return {
             restrict: 'E',
             replace: true,
             scope: {
+              openModal:'&',
               background:'@'
             },
-            template: '<button id="backgroundButtonText" class="btn btn-default" background="" >Background</button>',
+            template: '<button id="backgroundButtonText" class="btn btn-default" background="" >{{backgroundText}}</button>',
             link: function (scope, el, attrs, ctrl) {
+              scope.backgroundText="Background";
               scope.$watch(function() {
                  if (el.attr('background')) console.log('background changed');
               });
@@ -23,21 +25,23 @@ angular.module('app').directive('backgroundbuttonDirective',  [ 'backgroundAServ
                  var background_exists = false;
                  if (link === undefined || link === "") {
                     background_exists = false;
-                    log.debug("Using Background Button")
-                    $("#backgroundButtonText").html('Background');
+                    log.debug("Using Background Button");
+                    backgroundText="Background";
                  } else {
                     background_exists = true;
-                    log.debug("Using Remove Background Button")
-                    $("#backgroundButtonText").html('Remove Background');
+                    log.debug("Using Remove Background Button");
+                    backgroundText="Remove Background";
                  }
                  log.info("Leaving Background Exists")
                  return background_exists;
               }
 
               backgroundModal = function() {
-                log.info( "Entering backgroundModal");
-                $('#backgroundSection').modal('show');
-                log.info( "Leaving backgroundModal");
+                console.log( "Entering backgroundModal");
+                //$('#backgroundSection').modal('show');
+                console.log(scope.openModal);
+                scope.openModal();
+                console.log( "Leaving backgroundModal");
               };
 
               runBackground = function() {
@@ -45,10 +49,10 @@ angular.module('app').directive('backgroundbuttonDirective',  [ 'backgroundAServ
                 $('#lefile').value = '';
                 $("#backgroundfile").val('');
                 //submitButton.removeAttr('disabled');
+                var progressBar  = $("#bar");
                 progressBar.addClass("progress-success");
                 progressBar.text('0%');
                 progressBar.attr('value','0');
-                backgroundModal();
                 return false;
               };
 

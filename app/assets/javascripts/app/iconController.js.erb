@@ -1,7 +1,17 @@
-angular.module('app')
-.controller('IconController', ['$scope',
+angular.module('app').controller('IconController', ['$scope',
    function ($scope) {
       var vm = this;
+
+      vm.toggle_versions_pane = function()
+      {
+         var effect = 'slide';
+         // Set the options for the effect type chosen
+         var options = { direction: 'right' };
+         // Set the duration (default: 400 milliseconds)
+         var duration = 500;
+         $('#versionspanel').toggle(effect, options, duration);
+         return false;
+      };
 
       vm.places = [[{
         image_tag: "<%=asset_path('companies/common/osa_home.svg') %>",
@@ -78,7 +88,7 @@ angular.module('app')
         caption: 'Line Arrow'
       }], [{
         image_tag: "<%=asset_path('common/circle.png') %>",
-        img_val: 'circle.png',
+        img_val: 'circle_icon.png',
         data_loc: 'common/circle.png',
         draggable: 'true',
         width:40,

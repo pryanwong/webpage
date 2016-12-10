@@ -1,107 +1,111 @@
-%div{ :class=>"hide", :id=>"info"}
-%div{ :class=>"hide", :id=>"TextFormDiv"}
-   %form{:id=>"TextForm", :autocomplete=>"off"}
-      %TEXTAREA {:id=>"textBoxMultiline", :COLS=>40, :ROWS=>2}
-      %input.activeTextObjectId
-      %br
-      %input {:type=>"submit", :value=>"Submit"}
-      %input {:type=>"button", :name=>"cancel" :value=>"Cancel" :onClick=>"textcancel()"}
-%div{:class=>"hide", :id=>"LabelFormDiv"}
-   %form{ :id=>"LabelForm", :autocomplete=>"off"}
-      %input{ :id=>"textBox", :placeholder=>"your text", :autocomplete=>"off"}
-      %input{ :id=>"activeObjectId"}
-      %br
-      %input{ :type=>"submit", :value=>"Submit"}
-      %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
-%div#inputs
-%div{:id=>"drawingwrap", :style=>"width:1500px",  "ng-controller"=>"IconController as vm"}
-   %div{:id=>"breadcrumbs", :style=>"padding-left:230px;width:1230px", :class=>"hidden-sm hidden-xs"}
-      %div
+%div
+   %div{:class=>"hide", :id=>"LabelFormDiv"}
+      %form{ :id=>"LabelForm", :autocomplete=>"off"}
+         %input{ :id=>"textBox", :placeholder=>"your text", :autocomplete=>"off"}
+         %input{ :id=>"activeObjectId"}
+         %br
+         %input{ :type=>"submit", :value=>"Submit"}
+         %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
+   %div#inputs
+   %div{:id=>"drawingwrap", :style=>"width:1500px",  "ng-controller"=>"IconController as vm"}
+      %div{:id=>"breadcrumbs", :style=>"padding-left:230px;width:1230px", :class=>"hidden-sm hidden-xs"}
          %div
-            %ol{:class=>"breadcrumb"}
-               %li{:class=>"hidden-sm hidden-xs"}
-                  = link_to company_user_path(current_user.company_id ,current_user.id) do
-                     =t('drawings.editdrawingdetails.home')
-               %li{:class=>"hidden-sm hidden-xs"} #{t('drawings.editdrawingdetails.drawings')}
-               %li{:class=>"pull-right"}
-                  = link_to t('drawings.bom.billofmaterials'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id])
-   %div#menubar{:sytle=>"width:1230px;height:75px;", "ng-controller"=>"IconController as vm"}
-      -# =link_to "<button id='backgroundButtonText' class='btn btn-default'>Background</button>".html_safe, "", :id=>"backgroundButton", :onClick=>"runBackground(); backgroundModal(); return false;"
-      -# %button.backgroundButtonText{:class=>'btn btn-default', "ng-click"=>"vm.runBackground()"} Background
-      %backgroundbutton-directive{"background"=>""}
-      =image_tag "common/paint_bucket.png"
-      %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>"colorPickerChange('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
-      =image_tag "common/FastText.png"
-      %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
-      -# Customer:
-      -# = @drawing.customer
-      -# Opportunity:
-      -# = @drawing.opportunity
-      Last Saved:
-      %span{:id=>'saveMessage'}
-         = @lastedit
-      %a{href: '#', onclick: 'toggle_versions_pane(); return false;', :style=>'text-decoration: underline'} Archived Versions
-   %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
-      %div{:class=>"panel-group", :id=>"accordiontools"}
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
-            %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
-               %div{:id=>"images",:class=>"panel-body"}
-                  %table
-                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.meters"}
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse2"} Networking
-            %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
-                  %table
-                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.networking"}
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse3"} Computing
-            %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
-                  %table
-                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.computing"}
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse4"} Shapes
-            %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
-                  %table
-                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.shapes"}
-         %div{ :class=>"panel panel-default" }
-            %div.panel-heading
-               %h4.panel-title
-                  %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse5"} Places/People
-            %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
-               %div{:id=>"images",:class=>"panel-body"}
-                  %table
-                     %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.places"}
+            %div
+               %ol{:class=>"breadcrumb"}
+                  %li{:class=>"hidden-sm hidden-xs"}
+                     = link_to company_user_path(current_user.company_id ,current_user.id) do
+                        =t('drawings.editdrawingdetails.home')
+                  %li{:class=>"hidden-sm hidden-xs"} #{t('drawings.editdrawingdetails.drawings')}
+                  %li{:class=>"pull-right"}
+                     = link_to t('drawings.bom.billofmaterials'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id])
+      %div#menubar{:sytle=>"width:1230px;height:75px;", "ng-controller"=>"IconController as vm"}
+         %span{"ng-controller"=>"ModalController as mc"}
+            %div{:class=>"modal-demo"}
+               %script{:type=>"text/ng-template", "id"=>"fileUploadContent.html"}
+                  %div{:class=>"modal-header"}
+                     %button{:type=>"button", :class=>"close", "data-dismiss"=>"modal", "ng-click"=>"mc.cancel()"} &times;
+                     %h4{:class=>"modal-title"}Background Image
+                  %div{:class=>"modal-body"}
+                     = form_for(@drawing, :id=>"background_form",:url => updateBackground_company_user_drawing_path(params[:company_id], params[:user_id],params[:id]), html: { class: 'directUpload', data: { 'form-data' => (@presigned_post.fields), 'url' => @presigned_post.url, 'host' => URI.parse(@presigned_post.url).host } }) do |f|
+                        %div{:class=>"input-group", :id=>"data"}
+                           %label{ :class=>"input-group-btn"}
+                              %span{:id=>"submitButton", :class=>"btn btn-primary", "ng-click"=>"mc.load()"}
+                                 Browse&hellip;
+                                 = f.file_field :background, :style=>"display: none;", :id=>"lefile", :onchange=>'$("#backgroundfile").val($(this).val());$("#backgroundButtonText").attr("background",$(this).val());'
+                           %input{:type=>"text",:id=>"backgroundfile", :name=>"file",:disabled=>true, :class=>"form-control"}
+                     %div{:id=>"progress"}
+                        %progress{:class=>"progress",:value=>"0",:max=>"100",:id=>"bar",:style=>"display:inline;"}0%
+            %backgroundbutton-directive{"background"=>"", "open-modal"=>"mc.open()"}
+            %button{:type=>"button", :class=>"btn btn-default", "ng-click"=>'vm.toggle_versions_pane();'}Archived Versions
+         =image_tag "common/paint_bucket.png"
+         %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>'colorPickerChange("#"+this.color, activeObjectVal)', :style=>'width:2em;', :value=>'000000'}
+         =image_tag "common/FastText.png"
+         %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
+         Last Saved:
+         %span{:id=>'saveMessage'}
+            = @lastedit
+         -# %a{"ng-click"=>'vm.toggle_versions_pane()', :style=>'text-decoration: underline'} Archived Versions
+      %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
+         %div{:class=>"panel-group", :id=>"accordiontools"}
+            %div{ :class=>"panel panel-default" }
+               %div.panel-heading
+                  %h4.panel-title
+                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
+               %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
+                  %div{:id=>"images",:class=>"panel-body"}
+                     %table
+                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.meters"}
+            %div{ :class=>"panel panel-default" }
+               %div.panel-heading
+                  %h4.panel-title
+                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse2"} Networking
+               %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
+                  %div{:id=>"images",:class=>"panel-body"}
+                     %table
+                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.networking"}
+            %div{ :class=>"panel panel-default" }
+               %div.panel-heading
+                  %h4.panel-title
+                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse3"} Computing
+               %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
+                  %div{:id=>"images",:class=>"panel-body"}
+                     %table
+                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.computing"}
+            %div{ :class=>"panel panel-default" }
+               %div.panel-heading
+                  %h4.panel-title
+                     %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse4"} Shapes
+               %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
+                  %div{:id=>"images",:class=>"panel-body"}
+                     %table
+                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.shapes"}
+            %div{ :class=>"panel panel-default" }
+               %div.panel-heading
+                  %h4.panel-title
+                     %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse5"} Places/People
+               %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
+                  %div{:id=>"images",:class=>"panel-body"}
+                     %table
+                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.places"}
 
-   %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
-      %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
-         %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
-   %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;display:none;margin-top:10px;overflow: auto"}
-      %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
-         Versions
-         %button{:type=>"button", :class=>"close", onclick: 'toggle_versions_pane(); return false;'}
-            %span &times;
-            %span{:class=>"sr-only"} Close
-      %div{:id=>"versionslist", :class=>"panel-body"}
-         %p Previous Versions of Drawing, stored when changes made after 60mins of inactivity
-      %table{:class=>"table table-bordered table-hover"}
-         %thead
-            %tr
-               %th Date and Time
-            %tbody{:id=>"versionslisttab", :style=>"overflow-y: scroll;"}
+      %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
+         %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
+            %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
+      %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;display:none;margin-top:10px;overflow: auto"}
+         %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
+            Versions
+            %button{:type=>"button", :class=>"close", "ng-click"=>'vm.toggle_versions_pane();'}
+               %span &times;
+               %span{:class=>"sr-only"} Close
+         %div{:id=>"versionslist", :class=>"panel-body"}
+            %p Previous Versions of Drawing, stored when changes made after 60mins of inactivity
+         %table{:class=>"table table-bordered table-hover"}
+            %thead
+               %tr
+                  %th Date and Time
+               %tbody{:id=>"versionslisttab", :style=>"overflow-y: scroll;"}
+                  %tr{"versions-directive"=>"vals", "company-id"=>"#{params[:company_id]}","drawing-id"=>"#{params[:id]}","user-id"=>"#{params[:user_id]}", "ng-repeat"=>"vals in #{@timestamps_readable}"}
 :javascript
-
    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -164,8 +168,6 @@
    var lineActive = true;
    var lineSelected = false;
    var log = log4javascript.getDefaultLogger();
-   var progressBar  = $("#bar");
-   progressBar.css('display','none');
    log4javascript.setEnabled(false);
    var debugOn = GetDebugParameter('debug');
    log4javascript.setEnabled(debugOn);
@@ -189,22 +191,8 @@
             data_drawing = ""
        }
        objId_var = 1;
-
-       log.debug("Load versions into table")
-       timestampsObj = JSON.parse(timestamps)
-       var arrayLength = timestampsObj.length;
-       log.info("Array Length:", arrayLength)
-
-       for (var i = 0; i < arrayLength; i++) {
-           log.info("Timestamp: ", timestampsObj[i][0], ":", timestampsObj[i][1])
-           var link = '/companies/' + company_id + '/users/' + user_id + '/drawings/' + drawing_id + '/changeversion?version=' + timestampsObj[i][0];
-           tr = '<tr style="height: 14px;""> <td> <a href="#" onclick="loadversion(\'' + link + '\'); return false;">' + timestampsObj[i][1] + '</a></td> </tr>'
-           $('#versionslisttab').append(tr);
-        }
        console.log("load objects onto canvas");
-
        loadCanvasDrawing(data_drawing)
-
        console.log("load background object onto canvas");
        var center = canvas.getCenter();
        log.info( "Drawing should be loaded ");

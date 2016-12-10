@@ -92,99 +92,6 @@ function GetDebugParameter(sParam){
     }
 };
 
-$(function() {
-   $('.directUpload').find("input:file").each(function(i, elem) {
-     log.debug("URL directUpload")
-     log.debug(form)
-     var fileInput    = $(elem);
-     log.debug("fileInput")
-     log.trace(fileInput)
-     var form         = $(fileInput.parents('form:first'));
-     var URL_dest = form.data('url') + "/" + form.data('form-data').key
-     var submitButton = $('#submitButton');
-     progressBar.css('display','inline');
-     fileInput.fileupload({
-     add: function(e, data) {
-             var uploadErrors = [];
-             var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-             if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-                 uploadErrors.push('Not an accepted file type');
-             }
-             if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 1000000) {
-                 uploadErrors.push('Filesize is too big');
-             }
-             if(uploadErrors.length > 0) {
-                 alert(uploadErrors.join("\n"));
-             } else {
-                 data.submit();
-             }
-     },
-     fileInput:       fileInput,
-     url:             form.data('url'),
-     type:            'POST',
-     autoUpload:       true,
-     formData:         form.data('form-data'),
-     paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
-     dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
-     replaceFileInput: false,
-     progressall: function (e, data) {
-        var progress = parseInt(data.loaded / data.total * 100, 10);
-        //progressBar.css('width', progress + '%')
-        $('#progress').show();
-        progressBar.text(progress + '%');
-        progressBar.attr('value',progress);
-        //console.log("Progress: ", progress);
-     },
-     start: function (e) {
-        //submitButton.attr('disabled', 'disabled');
-        progressBar.addClass('progress-success');
-        log.trace(form);
-     },
-     done: function(e, data) {
-        $("#saveMessage").text('Changes Made, Save Pending...');
-        submitButton.prop('disabled', false);
-        //progressBar.text("Uploading done");
-        $('#upload_button').removeAttr('disabled');
-        // extract key and generate URL from response
-        var key   = $(data.jqXHR.responseXML).find("Key").text();
-        var url   = '//' + form.data('host') + '/' + key;
-        log.debug("done:key,url")
-        log.debug(key)
-        log.debug(url)
-        // create hidden field
-        var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
-        form.append(input);
-        imageURL = "https:" + url;
-        log.debug("imageURL");
-        log.debug(imageURL);
-        canvas.setBackgroundImage(imageURL,
-             canvas.renderAll.bind(canvas), {
-                backgroundImageOpacity: 0.5,
-                backgroundImageStretch: false,
-                scaleX:1,
-                scaleY:1,
-                top: center.top,
-                left: center.left,
-                originX: 'center',
-                originY: 'center',
-                crossOrigin: 'anonymous'
-             }
-        );
-        $('#progress').hide();
-        //submitButton.removeAttr('disabled');
-        //resetFormElement($('#backgroundfile'));
-        //$("#backgroundfile").val("");
-        $('#backgroundSection').modal('hide');
-        //backgroundButton(true);
-        onSave();
-      },
-      fail: function(e, data) {
-        submitButton.prop('disabled', false);
-        progressBar.removeClass('progress-success').addClass('progress-danger');
-      }
-    });
-  });
-});
 
 function toggle_versions_pane()
 {
@@ -244,28 +151,28 @@ function loadversion(link) {
      });
 }
 
-var Inspect = {
-    TYPE_FUNCTION: 'function',
+//var Inspect = {
+//    TYPE_FUNCTION: 'function',
     // Returns an array of (the names of) all methods
-    methods: function(obj) {
-        var testObj = obj || self;
-        var methods = [];
-        for (prop in testObj) {
-            if (typeof testObj[prop] == Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
-                methods.push(prop);
-            }
-        }
-        return methods;
-    },
+//    methods: function(obj) {
+//        var testObj = obj || self;
+//        var methods = [];
+//        for (prop in testObj) {
+//            if (typeof testObj[prop] == Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
+//                methods.push(prop);
+//            }
+//        }
+//        return methods;
+//    },
     // Returns an array of (the names of) all properties
-    properties: function(obj) {
-        var testObj = obj || self;
-        var properties = [];
-        for (prop in testObj) {
-            if (typeof testObj[prop] != Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
-                properties.push(prop);
-            }
-        }
-        return properties;
-    }
-}
+//    properties: function(obj) {
+//        var testObj = obj || self;
+//        var properties = [];
+//        for (prop in testObj) {
+//            if (typeof testObj[prop] != Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
+//                properties.push(prop);
+//            }
+//        }
+//        return properties;
+//    }
+//}
