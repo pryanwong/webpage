@@ -1,4 +1,4 @@
-%div
+%div{"ng-controller"=>"IconController as vm"}
    %div{:class=>"hide", :id=>"LabelFormDiv"}
       %form{ :id=>"LabelForm", :autocomplete=>"off"}
          %input{ :id=>"textBox", :placeholder=>"your text", :autocomplete=>"off"}
@@ -18,7 +18,7 @@
                   %li{:class=>"hidden-sm hidden-xs"} #{t('drawings.editdrawingdetails.drawings')}
                   %li{:class=>"pull-right"}
                      = link_to t('drawings.bom.billofmaterials'), bom_company_user_drawing_path(current_user.company_id ,current_user.id,  params[:id])
-      %div#menubar{:sytle=>"width:1230px;height:75px;", "ng-controller"=>"IconController as vm"}
+      %div#menubar{:sytle=>"width:1230px;height:75px;"}
          %span{"ng-controller"=>"ModalController as mc"}
             %div{:class=>"modal-demo"}
                %script{:type=>"text/ng-template", "id"=>"fileUploadContent.html"}
@@ -44,50 +44,16 @@
          Last Saved:
          %span{:id=>'saveMessage'}
             = @lastedit
-         -# %a{"ng-click"=>'vm.toggle_versions_pane()', :style=>'text-decoration: underline'} Archived Versions
       %div{:style=>"float:left;height:1000px;width:230px;padding-top:10px"}
-         %div{:class=>"panel-group", :id=>"accordiontools"}
-            %div{ :class=>"panel panel-default" }
+         %div{:class=>"panel-group", :id=>"accordiontools", "ng-init"=>"vm.loadIcons(#{current_user.company_id})"}
+            %div{ :class=>"panel panel-default", "ng-repeat"=>"vals in vm.jsonObj", "ng-cloak"=>true}
                %div.panel-heading
                   %h4.panel-title
-                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse1"} Meters
-               %div{:id=>"collapse1", :class=>"panel-collapse collapse in"}
+                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse{{$index}}"} {{vals.name}}
+               %div{:id=>"collapse{{$index}}", "ng-class"=>"$first ? 'panel-collapse collapse in' : 'panel-collapse collapse'"}
                   %div{:id=>"images",:class=>"panel-body"}
                      %table
-                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.meters"}
-            %div{ :class=>"panel panel-default" }
-               %div.panel-heading
-                  %h4.panel-title
-                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse2"} Networking
-               %div{:id=>"collapse2", :class=>"panel-collapse collapse"}
-                  %div{:id=>"images",:class=>"panel-body"}
-                     %table
-                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.networking"}
-            %div{ :class=>"panel panel-default" }
-               %div.panel-heading
-                  %h4.panel-title
-                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse3"} Computing
-               %div{:id=>"collapse3", :class=>"panel-collapse collapse"}
-                  %div{:id=>"images",:class=>"panel-body"}
-                     %table
-                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.computing"}
-            %div{ :class=>"panel panel-default" }
-               %div.panel-heading
-                  %h4.panel-title
-                     %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse4"} Shapes
-               %div{:id=>"collapse4", :class=>"panel-collapse collapse"}
-                  %div{:id=>"images",:class=>"panel-body"}
-                     %table
-                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.shapes"}
-            %div{ :class=>"panel panel-default" }
-               %div.panel-heading
-                  %h4.panel-title
-                     %a{:data=>{:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse5"} Places/People
-               %div{:id=>"collapse5", :class=>"panel-collapse collapse"}
-                  %div{:id=>"images",:class=>"panel-body"}
-                     %table
-                        %tr{"icon-directive"=>"vals", "ng-repeat"=>"vals in vm.places"}
-
+                        %tr{"icon-directive"=>"pic", "ng-repeat"=>"pic in vals.icons"}
       %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
          %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
             %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
@@ -105,6 +71,18 @@
                   %th Date and Time
                %tbody{:id=>"versionslisttab", :style=>"overflow-y: scroll;"}
                   %tr{"versions-directive"=>"vals", "company-id"=>"#{params[:company_id]}","drawing-id"=>"#{params[:id]}","user-id"=>"#{params[:user_id]}", "ng-repeat"=>"vals in #{@timestamps_readable}"}
+=javascript_include_tag "app/angular.js"
+=javascript_include_tag "app/ui-bootstrap-tpls-2.3.0.js"
+=javascript_include_tag "app/angular-animate.js"
+=javascript_include_tag "app/angular-resource.js"
+=javascript_include_tag "app/app.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/modalController.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/backgroundbuttonDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconTableDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/versionsDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconController.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconlistService.js", "data-turbolinks-track" => true
 :javascript
    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

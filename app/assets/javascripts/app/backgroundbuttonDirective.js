@@ -20,8 +20,7 @@ angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAServi
 
               backgroundExists = function(link) {
 
-                 log.info("In background exists")
-                 console.log("In background exists:", link)
+                log.info("In background exists:", link)
                  var background_exists = false;
                  if (link === undefined || link === "") {
                     background_exists = false;
@@ -37,15 +36,15 @@ angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAServi
               }
 
               backgroundModal = function() {
-                console.log( "Entering backgroundModal");
+                log.info( "Entering backgroundModal");
                 //$('#backgroundSection').modal('show');
-                console.log(scope.openModal);
+                log.infog(scope.openModal);
                 scope.openModal();
-                console.log( "Leaving backgroundModal");
+                log.info( "Leaving backgroundModal");
               };
 
               runBackground = function() {
-                console.log("In Run Background")
+                log.info("In Run Background")
                 $('#lefile').value = '';
                 $("#backgroundfile").val('');
                 //submitButton.removeAttr('disabled');
@@ -77,18 +76,18 @@ angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAServi
                  backgroundImageVal = "";
                 if (canvas.backgroundImage !== null) {
                   backgroundimg = canvas.backgroundImage;
-                  console.log("drawing_scripts: ", backgroundimg)
+                  log.info("drawing_scripts: ", backgroundimg)
                   if (backgroundimg.src !== null ) {
                      backgroundImageVal = canvas.backgroundImage.src;
                   }
                 }
                 $('#backgroundButtonText').attr('background',backgroundImageVal);
-                console.log("In link background val: ", el.attr('background'))
+                log.info("In link background val: ", el.attr('background'))
                 backgroundExists(el.attr('background'));
              });
 
              el.bind("click", function () {
-                 console.log("background val: ", el.attr('background'))
+                 log.info("background val: ", el.attr('background'))
                  if (el.attr('background') == '') {
                          runBackground();
                          backgroundModal();

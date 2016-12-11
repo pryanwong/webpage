@@ -33,9 +33,10 @@ class DrawingsController < ApplicationController
           @drawing.drawing = "{}"
        end
        company = Company.new
-       if (Company.exists?(params[:company_id]))
+       logger.error "User Company #{@user.company_id} == params[company_id] #{params[:company_id]}"
+       if (Company.exists?(params[:company_id]) && (@user.company_id.to_s == params[:company_id]) && (@drawing.company_id.to_s == params[:company_id]))
           logger.debug "Company exists: #{params[:company_id]}"
-          company = Company.find(params[:company_id]);
+          company = Company.find(@drawing.company_id);
        else
           logger.error "No Company found"
           flash[:error] = t('flash.drawings.company_not_found')
@@ -116,7 +117,7 @@ class DrawingsController < ApplicationController
           @drawing.drawing = "{}"
        end
        company = Drawing.new
-       if (Company.exists?(params[:company_id]))
+       if (Company.exists?(params[:company_id]) )
           logger.debug "Company exists: #{params[:company_id]}"
           company = Company.find(params[:company_id]);
        else
@@ -199,7 +200,7 @@ class DrawingsController < ApplicationController
           redirect_to root_path
           return
        end
-       if (Company.exists?(@user.company_id))
+       if (Company.exists?(@user.company_id) )
           logger.debug "Company exists: #{@user.company_id}"
           @company = Company.find(@user.company_id);
        else
@@ -375,8 +376,8 @@ class DrawingsController < ApplicationController
     @drawing = Drawing.new
     @drawing.customer = params[:customer]
     @drawing.description = params[:description]
-    @drawing.user_id = params[:user_id]
-    @drawing.company_id = params[:company_id]
+    @drawing.user_id = current_user.id
+    @drawing.company_id = current_user.company_id
     @drawing.opportunity = params[:opportunity]
     @drawing.division_id = params[:division_id]
     @drawing.privacy = params[:privacy]

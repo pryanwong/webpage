@@ -1,0 +1,320 @@
+{ "objects":
+      [{"name":"Meters",
+        "icons":[
+          [{
+            "img_val": "EPM2000.gif",
+            "data_config": "4",
+            "data_loc": "companies/GE/EPM2000.gif",
+            "data_model": "EPM2000",
+            "draggable": "true",
+            "width":68,
+            "height":65,
+            "caption": "EPM2000"
+           }, {
+            "img_val": "EPM6000.gif",
+            "data_config": "5",
+            "data_loc": "companies/GE/EPM6000.gif",
+            "data_model": "EPM6000",
+            "draggable": "true",
+            "width":54,
+            "height":54,
+            "caption":"EPM6000"
+           }
+         ],
+         [{
+            "img_val": "EPM9650.gif",
+            "data_config":6,
+            "data_loc":"companies/GE/EPM9000.gif",
+            "data_model":"EPM9650",
+            "draggable":"true",
+            "width":82,
+            "height":52,
+            "caption":"EPM9650"
+           }, {
+            "img_val":"EPM9800.gif",
+            "data_config":7,
+            "data_loc":"companies/GE/EPM9800.gif",
+            "data_model":"EPM9800",
+            "draggable":"true",
+            "width":71,
+            "height":64,
+            "caption":"EPM9800"
+           }
+         ],
+         [{
+            "img_val": "EPM4600.gif",
+            "data_config":8,
+            "data_loc":"companies/GE/epm4600.jpg",
+            "data_model":"EPM4600",
+            "draggable":"true",
+            "width":"82",
+            "height":"53",
+            "caption":"EPM4600"
+           }, {
+            "img_val":"EPM9900.jpg",
+            "data_config":9,
+            "data_loc":"companies/GE/epm9900.jpg",
+            "data_model":"EPM9900",
+            "draggable":"true",
+            "width":82,
+            "height":52,
+            "caption":"EPM9900"
+           }
+         ],
+         [{
+            "img_val": "PQMII.gif",
+            "data_config":10,
+            "data_loc":"companies/GE/PQMII.gif",
+            "data_model":"PQMII",
+            "draggable":"true",
+            "width":67,
+            "height":44,
+            "caption":"PQMII"
+          }, {
+            "img_val":"epm6100.jpg",
+            "data_config":11,
+            "data_loc":"companies/GE/epm6100-7100.jpg",
+            "data_model":"EPM6100",
+            "draggable":"true",
+            "width":68,
+            "height":65,
+            "caption":"EPM6100"
+          }], [{
+            "img_val":"epm7100.jpg",
+            "data_config":12,
+            "data_loc":"companies/GE/epm6100-7100.jpg",
+            "data_model":"EPM7100",
+            "draggable":"true",
+            "width":68,
+            "height":65,
+            "caption":"EPM7100"
+          }, {
+            "img_val":"EPM-Enclosure.png",
+            "data_config":13,
+            "data_loc":"companies/GE/EPM-Enclosure.png",
+            "data_model":"EPM-Enclosure",
+            "draggable":"true",
+            "width":60,
+            "height":71,
+            "caption":"EPM-Enclosure"
+          }]]
+      },
+
+      {"name":"Networking",
+       "icons":[
+          [{
+            "img_val":"ml300.jpg",
+            "data_config":14,
+            "data_loc":"companies/GE/ml3000.jpg",
+            "data_model":"ML3000",
+            "draggable":"true",
+            "width":99,
+            "height":36,
+            "caption":"ML3000"
+          }, {
+            "img_val":"ML1200.gif",
+            "data_config":15,
+            "data_loc":"companies/GE/ML1200.gif",
+            "data_model":"ML1200",
+            "draggable":"true",
+            "width":77,
+            "height":49,
+            "caption":"ML1200"
+          }],[{
+            "img_val":"ml810.jpg",
+            "data_config":16,
+            "data_loc":"companies/GE/ml810.jpg",
+            "data_model":"ML810",
+            "draggable":"true",
+            "width":77,
+            "height":50,
+            "caption":"ML810"
+          }, {
+            "img_val":"ML800.gif",
+            "data_config":17,
+            "data_loc":"companies/GE/ML800.gif",
+            "data_model":"ML800",
+            "draggable":"true",
+            "width":77,
+            "height":50,
+            "caption":"ML800"
+          }], [{
+            "img_val":"ML600.gif",
+            "data_config":18,
+            "data_loc":"companies/GE/ML600.gif",
+            "data_model":"ML600",
+            "draggable":"true",
+            "width":52,
+            "height":64,
+            "caption":"ML600"
+         }]]
+       },
+       {"name":"Computing",
+        "icons":[
+          [{
+            "img_val":"osa_cloud.svg",
+            "data_loc":"companies/common/osa_cloud.svg",
+            "data_model": "Cloud",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption":"Cloud"
+          }, {
+            "img_val": "osa_database.svg",
+            "data_loc": "companies/common/osa_database.svg",
+            "data_model": "Database",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "Database"
+          }], [{
+            "img_val": "osa_firewall.svg",
+            "data_loc": "companies/common/osa_firewall.svg",
+            "data_model": "Firewall",
+            "draggable":"true",
+            "width":64,
+            "height":64,
+            "caption": "Firewall"
+          }, {
+            "img_val": "osa_server.svg",
+            "data_loc": "companies/common/osa_server.svg",
+            "data_model": "Server",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "Server"
+          }], [{
+            "img_val": "osa_device-wireless-router.svg",
+            "data_loc":"companies/common/osa_device-wireless-router.svg",
+            "data_model": "Wifi",
+            "draggable":"true",
+            "width":64,
+            "height":64,
+            "caption": "Wifi"
+          }, {
+            "img_val": "osa_ics_drive.svg",
+            "data_loc": "companies/common/osa_ics_drive.svg",
+            "data_model":"Cog",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "Cog"
+          }], [{
+            "img_val": "osa_wireless_network.svg",
+            "data_loc": "companies/common/osa_wireless_network.svg",
+            "data_model": "Antenna",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "Antenna"
+          }, {
+            "img_val": "osa_vpn.svg",
+            "data_loc":"companies/common/osa_vpn.svg",
+            "data_model": "VPN",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "VPN"
+         }]]
+       },
+       {"name": "Places",
+        "icons":[
+          [{
+            "img_val": "osa_home.svg",
+            "data_loc": "companies/common/osa_home.svg",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "Home"
+          }, {
+            "img_val": "osa_site-branch.svg",
+            "data_loc": "companies/common/osa_site-branch.svg",
+            "draggable":"true",
+            "width":64,
+            "height":64,
+            "caption":"Branch"
+          }], [{
+            "img_val": "osa_site-factory.svg",
+            "data_loc": "companies/common/osa_site-factory.svg",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "Factory"
+          }, {
+            "img_val":"osa_site-head-office.svg",
+            "data_loc":"companies/common/osa_site-head-office.svg",
+            "draggable":"true",
+            "width":64,
+            "height":64,
+            "caption":"Office"
+          }], [{
+            "img_val":"osa_site-neighbourhood.svg",
+            "data_loc":"companies/common/osa_site-neighbourhood.svg",
+            "draggable":"true",
+            "width":64,
+            "height":64,
+            "caption": "Homes"
+          }, {
+            "img_val": "osa_user_blue.svg",
+            "data_loc": "companies/common/osa_user_blue.svg",
+            "draggable": "true",
+            "width":64,
+            "height":64,
+            "caption": "User"
+          }]]
+       },
+       {"name":"Shapes",
+        "icons":[
+          [{
+            "img_val": "line.png",
+            "data_loc":"common/line.png",
+            "draggable": "true",
+            "width":22,
+            "height":39,
+            "caption":"Line"
+          }, {
+            "img_val":"line_arrow_icon.png",
+            "data_loc":"common/line_arrow_icon.png",
+            "draggable": "true",
+            "width":64,
+            "height":34,
+            "caption":"Line Arrow"
+          }], [{
+            "img_val": "line_arrow_two_icon.png",
+            "data_loc": "common/line_arrow_two_icon.png",
+            "draggable": "true",
+            "width":64,
+            "height":34,
+            "caption": "Line Arrow"
+          }], [{
+            "img_val": "circle_icon.png",
+            "data_loc":"common/circle.png",
+            "draggable":"true",
+            "width":40,
+            "height":32,
+            "caption":"Circle"
+          }, {
+            "img_val":"ellipse_icon.png",
+            "data_loc":"common/ellipse_icon.png",
+            "draggable":"true",
+            "width":40,
+            "height":16,
+            "caption":"Ellipse"
+          }], [{
+            "img_val":"rectangle-icon.png",
+            "data_loc":"common/rectangle-icon.png",
+            "draggable":true,
+            "width":65,
+            "height":47,
+            "caption":"Rectangle"
+          }, {
+            "img_val":"textbox_icon.png",
+            "data_loc":"common/textbox_icon.png",
+            "draggable":"true",
+            "width":60,
+            "height":32,
+            "caption":"Text Box"
+        }]
+      ]
+   }]
+}

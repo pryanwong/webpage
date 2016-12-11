@@ -19,16 +19,6 @@
       =javascript_include_tag 'imageobject.js', "data-turbolinks-track" => true
       =javascript_include_tag 'product_configurator.js', "data-turbolinks-track" => true
       =javascript_include_tag 'drawing_scripts.js', "data-turbolinks-track" => true
-      =javascript_include_tag "app/angular.js"
-      =javascript_include_tag "app/ui-bootstrap-tpls-2.3.0.js"
-      =javascript_include_tag "app/angular-animate.js"
-      =javascript_include_tag "app/app.js", "data-turbolinks-track" => true
-      =javascript_include_tag "app/iconController.js", "data-turbolinks-track" => true
-      =javascript_include_tag "app/modalController.js", "data-turbolinks-track" => true
-      =javascript_include_tag "app/iconDirective.js", "data-turbolinks-track" => true
-      =javascript_include_tag "app/backgroundbuttonDirective.js", "data-turbolinks-track" => true
-      =javascript_include_tag "app/iconTableDirective.js", "data-turbolinks-track" => true
-      =javascript_include_tag "app/versionsDirective.js", "data-turbolinks-track" => true
       =csrf_meta_tags
    %body{"ng-app"=>"app"}
       = render "shared/error_messages"
@@ -44,23 +34,6 @@
                   %div{ :class=>"row"}
                      %label{ :class=>"control-label col-sm-12 col-sm-offset-10"}
                         %button{:type=>"button",:class=>"btn btn-default btn-sm","data-dismiss"=>"modal"} Done
-      -# %div{ :id=>"backgroundSection", :class=>"modal fade", :role=>"dialog"}
-      -#   %div{ :class=>"modal-dialog", :id=>"openModal"}
-      -#      %div{:class=>"modal-content"}
-      -#         %div{:class=>"modal-header"}
-      -#            %button{:type=>"button",:class=>"close","data-dismiss"=>"modal", :onclick=>'$("#backgroundButtonText").html("Background");'} &times;
-      -#            %h4{:class=>"modal-title"}Background Image
-      -#         %div{:class=>"modal-body"}
-      -#            = form_for(@drawing, :id=>"background_form",:url => updateBackground_company_user_drawing_path(params[:company_id], params[:user_id],params[:id]), html: { class: 'directUpload', data: { 'form-data' => (@presigned_post.fields), 'url' => @presigned_post.url, 'host' => URI.parse(@presigned_post.url).host } }) do |f|
-      -#               %div{:class=>"input-group", :id=>"data"}
-      -#                  %label{ :class=>"input-group-btn"}
-      -#                     %span{:id=>"submitButton", :class=>"btn btn-primary"}
-      -#                        Browse&hellip;
-      -#                        = f.file_field :background, :style=>"display: none;", :id=>"lefile", :onchange=>'$("#backgroundfile").val($(this).val());$("#backgroundButtonText").attr("background",$(this).val());'
-      -#                  %input{:type=>"text",:id=>"backgroundfile", :name=>"file",:disabled=>true, :class=>"form-control"}
-      -#            %div{:id=>'progress'}
-      -#               %progress{:class=>"progress", :value=>"0", :max=>"100", :id=>"bar", :style=>"display:inline;"}0%
-
       %div{ :id=>"spinner", :class=>"spinner"}
          %div{ :class=>"rect1"}
          %div{ :class=>"rect2"}

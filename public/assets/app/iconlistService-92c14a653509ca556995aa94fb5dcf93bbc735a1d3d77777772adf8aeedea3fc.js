@@ -1,0 +1,1 @@
+angular.module("iconlistService",["ngResource"]).factory("iconHub",["$resource","$location",function(o,e){var r=e.host(),c=e.protocol(),n=e.port();return o(c+"://"+r+":"+n+"/companies/:id/get_json_icon_gallery",{id:"@id"},{getIconGallery:{method:"GET"}})}]);

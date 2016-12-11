@@ -8,7 +8,7 @@ class Ability
        #logger.fatal "User Role #{user.role}"
        #logger.fatal "User Role ID #{user.role_id}"
        if user.moderator?
-         can [:read], Company, :id => user.company_id
+         can [:read, :get_json_icon_gallery], Company, :id => user.company_id
          #can [:create, :read, :update, :destroy], Company
          can [:create, :read, :update, :destroy, :removeuserdiv,:newdrawing ,:newdrawingproc], User, :company_id => user.company_id
          can [:switchuser,:switchback, :usersettings, :usersettingssubmit], User, :user_id => user.id, :company_id => user.company.id
@@ -24,14 +24,14 @@ class Ability
          can :manage, :all
        elsif user.user?
          can [:index, :read, :update, :bom, :edit, :new, :updateBackground, :deleteBackground, :show_image, :send_image_form, :send_image, :changeversion], Drawing do |drawing|
-           Drawing.user_access(user).pluck("id").include? drawing.id
+           (Drawing.user_access(user).pluck("id").include? drawing.id)
          end
          can [:editdrawingdetails, :updatedrawingdetails], Drawing, :user_id => user.id
          can [:productconfig], Price, :company_id => user.company.id
          can [:switchuser,:switchback, :usersettings, :usersettingssubmit], User, :user_id => user.id, :company_id => user.company.id
          can [:create], Drawing, :user_id => user.id, :company_id => user.company_id
          can [:show,:newdrawing,:newdrawingproc], User, :id => user.id
-         can [], Company, :id => user.company_id
+         can [:get_json_icon_gallery], Company, :id => user.company_id
        end
     #
     # The first argument to `can` is the action you are giving the user

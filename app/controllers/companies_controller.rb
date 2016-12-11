@@ -118,6 +118,34 @@
     redirect_to companies_path
   end
 
+  def get_json_icon_gallery
+    if (params[:company_id] == current_user.company_id.to_s)
+       logger.info "Entering Drawing#get_json_icon_gallery"
+       data = File.read("#{Rails.root}/app/views/drawings/icons/1.json")
+       hash = JSON.parse(data)
+       # get main object in JSON data
+       panels = hash["objects"]
+       # now we have to iterate through the array of panel-collapse
+       panels.each do |panel|
+         # we have to get the icons (in sub arrays of 2) and update
+         icons = panel["icons"]
+         icons.each do |iconcollection|
+           iconcollection.each do |icon|
+              iconloc = icon["data_loc"]
+              icon["image_tag"] = ActionController::Base.helpers.asset_path(iconloc)
+           end
+         end
+       end
+       logger.info "Leaving Drawing#get_json_icon_gallery"
+       render :json => hash
+    else
+      logger.error "No Company found"
+      flash[:error] = t('flash.drawings.company_not_found')
+      render :json => '{"error":"No Company JSON Icon Gallery Found"}'
+      return
+    end
+  end
+
   private
 
     def company_params

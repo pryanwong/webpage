@@ -27,6 +27,7 @@ Rails.application.routes.draw do
        get 'show'
     end
     resources :companies do
+      get 'get_json_icon_gallery'
       resources :prices, param: :product_id do
         member do
           get 'productconfig'

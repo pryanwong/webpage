@@ -449,7 +449,6 @@ function mouseOver(e) {
 };
 
 function postProcessLoading(o, object) {
-  console.log("In postProcessLoading");
   log.info( "Entering postProcessLoading");
   if (object.type == "custom-image") {
     log.debug( "Processing custom-image");
@@ -499,8 +498,6 @@ function postProcessLoading(o, object) {
         backgroundImageVal = canvas.backgroundImage.src;
      }
   }
-  console.log("drawing_scripts background image: ",backgroundImageVal )
-
   log.info( "Leaving postProcessLoading");
 
 };

@@ -1,6 +1,9 @@
-angular.module('app').controller('IconController', ['$scope',
-   function ($scope) {
+angular.module('app').controller('IconController', ['$scope','iconHub',
+   function ($scope, iconHub) {
       var vm = this;
+      vm.jsonObj = ""
+      vm.jsonObjerror = "";
+      vm.iconlist = null;
 
       vm.toggle_versions_pane = function()
       {
@@ -13,113 +16,178 @@ angular.module('app').controller('IconController', ['$scope',
          return false;
       };
 
-      vm.places = [[{
-        image_tag: "<%=asset_path('companies/common/osa_home.svg') %>",
-        img_val: 'osa_home.svg',
-        data_loc: 'companies/common/osa_home.svg',
-        draggable: 'true',
-        width:64,
-        height:64,
-        caption: 'Home'
+      vm.loadIcons = function(company_id) {
+           console.log("In loadIcons")
+           var iconlist = null;
+           vm.jsonObj = iconHub.getIconGallery({ id: company_id});
+           vm.jsonObj.$promise.then(function(result) {
+                vm.jsonObj  = result.objects;
+                console.log(result.objects)
+                vm.jsonObjerror = false;
+            }, function (result) {
+                vm.jsonObjerror = true;
+                console.log("Error")
+            });
+      }
+
+      vm.test = [
+      [
+        {name:'Meters'},[[{
+          image_tag: "<%=asset_path('companies/GE/EPM2000.gif') %>",
+          img_val: 'EPM2000.gif',
+          data_config: '4',
+          data_loc: 'companies/GE/EPM2000.gif',
+          data_model: 'EPM2000',
+          draggable: 'true',
+          width:68,
+          height:65,
+          caption: 'EPM2000'
       }, {
-        image_tag: "<%=asset_path('companies/common/osa_site-branch.svg') %>",
-        img_val: 'osa_site-branch.svg',
-        data_loc: 'companies/common/osa_site-branch.svg',
-        draggable: 'true',
-        width:64,
-        height:64,
-        caption: 'Branch'
+          image_tag: "<%=asset_path('companies/GE/EPM6000.gif') %>",
+          img_val: 'EPM6000.gif',
+          data_config: '5',
+          data_loc: 'companies/GE/EPM6000.gif',
+          data_model: 'EPM6000',
+          draggable: 'true',
+          width:'54',
+          height:'54',
+          caption: 'EPM6000'
       }], [{
-        image_tag: "<%=asset_path('companies/common/osa_site-factory.svg') %>",
-        img_val: 'osa_site-factory.svg',
-        data_loc: 'companies/common/osa_site-factory.svg',
-        draggable: 'true',
-        width:64,
-        height:64,
-        caption: 'Factory'
+          image_tag: "<%=asset_path('companies/GE/EPM9000.gif') %>",
+          img_val: 'EPM9650.gif',
+          data_config: '6',
+          data_loc: 'companies/GE/EPM9000.gif',
+          data_model: 'EPM9650',
+          draggable: 'true',
+          width:'82',
+          height:'52',
+          caption: 'EPM9650'
       }, {
-        image_tag: "<%=asset_path('companies/common/osa_site-head-office.svg') %>",
-        img_val: 'osa_site-head-office.svg',
-        data_loc: 'companies/common/osa_site-head-office.svg',
-        draggable: 'true',
-        width:64,
-        height:64,
-        caption: 'Office'
+          image_tag: "<%=asset_path('companies/GE/EPM9800.gif') %>",
+          img_val: 'EPM9800.gif',
+          data_config: '7',
+          data_loc: 'companies/GE/EPM9800.gif',
+          data_model: 'EPM9800',
+          draggable: 'true',
+          width:'71',
+          height:'64',
+          caption: 'EPM9800'
       }], [{
-        image_tag: "<%=asset_path('companies/common/osa_site-neighbourhood.svg') %>",
-        img_val: 'osa_site-neighbourhood.svg',
-        data_loc: 'companies/common/osa_site-neighbourhood.svg',
+          image_tag: "<%=asset_path('companies/GE/epm4600.jpg') %>",
+          img_val: 'EPM4600.gif',
+          data_config: '8',
+          data_loc: 'companies/GE/epm4600.jpg',
+          data_model: 'EPM4600',
+          draggable: 'true',
+          width:'82',
+          height:'53',
+          caption: 'EPM4600'
+      }, {
+          image_tag: "<%=asset_path('companies/GE/epm9900.jpg') %>",
+          img_val: 'EPM9900.jpg',
+          data_config: '9',
+          data_loc: 'companies/GE/epm9900.jpg',
+          data_model: 'EPM9900',
+          draggable: 'true',
+          width:'82',
+          height:'52',
+          caption: 'EPM9900'
+      }],  [{
+          image_tag: "<%=asset_path('companies/GE/PQMII.gif') %>",
+          img_val: 'PQMII.gif',
+          data_config: '10',
+          data_loc: 'companies/GE/PQMII.gif',
+          data_model: 'PQMII',
+          draggable: 'true',
+          width:'67',
+          height:'44',
+          caption: 'PQMII'
+      }, {
+          image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
+          img_val: 'epm6100.jpg',
+          data_config: '11',
+          data_loc: 'companies/GE/epm6100-7100.jpg',
+          data_model: 'EPM6100',
+          draggable: 'true',
+          width:'68',
+          height:'65',
+          caption: 'EPM6100'
+      }], [{
+          image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
+          img_val: 'epm7100.jpg',
+          data_config: '12',
+          data_loc: 'companies/GE/epm6100-7100.jpg',
+          data_model: 'EPM7100',
+          draggable: 'true',
+          width:'68',
+          height:'65',
+          caption: 'EPM7100'
+      }, {
+          image_tag: "<%=asset_path('companies/GE/EPM-Enclosure.png') %>",
+          img_val: 'EPM-Enclosure.png',
+          data_config: '13',
+          data_loc: 'companies/GE/EPM-Enclosure.png',
+          data_model: 'EPM-Enclosure',
+          draggable: 'true',
+          width:'60',
+          height:'71',
+          caption: 'EPM-Enclosure'
+      }]]
+    ],
+
+      [{name:'Networking'},[[{
+        image_tag: "<%=asset_path('companies/GE/ml3000.jpg') %>",
+        img_val: 'ml300.jpg',
+        data_config: '14',
+        data_loc: 'companies/GE/ml3000.jpg',
+        data_model: 'ML3000',
         draggable: 'true',
-        width:64,
+        width:99,
+        height:36,
+        caption: 'ML3000'
+      }, {
+        image_tag: "<%=asset_path('companies/GE/ML1200.gif') %>",
+        img_val: 'ML1200.gif',
+        data_config: '15',
+        data_loc: 'companies/GE/ML1200.gif',
+        data_model: 'ML1200',
+        draggable: 'true',
+        width:77,
+        height:49,
+        caption: 'ML1200'
+      }],[{
+        image_tag: "<%=asset_path('companies/GE/ml810.jpg') %>",
+        img_val: 'ml810.jpg',
+        data_config: '16',
+        data_loc: 'companies/GE/ml810.jpg',
+        data_model: 'ML810',
+        draggable: 'true',
+        width:77,
+        height:50,
+        caption: 'ML810'
+      }, {
+        image_tag: "<%=asset_path('companies/GE/ML800.gif') %>",
+        img_val: 'ML800.gif',
+        data_config: '17',
+        data_loc: 'companies/GE/ML800.gif',
+        data_model: 'ML800',
+        draggable: 'true',
+        width:77,
+        height:50,
+        caption: 'ML800'
+      }], [{
+        image_tag: "<%=asset_path('companies/GE/ML600.gif') %>",
+        img_val: 'ML600.gif',
+        data_config: '18',
+        data_loc: 'companies/GE/ML600.gif',
+        data_model: 'ML600',
+        draggable: 'true',
+        width:52,
         height:64,
-        caption: 'Homes'
-      }, {
-        image_tag: "<%=asset_path('companies/common/osa_user_blue.svg') %>",
-        img_val: 'osa_user_blue.svg',
-        data_loc: 'companies/common/osa_user_blue.svg',
-        draggable: 'true',
-        width:64,
-        height:64,
-        caption: 'User'
-      }]];
-      vm.shapes = [[{
-        image_tag: "<%=asset_path('common/line.png') %>",
-        img_val: 'line.png',
-        data_loc: 'common/line.png',
-        draggable: 'true',
-        width:22,
-        height:39,
-        caption: 'Line'
-      }, {
-        image_tag: "<%=asset_path('common/line_arrow_icon.png') %>",
-        img_val: 'line_arrow_icon.png',
-        data_loc: 'common/line_arrow_icon.png',
-        draggable: 'true',
-        width:64,
-        height:34,
-        caption: 'Line Arrow'
-      }], [{
-        image_tag: "<%=asset_path('common/line_arrow_two_icon.png') %>",
-        img_val: 'line_arrow_two_icon.png',
-        data_loc: 'common/line_arrow_two_icon.png',
-        draggable: 'true',
-        width:64,
-        height:34,
-        caption: 'Line Arrow'
-      }], [{
-        image_tag: "<%=asset_path('common/circle.png') %>",
-        img_val: 'circle_icon.png',
-        data_loc: 'common/circle.png',
-        draggable: 'true',
-        width:40,
-        height:32,
-        caption: 'Circle'
-      }, {
-        image_tag: "<%=asset_path('common/ellipse_icon.png') %>",
-        img_val: 'ellipse_icon.png',
-        data_loc: 'common/ellipse_icon.png',
-        draggable: 'true',
-        width:40,
-        height:16,
-        caption: 'Ellipse'
-      }], [{
-        image_tag: "<%=asset_path('common/rectangle-icon.png') %>",
-        img_val: 'rectangle-icon.png',
-        data_loc: 'common/rectangle-icon.png',
-        draggable: 'true',
-        width:65,
-        height:47,
-        caption: 'Rectangle'
-      }, {
-        image_tag: "<%=asset_path('common/textbox_icon.png') %>",
-        img_val: 'textbox_icon.png',
-        data_loc: 'common/textbox_icon.png',
-        draggable: 'true',
-        width:60,
-        height:32,
-        caption: 'Text Box'
-      }]];
-      vm.computing = [[{
+        caption: 'ML600'
+      }]]
+
+      ],[{name:'Computing'},[[{
         image_tag: "<%=asset_path('companies/common/osa_cloud.svg') %>",
         img_val: 'osa_cloud.svg',
         data_loc: 'companies/common/osa_cloud.svg',
@@ -191,158 +259,114 @@ angular.module('app').controller('IconController', ['$scope',
         width:64,
         height:64,
         caption: 'VPN'
-      }]];
-      vm.networking = [[{
-        image_tag: "<%=asset_path('companies/GE/ml3000.jpg') %>",
-        img_val: 'ml300.jpg',
-        data_config: '14',
-        data_loc: 'companies/GE/ml3000.jpg',
-        data_model: 'ML3000',
+      }]]
+
+    ],[{name: 'Places'},[[{
+        image_tag: "<%=asset_path('companies/common/osa_home.svg') %>",
+        img_val: 'osa_home.svg',
+        data_loc: 'companies/common/osa_home.svg',
         draggable: 'true',
-        width:99,
-        height:36,
-        caption: 'ML3000'
-      }, {
-        image_tag: "<%=asset_path('companies/GE/ML1200.gif') %>",
-        img_val: 'ML1200.gif',
-        data_config: '15',
-        data_loc: 'companies/GE/ML1200.gif',
-        data_model: 'ML1200',
-        draggable: 'true',
-        width:77,
-        height:49,
-        caption: 'ML1200'
-      }],[{
-        image_tag: "<%=asset_path('companies/GE/ml810.jpg') %>",
-        img_val: 'ml810.jpg',
-        data_config: '16',
-        data_loc: 'companies/GE/ml810.jpg',
-        data_model: 'ML810',
-        draggable: 'true',
-        width:77,
-        height:50,
-        caption: 'ML810'
-      }, {
-        image_tag: "<%=asset_path('companies/GE/ML800.gif') %>",
-        img_val: 'ML800.gif',
-        data_config: '17',
-        data_loc: 'companies/GE/ML800.gif',
-        data_model: 'ML800',
-        draggable: 'true',
-        width:77,
-        height:50,
-        caption: 'ML800'
-      }], [{
-        image_tag: "<%=asset_path('companies/GE/ML600.gif') %>",
-        img_val: 'ML600.gif',
-        data_config: '18',
-        data_loc: 'companies/GE/ML600.gif',
-        data_model: 'ML600',
-        draggable: 'true',
-        width:52,
+        width:64,
         height:64,
-        caption: 'ML600'
-      }]];
-      vm.meters = [[{
-        image_tag: "<%=asset_path('companies/GE/EPM2000.gif') %>",
-        img_val: 'EPM2000.gif',
-        data_config: '4',
-        data_loc: 'companies/GE/EPM2000.gif',
-        data_model: 'EPM2000',
+        caption: 'Home'
+      }, {
+        image_tag: "<%=asset_path('companies/common/osa_site-branch.svg') %>",
+        img_val: 'osa_site-branch.svg',
+        data_loc: 'companies/common/osa_site-branch.svg',
         draggable: 'true',
-        width:68,
-        height:65,
-        caption: 'EPM2000'
-    }, {
-        image_tag: "<%=asset_path('companies/GE/EPM6000.gif') %>",
-        img_val: 'EPM6000.gif',
-        data_config: '5',
-        data_loc: 'companies/GE/EPM6000.gif',
-        data_model: 'EPM6000',
+        width:64,
+        height:64,
+        caption: 'Branch'
+      }], [{
+        image_tag: "<%=asset_path('companies/common/osa_site-factory.svg') %>",
+        img_val: 'osa_site-factory.svg',
+        data_loc: 'companies/common/osa_site-factory.svg',
         draggable: 'true',
-        width:'54',
-        height:'54',
-        caption: 'EPM6000'
-    }], [{
-        image_tag: "<%=asset_path('companies/GE/EPM9000.gif') %>",
-        img_val: 'EPM9650.gif',
-        data_config: '6',
-        data_loc: 'companies/GE/EPM9000.gif',
-        data_model: 'EPM9650',
+        width:64,
+        height:64,
+        caption: 'Factory'
+      }, {
+        image_tag: "<%=asset_path('companies/common/osa_site-head-office.svg') %>",
+        img_val: 'osa_site-head-office.svg',
+        data_loc: 'companies/common/osa_site-head-office.svg',
         draggable: 'true',
-        width:'82',
-        height:'52',
-        caption: 'EPM9650'
-    }, {
-        image_tag: "<%=asset_path('companies/GE/EPM9800.gif') %>",
-        img_val: 'EPM9800.gif',
-        data_config: '7',
-        data_loc: 'companies/GE/EPM9800.gif',
-        data_model: 'EPM9800',
+        width:64,
+        height:64,
+        caption: 'Office'
+      }], [{
+        image_tag: "<%=asset_path('companies/common/osa_site-neighbourhood.svg') %>",
+        img_val: 'osa_site-neighbourhood.svg',
+        data_loc: 'companies/common/osa_site-neighbourhood.svg',
         draggable: 'true',
-        width:'71',
-        height:'64',
-        caption: 'EPM9800'
-    }], [{
-        image_tag: "<%=asset_path('companies/GE/epm4600.jpg') %>",
-        img_val: 'EPM4600.gif',
-        data_config: '8',
-        data_loc: 'companies/GE/epm4600.jpg',
-        data_model: 'EPM4600',
+        width:64,
+        height:64,
+        caption: 'Homes'
+      }, {
+        image_tag: "<%=asset_path('companies/common/osa_user_blue.svg') %>",
+        img_val: 'osa_user_blue.svg',
+        data_loc: 'companies/common/osa_user_blue.svg',
         draggable: 'true',
-        width:'82',
-        height:'53',
-        caption: 'EPM4600'
-    }, {
-        image_tag: "<%=asset_path('companies/GE/epm9900.jpg') %>",
-        img_val: 'EPM9900.jpg',
-        data_config: '9',
-        data_loc: 'companies/GE/epm9900.jpg',
-        data_model: 'EPM9900',
+        width:64,
+        height:64,
+        caption: 'User'
+      }]]],
+      [{name: 'Shapes'},[[{
+        image_tag: "<%=asset_path('common/line.png') %>",
+        img_val: 'line.png',
+        data_loc: 'common/line.png',
         draggable: 'true',
-        width:'82',
-        height:'52',
-        caption: 'EPM9900'
-    }],  [{
-        image_tag: "<%=asset_path('companies/GE/PQMII.gif') %>",
-        img_val: 'PQMII.gif',
-        data_config: '10',
-        data_loc: 'companies/GE/PQMII.gif',
-        data_model: 'PQMII',
+        width:22,
+        height:39,
+        caption: 'Line'
+      }, {
+        image_tag: "<%=asset_path('common/line_arrow_icon.png') %>",
+        img_val: 'line_arrow_icon.png',
+        data_loc: 'common/line_arrow_icon.png',
         draggable: 'true',
-        width:'67',
-        height:'44',
-        caption: 'PQMII'
-    }, {
-        image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
-        img_val: 'epm6100.jpg',
-        data_config: '11',
-        data_loc: 'companies/GE/epm6100-7100.jpg',
-        data_model: 'EPM6100',
+        width:64,
+        height:34,
+        caption: 'Line Arrow'
+      }], [{
+        image_tag: "<%=asset_path('common/line_arrow_two_icon.png') %>",
+        img_val: 'line_arrow_two_icon.png',
+        data_loc: 'common/line_arrow_two_icon.png',
         draggable: 'true',
-        width:'68',
-        height:'65',
-        caption: 'EPM6100'
-    }], [{
-        image_tag: "<%=asset_path('companies/GE/epm6100-7100.jpg') %>",
-        img_val: 'epm7100.jpg',
-        data_config: '12',
-        data_loc: 'companies/GE/epm6100-7100.jpg',
-        data_model: 'EPM7100',
+        width:64,
+        height:34,
+        caption: 'Line Arrow'
+      }], [{
+        image_tag: "<%=asset_path('common/circle.png') %>",
+        img_val: 'circle_icon.png',
+        data_loc: 'common/circle.png',
         draggable: 'true',
-        width:'68',
-        height:'65',
-        caption: 'EPM7100'
-    }, {
-        image_tag: "<%=asset_path('companies/GE/EPM-Enclosure.png') %>",
-        img_val: 'EPM-Enclosure.png',
-        data_config: '13',
-        data_loc: 'companies/GE/EPM-Enclosure.png',
-        data_model: 'EPM-Enclosure',
+        width:40,
+        height:32,
+        caption: 'Circle'
+      }, {
+        image_tag: "<%=asset_path('common/ellipse_icon.png') %>",
+        img_val: 'ellipse_icon.png',
+        data_loc: 'common/ellipse_icon.png',
         draggable: 'true',
-        width:'60',
-        height:'71',
-        caption: 'EPM-Enclosure'
-    }]];
+        width:40,
+        height:16,
+        caption: 'Ellipse'
+      }], [{
+        image_tag: "<%=asset_path('common/rectangle-icon.png') %>",
+        img_val: 'rectangle-icon.png',
+        data_loc: 'common/rectangle-icon.png',
+        draggable: 'true',
+        width:65,
+        height:47,
+        caption: 'Rectangle'
+      }, {
+        image_tag: "<%=asset_path('common/textbox_icon.png') %>",
+        img_val: 'textbox_icon.png',
+        data_loc: 'common/textbox_icon.png',
+        draggable: 'true',
+        width:60,
+        height:32,
+        caption: 'Text Box'
+      }]]]
+    ];
    }
 ]);
