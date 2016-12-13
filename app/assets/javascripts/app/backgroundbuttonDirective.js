@@ -14,37 +14,21 @@ angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAServi
             template: '<button id="backgroundButtonText" class="btn btn-default" background="" >{{backgroundText}}</button>',
             link: function (scope, el, attrs, ctrl) {
               scope.backgroundText="Background";
-              scope.$watch(function() {
-                 if (el.attr('background')) console.log('background changed');
-              });
 
-              backgroundExists = function(link) {
-
-                log.info("In background exists:", link)
-                 var background_exists = false;
-                 if (link === undefined || link === "") {
-                    background_exists = false;
-                    log.debug("Using Background Button");
-                    backgroundText="Background";
-                 } else {
-                    background_exists = true;
-                    log.debug("Using Remove Background Button");
-                    backgroundText="Remove Background";
+              scope.$watch('backgroundText',
+                 function(newValue) {
+                     console.log("watch backround attr:", scope.backgroundText,":", scope.background);
                  }
-                 log.info("Leaving Background Exists")
-                 return background_exists;
-              }
+              );
 
-              backgroundModal = function() {
-                log.info( "Entering backgroundModal");
-                //$('#backgroundSection').modal('show');
-                log.infog(scope.openModal);
-                scope.openModal();
-                log.info( "Leaving backgroundModal");
-              };
+              scope.$watch('background',
+                 function(newValue) {
+                     console.log("watch backround attr:", scope.backgroundText,":", scope.background);
+                 }
+              );
 
               runBackground = function() {
-                log.info("In Run Background")
+                console.log("In Run Background")
                 $('#lefile').value = '';
                 $("#backgroundfile").val('');
                 //submitButton.removeAttr('disabled');
@@ -59,43 +43,39 @@ angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAServi
                  $("#saveMessage").text('Changes Made, Save Pending...');
                  $('#lefile').attr("value", "");
                  $('#lefile').val("");
+                 $('#backgroundButtonText').attr('background',"");
                  canvas.setBackgroundImage(0, canvas.renderAll.bind(canvas));
                  onSave();
               }
 
-              function backgroundButton( background )
-              {
-                 if (background) {
-                   $("#backgroundButtonText").html('Remove Background');
-                 } else {
-                   $("#backgroundButtonText").html('Background');
-                 }
-              }
-
              $(window).load(function() {
                  backgroundImageVal = "";
+                 console.log("backgroundImg: ", canvas.backgroundImage)
                 if (canvas.backgroundImage !== null) {
                   backgroundimg = canvas.backgroundImage;
-                  log.info("drawing_scripts: ", backgroundimg)
+                  console.log("drawing_scripts: ", backgroundimg)
                   if (backgroundimg.src !== null ) {
                      backgroundImageVal = canvas.backgroundImage.src;
+                     scope.$apply(function() {scope.backgroundText = "Remove Background";});
                   }
                 }
                 $('#backgroundButtonText').attr('background',backgroundImageVal);
-                log.info("In link background val: ", el.attr('background'))
-                backgroundExists(el.attr('background'));
+                background = backgroundImageVal
+                console.log("In link background val: ", el.attr('background'));
              });
 
              el.bind("click", function () {
-                 log.info("background val: ", el.attr('background'))
-                 if (el.attr('background') == '') {
+                 console.log("background val: ", el.attr('background'))
+                 if (el.attr('background') == '' || el.attr('background') == null) {
                          runBackground();
-                         backgroundModal();
-                         backgroundButton(true);
+                         scope.openModal();
+                         scope.$apply(function() {scope.backgroundText = "Remove Background";});
+
                          return false;
                  } else {
                          removeBackground();
-                         backgroundButton(false);
+                         scope.background = "";
+                         scope.$apply(function() {scope.backgroundText = "Background";});
                          attrs.$set('background','');
                          return false;
                  }

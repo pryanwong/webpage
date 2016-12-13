@@ -1,6 +1,13 @@
 angular.module('app')
 .controller('ModalController',['$uibModal','$log','$document','$scope',
    function ($uibModal, $log, $document,$scope) {
+
+     $scope.fileNameChanged = function() {
+      alert($scope.file.name);
+     }
+
+     $scope.file = "";
+
       var mc = this;
       mc.open = open;
 
@@ -72,9 +79,12 @@ angular.module('app')
 
 angular.module('app').controller('ModalInstanceCtrl', ['$scope','$uibModalInstance', function ($scope, $uibModalInstance) {
         var mc = this;
+        mc.file = "";
 
+        add = function() {
+
+        }
         mc.load = function() {
-          console.log("Running load inside ModalInstanceCtrl")
           $(function() {
              $('.directUpload').find("input:file").each(function(i, elem) {
                console.log("URL directUpload")
@@ -92,10 +102,10 @@ angular.module('app').controller('ModalInstanceCtrl', ['$scope','$uibModalInstan
                add: function(e, data) {
                        var uploadErrors = [];
                        var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-                       if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                       if(data.files[0]['type'].length && !acceptFileTypes.test(data.files[0]['type'])) {
                            uploadErrors.push('Not an accepted file type');
                        }
-                       if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 1000000) {
+                       if(data.files[0]['size'].length && data.files[0]['size'] > 1000000) {
                            uploadErrors.push('Filesize is too big');
                        }
                        if(uploadErrors.length > 0) {
@@ -177,15 +187,38 @@ angular.module('app').controller('ModalInstanceCtrl', ['$scope','$uibModalInstan
 
         mc.cancelWithBackground = function() {
           $('#backgroundButtonText').html('Remove Background');
+          $('#backgroundButtonText').attr( 'background', mc.file.name )
           $uibModalInstance.dismiss('cancel');
         };
         mc.cancel = function () {
           $('#backgroundButtonText').html('Background');
+          $('#backgroundButtonText').attr( 'background', "" )
           $uibModalInstance.dismiss('cancel');
         };
 
-}]);
+}]).directive('fileChange', function() {
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      scope: {
+        fileChange: '&'
+      },
+      link: function link(scope, element, attrs, ctrl) {
+            element.on('change', onChange);
 
+            scope.$on('destroy', function () {
+              element.off('change', onChange);
+            });
+
+            function onChange() {
+              attrs.multiple ? ctrl.$setViewValue(element[0].files) : ctrl.$setViewValue(element[0].files[0]);
+              scope.$apply(function () {
+                 scope.fileChange();
+              });
+            }
+          }
+       };
+     });
       // Please note that the close and dismiss bindings are from $uibModalInstance.
 
 angular.module('app').component('modalComponent', {
@@ -209,4 +242,3 @@ angular.module('app').component('modalComponent', {
           };
         }
 });
-      //$(&quot;#backgroundfile&quot;).val($(this).val());$(&quot;#backgroundButtonText&quot;).attr(&quot;background&quot;,$(this).val());"

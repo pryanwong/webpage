@@ -92,17 +92,6 @@ function GetDebugParameter(sParam){
     }
 };
 
-
-function toggle_versions_pane()
-{
-   var effect = 'slide';
-   // Set the options for the effect type chosen
-   var options = { direction: 'right' };
-   // Set the duration (default: 400 milliseconds)
-   var duration = 500;
-   $('#versionspanel').toggle(effect, options, duration);
-}
-
 function resetFormElement(e) {
   e.wrap('<form>').closest('form').get(0).reset();
   e.unwrap();
@@ -150,29 +139,3 @@ function loadversion(link) {
        type: 'GET'
      });
 }
-
-//var Inspect = {
-//    TYPE_FUNCTION: 'function',
-    // Returns an array of (the names of) all methods
-//    methods: function(obj) {
-//        var testObj = obj || self;
-//        var methods = [];
-//        for (prop in testObj) {
-//            if (typeof testObj[prop] == Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
-//                methods.push(prop);
-//            }
-//        }
-//        return methods;
-//    },
-    // Returns an array of (the names of) all properties
-//    properties: function(obj) {
-//        var testObj = obj || self;
-//        var properties = [];
-//        for (prop in testObj) {
-//            if (typeof testObj[prop] != Inspect.TYPE_FUNCTION && typeof Inspect[prop] != Inspect.TYPE_FUNCTION) {
-//                properties.push(prop);
-//            }
-//        }
-//        return properties;
-//    }
-//}

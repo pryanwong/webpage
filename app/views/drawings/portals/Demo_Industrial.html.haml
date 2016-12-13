@@ -7,7 +7,7 @@
          %input{ :type=>"submit", :value=>"Submit"}
          %input{ :type=>"button", :name=>"cancel", :value=>"Cancel", :onClick=>"labelcancel()"}
    %div#inputs
-   %div{:id=>"drawingwrap", :style=>"width:1500px",  "ng-controller"=>"IconController as vm"}
+   %div{:id=>"drawingwrap", :style=>"width:1500px"}
       %div{:id=>"breadcrumbs", :style=>"padding-left:230px;width:1230px", :class=>"hidden-sm hidden-xs"}
          %div
             %div
@@ -31,8 +31,8 @@
                            %label{ :class=>"input-group-btn"}
                               %span{:id=>"submitButton", :class=>"btn btn-primary", "ng-click"=>"mc.load()"}
                                  Browse&hellip;
-                                 = f.file_field :background, :style=>"display: none;", :id=>"lefile", :onchange=>'$("#backgroundfile").val($(this).val());$("#backgroundButtonText").attr("background",$(this).val());'
-                           %input{:type=>"text",:id=>"backgroundfile", :name=>"file",:disabled=>true, :class=>"form-control"}
+                                 = f.file_field :background, :style=>"display: none;", :id=>"lefile", "file-change"=>"", "ng-model"=>"mc.file"
+                           %input{:type=>"text",:id=>"backgroundfile", :name=>"file", :disabled=>true, :class=>"form-control", :value=>"{{mc.file.name}}"}
                      %div{:id=>"progress"}
                         %progress{:class=>"progress",:value=>"0",:max=>"100",:id=>"bar",:style=>"display:inline;"}0%
             %backgroundbutton-directive{"background"=>"", "open-modal"=>"mc.open()"}
@@ -54,9 +54,18 @@
                   %div{:id=>"images",:class=>"panel-body"}
                      %table
                         %tr{"icon-directive"=>"pic", "ng-repeat"=>"pic in vals.icons"}
-      %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
-         %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
-            %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
+      %span{"ng-controller"=>"ModalProductConfigController as mpc"}
+         %div{:class=>".product-config-modal"}
+            %script{:type=>"text/ng-template", "id"=>"productConfigTmpl.html"}
+               %div{:class=>"modal-header"}
+                  %button{:type=>"button", :class=>"close", "data-dismiss"=>"modal", "ng-click"=>"mc.cancel()"} &times;
+                  %h4{:class=>"modal-title"}Product Configurator
+               %div{:class=>"modal-body"}
+                  %div{:class=>"input-group", :id=>"data"}
+         %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
+            %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
+               %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
+            %span.contextmenuholder
       %div{:id=>"versionspanel", :class=>"panel panel-success",:style=>"position:absolute;right:0;float:right;width:300px;display:none;margin-top:10px;overflow: auto"}
          %div{:id=>"versionpanelheader", :class=>"panel-heading panel-default"}
             Versions
@@ -77,12 +86,13 @@
 =javascript_include_tag "app/angular-resource.js"
 =javascript_include_tag "app/app.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/modalController.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/modalprodconfigController.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/iconDirective.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/backgroundbuttonDirective.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/iconTableDirective.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/versionsDirective.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/iconController.js", "data-turbolinks-track" => true
-=javascript_include_tag "app/iconlistService.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/productService.js", "data-turbolinks-track" => true
 :javascript
    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

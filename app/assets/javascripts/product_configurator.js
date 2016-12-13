@@ -1,12 +1,4 @@
-var popup;
-function configuratorProduct(productId, companyId, searchId) {
-   log.info( "Entering configuratorProduct");
-   popup = window.open("/companies/" + companyId + "/prices/" + productId + "/productconfig.html?searchId=" + searchId, "Popup", "width=300,height=500");
-   popup.focus();
-   log.info( "Leaving configuratorProduct");
-}
-
-function loadConfigScreen( data, selectChoices, splitVals ) {
+ function loadConfigScreen( data, selectChoices, splitVals ) {
    jsondata = data;
    log.info( "Entering loadConfigScreen");
    log.trace("jsondata: ", jsondata)
