@@ -69,12 +69,13 @@ angular.module('app').directive('backgroundbuttonDirective',  ['backgroundAServi
                  if (el.attr('background') == '' || el.attr('background') == null) {
                          runBackground();
                          scope.openModal();
-                         scope.$apply(function() {scope.backgroundText = "Remove Background";});
-
+                         //scope.$apply(function() {scope.backgroundText = "Remove Background";});
                          return false;
                  } else {
                          removeBackground();
                          scope.background = "";
+                         scope.$apply(function() {scope.backgroundText = "Background";});
+                         scope.$apply(function() {scope.backgroundText = "Background-";});
                          scope.$apply(function() {scope.backgroundText = "Background";});
                          attrs.$set('background','');
                          return false;

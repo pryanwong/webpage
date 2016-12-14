@@ -333,15 +333,22 @@ class DrawingsController < ApplicationController
 		         configHash = modelHash[val["config"]];
 		         configHash[:qty] = configHash[:qty] + 1;
 		       else
-             priceversiondb = Price.find_by_product_id(val["configdbid"])
-             uptodate = "valid"
-             if (priceversiondb.version != val["priceversion"])
-               uptodate = "Out of date pricelist used, reconfigure"
-               if (val["config"] == "undefined")
-                 uptodate = "Invalid configuration"
-               end
+             if val.has_key?("configdbid") && val["configdbid"] != "false"
+                priceversiondb = Price.find_by_product_id(val["configdbid"])
+                uptodate = "valid"
+                puts "Price Version****: #{priceversiondb.inspect}"
+                if priceversiondb.respond_to?(:version)
+                  if (priceversiondb.version != val["priceversion"])
+                    uptodate = "Out of date pricelist used, reconfigure"
+                    if (val["config"] == "undefined")
+                      uptodate = "Invalid configuration"
+                    end
+                  end
+                end
+               configHash = {:qty => 1, :price => val["price"], :uptodate => uptodate}
+             else
+               configHash = {:qty => 1, :price => val["price"], :uptodate => "No Pricing In Database"}
              end
-             configHash = {:qty => 1, :price => val["price"], :uptodate => uptodate}
 		       end
 		       modelHash[val["config"]] = configHash;
 		       valhash[val["model"]] = modelHash;

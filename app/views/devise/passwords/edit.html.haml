@@ -21,7 +21,7 @@
                   = f.password_field :password_confirmation, autocomplete: "off", :class=>"form-control col-sm-5", :required=>true, :id=>"confirmPasswordfield"
                %div.form-group
                   = f.submit t('.change_my_password'), :class=>"btn btn-default"
-                  = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, company_user_path(current_user.company_id, current_user)
+                  = link_to "<button class='btn btn-default'>#{t('.cancel')}</button>".html_safe, root_path
             = render "devise/shared/links"
 
 :Javascript
