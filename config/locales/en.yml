@@ -262,6 +262,7 @@ en:
       price: Price
       save: Save
       cancel: Cancel
+      version: Version
     productconfig:
       list_price: List Price
       product_config: Product Configuration
