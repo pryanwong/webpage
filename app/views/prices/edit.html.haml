@@ -20,11 +20,15 @@
          %div{:class=>"form-group"}
             = f.label t('.product_id'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
-               = f.text_field :product_id, :required => true, :class=>"form-control"
+               = f.number_field :product_id, :required => true, :min => 1, :max => 100000, :step =>1, :class=>"form-control"
          %div{:class=>"form-group"}
             = f.label t('.name'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}
                = f.text_field :name, :required => true, :class=>"form-control"
+         %div{:class=>"form-group"}
+            = f.label t('.version'), :class=>"control-label col-sm-2"
+            %div{:class=>"control-label col-sm-5"}
+               = f.number_field :version, :required => true, :min => 1, :max => 100000, :step =>1, :class=>"form-control"
          %div{:class=>"form-group"}
             = f.label  t('.price'), :class=>"control-label col-sm-2"
             %div{:class=>"control-label col-sm-5"}

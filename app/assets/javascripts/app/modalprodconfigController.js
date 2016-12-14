@@ -14,6 +14,9 @@ angular.module('app')
 
         };
 
+      mpc.testFn = function() {
+        console.log("Testing from Context Menu")
+      }
       mpc.closeModal = function() {
         mpc.cancel();
       }

@@ -252,6 +252,7 @@ fr:
       price: Price
       save: Save
       cancel: Cancel
+      version: Version
     new:
       home: Home
       company: Company

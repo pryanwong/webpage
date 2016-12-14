@@ -126,7 +126,7 @@ class PricesController < ApplicationController
 
     @company = Company.find(params[:company_id])
     @price = Price.find_by_id(params[:product_id])
-    @price.update(name: params[:price][:name], price: params[:price][:price], product_id: params[:price][:product_id])
+    @price.update(name: params[:price][:name], price: params[:price][:price], version: params[:price][:version], product_id: params[:price][:product_id])
 
     addErrorsToFlash(@price.errors)
     logger.info "Leaving PricesController#update"

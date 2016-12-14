@@ -54,7 +54,7 @@
                   %div{:id=>"images",:class=>"panel-body"}
                      %table
                         %tr{"icon-directive"=>"pic", "ng-repeat"=>"pic in vals.icons"}
-      %span{"ng-controller"=>"ModalProductConfigController as mpc"}
+      %span{:id=>"mpc_holder", "ng-controller"=>"ModalProductConfigController as mpc" }
          %div{:class=>".product-config-modal"}
             %script{:type=>"text/ng-template", "id"=>"productConfigTmpl.html"}
                %div{:class=>"modal-header"}

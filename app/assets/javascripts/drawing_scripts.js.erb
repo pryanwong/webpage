@@ -815,7 +815,8 @@ function menus(items, event) {
       html += "</ul>" ;
 
       menucontainer.innerHTML = html;
-      $('body').append(menucontainer);
+      //$('body').append(menucontainer);
+      $('#mpc_holder').append(menucontainer);
       //$('#contextmenuholder').append(menucontainer);
       $contextMenu = $("#contextMenu");
       $contextMenu.css({
