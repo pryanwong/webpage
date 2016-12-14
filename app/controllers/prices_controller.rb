@@ -35,7 +35,7 @@ class PricesController < ApplicationController
     if (Company.exists?(id: params[:company_id]))
       logger.debug "Company Exists: #{params[:company_id]}"
       @company = Company.find(params[:company_id])
-      @price   = Price.new
+      @price   = @company.prices.build
     else
        logger.error "Company Could Not Be Found: #{params[:company_id]}"
        flash[:error] = t('flash.prices.company_not_found')
@@ -59,15 +59,15 @@ class PricesController < ApplicationController
       flash[:error] = t('flash.prices.pricing_not_added')
     end
     logger.info "Leaving PricesController#create"
-    redirect_to company_path(session[:company_id])
+    redirect_to company_path(params[:company_id])
   end
 
   def destroy
     logger.info "Entering PricesController#destroy"
     logger.debug "Params: #{params.inspect}"
-    if Price.exists?(id: params[:id])
-       logger.debug "Price Found: #{params[:id]}"
-       @price = Price.find(params[:id])
+    if Price.exists?(id: params[:product_id])
+       logger.debug "Price Found: #{params[:product_id]}"
+       @price = Price.find(params[:product_id])
     else
        logger.error "Price Not Deleted, Price Not Found"
        flash[:error] = t('flash.prices.pricing_not_deleted')
@@ -144,7 +144,7 @@ class PricesController < ApplicationController
    end
 
    def price_params
-     params.require(:price).permit(:product_id, :name, :price)
+     params.require(:price).permit(:product_id, :name, :price, :version)
    end
 
    def check_for_cancel
