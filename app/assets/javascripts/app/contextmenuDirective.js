@@ -1,4 +1,4 @@
-angular.module('app').directive('contextmenu', function ($compile) {
+angular.module('app').directive('contextmenu', ['$compile', function ($compile) {
         return {
             restrict: 'E',
             scope: {
@@ -114,4 +114,4 @@ angular.module('app').directive('contextmenu', function ($compile) {
             }
 
         };
-});
+}]);
