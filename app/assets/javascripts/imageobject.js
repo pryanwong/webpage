@@ -17,12 +17,17 @@ imageobject.imageDown = function(data,index) {
             log.trace("ActiveObjectVal: ", activeObjectVal);
             log.trace("Has configdbid property: ", activeObjectVal.hasOwnProperty('configdbid'));
             if (activeObjectVal.configdbid != false) {
-               var items = ["Configure","Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
+               var items = ["Configure","Delete", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
             } else {
-               var items = ["Delete Image", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
+               var items = ["Delete", "Send To Back", "Send Backward", "Bring Forward", "Bring To Front"];
             }
-            menus(items, e);
-            $('a:contains("Configure")').click( function() {
+            angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction = (  function() {log.debug("imageDown: In Delete");
+                                               log.trace(activeObjectVal);
+                                               canvas.remove(activeObjectVal);
+                                               $('#contextMenu').remove();
+                                               contextmenuon = false;
+                                               activeObject = false;}   );
+            angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.configureAction = ( function() {
                                                    var productId = activeObjectVal.configdbid
                                                    var companyId = 1
                                                    searchId = getItemIndex(activeObjectVal)
@@ -66,17 +71,7 @@ imageobject.imageDown = function(data,index) {
                                                    contextmenuon = false;
                                                    activeObject = true;
                                                 });
-            $('a:contains("Delete")').click(  function() {log.debug("imageDown: In Delete");
-                                               log.trace(activeObjectVal);
-                                               canvas.remove(activeObjectVal);
-                                               $('#contextMenu').remove();
-                                               contextmenuon = false;
-                                               activeObject = false;}   );
-            $('a:contains("Change Color")').click(function() {activateColorPicker(e);});
-            $('a:contains("Send Backward")').click(function() {sendBackward();});
-            $('a:contains("Send To Back")').click(function() {sendToBack();});
-            $('a:contains("Bring Forward")').click(function() {bringFoward();});
-            $('a:contains("Bring To Front")').click(function() {bringToFront();});
+            menus(items, e);
             contextmenuon = true;
         };
      };

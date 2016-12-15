@@ -214,9 +214,8 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
          handler = function(e) {
             if (contextmenuon === false &&  activeObject === true) {
                e.preventDefault();
-               var items = ["Delete Line", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-               menus(items, e);
-               $('a:contains("Delete")').click(  function() {
+               var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+               angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction = (  function() {
                                                 if (activeObjectVal.type) {
                                                   if (activeObjectVal.type == "customline") {
                                                     canvas.remove(activeObjectVal.cone);
@@ -250,15 +249,8 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
                                                 contextmenuon = false;
                                                 activeObject = false;
                                               });
-              $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                                $('#contextMenu').remove();
-                                                                contextmenuon = false;}
-                                                   );
-              $('a:contains("Send Backward")').click(function() {sendBackward();});
-              $('a:contains("Send To Back")').click(function() {sendToBack();});
-              $('a:contains("Bring Forward")').click(function() {bringFoward();});
-              $('a:contains("Bring To Front")').click(function() {bringToFront();});
-              contextmenuon = true;
+               menus(items, e);
+               contextmenuon = true;
            }
          };
          document.addEventListener('contextmenu', handler, false);

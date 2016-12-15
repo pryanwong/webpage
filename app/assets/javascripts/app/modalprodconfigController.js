@@ -1,6 +1,6 @@
 angular.module('app')
-.controller('ModalProductConfigController',['$uibModal','$log','$document','$scope',
-   function ($uibModal, $log, $document,$scope) {
+.controller('ModalProductConfigController',['$uibModal','$compile', '$log','$document','$scope',
+   function ($uibModal, $compile, $log, $document,$scope) {
       var mpc = this;
       mpc.open = open;
 
@@ -14,8 +14,20 @@ angular.module('app')
 
         };
 
-      mpc.testFn = function() {
-        console.log("Testing from Context Menu")
+      mpc.deleteAction = "";
+      mpc.configureAction = "";
+      mpc.menuFn = function(items_in, event) {
+          mpc.menus(items_in, event, "false")
+      }
+
+      mpc.menus = function(items_in, event, textmenu_in) {
+        textmenu = textmenu_in
+        console.log('"' + items_in.join('","') + '"')
+        console.log(event.pageX);
+        console.log(event.pageY);
+        //compile = angular.element($('mpc_holder')).injector().get('$compile')
+
+        $('#mpc_holder').append($compile('<contextmenu id="contextMenu" textmenu="' + textmenu + '" configureobj="mpc.configureAction()" deleteobj="mpc.deleteAction()" style="display:block;left:'+ event.pageX +'px;top:'+ event.pageY +'px" items="['+ "'" + items_in.join("','") + "'" + ']" x="' + event.pageX +'" y="' + event.pageY  +'"></contextmenu>')($scope));
       }
       mpc.closeModal = function() {
         mpc.cancel();

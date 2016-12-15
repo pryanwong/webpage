@@ -40,24 +40,17 @@ circleobject.circleDown = function(data,index) {
       handler = function(e) {
          if (contextmenuon == false &&  activeObject == true ) {
             e.preventDefault();
-            var items = ["Delete Circle", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
-            menus(items, e);
-            $('a:contains("Delete")').click(  function() {log.debug("circleDown: In Delete");
+            var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
+            angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction =  (function() {log.debug("circleDown: In Delete");
                                              activeObjectVal = canvas.getActiveObject();
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#contextMenu').remove();
                                              contextmenuon = false;
-                                             activeObject = false;}   );
-           $('a:contains("Change Color")').click(function() {activateColorPicker(e);
-                                                             $('#contextMenu').remove();
-                                                             contextmenuon = false;
-                                                             activeObject = false;}
-                                                );
-           $('a:contains("Send Backward")').click(function() {sendBackward();});
-           $('a:contains("Send To Back")').click(function() {sendToBack();});
-           $('a:contains("Bring Forward")').click(function() {bringFoward();});
-           $('a:contains("Bring To Front")').click(function() {bringToFront();});
+                                             activeObject = false;});
+
+            menus(items, e);
+            
            contextmenuon = true;
         };
       }

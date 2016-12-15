@@ -527,6 +527,7 @@ function makeLine(coords, id) {
       log.info( "Leaving activateColorPicker");
  }
 
+
  function colorPickerChange(newLineColor) {
       console.log( "Entering colorPickerChange");
       log.debug( "newLineColor: ", newLineColor);
@@ -625,7 +626,7 @@ function sendBackward() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
-   canvas.deactivateAll().renderAll();
+   //canvas.deactivateAll().renderAll();
    log.info( "Leaving sendBackward");
 }
 
@@ -638,7 +639,7 @@ function sendToBack() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
-   canvas.deactivateAll().renderAll();
+   //canvas.deactivateAll().renderAll();
    log.info( "Leaving sendToBack");
 }
 
@@ -651,7 +652,7 @@ function bringFoward() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
-   canvas.deactivateAll().renderAll();
+   //canvas.deactivateAll().renderAll();
    log.info( "Leaving bringFoward");
 }
 
@@ -664,7 +665,7 @@ function bringToFront() {
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
-   canvas.deactivateAll().renderAll();
+  // canvas.deactivateAll().renderAll();
    log.info( "Leaving bringToFront");
 }
 
@@ -802,76 +803,22 @@ function contextMenu(env) {
    return false; //stops the event propigation
 }
 
-function menus(items, event) {
+function menus(items_in, event_in) {
    log.info( "Entering menus");
    var $contextMenu = "";
    if (contextmenuon == false) {
-      var menucontainer = document.createElement('div');
-      menucontainer.id = 'contextMenu';
-      var html = "<ul class='dropdown-menu' role='menu' style='display:block;position:static;' >";
-      for (index=0; index < items.length; index++) {
-         html += "<li> <a tabindex=''-1'>" + items[index] + "</a> </li>";
-      }
-      html += "</ul>" ;
-
-      menucontainer.innerHTML = html;
-      //$('body').append(menucontainer);
-      $('#mpc_holder').append(menucontainer);
-      //$('#contextmenuholder').append(menucontainer);
-      $contextMenu = $("#contextMenu");
-      $contextMenu.css({
-         display: "block",
-         left: event.pageX,
-         top: event.pageY
-       });
-
-   } else {
-     log.info("Menu Not Displayed contextmenu is true");
+     angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.menuFn(items_in, event_in);
    }
-   log.info( "Leaving menus");
-};
 
-function textmenus(items, event) {
-   log.info( "Entering textmenus");
-   var $contextMenu = "";
-   if (contextmenuon == false) {
-      var menucontainer = document.createElement('div');
-      menucontainer.id = 'contextMenu';
-      var html = "<ul class='dropdown-menu' role='menu' style='display:block;position:static;' >";
-      for (index=0; index < items.length; index++) {
-         html += "<li> <a tabindex=''-1'>" + items[index] + "</a> </li>";
-      }
-      html+= '<li role="separator" class="divider"></li>'
-      html+='<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Font Size</a>'
-      html+='   <ul class="dropdown-menu sub-menu">'
-      html+="     <li><a tabindex=''-1'>Large</a></li>"
-      html+="     <li><a tabindex=''-1'>Medium</a></li>"
-      html+="     <li><a tabindex=''-1'>Small</a></li>"
-      html+="   </ul>"
-      html+="</li>"
-      html+='<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Font Family</a>'
-      html+='   <ul class="dropdown-menu sub-menu">'
-      html+="     <li><a tabindex=''-1'>Arial</a></li>"
-      html+="     <li><a tabindex=''-1'>Sans-Serif</a></li>"
-      html+="     <li><a tabindex=''-1'>Rockwell</a></li>"
-      html+="   </ul>"
-      html+="</li>"
-      html += "</ul>" ;
+}
 
-      menucontainer.innerHTML = html;
-      $('body').append(menucontainer);
-      $contextMenu = $("#contextMenu");
-      $contextMenu.css({
-         display: "block",
-         left: event.pageX,
-         top: event.pageY
-       });
-
-   } else {
-     log.info("Menu Not Displayed contextmenu is true");
-   }
-   log.info( "Leaving textmenus");
-};
+function textmenus(items_in, event_in) {
+  log.info( "Entering textmenus");
+  var $contextMenu = "";
+  if (contextmenuon == false) {
+      angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.menus(items_in, event, "true");
+  }
+}
 
 function handleDragEnd(e) {
    log.info( "Entering handleDragEnd");

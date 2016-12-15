@@ -93,6 +93,7 @@
 =javascript_include_tag "app/versionsDirective.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/iconController.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/productService.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/contextmenuDirective.js", "data-turbolinks-track" => true
 :javascript
    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -147,6 +148,7 @@
    var activeObjectValCP = "";
    var backgroundImageVal = "";
    var objectName = "";
+   var mpc_controller = "";
    var _curX, _curY;
    var canvas = new fabric.CanvasEx('demoCanvas2', {selection: true});
    fabric.Group.prototype.hasControls = false
