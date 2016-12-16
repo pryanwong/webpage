@@ -19,6 +19,20 @@
    %div{:class=>"img-rounded",:style=>"width:1000;height:1000;background:white;padding-bottom:10px;overflow:auto"}
       %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600", :style=>"border: 1px solid black;"}
 
+=javascript_include_tag "app/angular.js"
+=javascript_include_tag "app/ui-bootstrap-tpls-2.3.0.js"
+=javascript_include_tag "app/angular-animate.js"
+=javascript_include_tag "app/angular-resource.js"
+=javascript_include_tag "app/app.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/modalController.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/modalprodconfigController.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/backgroundbuttonDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconTableDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/versionsDirective.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/iconController.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/productService.js", "data-turbolinks-track" => true
+=javascript_include_tag "app/contextmenuDirective.js", "data-turbolinks-track" => true
 :javaScript
    var handler = "";
    var c = new Array();
@@ -284,13 +298,17 @@
               }
               canvas.renderAll();
               backgroundImageVal = "";
+              console.log("Canvas: ", canvas)
+              console.log("hasOwn: ", canvas.hasOwnProperty('backgroundImage'))
+              console.log("background: ",canvas.backgroundImage)
               if (canvas.hasOwnProperty('backgroundImage')) {
-                 if ((canvas.backgroundImage).hasOwnProperty('src')) {
+                 if (canvas.backgroundImage !== null) {
+                   if ((canvas.backgroundImage).hasOwnProperty('src') == true) {
                      backgroundImageVal = canvas.backgroundImage.src;
+                   }
                  }
               }
               log.debug("BackgroundImage Loc: ", backgroundImageVal)
-              backgroundExists(backgroundImageVal);
               image.src = canvas.toDataURL("image/png");
               $('#demoCanvas2').replaceWith(image);
            },
