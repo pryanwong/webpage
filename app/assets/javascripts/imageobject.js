@@ -27,7 +27,26 @@ imageobject.imageDown = function(data,index) {
                                                $('#contextMenu').remove();
                                                contextmenuon = false;
                                                activeObject = false;}   );
-            angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.configureAction = ( function() {
+            angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.configureAction = ( function() {console.log("mpc.open");
+                                  var searchId = getItemIndex(activeObjectVal)
+                                  canvas.setActiveObject(canvas.item(searchId))
+                                  var product_id = activeObjectVal.configdbid;
+                                  document.getElementById('data').innerHTML = "";
+                                  var selectChoices = false;
+                                  var splitVals = "";
+                                  var objectConfig = canvas.item(searchId).config
+                                  if (objectConfig != undefined) {
+                                      log.info( "Object Config is Defined: ", objectConfig);
+                                      selectChoices = true;
+                                      splitVals = objectConfig.split("-")
+                                  }
+                                  angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.open(company_id, product_id, selectChoices, splitVals, searchId,canvas );
+                                  $('#contextMenu').remove();
+                                  contextmenuon = false;
+                                  activeObject = false;
+                                });
+            /*
+             ( function() {
                                                    var productId = activeObjectVal.configdbid
                                                    var companyId = 1
                                                    searchId = getItemIndex(activeObjectVal)
@@ -70,7 +89,7 @@ imageobject.imageDown = function(data,index) {
                                                    $('#contextMenu').remove();
                                                    contextmenuon = false;
                                                    activeObject = true;
-                                                });
+                                                }); */
             menus(items, e);
             contextmenuon = true;
         };

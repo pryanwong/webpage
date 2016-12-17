@@ -58,10 +58,32 @@
          %div{:class=>".product-config-modal"}
             %script{:type=>"text/ng-template", "id"=>"productConfigTmpl.html"}
                %div{:class=>"modal-header"}
-                  %button{:type=>"button", :class=>"close", "data-dismiss"=>"modal", "ng-click"=>"mc.cancel()"} &times;
+                  %button{:type=>"button", :class=>"close", "data-dismiss"=>"modal", "ng-click"=>"mpc.cancel()"} &times;
                   %h4{:class=>"modal-title"}Product Configurator
                %div{:class=>"modal-body"}
-                  %div{:class=>"input-group", :id=>"data"}
+                  %div{:class=>"form-horizontal", :id=>"data"}
+                     %div{:class=>"form-group form-group-sm"}
+                        %div{:class=>"control-label col-sm-3"}
+                           {{mpc.jsondata.name}}
+                     %div{:class=>"form-group form-group-sm", "ng-repeat"=>"option in mpc.jsondataprice.product.options"}
+                        %label{:class=>"control-label col-sm-3"}
+                           {{option.opname}}
+                        %div{:class=>"control-label col-sm-9"}
+                           -# <tt>option = {{option.selectedValue}}</tt>
+                           %select{:class=>'form-control input-sm', :id=>"selectid{{$index}}", "ng-change"=>"mpc.change(option.selectedValue, {{option.selectedValue}})", "ng-options"=>"selectval.description for selectval in option.selections track by selectval.code", "ng-model"=>"option.selectedValue"}
+                     %div{:class=>"form-group form-group-sm"}
+                        %div{:class=>"col-sm-9 col-sm-offset-3"}
+                           %span{:id=>"prodString"}><
+                              Order Code: {{mpc.jsondataprice.product.name}}
+                           %span{"ng-repeat"=>"option in mpc.jsondataprice.product.options"}><
+                              &#45;{{option.selectedValue.code}}
+                        %div{:class=>"col-sm-9 col-sm-offset-3"}
+                           %span{:id=>"prodPrice"}><
+                              List Price: {{mpc.jsondataprice.product.price}}
+               %div{:class=>"modal-footer"}
+                  %button{:class=>"btn btn-primary", :type=>"button", "ng-click"=>"mpc.ok()"}OK
+                  %button{:class=>"btn btn-warning", :type=>"button", "ng-click"=>"mpc.cancel()"}Cancel
+                  %button{:class=>"btn btn-danger", :type=>"button", "ng-click"=>"mpc.reset()"}Reset
          %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
             %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
                %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}

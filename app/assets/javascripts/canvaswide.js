@@ -1,4 +1,5 @@
 function textChangedEvent(e) {
+  console.log("Text Change Event Fired");
   $("#saveMessage").text('Changes Made, Save Pending...');
   log.debug('text:changed', e.target, e);
   onSave();

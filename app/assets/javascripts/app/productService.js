@@ -24,16 +24,17 @@ angular.module('productService', ['ngResource']).
                 var host = $location.host()
                 var protocol = $location.protocol()
                 var port = $location.port();
-                return $resource(protocol + '://' + host + ':' + port + '/companies/:company_id/:action/:id',
+                params: {action: 'prices'}
+                return $resource(protocol + '://' + host + ':' + port + '/companies/:company_id/:action/:id/productconfig.json',
                     {
                         company_id: '@company_id',
                         id: '@id',
                         action: '@action'
                     },
                     {
-                        getIconGallery: {
+                        getProductConfig: {
                             method: 'GET',
-                            params: {action: 'productconfig'}
+                            params: {action: 'prices'}
                         },
                     });
             }
