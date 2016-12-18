@@ -4,6 +4,7 @@ angular.module('app').controller('IconController', ['$scope','iconHub',
       vm.jsonObj = ""
       vm.jsonObjerror = "";
       vm.iconlist = null;
+      vm.panelStatus = "";
 
       vm.toggle_versions_pane = function()
       {
@@ -16,6 +17,14 @@ angular.module('app').controller('IconController', ['$scope','iconHub',
          return false;
       };
 
+      vm.panelActive = function(name) {
+        if (name == vm.panelStatus) {
+          vm.panelStatus = -1;
+        } else {
+          vm.panelStatus = name;
+        }
+        console.log(vm.panelStatus)
+      }
       vm.loadIcons = function(company_id) {
            console.log("In loadIcons")
            var iconlist = null;

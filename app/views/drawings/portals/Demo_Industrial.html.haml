@@ -39,8 +39,8 @@
             %button{:type=>"button", :class=>"btn btn-default", "ng-click"=>'vm.toggle_versions_pane();'}Archived Versions
          =image_tag "common/paint_bucket.png"
          %input{:id=>'myColor', :class=>'color {pickerClosable:true}', :onchange=>'colorPickerChange("#"+this.color, activeObjectVal)', :style=>'width:2em;', :value=>'000000'}
-         =image_tag "common/FastText.png"
-         %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
+         -# =image_tag "common/FastText.png"
+         -# %input{:id=>'myFontColor', :class=>'color {pickerClosable:true}', :onchange=>"myFontColor('#'+this.color)", :style=>'width:2em;', :value=>'000000'}
          Last Saved:
          %span{:id=>'saveMessage'}
             = @lastedit
@@ -49,7 +49,9 @@
             %div{ :class=>"panel panel-default", "ng-repeat"=>"vals in vm.jsonObj", "ng-cloak"=>true}
                %div.panel-heading
                   %h4.panel-title
-                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse{{$index}}"} {{vals.name}}
+                     %a{:data=> {:toggle=>"collapse",:parent=>"#accordiontools"}, :href=>"#collapse{{$index}}", "ng-click" => "vm.panelActive($index)"}
+                        {{vals.name}}
+                        %i{:class=>"pull-right glyphicon", "ng-class"=>"{'glyphicon-chevron-down': vm.panelStatus == $index, 'glyphicon-chevron-right': vm.panelStatus != $index}"}
                %div{:id=>"collapse{{$index}}", "ng-class"=>"$first ? 'panel-collapse collapse in' : 'panel-collapse collapse'"}
                   %div{:id=>"images",:class=>"panel-body"}
                      %table
@@ -60,30 +62,39 @@
                %div{:class=>"modal-header"}
                   %button{:type=>"button", :class=>"close", "data-dismiss"=>"modal", "ng-click"=>"mpc.cancel()"} &times;
                   %h4{:class=>"modal-title"}Product Configurator
-               %div{:class=>"modal-body"}
-                  %div{:class=>"form-horizontal", :id=>"data"}
-                     %div{:class=>"form-group form-group-sm"}
-                        %div{:class=>"control-label col-sm-3"}
-                           {{mpc.jsondata.name}}
-                     %div{:class=>"form-group form-group-sm", "ng-repeat"=>"option in mpc.jsondataprice.product.options"}
-                        %label{:class=>"control-label col-sm-3"}
-                           {{option.opname}}
-                        %div{:class=>"control-label col-sm-9"}
-                           -# <tt>option = {{option.selectedValue}}</tt>
-                           %select{:class=>'form-control input-sm', :id=>"selectid{{$index}}", "ng-change"=>"mpc.change(option.selectedValue, {{option.selectedValue}})", "ng-options"=>"selectval.description for selectval in option.selections track by selectval.code", "ng-model"=>"option.selectedValue"}
-                     %div{:class=>"form-group form-group-sm"}
-                        %div{:class=>"col-sm-9 col-sm-offset-3"}
-                           %span{:id=>"prodString"}><
-                              Order Code: {{mpc.jsondataprice.product.name}}
-                           %span{"ng-repeat"=>"option in mpc.jsondataprice.product.options"}><
-                              &#45;{{option.selectedValue.code}}
-                        %div{:class=>"col-sm-9 col-sm-offset-3"}
-                           %span{:id=>"prodPrice"}><
-                              List Price: {{mpc.jsondataprice.product.price}}
-               %div{:class=>"modal-footer"}
-                  %button{:class=>"btn btn-primary", :type=>"button", "ng-click"=>"mpc.ok()"}OK
-                  %button{:class=>"btn btn-warning", :type=>"button", "ng-click"=>"mpc.cancel()"}Cancel
-                  %button{:class=>"btn btn-danger", :type=>"button", "ng-click"=>"mpc.reset()"}Reset
+               %div{"ng-hide"=>"mpc.jsonObjerror"}
+                  %div{:class=>"modal-body"}
+                     %div{:class=>"form-horizontal", :id=>"data"}
+                        %div{:class=>"form-group form-group-sm"}
+                           %div{:class=>"control-label col-sm-3"}
+                              {{mpc.jsondata.name}}
+                        %div{:class=>"form-group form-group-sm", "ng-repeat"=>"option in mpc.jsondataprice.product.options"}
+                           %label{:class=>"control-label col-sm-3"}
+                              {{option.opname}}
+                           %div{:class=>"control-label col-sm-9"}
+                              -# <tt>option = {{option.selectedValue}}</tt>
+                              %select{:class=>'form-control input-sm', :id=>"selectid{{$index}}", "ng-change"=>"mpc.change(option.selectedValue, {{option.selectedValue}})", "ng-options"=>"selectval.description for selectval in option.selections track by selectval.code", "ng-model"=>"option.selectedValue"}
+                        %div{:class=>"form-group form-group-sm"}
+                           %div{:class=>"col-sm-9 col-sm-offset-3"}
+                              %span{:id=>"prodString"}><
+                                 Order Code: {{mpc.jsondataprice.product.name}}
+                              %span{"ng-repeat"=>"option in mpc.jsondataprice.product.options"}><
+                                 &#45;{{option.selectedValue.code}}
+                           %div{:class=>"col-sm-9 col-sm-offset-3"}
+                              %span{:id=>"prodPrice"}><
+                                 List Price: {{mpc.jsondataprice.product.price}}
+                  %div{:class=>"modal-footer"}
+                     %button{:class=>"btn btn-primary", :type=>"button", "ng-click"=>"mpc.ok()"}OK
+                     %button{:class=>"btn btn-warning", :type=>"button", "ng-click"=>"mpc.cancel()"}Cancel
+                     %button{:class=>"btn btn-danger", :type=>"button", "ng-click"=>"mpc.reset()"}Reset
+               %div{"ng-show"=>"mpc.jsonObjerror"}
+                  %div{:class=>"modal-body"}
+                     %div{:class=>"form-horizontal", :id=>"data"}
+                        %div{:class=>"form-group form-group-sm"}
+                           %div{:class=>"control-label col-sm-3"}
+                              Error in retrieving data from server.
+                  %div{:class=>"modal-footer"}
+                     %button{:class=>"btn btn-warning", :type=>"button", "ng-click"=>"mpc.cancel()"}Cancel
          %div{:id=>"div2", :style=>"float:left;padding-top:10px;"}
             %div{:id=>"canvas-container", :style=>"height:800px;width:1000px;overflow:auto"}
                %canvas{:id=>"demoCanvas2", :width=>"1000", :height=>"1600"}
@@ -106,6 +117,7 @@
 =javascript_include_tag "app/ui-bootstrap-tpls-2.3.0.js"
 =javascript_include_tag "app/angular-animate.js"
 =javascript_include_tag "app/angular-resource.js"
+=javascript_include_tag "app/angular-sanitize.js"
 =javascript_include_tag "app/app.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/modalController.js", "data-turbolinks-track" => true
 =javascript_include_tag "app/modalprodconfigController.js", "data-turbolinks-track" => true
