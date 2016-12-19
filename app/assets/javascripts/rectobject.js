@@ -29,6 +29,7 @@ rectobject.rectdrop = function(e,id) {
   var rectangleShape = rectobject.makeRectangleShape([ xpos1, ypos1 ], id);
   rectangleShape.hasBorders = rectangleShape.hasControls = true
   rectangleShape.on("mousedown", function(data, index) { rectobject.rectangleDown(data,index); });
+  itemId = itemId + 1;
   rectangleShape.id = itemId
   itemId = itemId + 1;
   canvas.add(rectangleShape)
@@ -48,15 +49,15 @@ rectobject.rectangleDown = function(data,index) {
             e.preventDefault();
             var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction = (  function() {log.debug("rectangleDown: In Delete");
-                                             activeObjectVal = canvas.getActiveObject();
+                                             var activeObjectVal = getItemByIndex(searchId)
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
-
+            updateSearchId(data)
             menus(items, e);
-            
+
            contextmenuon = true;
         };
       }

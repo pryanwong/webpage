@@ -168,11 +168,13 @@
 
    var handler = "";
    var c = new Array();
+   var searchId;
    var objId_var = 0;
    var saveInProgress = false;
    var company_id ='#{params[:company_id]}'
    var user_id= '#{params[:user_id]}'
    var drawing_id = '#{params[:id]}'
+   var dashed_line_png = '#{@dashed_line_png}'
    var modified = false
    var timestamps   = '#{@timestamps_readable}'
    var itemId = 0;
@@ -273,3 +275,4 @@
       window.location.href = '/companies/'+ company_id +'/users/' + user_id;
    }
    log.info( "Done Demo_Industrial Javascript ");
+   //console.log("Dashed Line: ", dashed_line_png)

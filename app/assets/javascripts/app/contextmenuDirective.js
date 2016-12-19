@@ -15,7 +15,7 @@ angular.module('app').directive('contextmenu', ['$compile', function ($compile) 
             link: function (scope, el, attrs, ctrl) {
               console.log("scope:",scope)
               el.css({'left': scope.x, 'top': scope.y});
-              if (textmenu == "true") {
+              if (textmenu == "textmenu") {
                 //var lastitem = document.getElementById("li_Bring To Front");
                 var children = el.children();
                 //var wrappedTextResult = angular.element(lastitem);
@@ -35,6 +35,21 @@ angular.module('app').directive('contextmenu', ['$compile', function ($compile) 
                 html+='     <li><a id="Rockwell" tabindex="-1">Rockwell</a></li>'
                 html+="   </ul>"
                 html+="</li>"
+                var addelement = angular.element(html);
+                el.children(":first").children(":first").append($compile(addelement)(scope))
+                console.log("Elements: ", el)
+                console.log("Vals: ", el.children(":first").children(":first"))
+                //$compile(addelement)(scope);
+              }
+
+              if (textmenu == "linemenu") {
+                //var lastitem = document.getElementById("li_Bring To Front");
+                var children = el.children();
+                //var wrappedTextResult = angular.element(lastitem);
+                var html = "";
+                html+= '<li role="separator" class="divider"></li>'
+                html+='<li id="li_dash"> <a tabindex="-1" id="Dashed">Dashed</a> </li>'
+                html+='<li id="li_dash"> <a tabindex="-1" id="Solid">Solid</a> </li>'
                 var addelement = angular.element(html);
                 el.children(":first").children(":first").append($compile(addelement)(scope))
                 console.log("Elements: ", el)
@@ -83,7 +98,7 @@ angular.module('app').directive('contextmenu', ['$compile', function ($compile) 
                         var wrappedResult7 = angular.element(result7);
                         wrappedResult7.bind('click', (function() {console.log("Configure clicked");scope.configureobj();}) );
                       }
-                      if (scope.textmenu == "true") {
+                      if (scope.textmenu == "textmenu") {
                          var result8 = document.getElementById("Large");
                          var wrappedResult8 = angular.element(result8);
                          wrappedResult8.bind('click', (function() {changeFontSize(24);}) );
@@ -108,6 +123,15 @@ angular.module('app').directive('contextmenu', ['$compile', function ($compile) 
                          var wrappedResult13 = angular.element(result13);
                          wrappedResult13.bind('click', (function() {changeFontFamily('rockwell');}) );
 
+                      }
+                      if (scope.textmenu == "linemenu") {
+                        var result14 = document.getElementById("Dashed");
+                        var wrappedResult14 = angular.element(result14);
+                        wrappedResult14.bind('click', (function() {changeDash([5, 5]);}) );
+
+                        var result15 = document.getElementById("Solid");
+                        var wrappedResult15 = angular.element(result15);
+                        wrappedResult15.bind('click', (function() {changeDash([]);}) );
                       }
                    });
               });

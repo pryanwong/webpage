@@ -3,7 +3,7 @@ var customlinearrow = function(coords, id) {
 
 customlinearrow.setLinePositions = function(e) {
 
-      //console.log("In customlinearrow");
+      console.log("In customlinearrow");
       var p = e.target;
       var objType = p.get('type');
       var objId = p.get('objId');
@@ -55,6 +55,7 @@ customlinearrow.setLinePositions = function(e) {
       _curY = e.e.clientY;
 }
 customlinearrow.objectBoundaryCheck = function(e){
+
   var boundaryHit = false;
   setLinePositions(e);
   log.info( "Entering  objectBoundaryCheck");
@@ -175,8 +176,10 @@ customlinearrow.makeLineArrow =function(coords, id) {
      y1: coords[1],
      x2: coords[2],
      y2: coords[3],
-     fill: 'red',
-     stroke: 'red',
+     originX: 'center',
+     originY: 'center',
+     fill: 'black',
+     stroke: 'black',
      strokeWidth: 5,
      selectable: true,
      objId: id,
@@ -237,7 +240,8 @@ customlinearrow.makeLineArrow =function(coords, id) {
                                               contextmenuon = false;
                                               activeObject = false;
                                             });
-             menus(items, e);
+             updateSearchId(data)
+             linemenus(items, e);
             contextmenuon = true;
          };
        }
@@ -249,19 +253,35 @@ customlinearrow.makeLineArrow =function(coords, id) {
  customlinearrow.makeCircleArrow = function(line) {
      log.info( "Entering makeCircleArrow");
      var c1 = new fabric.Conearrow({
-       left: line.get('x1')-2.5,
-       top: line.get('y1')-2.5,
+       left: line.get('x1'),
+       top: line.get('y1'),
        visible: 'true',
        hoverCursor: 'crosshair',
+       originX: 'center',
+       originY: 'center',
        strokeWidth:  2,
-       stroke: '#000',
+       stroke: 'rgba(0,0,0,0)',
        radius: 5,
-       fill: '#fff'
+       fill: 'rgba(0,0,0,0)',
      });
      c1.setBelongsTo(line.objId);
+
+    angle = function(line) {
+      console.log("Calculating Angle")
+      dx = line.get('x2') - line.get('x1');
+      dy = line.get('y2') - line.get('y1');
+      val = Math.atan2(dy, dx);
+
+      val *= 180 / Math.PI;
+      val += 90;
+      return val;
+    }
+
      var c2 =  new fabric.Carrow({
               left: line.get('x2'),
               top: line.get('y2'),
+              width: 15,
+              height: 15,
               originX: 'center',
               originY: 'center',
               hasBorders: false,
@@ -270,10 +290,8 @@ customlinearrow.makeLineArrow =function(coords, id) {
               lockScalingY: true,
               lockRotation: true,
               pointType: 'arrow_start',
-              angle: 135,
-              width: 20,
-              height: 20,
-              fill: '#000'
+              angle: angle(line),
+              fill: 'black'
           });
      c2.setBelongsTo(line.objId);
      c1.hasBorders = c1.hasControls = false;

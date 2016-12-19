@@ -90,6 +90,7 @@ imageobject.imageDown = function(data,index) {
                                                    contextmenuon = false;
                                                    activeObject = true;
                                                 }); */
+            updateSearchId(data);
             menus(items, e);
             contextmenuon = true;
         };

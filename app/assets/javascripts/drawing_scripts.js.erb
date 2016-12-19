@@ -522,46 +522,103 @@ function makeLine(coords, id) {
  function activateColorPicker(e) {
       log.info( "Entering activateColorPicker");
       //console.log("activateColorPicker: ", e)
-      activeObjectValCP = activeObjectVal;
       document.getElementById('myColor').color.showPicker();
       log.info( "Leaving activateColorPicker");
  }
 
+ function shadeColor1(color, percent) {  // deprecated. See below.
+    var num = parseInt(color.slice(1),16), amt = Math.round(2.55 * percent), R = (num >> 16) + amt, G = (num >> 8 & 0x00FF) + amt, B = (num & 0x0000FF) + amt;
+    return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+ }
+
+ function updateSearchId(data) {
+   var pointer = canvas.getPointer(data.e);
+   var clickPoint = new fabric.Point(data.e.offsetX, data.e.offsetY);
+   var objects = canvas.getObjects();
+   for (var i = objects.length - 1; i >= 0; i--) {
+       console.log("Object Id: ", objects[i].id)
+   }
+   for (var i = objects.length - 1; i >= 0; i--) {
+         if (objects[i].containsPoint(clickPoint)) {
+                                             console.log("----------Found-----------",objects[i]);
+                                               activeObjectVal = objects[i];
+                                               searchId = activeObjectVal.id
+                                             break;
+         }
+   }
+ }
 
  function colorPickerChange(newLineColor) {
       console.log( "Entering colorPickerChange");
-      log.debug( "newLineColor: ", newLineColor);
-      if (canvas.getActiveObject()) {
-        console.log( "activeObjectVal: ", canvas.getActiveObject());
-        console.log( "type: ", canvas.getActiveObject().type);
-        valType = canvas.getActiveObject().type;
+      console.log( "newLineColor: ", newLineColor);
+      console.log( "colorPickerChange activeObjectVal: ", activeObjectVal);
+      console.log( "colorPickerChange searchId: ", searchId);
+      activeObjectVal = getItemByIndex(searchId);
+      if (activeObjectVal) {
+        console.log( "activeObjectVal: ", activeObjectVal);
+        console.log( "type: ", activeObjectVal.type);
+        valType = activeObjectVal.type;
         if (valType) {
           log.trace( "activeObjectVal.type: ", valType);
-          if (valType == "customline" | valType == "customlinearrow" | valType == "customlinetwoarrow") {
-            canvas.getActiveObject().set("fill",newLineColor);
-            canvas.getActiveObject().set("stroke",newLineColor);
+          if (valType == 'circlezero' || valType == 'circleone') {
+            console.log("Belongs To:",activeObjectVal.belongsTo )
+            activeObjectVal = canvas.item(activeObjectVal.belongsTo)
+          }
+          if (valType == "customline") {
+            console.log("Setting customLine")
+            activeObjectVal.set("fill",newLineColor);
+            activeObjectVal.set("stroke",newLineColor);
+          }
+
+          if ( valType == "customlinearrow" ) {
+            activeObjectVal.set("fill",newLineColor);
+            activeObjectVal.set("stroke",newLineColor);
+            activeObjectVal.carrow.set("fill",shadeColor1(newLineColor,-40));
+            activeObjectVal.carrow.set("stroke",shadeColor1(newLineColor,-40));
+          }
+
+          if ( valType == "customlinetwoarrow") {
+            activeObjectVal.set("fill",newLineColor);
+            activeObjectVal.set("stroke",newLineColor);
+            activeObjectVal.carrow.set("fill",shadeColor1(newLineColor,-40));
+            activeObjectVal.carrow.set("stroke",shadeColor1(newLineColor,-40));
+            activeObjectVal.carrowtwo.set("fill",shadeColor1(newLineColor,-40));
+            activeObjectVal.carrowtwo.set("stroke",shadeColor1(newLineColor,-40));
           }
 
           if (valType == "circle" | valType == "ellipse" | valType == "rect") {
             log.debug( "colorPickerChange on circle type");
-              canvas.getActiveObject().set("stroke",newLineColor);
+              activeObjectVal.set("stroke",newLineColor);
           }
           if (valType == "i-text") {
             console.log( "colorPickerChange on i-text type");
             //activeObjectValCP.stroke = newLineColor;
-            canvas.getActiveObject().setColor(newLineColor);
+            activeObjectVal.setColor(newLineColor);
             //activeObjectVal.setColor(newLineColor);
           }
+          canvas.renderAll();
+          $("#saveMessage").text('Changes Made, Save Pending...');
+          onSave();
+          console.log( "Leaving colorPickerChange");
         }
       }
-      canvas.renderAll();
-      log.info( "Leaving colorPickerChange");
  };
 
+ function changeDash(pattern) {
+      console.log("In Change Dash")
+      activeObjectVal.set('strokeDashArray',pattern);
+      canvas.renderAll();
+      $("#saveMessage").text('Changes Made, Save Pending...');
+      $('#contextMenu').remove();
+      contextmenuon = false;
+      activeObject = false;
+      searchId = null;
+      onSave();
+ }
  function changeFontSize(size) {
       //console.log( "Entering changeFontSize");
       //console.log( size );
-      var activeObjectVal = canvas.getActiveObject();
+    activeObjectVal = getItemByIndex(searchId);
       //console.log(activeObjectVal);
       if (activeObjectVal.type == "i-text") {
         //console.log( "changeFontSize on i-text type");
@@ -572,13 +629,17 @@ function makeLine(coords, id) {
       }
       //console.log( "Leaving changeFontSize");
       $("#saveMessage").text('Changes Made, Save Pending...');
+      $('#contextMenu').remove();
+      contextmenuon = false;
+      activeObject = false;
+      searchId = null;
       onSave();
  }
 
  function changeFontFamily(ff) {
       //console.log( "Entering changeFontFamily");
       //console.log( ff );
-      var activeObjectVal = canvas.getActiveObject();
+      activeObjectVal = getItemByIndex(searchId);
       //console.log(activeObjectVal);
       if (activeObjectVal.type == "i-text") {
         console.log( "changeFontFamily on i-text type");
@@ -589,6 +650,10 @@ function makeLine(coords, id) {
       }
       //console.log( "Leaving changeFontFamily");
       $("#saveMessage").text('Changes Made, Save Pending...');
+      $('#contextMenu').remove();
+      contextmenuon = false;
+      activeObject = false;
+      searchId = null;
       onSave();
  }
 
@@ -619,7 +684,7 @@ function handleDragLeave(e) {
 
 function sendBackward() {
    log.info( "Entering sendBackward");
-   var activeObjectVal = canvas.getActiveObject();
+   var activeObjectVal = getItemByIndex(searchId);
    if (activeObjectVal) {
       canvas.sendBackwards(canvas.getActiveObject(), true);
    }
@@ -627,25 +692,27 @@ function sendBackward() {
    contextmenuon = false;
    activeObject = false;
    //canvas.deactivateAll().renderAll();
+   onSave();
    log.info( "Leaving sendBackward");
 }
 
 function sendToBack() {
    log.info( "Entering sendToBack");
-   var activeObjectVal = canvas.getActiveObject();
+   var activeObjectVal = getItemByIndex(searchId);
    if (activeObjectVal) {
-      canvas.sendToBack(canvas.getActiveObject());
+      canvas.sendToBack(activeObjectVal);
    }
    $('#contextMenu').remove();
    contextmenuon = false;
    activeObject = false;
    //canvas.deactivateAll().renderAll();
+   onSave();
    log.info( "Leaving sendToBack");
 }
 
 function bringFoward() {
    log.info( "Entering bringFoward");
-   var activeObjectVal = canvas.getActiveObject();
+   var activeObjectVal = getItemByIndex(searchId);
    if (activeObjectVal) {
       canvas.bringForward(activeObjectVal);
    }
@@ -653,12 +720,13 @@ function bringFoward() {
    contextmenuon = false;
    activeObject = false;
    //canvas.deactivateAll().renderAll();
+   onSave();
    log.info( "Leaving bringFoward");
 }
 
 function bringToFront() {
    log.info( "Entering bringToFront");
-   var activeObjectVal = canvas.getActiveObject();
+   var activeObjectVal = getItemByIndex(searchId);
    if (activeObjectVal) {
       canvas.bringToFront(activeObjectVal);
    }
@@ -666,6 +734,7 @@ function bringToFront() {
    contextmenuon = false;
    activeObject = false;
   // canvas.deactivateAll().renderAll();
+   onSave();
    log.info( "Leaving bringToFront");
 }
 
@@ -719,6 +788,7 @@ function handleDrop(e) {
              top: e.layerY
          });
          textbox.hasBorders = textbox.hasControls = true
+         itemId = itemId + 1;
          textbox.id = itemId
          itemId = itemId + 1;
          canvas.add(textbox);
@@ -814,9 +884,21 @@ function menus(items_in, event_in) {
 
 function textmenus(items_in, event_in) {
   log.info( "Entering textmenus");
+  var searchId = getItemIndex(activeObjectVal)
   var $contextMenu = "";
   if (contextmenuon == false) {
-      angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.menus(items_in, event, "true");
+      angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.menus(items_in, event, "textmenu");
+  }
+}
+
+function linemenus(items_in, event_in) {
+  log.info( "Entering textmenus");
+  var $contextMenu = "";
+  console.log( "Event", event_in);
+  console.log( "Line Menus activeObjectVal:", activeObjectVal)
+  //canvas.setActiveObject(canvas.item(searchId))
+  if (contextmenuon == false) {
+      angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.menus(items_in, event, "linemenu");
   }
 }
 
@@ -849,6 +931,20 @@ function getItemIndex(object) {
      }
      log.info( "Leaving getItemIndex");
      return index;
+}
+
+function getItemByIndex(index) {
+     log.info( "Entering getItemIndex");
+     objectList = canvas.getObjects();
+     var objectVal ="";
+     for (i = 0; i < objectList.length; i++) {
+       if (objectList[i].id == index) {
+         objectVal = objectList[i];
+         break;
+       }
+     }
+     log.info( "Leaving getItemIndex");
+     return objectVal;
 }
 
  function calcArrowAngle(x1, y1, x2, y2) {

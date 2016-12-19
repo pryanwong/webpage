@@ -74,7 +74,7 @@ function loadCanvasDrawing(data_drawing) {
          log.debug("Entering loop for objects")
          log.debug("Loop size: ", objs.length)
          var foundCircle = 0;
-         var itemId = 0;
+         itemId = 0;
          for(i = 0; i < objs.length; i++ ) {
             log.debug("Objs Type: ", objs[i].type)
             objs[i].id = itemId

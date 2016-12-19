@@ -85,6 +85,9 @@ class DrawingsController < ApplicationController
        logger.debug "public_url.inspect"
        logger.debug "#{@public_url.inspect}"
 
+
+       # Get menu icons with asset pipeline listing for javascript
+       @dashed_line_png = ActionController::Base.helpers.asset_path("/common/dashed_line.png")
        logger.info "Leaving DrawingsController:edit"
        logger.info "Rendering #{company.portal}"
        render "drawings/portals/#{company.portal}"

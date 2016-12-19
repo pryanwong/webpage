@@ -36,14 +36,15 @@ ellipseobject.ellipseDown = function(data,index) {
             e.preventDefault();
             var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
             angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction = (  function() {log.debug("ellipseDown: In Delete");
-                                             activeObjectVal = canvas.getActiveObject();
+                                             var activeObjectVal = getItemByIndex(searchId)
                                              log.trace(activeObjectVal);
                                              canvas.remove(activeObjectVal);
                                              $('#contextMenu').remove();
                                              contextmenuon = false;
                                              activeObject = false;}   );
+            updateSearchId(data);
             menus(items, e);
-            
+
            contextmenuon = true;
         };
       }

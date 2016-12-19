@@ -1,17 +1,22 @@
+var offX = -5;
+var offY = -5;
+
 var lineobject = function(coords, id) {
+  var id = id;
 };
 
 lineobject.makeLine = function(coords, id) {
    log.info( "Entering makeLine");
    log.debug("Coords are: ", coords);
+   this.id = id;
    line =  new fabric.Customline(coords, {
      x1: coords[0],
      y1: coords[1],
      x2: coords[2],
      y2: coords[3],
-     fill: 'red',
-     stroke: 'red',
-     strokeWidth: 5,
+     fill: 'black',
+     stroke: 'black',
+     strokeWidth: 3,
      selectable: true,
      objId: id,
      perPixelTargetFind: true,
@@ -59,7 +64,7 @@ lineobject.setLinePositions= function(e) {
 
           currentObj.line && currentObj.line.set({
               'x1': currentObj.left,
-              'y1': currentObj.top
+              'y1': currentObj.top,
             });
 
           currentObj.line.setCoords();
@@ -105,11 +110,13 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
 
   _circleOne.line && _circleOne.line.set({
      'x1': _circleOne.left,
-     'y1': _circleOne.top
+     'y1': _circleOne.top,
+     'originX' : 'center',
+     'originY' : 'center'
   });
 
   _circleOne.line.setCoords();
-      p && p.set({ 'x1': _circleOne.left, 'y1': _circleOne.top, 'x2':  _circleTwo.left, 'y2':  _circleTwo.top });
+      p && p.set({ 'x1': _circleOne.left + offX, 'y1': _circleOne.top+ offX, 'x2':  _circleTwo.left+ offX, 'y2':  _circleTwo.top+ offX });
   };
 
 
@@ -211,11 +218,15 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
          document.removeEventListener('contextmenu', handler);
       }
       if (data.e.which == 3) {
+        console.log("In Line Down view index: ", index)
+        console.log("Data:", data)
          handler = function(e) {
             if (contextmenuon === false &&  activeObject === true) {
                e.preventDefault();
                var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
                angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction = (  function() {
+                                                console.log("Line ID: ",searchId)
+                                                var activeObjectVal = getItemByIndex(searchId)
                                                 if (activeObjectVal.type) {
                                                   if (activeObjectVal.type == "customline") {
                                                     canvas.remove(activeObjectVal.cone);
@@ -249,7 +260,9 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
                                                 contextmenuon = false;
                                                 activeObject = false;
                                               });
-               menus(items, e);
+               console.log("Line ID: ",this.id)
+               updateSearchId(data)
+               linemenus(items, e);
                contextmenuon = true;
            }
          };
@@ -270,6 +283,7 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
       itemId = itemId + 1;
       line.id = itemId;
       line.objId = itemId;
+      itemId = itemId + 1;
       canvas.add(line);
       c[id] = lineobject.makeCircle(line);
       line.cone = c[id][0];
@@ -283,25 +297,27 @@ lineobject.setLineCirclePositionsBoundary= function(e) {
    lineobject.makeCircle = function(line) {
        log.info( "Entering makeCircle");
        var c1 = new fabric.Circlezero({
-         left: line.get('x1')-2.5,
-         top: line.get('y1')-2.5,
+         left: line.get('x1'),
+         top:  line.get('y1'),
          visible: 'true',
          hoverCursor: 'crosshair',
-         strokeWidth:  2,
-         stroke: '#000',
-         radius: 5,
-         fill: '#fff'
+         strokeWidth:  5,
+         stroke: 'rgba(0,0,0,0)',
+         radius: 4,
+         fill: 'rgba(0,0,0,0)',
+         originX: 'center', originY: 'center'
        });
        c1.setBelongsTo(line.objId);
        var c2 = new fabric.Circleone({
-         left: line.get('x2')-2.5,
-         top: line.get('y2')-2.5,
+         left: line.get('x2'),
+         top: line.get('y2'),
          visible: 'true',
          hoverCursor: 'crosshair',
          strokeWidth:  2,
-         stroke: '#000',
-         radius: 5,
-         fill: '#fff'
+         stroke: 'rgba(0,0,0,0)',
+         radius: 4,
+         fill: 'rgba(0,0,0,0)',
+         originX: 'center', originY: 'center'
        });
        c2.setBelongsTo(line.objId);
        c1.hasBorders = c1.hasControls = false;

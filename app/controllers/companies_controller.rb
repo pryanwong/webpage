@@ -57,6 +57,7 @@
        logger.info "Leaving CompaniesController:edit"
        redirect_to companies_path
     end
+    
     logger.info "Leaving CompaniesController:edit"
   end
 
@@ -121,7 +122,7 @@
   def get_json_icon_gallery
     if (params[:company_id] == current_user.company_id.to_s)
        logger.info "Entering Drawing#get_json_icon_gallery"
-       data = File.read("#{Rails.root}/app/views/drawings/icons/1.json")
+       data = File.read("#{Rails.root}/app/views/drawings/icons/#{params[:company_id]}.json")
        hash = JSON.parse(data)
        # get main object in JSON data
        panels = hash["objects"]

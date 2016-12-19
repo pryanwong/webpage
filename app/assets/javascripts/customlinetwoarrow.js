@@ -104,8 +104,10 @@ customlinetwoarrow.makeLineTwoArrow = function(coords, id) {
      y1: coords[1],
      x2: coords[2],
      y2: coords[3],
-     fill: 'red',
-     stroke: 'red',
+     originX: 'center',
+     originY: 'center',
+     fill: shadeColor1('#000',-40),
+     stroke: shadeColor1('#000',-40),
      strokeWidth: 5,
      selectable: true,
      objId: id,
@@ -131,6 +133,7 @@ customlinetwoarrow.lineArrowTwoDown = function(data,index) {
              e.preventDefault();
              var items = ["Delete", "Change Color", "Send Backward", "Send To Back", "Bring Forward", "Bring To Front"];
              angular.element(document.querySelector('[ng-controller="ModalProductConfigController as mpc"]')).scope().mpc.deleteAction = (  function() {
+                                              var activeObjectVal = getItemByIndex(searchId)
                                               if (activeObjectVal.type) {
                                                 if (activeObjectVal.type == "customlinetwoarrow") {
                                                   canvas.remove(activeObjectVal.carrowtwo)
@@ -163,8 +166,9 @@ customlinetwoarrow.lineArrowTwoDown = function(data,index) {
                                               contextmenuon = false;
                                               activeObject = false;
                                             });
-             menus(items, e);
-             
+             updateSearchId(data);
+             linemenus(items, e);
+
             contextmenuon = true;
          };
        }
@@ -187,8 +191,8 @@ customlinetwoarrow.lineArrowTwoDown = function(data,index) {
               lockRotation: true,
               pointType: 'arrow_start',
               angle: -45,
-              width: 20,
-              height: 20,
+              width: 15,
+              height: 15,
               fill: '#000'
           });
      c1.setBelongsTo(line.objId);
@@ -204,8 +208,8 @@ customlinetwoarrow.lineArrowTwoDown = function(data,index) {
               lockRotation: true,
               pointType: 'arrow_start',
               angle: 135,
-              width: 20,
-              height: 20,
+              width: 15,
+              height: 15,
               fill: '#000'
           });
      c2.setBelongsTo(line.objId);
