@@ -14,7 +14,7 @@ rectobject.makeRectangleShape = function(coords, id) {
                            width: 67,
                            height: 45,
                            fill: undefined,
-                           stroke : 'red',
+                           stroke : 'black',
                            hasRotatingPoint : true,
                            strokeWidth : 5 });
 };

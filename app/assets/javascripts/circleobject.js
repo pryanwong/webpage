@@ -20,7 +20,7 @@ circleobject.makeCircleShape = function(coords, id){
                              left: coords[0],
                              radius: 15,
                              fill : undefined,
-                             stroke : 'red',
+                             stroke : 'black',
                              lockUniScaling: true,
                              hasRotatingPoint : false,
                              strokeWidth : 5 });

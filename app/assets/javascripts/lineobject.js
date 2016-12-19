@@ -16,7 +16,7 @@ lineobject.makeLine = function(coords, id) {
      y2: coords[3],
      fill: 'black',
      stroke: 'black',
-     strokeWidth: 3,
+     strokeWidth: 5,
      selectable: true,
      objId: id,
      perPixelTargetFind: true,

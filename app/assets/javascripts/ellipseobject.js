@@ -16,7 +16,7 @@ ellipseobject.makeEllipseShape = function(coords, id) {
                              rx: 15,
                              ry: 7,
                              fill : undefined,
-                             stroke : 'red',
+                             stroke : 'black',
                              lockUniScaling: false,
                              hasRotatingPoint : true,
                              strokeWidth : 5 });

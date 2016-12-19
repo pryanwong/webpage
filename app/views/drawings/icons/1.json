@@ -272,38 +272,38 @@
         "icons":[
           [{
             "img_val": "line.png",
-            "data_loc":"common/line.png",
+            "data_loc":"common/line_image.PNG",
             "draggable": "true",
-            "width":22,
-            "height":39,
+            "width":47,
+            "height":47,
             "caption":"Line"
           }, {
             "img_val":"line_arrow_icon.png",
-            "data_loc":"common/line_arrow_icon.png",
+            "data_loc":"common/single_arrow_head_line.PNG",
             "draggable": "true",
-            "width":64,
-            "height":34,
+            "width":51,
+            "height":51,
             "caption":"Line Arrow"
           }], [{
             "img_val": "line_arrow_two_icon.png",
-            "data_loc": "common/line_arrow_two_icon.png",
+            "data_loc": "common/double_arrow_head.PNG",
             "draggable": "true",
-            "width":64,
-            "height":34,
+            "width":50,
+            "height":44,
             "caption": "Line Arrow"
           }], [{
             "img_val": "circle_icon.png",
-            "data_loc":"common/circle.png",
+            "data_loc":"common/circle_icon1.png",
             "draggable":"true",
-            "width":40,
-            "height":32,
+            "width":44,
+            "height":41,
             "caption":"Circle"
           }, {
             "img_val":"ellipse_icon.png",
-            "data_loc":"common/ellipse_icon.png",
+            "data_loc":"common/ellipse_icon1.png",
             "draggable":"true",
-            "width":40,
-            "height":16,
+            "width":46,
+            "height":38,
             "caption":"Ellipse"
           }], [{
             "img_val":"rectangle-icon.png",
