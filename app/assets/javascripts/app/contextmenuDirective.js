@@ -127,7 +127,7 @@ angular.module('app').directive('contextmenu', ['$compile', function ($compile) 
                       if (scope.textmenu == "linemenu") {
                         var result14 = document.getElementById("Dashed");
                         var wrappedResult14 = angular.element(result14);
-                        wrappedResult14.bind('click', (function() {changeDash([5, 5]);}) );
+                        wrappedResult14.bind('click', (function() {changeDash([10, 5]);}) );
 
                         var result15 = document.getElementById("Solid");
                         var wrappedResult15 = angular.element(result15);
